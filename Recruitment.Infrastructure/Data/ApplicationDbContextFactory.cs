@@ -8,7 +8,6 @@ namespace Recruitment.Infrastructure.Data
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {
-            // تحميل الإعدادات من appsettings.json
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory()) 
                 .AddJsonFile("appsettings.json")
