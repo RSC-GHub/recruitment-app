@@ -1,0 +1,26 @@
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Location.LocationEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Location";
+}
+
+<h2>Edit Location</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CountryId">Country</label>
+        <select asp-for="CountryId" class="form-control" asp-items="ViewBag.Countries"></select>
+        <span asp-validation-for="CountryId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>

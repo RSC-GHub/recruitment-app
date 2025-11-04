@@ -28,6 +28,7 @@ namespace Recruitment.Infrastructure
 
             // Services
             services.AddScoped<ICountryService, CountryService>();
+            services.AddScoped<ILocationService, LocationService>();
 
             return services;
         }

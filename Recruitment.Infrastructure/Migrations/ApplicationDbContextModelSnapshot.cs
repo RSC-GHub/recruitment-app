@@ -69,7 +69,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Country", b =>

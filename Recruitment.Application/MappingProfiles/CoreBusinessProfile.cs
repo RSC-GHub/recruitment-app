@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
 using Recruitment.Application.DTOs.CoreBusiness.Country;
+using Recruitment.Application.DTOs.CoreBusiness.Location;
 using Recruitment.Domain.Entities.CoreBusiness;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Recruitment.Application.MappingProfiles
 {
@@ -13,9 +9,20 @@ namespace Recruitment.Application.MappingProfiles
     {
         public CoreBusinessProfile()
         {
+            // Country
             CreateMap<Country, CountryDto>().ReverseMap();
             CreateMap<CreateCountryDto, Country>();
             CreateMap<UpdateCountryDto, Country>();
+
+            // Location
+            CreateMap<Location, LocationDto>()
+                .ForMember(dest => dest.CountryName,
+                           opt => opt.MapFrom(src => src.Country!.Name))
+                .ReverseMap();
+
+            CreateMap<CreateLocationDto, Location>();
+            CreateMap<UpdateLocationDto, Location>();
+
         }
     }
 }

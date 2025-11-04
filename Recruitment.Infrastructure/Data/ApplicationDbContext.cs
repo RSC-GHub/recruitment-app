@@ -25,7 +25,6 @@ namespace Recruitment.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Apply global query filter for soft delete
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
@@ -69,7 +68,7 @@ namespace Recruitment.Infrastructure.Data
                         baseEntity.ModifiedOn = DateTime.UtcNow;
                         baseEntity.ModifiedBy ??= "System";
                         baseEntity.IsDeleted = true;
-                        entry.State = EntityState.Modified; // soft delete
+                        entry.State = EntityState.Modified; 
                         break;
                 }
 
