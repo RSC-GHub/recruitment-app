@@ -1,4 +1,5 @@
-﻿using Recruitment.Application.DTOs.CoreBusiness.Title;
+﻿using Recruitment.Application.DTOs.CoreBusiness.Department;
+using Recruitment.Application.DTOs.CoreBusiness.Title;
 
 namespace Recruitment.Application.Interfaces.Services.CoreBusiness
 {
@@ -9,5 +10,8 @@ namespace Recruitment.Application.Interfaces.Services.CoreBusiness
         Task AddAsync(CreateTitleDto dto);
         Task UpdateAsync(UpdateTitleDto dto);
         Task DeleteAsync(int id);
+
+        Task<TitleDto?> GetByIdWithDepartmentsAsync(int id);
+        Task<IEnumerable<DepartmentDto>> GetDepartmentsByTitleIdAsync(int titleId);
     }
 }

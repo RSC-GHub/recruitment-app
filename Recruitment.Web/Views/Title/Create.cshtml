@@ -8,11 +8,35 @@
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label asp-for="Name"></label>
+        <label for="Name">Title Name</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-success mt-3">Save</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+    <div class="form-group">
+        <label for="DepartmentIds">Departments</label>
+        <select asp-for="DepartmentIds" class="form-control select2" multiple="multiple"
+                asp-items="Model.Departments"></select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
 </form>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+@section Scripts {
+    <!-- Include jQuery and Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Select departments",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+}

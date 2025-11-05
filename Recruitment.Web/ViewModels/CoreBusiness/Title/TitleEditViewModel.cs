@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace Recruitment.Web.ViewModels.CoreBusiness.Title
 {
@@ -9,5 +10,8 @@ namespace Recruitment.Web.ViewModels.CoreBusiness.Title
         [Required]
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
+        public List<int> SelectedDepartmentIds { get; set; } = new();
+        public IEnumerable<SelectListItem> DepartmentList { get; set; } = new List<SelectListItem>();
     }
 }
+

@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Recruitment.Application.Interfaces.Persistence;
+using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Services.CoreBusiness;
 using Recruitment.Infrastructure.Data;
 using Recruitment.Infrastructure.Repositories;
+using Recruitment.Infrastructure.Repositories.CoreBusiness;
 
 namespace Recruitment.Infrastructure
 {
@@ -22,6 +24,7 @@ namespace Recruitment.Infrastructure
 
             // Repositories
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<ITitleRepository, TitleRepository>();
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -31,6 +34,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<ILocationService, LocationService>();
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<ITitleService, TitleService>();
+            services.AddScoped<IDepartmentTitleService, DepartmentTitleService>();
 
             return services;
         }

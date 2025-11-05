@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Linq.Expressions;
 using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.UserManagement;
+using System.Linq.Expressions;
 
 namespace Recruitment.Infrastructure.Data
 {
@@ -22,6 +22,13 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<Department> Departments { get; set; } = null!;
         public DbSet<DepartmentTitle> DepartmentTitles { get; set; } = null!;
         public DbSet<AuditLog> AuditLogs { get; set; } = null!;
+
+        // User Management
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Role> Roles { get; set; } = null!;
+        public DbSet<Permission> Permissions { get; set; } = null!;
+        public DbSet<RolePermission> RolePermissions { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

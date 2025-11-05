@@ -10,24 +10,79 @@
     <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
 
-<table class="table table-striped">
+<!-- Titles Table -->
+<table id="titlesTable" class="table table-bordered">
     <thead>
         <tr>
-            <th>Name</th>
-            <th></th>
+            <th>Title Name</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var title in Model)
         {
-            <tr>
-                <td>@item.Name</td>
+            <tr data-title-id="@title.Id" class="title-row">
+                <td>@title.Name</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@title.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@title.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@title.Id" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<!-- Departments Table -->
+<h4>Departments for Selected Title</h4>
+<table id="departmentsTable" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Department Name</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    /* يمكنك تعديل اللون حسب ذوقك */
+    .highlight-row {
+        background-color: #d1ecf1 !important;
+        transition: background-color 0.3s ease;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('.title-row').click(function () {
+            var titleId = $(this).data('title-id');
+
+            $('.title-row').removeClass('highlight-row');
+
+            $(this).addClass('highlight-row');
+
+            $.ajax({
+                url: '@Url.Action("GetDepartmentsByTitle", "Title")',
+                type: 'GET',
+                data: { titleId: titleId },
+                success: function (data) {
+                    var tbody = $('#departmentsTable tbody');
+                    tbody.empty();
+                    if (data.length === 0) {
+                        tbody.append('<tr><td class="text-muted">No departments assigned.</td></tr>');
+                    } else {
+                        $.each(data, function (i, dept) {
+                            tbody.append('<tr><td>' + dept.name + '</td></tr>');
+                        });
+                    }
+                },
+                error: function () {
+                    alert('Error loading departments.');
+                }
+            });
+        });
+    });
+</script>

@@ -1,4 +1,6 @@
 ﻿@model Recruitment.Web.ViewModels.CoreBusiness.Title.TitleEditViewModel
+@using Newtonsoft.Json
+
 
 @{
     ViewData["Title"] = "Edit Title";
@@ -10,11 +12,44 @@
     <input type="hidden" asp-for="Id" />
 
     <div class="form-group">
-        <label asp-for="Name"></label>
+        <label asp-for="Name">Title Name</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <label for="Departments">Departments</label>
+        <select asp-for="SelectedDepartmentIds"
+                asp-items="Model.DepartmentList"
+                multiple
+                class="form-control select2">
+        </select>
+        <span asp-validation-for="SelectedDepartmentIds" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-success mt-3">Update</button>
     <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
 </form>
+
+<!-- Include Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+@section Scripts {
+    <!-- Include jQuery and Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "Select departments",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Preselect the current departments (if not automatically bound)
+            var selectedIds = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedDepartmentIds));
+            $('.select2').val(selectedIds).trigger('change');
+        });
+    </script>
+}
