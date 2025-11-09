@@ -1,6 +1,8 @@
 ﻿using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace Recruitment.Infrastructure.Repositories
 {
@@ -8,6 +10,7 @@ namespace Recruitment.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
 
+        // Core Business Repositories
         public IGenericRepository<Country> Countries { get; }
         public IGenericRepository<Location> Locations { get; }
         public IGenericRepository<Project> Projects { get; }
@@ -17,18 +20,26 @@ namespace Recruitment.Infrastructure.Repositories
         public IGenericRepository<Department> Departments { get; }
         public IGenericRepository<DepartmentTitle> DepartmentTitles { get; }
 
-        public UnitOfWork(ApplicationDbContext context)
+        // User Management Repositories
+        public IGenericRepository<Role> Roles { get; }
+        public IGenericRepository<Permission> Permissions  { get; }
+        public IGenericRepository<RolePermission> RolePermissions { get; set; }
+
+        public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
 
-            Countries = new GenericRepository<Country>(_context);
-            Locations = new GenericRepository<Location>(_context);
-            Projects = new GenericRepository<Project>(_context);
-            ProjectVacancies = new GenericRepository<ProjectVacancy>(_context);
-            Vacancies = new GenericRepository<Vacancy>(_context);
-            Titles = new GenericRepository<Title>(_context);
-            Departments = new GenericRepository<Department>(_context);
-            DepartmentTitles = new GenericRepository<DepartmentTitle>(_context);
+            Countries = new GenericRepository<Country>(_context, httpContextAccessor);
+            Locations = new GenericRepository<Location>(_context, httpContextAccessor);
+            Projects = new GenericRepository<Project>(_context, httpContextAccessor);
+            ProjectVacancies = new GenericRepository<ProjectVacancy>(_context, httpContextAccessor);
+            Vacancies = new GenericRepository<Vacancy>(_context, httpContextAccessor);
+            Titles = new GenericRepository<Title>(_context, httpContextAccessor);
+            Departments = new GenericRepository<Department>(_context, httpContextAccessor);
+            DepartmentTitles = new GenericRepository<DepartmentTitle>(_context, httpContextAccessor);
+            Roles = new GenericRepository<Role>(_context, httpContextAccessor);
+            Permissions = new GenericRepository<Permission>(_context, httpContextAccessor);
+            RolePermissions = new GenericRepository<RolePermission>(_context, httpContextAccessor);
         }
 
         public async Task<int> CompleteAsync()

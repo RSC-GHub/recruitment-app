@@ -2,13 +2,14 @@
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace Recruitment.Infrastructure.Repositories.CoreBusiness
 {
     public class TitleRepository : GenericRepository<Title>, ITitleRepository
     {
 
-        public TitleRepository(ApplicationDbContext context) : base(context)
+        public TitleRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
 

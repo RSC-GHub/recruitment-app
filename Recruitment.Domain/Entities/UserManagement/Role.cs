@@ -1,12 +1,21 @@
-﻿namespace Recruitment.Domain.Entities.UserManagement
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Recruitment.Domain.Entities.UserManagement
 {
-    public class Role : BaseEntity
+    public class Role : IdentityRole<int>
     {
-        public string RoleName { get; set; } = string.Empty;
+        //public string RoleName { get; set; } = string.Empty;
         public string? Description { get; set; }
         public bool IsActive { get; set; } = true;
 
-        public ICollection<User>? Users { get; set; }
+        // Audit fields
+        public string? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
         public ICollection<RolePermission>? RolePermissions { get; set; }
     }
 }

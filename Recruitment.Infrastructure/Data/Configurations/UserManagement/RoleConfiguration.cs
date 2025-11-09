@@ -15,11 +15,11 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
             builder.HasKey(r => r.Id);
 
             // Properties
-            builder.Property(r => r.RoleName)
+            builder.Property(r => r.Name)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.HasIndex(r => r.RoleName)
+            builder.HasIndex(r => r.Name)
                 .IsUnique();
 
             builder.Property(r => r.Description)
@@ -29,11 +29,6 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                 .HasDefaultValue(true);
 
             // Relationships
-            builder.HasMany(r => r.Users)
-                .WithOne(u => u.Role)
-                .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             builder.HasMany(r => r.RolePermissions)
                 .WithOne(rp => rp.Role)
                 .HasForeignKey(rp => rp.RoleId)

@@ -17,7 +17,7 @@ namespace Recruitment.Infrastructure.Data
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             optionsBuilder.UseSqlServer(connectionString);
 
-            return new ApplicationDbContext(optionsBuilder.Options);
+            return new ApplicationDbContext(optionsBuilder.Options, httpContextAccessor: null);
         }
     }
 }

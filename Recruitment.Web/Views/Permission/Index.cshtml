@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Recruitment.Application.DTOs.UserManagement.Permission.PermissionDto>
+
+@{
+    ViewData["Title"] = "Permissions";
+}
+
+<h2>Permissions</h2>
+
+<p>
+    <a asp-action="Setup" class="btn btn-primary">Create New Permission</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Resource</th>
+            <th>Action</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.PermissionName</td>
+                <td>@p.Resource</td>
+                <td>@p.Action</td>
+                <td>@p.Description</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

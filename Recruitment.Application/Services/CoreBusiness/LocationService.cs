@@ -55,9 +55,7 @@ namespace Recruitment.Application.Services.CoreBusiness
             var entity = new Location
             {
                 Name = dto.Name,
-                CountryId = dto.CountryId,
-                CreatedOn = DateTime.UtcNow,
-                CreatedBy = "System"
+                CountryId = dto.CountryId
             };
 
             await _unitOfWork.Locations.AddAsync(entity);
@@ -72,8 +70,6 @@ namespace Recruitment.Application.Services.CoreBusiness
 
             existing.Name = dto.Name;
             existing.CountryId = dto.CountryId;
-            existing.ModifiedOn = DateTime.UtcNow;
-            existing.ModifiedBy = "System";
 
             _unitOfWork.Locations.Update(existing);
             await _unitOfWork.CompleteAsync();

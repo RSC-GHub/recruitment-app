@@ -1,0 +1,32 @@
+﻿@model Recruitment.Web.ViewModels.UserManagement.RoleDetailsViewModel
+
+@{
+    ViewData["Title"] = "Delete Role";
+}
+
+<h2>Delete Role</h2>
+
+<h4>Are you sure you want to delete this role?</h4>
+
+<div>
+    <h5>@Model.RoleName</h5>
+    <p>@Model.Description</p>
+    <p>Active: @(Model.IsActive ? "Yes" : "No")</p>
+
+    <h5>Permissions</h5>
+    @if (Model.Permissions != null && Model.Permissions.Any())
+    {
+        <ul>
+            @foreach (var p in Model.Permissions)
+            {
+                <li>@p.Resource - @p.Action</li>
+            }
+        </ul>
+    }
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

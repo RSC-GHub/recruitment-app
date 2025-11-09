@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
@@ -7,10 +9,15 @@ using System.Linq.Expressions;
 
 namespace Recruitment.Infrastructure.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options) { }
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
+            : base(options) 
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
 
         // DbSets
         public DbSet<Country> Countries { get; set; } = null!;
@@ -24,11 +31,13 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<AuditLog> AuditLogs { get; set; } = null!;
 
         // User Management
-        public DbSet<User> Users { get; set; } = null!;
-        public DbSet<Role> Roles { get; set; } = null!;
         public DbSet<Permission> Permissions { get; set; } = null!;
         public DbSet<RolePermission> RolePermissions { get; set; } = null!;
 
+        private string GetCurrentUsername()
+        {
+            return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -63,27 +72,28 @@ namespace Recruitment.Infrastructure.Data
                 {
                     case EntityState.Added:
                         baseEntity.CreatedOn = DateTime.UtcNow;
-                        baseEntity.CreatedBy ??= "System";
+                        baseEntity.CreatedBy ??= GetCurrentUsername();
                         break;
 
                     case EntityState.Modified:
                         baseEntity.ModifiedOn = DateTime.UtcNow;
-                        baseEntity.ModifiedBy ??= "System";
+                        baseEntity.ModifiedBy ??= GetCurrentUsername();
                         break;
 
                     case EntityState.Deleted:
                         baseEntity.ModifiedOn = DateTime.UtcNow;
-                        baseEntity.ModifiedBy ??= "System";
+                        baseEntity.ModifiedBy ??= GetCurrentUsername();
                         baseEntity.IsDeleted = true;
-                        entry.State = EntityState.Modified; 
+                        entry.State = EntityState.Modified;
                         break;
                 }
 
+                // Audit log
                 var audit = new AuditLog
                 {
                     TableName = entityName,
                     ActionType = entry.State.ToString(),
-                    ChangedBy = baseEntity.ModifiedBy ?? baseEntity.CreatedBy ?? "System",
+                    ChangedBy = GetCurrentUsername(),
                     ChangedOn = DateTime.UtcNow
                 };
 

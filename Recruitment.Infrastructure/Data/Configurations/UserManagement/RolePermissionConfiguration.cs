@@ -14,10 +14,6 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
             // Primary key
             builder.HasKey(rp => rp.Id);
 
-            // Properties
-            builder.Property(rp => rp.GrantedAt)
-                .IsRequired();
-
             builder.Property(rp => rp.GrantedBy)
                 .IsRequired();
 

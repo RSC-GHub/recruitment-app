@@ -1,0 +1,91 @@
+﻿@model Recruitment.Web.ViewModels.UserManagement.PermissionSetupViewModel
+
+@{
+    ViewData["Title"] = "Setup Permissions";
+}
+
+<h2>Setup Permissions</h2>
+
+<form asp-action="GeneratePermissions" method="post">
+    <div class="form-group mb-3">
+        <label for="resourceSelect">Select Resource</label>
+        <select id="resourceSelect" class="form-control">
+            <option value="">-- Select Resource --</option>
+            @foreach (var resource in Model.Resources)
+            {
+                <option value="@resource">@resource</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="actionSelect">Select Action</label>
+        <select id="actionSelect" class="form-control">
+            <option value="">-- Select Action --</option>
+            @foreach (var action in Model.Actions)
+            {
+                <option value="@action">@action</option>
+            }
+        </select>
+    </div>
+
+    <button type="button" id="addPermissionBtn" class="btn btn-secondary mb-3">Add Permission</button>
+
+    <table class="table table-bordered" id="permissionsTable">
+        <thead>
+            <tr>
+                <th>Resource</th>
+                <th>Action</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <input type="hidden" id="SelectedPermissions" name="SelectedPermissions" />
+
+    <button type="submit" class="btn btn-primary">Generate Permissions</button>
+</form>
+
+@section Scripts {
+    <script>
+        const tableBody = document.querySelector("#permissionsTable tbody");
+        const selectedInput = document.querySelector("#SelectedPermissions");
+        const permissions = new Set();
+
+        document.querySelector("#addPermissionBtn").addEventListener("click", () => {
+            const resource = document.querySelector("#resourceSelect").value;
+            const action = document.querySelector("#actionSelect").value;
+            if (!resource || !action) return;
+
+            const key = `${resource}_${action}`;
+            if (permissions.has(key)) return;
+
+            permissions.add(key);
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${resource}</td>
+                <td>${action}</td>
+                <td><button type="button" class="btn btn-danger btn-sm remove-btn">Remove</button></td>
+            `;
+            tableBody.appendChild(row);
+            updateHiddenInput();
+        });
+
+        tableBody.addEventListener("click", (e) => {
+            if (e.target.classList.contains("remove-btn")) {
+                const row = e.target.closest("tr");
+                const resource = row.children[0].textContent;
+                const action = row.children[1].textContent;
+                permissions.delete(`${resource}_${action}`);
+                row.remove();
+                updateHiddenInput();
+            }
+        });
+
+        function updateHiddenInput() {
+            selectedInput.value = Array.from(permissions).join(",");
+        }
+    </script>
+}

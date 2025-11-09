@@ -9,6 +9,5 @@
         public Permission? Permission { get; set; }
 
         public int GrantedBy { get; set; } // FK to User
-        public DateTime GrantedAt { get; set; } = DateTime.UtcNow;
     }
 }

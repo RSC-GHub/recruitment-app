@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Domain.Entities;
 using Recruitment.Infrastructure.Data;
@@ -10,11 +11,18 @@ namespace Recruitment.Infrastructure.Repositories
     {
         protected readonly ApplicationDbContext _context;
         private readonly DbSet<T> _dbSet;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GenericRepository(ApplicationDbContext context)
+        public GenericRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _dbSet = _context.Set<T>();
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        private string GetCurrentUsername()
+        {
+            return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -48,14 +56,14 @@ namespace Recruitment.Infrastructure.Repositories
             {
                 baseEntity.IsDeleted = true;
                 baseEntity.ModifiedOn = DateTime.UtcNow;
-                baseEntity.ModifiedBy ??= "System"; 
-                _dbSet.Update(entity); 
+                baseEntity.ModifiedBy = GetCurrentUsername();
+                _dbSet.Update(entity);
             }
             else
             {
-                _dbSet.Remove(entity); 
+                _dbSet.Remove(entity);
             }
-        }
 
+        }
     }
 }

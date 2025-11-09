@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.UserManagement;
 
 namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
 {
@@ -20,6 +21,13 @@ namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
                    .WithOne(dt => dt.Department)
                    .HasForeignKey(dt => dt.DepartmentId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(d => d.Users)
+                   .WithOne(u => u.Department)
+                   .HasForeignKey(u => u.DepartmentId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
         }
+
     }
 }

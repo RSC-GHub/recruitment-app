@@ -1,4 +1,5 @@
 ﻿using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.UserManagement;
 
 namespace Recruitment.Application.Interfaces.Persistence
 {
@@ -12,6 +13,10 @@ namespace Recruitment.Application.Interfaces.Persistence
         IGenericRepository<Title> Titles { get; }
         IGenericRepository<Department> Departments { get; }
         IGenericRepository<DepartmentTitle> DepartmentTitles { get; }
+        IGenericRepository<Role> Roles { get; }
+        IGenericRepository<Permission> Permissions { get; } 
+        IGenericRepository<RolePermission> RolePermissions { get; } 
+
 
         Task<int> CompleteAsync();
     }
