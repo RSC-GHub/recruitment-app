@@ -15,19 +15,30 @@ namespace Recruitment.Application.Services.UserManagement
         private readonly IRoleRepository _roleRepository;
         private readonly RoleManager<Role> _roleManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<User> _userManager;
 
 
 
-        public RoleService(IUnitOfWork unitOfWork, IRoleRepository roleRepository, RoleManager<Role> roleManager, IHttpContextAccessor httpContextAccessor)
+        public RoleService(IUnitOfWork unitOfWork, 
+            IRoleRepository roleRepository,
+            RoleManager<Role> roleManager,
+            IHttpContextAccessor httpContextAccessor,
+            UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _roleRepository = roleRepository;
             _roleManager = roleManager;
             _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
         private string GetCurrentUsername()
         {
             return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";
+        }
+        private async Task<int?> GetCurrentUserIdAsync()
+        {
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+            return user?.Id;
         }
         public async Task<IEnumerable<RoleReadDto>> GetAllAsync()
         {
@@ -103,7 +114,6 @@ namespace Recruitment.Application.Services.UserManagement
 
         public async Task AddAsync(RoleCreateDto dto)
         {
-            // ✅ Create role instance
             var role = new Role
             {
                 Name = dto.RoleName,
@@ -121,7 +131,8 @@ namespace Recruitment.Application.Services.UserManagement
                 throw new Exception($"Failed to create role: {errors}");
             }
 
-            // ✅ Now the role has an Id and NormalizedName is set
+            var currentUserId = await GetCurrentUserIdAsync();
+
 
             // Then assign permissions if any
             if (dto.PermissionIds != null && dto.PermissionIds.Any())
@@ -135,7 +146,7 @@ namespace Recruitment.Application.Services.UserManagement
                         {
                             RoleId = role.Id,
                             PermissionId = pid,
-                            GrantedBy = 1, // TODO: replace with logged-in user ID
+                            GrantedBy = currentUserId ?? 0,
                             CreatedOn = DateTime.Now
                         };
                         await _unitOfWork.RolePermissions.AddAsync(rolePermission);
@@ -155,7 +166,6 @@ namespace Recruitment.Application.Services.UserManagement
             role.Description = dto.Description;
             role.IsActive = dto.IsActive;
 
-            // Remove old permissions
             if (role.RolePermissions != null)
             {
                 foreach (var rp in role.RolePermissions.ToList())
@@ -164,7 +174,9 @@ namespace Recruitment.Application.Services.UserManagement
                 }
             }
 
-            // Add new permissions
+            var currentUserId = await GetCurrentUserIdAsync();
+
+
             if (dto.PermissionIds != null && dto.PermissionIds.Any())
             {
                 foreach (var pid in dto.PermissionIds)
@@ -176,7 +188,7 @@ namespace Recruitment.Application.Services.UserManagement
                         {
                             RoleId = role.Id,
                             PermissionId = pid,
-                            GrantedBy = 1
+                            GrantedBy = currentUserId ?? 0
                         };
                         await _unitOfWork.RolePermissions.AddAsync(rolePermission);
                     }
@@ -193,7 +205,6 @@ namespace Recruitment.Application.Services.UserManagement
             if (role == null)
                 return;
 
-            // Delete role permissions first
             if (role.RolePermissions != null)
             {
                 foreach (var rp in role.RolePermissions.ToList())

@@ -43,7 +43,7 @@ namespace Recruitment.Web.Authorization
             var roles = await _userManager.GetRolesAsync(user);
 
             var permissions = await _roleManager.Roles
-                .Where(r => roles.Contains(r.Name))
+                .Where(r => roles.Contains(r.Name!) && r.IsActive)
                 .Include(r => r.RolePermissions!)
                     .ThenInclude(rp => rp.Permission)
                 .SelectMany(r => r.RolePermissions!)

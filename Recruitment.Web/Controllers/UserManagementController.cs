@@ -56,7 +56,11 @@ namespace Recruitment.Web.Controllers
                 return NotFound();
 
             var userRoles = await _userManager.GetRolesAsync(user);
-            var allRoles = await _roleManager.Roles.ToListAsync();
+
+            var allRoles = await _roleManager.Roles
+                .Where(r => r.IsActive)
+                .ToListAsync();
+
             var departments = await _departmentService.GetAllAsync();
 
             var userRoleIds = allRoles
@@ -129,7 +133,9 @@ namespace Recruitment.Web.Controllers
 
             var selectedRoleIds = model.SelectedRoleIds ?? new List<int>();
 
-            var allRoles = await _roleManager.Roles.ToListAsync();
+            var allRoles = await _roleManager.Roles
+                .Where(r => r.IsActive)
+                .ToListAsync();
 
             var selectedRoleNames = allRoles
                 .Where(r => selectedRoleIds.Contains(r.Id))

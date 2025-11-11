@@ -25,10 +25,10 @@ namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
                    .HasConversion<string>()
                    .HasMaxLength(20);
 
-            //builder.HasOne(v => v.Title)
-            //       .WithMany(t => t.Vacancies)
-            //       .HasForeignKey(v => v.TitleId)
-            //       .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(v => v.Title)
+                   .WithMany(t => t.Vacancies)
+                   .HasForeignKey(v => v.TitleId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
