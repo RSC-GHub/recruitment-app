@@ -1,4 +1,6 @@
-﻿using Recruitment.Application.DTOs.UserManagement.Permission;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Recruitment.Application.DTOs.UserManagement.Permission;
 using Recruitment.Application.DTOs.UserManagement.Role;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
@@ -11,13 +13,22 @@ namespace Recruitment.Application.Services.UserManagement
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRoleRepository _roleRepository;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RoleService(IUnitOfWork unitOfWork, IRoleRepository roleRepository)
+
+
+        public RoleService(IUnitOfWork unitOfWork, IRoleRepository roleRepository, RoleManager<Role> roleManager, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _roleRepository = roleRepository;
+            _roleManager = roleManager;
+            _httpContextAccessor = httpContextAccessor;
         }
-
+        private string GetCurrentUsername()
+        {
+            return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";
+        }
         public async Task<IEnumerable<RoleReadDto>> GetAllAsync()
         {
             var roles = await _unitOfWork.Roles.GetAllAsync();
@@ -92,16 +103,25 @@ namespace Recruitment.Application.Services.UserManagement
 
         public async Task AddAsync(RoleCreateDto dto)
         {
+            // ✅ Create role instance
             var role = new Role
             {
                 Name = dto.RoleName,
                 Description = dto.Description,
-                IsActive = dto.IsActive
+                IsActive = dto.IsActive,
+                CreatedBy = GetCurrentUsername(),
+                CreatedOn = DateTime.Now
             };
 
-            // Add the role first
-            await _unitOfWork.Roles.AddAsync(role);
-            await _unitOfWork.CompleteAsync();
+            var result = await _roleManager.CreateAsync(role);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new Exception($"Failed to create role: {errors}");
+            }
+
+            // ✅ Now the role has an Id and NormalizedName is set
 
             // Then assign permissions if any
             if (dto.PermissionIds != null && dto.PermissionIds.Any())
@@ -115,7 +135,8 @@ namespace Recruitment.Application.Services.UserManagement
                         {
                             RoleId = role.Id,
                             PermissionId = pid,
-                            GrantedBy = 1, // temporary (to be replaced by logged-in user)
+                            GrantedBy = 1, // TODO: replace with logged-in user ID
+                            CreatedOn = DateTime.Now
                         };
                         await _unitOfWork.RolePermissions.AddAsync(rolePermission);
                     }

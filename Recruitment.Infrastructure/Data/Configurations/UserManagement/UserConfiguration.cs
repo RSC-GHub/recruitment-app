@@ -9,7 +9,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
         public void Configure(EntityTypeBuilder<User> builder)
         {
             // Table name
-            builder.ToTable("Users");
+            builder.ToTable("AspNetUsers");
 
             // Primary key
             builder.HasKey(u => u.Id);
@@ -35,9 +35,10 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
             // Relationships
 
             builder.HasOne(u => u.Department)
-                .WithMany()
+                .WithMany(d => d.Users)
                 .HasForeignKey(u => u.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

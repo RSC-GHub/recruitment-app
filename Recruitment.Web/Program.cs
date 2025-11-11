@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure;
 using Recruitment.Infrastructure.Data;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.Middleware.AuditTrailMiddleware;
 using Recruitment.Web.Middleware.ExceptionMiddleware;
 
@@ -34,6 +36,8 @@ namespace Recruitment.Web
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
+
+            builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
             builder.Services.AddAuthorization(options =>
             {

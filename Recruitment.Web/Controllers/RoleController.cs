@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Recruitment.Application.DTOs.UserManagement.Role;
 using Recruitment.Application.Interfaces.Services.UserManagement;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.UserManagement;
 
 namespace Recruitment.Web.Controllers
@@ -17,6 +18,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Role
+        [HasPermission("Role", "View")]
         public async Task<IActionResult> Index()
         {
             var roles = await _roleService.GetAllWithPermissionsAsync();
@@ -41,6 +43,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Role/Details/5
+        [HasPermission("Role", "View")]
         public async Task<IActionResult> Details(int id)
         {
             var role = await _roleService.GetByIdWithPermissionsAsync(id);
@@ -66,6 +69,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Role/Create
+        [HasPermission("Role", "Create")]
         public async Task<IActionResult> Create()
         {
             var permissions = await _permissionService.GetAllAsync();
@@ -88,6 +92,7 @@ namespace Recruitment.Web.Controllers
         // POST: Role/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Role", "Create")]
         public async Task<IActionResult> Create(RoleCreateViewModel model)
         {
             if (!ModelState.IsValid)
@@ -116,6 +121,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Role/Edit/5
+        [HasPermission("Role", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var role = await _roleService.GetByIdWithPermissionsAsync(id);
@@ -146,6 +152,7 @@ namespace Recruitment.Web.Controllers
         // POST: Role/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Role", "Edit")]
         public async Task<IActionResult> Edit(RoleEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -175,6 +182,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Role/Delete/5
+        [HasPermission("Role", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var role = await _roleService.GetByIdWithPermissionsAsync(id);
@@ -201,6 +209,7 @@ namespace Recruitment.Web.Controllers
         // POST: Role/DeleteConfirmed
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [HasPermission("Role", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _roleService.DeleteAsync(id);

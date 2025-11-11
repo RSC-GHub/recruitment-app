@@ -19,8 +19,8 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.HasIndex(p => p.PermissionName)
-                .IsUnique();
+            //builder.HasIndex(p => p.PermissionName)
+            //    .IsUnique();
 
             builder.Property(p => p.Description)
                 .HasMaxLength(500);

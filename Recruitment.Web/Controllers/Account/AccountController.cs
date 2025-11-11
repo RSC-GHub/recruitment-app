@@ -43,9 +43,13 @@ namespace Recruitment.Web.Controllers.Account
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null && user.IsActive)
             {
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
+                var result = await _signInManager.PasswordSignInAsync(user.UserName!, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
+                    // Update LastLogin
+                    user.LastLogin = DateTime.UtcNow;
+                    await _userManager.UpdateAsync(user);
+
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                         return Redirect(returnUrl);
 
@@ -56,6 +60,7 @@ namespace Recruitment.Web.Controllers.Account
             ModelState.AddModelError(string.Empty, "Invalid login attempt or inactive user.");
             return View(model);
         }
+
 
         // POST: /Account/Logout
         [HttpPost]
@@ -131,7 +136,5 @@ namespace Recruitment.Web.Controllers.Account
 
             return View(model);
         }
-
-
     }
 }

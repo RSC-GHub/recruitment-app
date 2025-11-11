@@ -12,7 +12,7 @@ using Recruitment.Infrastructure.Data;
 namespace Recruitment.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251109113832_Init")]
+    [Migration("20251109134306_Init")]
     partial class Init
     {
         /// <inheritdoc />

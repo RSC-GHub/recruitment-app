@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.CoreBusiness.Location;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Web.ViewModels.CoreBusiness.Location;
+using Recruitment.Web.Authorization;
 
 namespace Recruitment.Web.Controllers
 {
@@ -20,6 +21,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Location
+        [HasPermission("Location", "View")]
         public async Task<IActionResult> Index()
         {
             var locations = await _locationService.GetAllAsync();
@@ -34,6 +36,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Location/Details/5
+        [HasPermission("Location", "View")]
         public async Task<IActionResult> Details(int id)
         {
             var dto = await _locationService.GetByIdAsync(id);
@@ -51,6 +54,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Location/Create
+        [HasPermission("Location", "Create")]
         public async Task<IActionResult> Create()
         {
             var countries = await _countryService.GetAllAsync();
@@ -65,6 +69,7 @@ namespace Recruitment.Web.Controllers
         // POST: Location/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Location", "Create")]
         public async Task<IActionResult> Create(LocationCreateViewModel model)
         {
             if (!ModelState.IsValid)
@@ -89,6 +94,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Location/Edit/5
+        [HasPermission("Location", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var dto = await _locationService.GetByIdAsync(id);
@@ -115,6 +121,7 @@ namespace Recruitment.Web.Controllers
         // POST: Location/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Location", "Edit")]
         public async Task<IActionResult> Edit(LocationEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -140,6 +147,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Location/Delete/5
+        [HasPermission("Location", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var dto = await _locationService.GetByIdAsync(id);
@@ -159,6 +167,7 @@ namespace Recruitment.Web.Controllers
         // POST: Location/DeleteConfirmed
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [HasPermission("Location", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _locationService.DeleteAsync(id);

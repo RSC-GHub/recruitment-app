@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Recruitment.Application.DTOs.UserManagement.Permission;
 using Recruitment.Application.Interfaces.Services.UserManagement;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.UserManagement;
 
 namespace Recruitment.Web.Controllers
@@ -15,6 +16,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Permission
+        [HasPermission("Permission", "View")]
         public async Task<IActionResult> Index()
         {
             var permissions = await _permissionService.GetAllAsync();
@@ -22,18 +24,33 @@ namespace Recruitment.Web.Controllers
         }
 
         [HttpGet("setup")]
+        [HasPermission("Permission", "View")]
         public IActionResult Setup()
         {
             var vm = new PermissionSetupViewModel
             {
-                Resources = new List<string> { "User", "Role", "Permission", "Country", "Location", "Department", "Title", "Vacancy", "Project" },
+                Resources = new List<string> {
+                    "Country",
+                    "Department",
+                    "Location",
+                    "Permission",
+                    "Project",
+                    "Vacancy",
+                    "Title",
+                    "User",
+                    "Role",
+                    "Application",
+                    "Interview",
+                    "Interview History",
+                    "Job Offer",
+                    "Applicant"},
                 Actions = new List<string> { "View", "Manage" }
             };
             return View(vm);
         }
 
-
         // GET: Permission/Create
+        [HasPermission("Permission", "Create")]
         public IActionResult Create()
         {
             return View();
@@ -42,6 +59,7 @@ namespace Recruitment.Web.Controllers
         // POST: Permission/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Permission", "Create")]
         public async Task<IActionResult> Create(CreatePermissionDto dto)
         {
             if (!ModelState.IsValid)
@@ -52,6 +70,7 @@ namespace Recruitment.Web.Controllers
         }
 
         [HttpPost("generate")]
+        [HasPermission("Permission", "Create")]
         public async Task<IActionResult> GeneratePermissions(string SelectedPermissions)
         {
             if (string.IsNullOrWhiteSpace(SelectedPermissions))
@@ -72,7 +91,7 @@ namespace Recruitment.Web.Controllers
                     {
                         await _permissionService.AddAsync(new CreatePermissionDto
                         {
-                            PermissionName = $"{resource}.{act}",
+                            PermissionName = $"{act}",
                             Description = $"{act} access for {resource}",
                             Resource = resource,
                             Action = act
@@ -83,7 +102,7 @@ namespace Recruitment.Web.Controllers
                 {
                     await _permissionService.AddAsync(new CreatePermissionDto
                     {
-                        PermissionName = $"{resource}.{action}",
+                        PermissionName = $"{action}",
                         Description = $"{action} access for {resource}",
                         Resource = resource,
                         Action = action
@@ -96,6 +115,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Permission/Edit/5
+        [HasPermission("Permission", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var permission = await _permissionService.GetByIdAsync(id);
@@ -117,6 +137,7 @@ namespace Recruitment.Web.Controllers
         // POST: Permission/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Permission", "Edit")]
         public async Task<IActionResult> Edit(UpdatePermissionDto dto)
         {
             if (!ModelState.IsValid)
@@ -127,6 +148,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Permission/Delete/5
+        [HasPermission("Permission", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var permission = await _permissionService.GetByIdAsync(id);
@@ -139,6 +161,7 @@ namespace Recruitment.Web.Controllers
         // POST: Permission/DeleteConfirmed
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
+        [HasPermission("Permission", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _permissionService.DeleteAsync(id);

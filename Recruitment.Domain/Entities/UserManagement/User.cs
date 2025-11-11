@@ -5,9 +5,6 @@ namespace Recruitment.Domain.Entities.UserManagement
 {
     public class User : IdentityUser<int>
     {
-        //public int RoleId { get; set; }
-        //public Role? Role { get; set; }
-
         public int? DepartmentId { get; set; }
         public Department? Department { get; set; }
 

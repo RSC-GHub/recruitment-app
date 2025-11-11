@@ -4,7 +4,6 @@ namespace Recruitment.Domain.Entities.UserManagement
 {
     public class Role : IdentityRole<int>
     {
-        //public string RoleName { get; set; } = string.Empty;
         public string? Description { get; set; }
         public bool IsActive { get; set; } = true;
 
