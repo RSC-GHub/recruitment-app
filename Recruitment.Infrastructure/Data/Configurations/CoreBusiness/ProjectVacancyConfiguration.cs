@@ -17,15 +17,17 @@ namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
                    .IsRequired()
                    .HasMaxLength(20);
 
+
             builder.HasOne(pv => pv.Project)
                    .WithMany(p => p.ProjectVacancies)
                    .HasForeignKey(pv => pv.ProjectId)
                    .OnDelete(DeleteBehavior.Restrict);
 
+
             builder.HasOne(pv => pv.Vacancy)
                    .WithMany(v => v.ProjectVacancies)
                    .HasForeignKey(pv => pv.VacancyId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

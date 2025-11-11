@@ -31,6 +31,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<ITitleRepository, TitleRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IVacancyRepository, VacancyRepository>();
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -44,6 +45,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IVacancyService, VacancyService>();
 
             return services;
         }

@@ -1,0 +1,115 @@
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyFormViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Add Vacancy" : "Edit Vacancy";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="TitleId">Title</label>
+        <select asp-for="TitleId" asp-items="Model.Titles" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="JobDescription">Job Description</label>
+        <textarea asp-for="JobDescription" class="form-control ckeditor"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Requirements"></label>
+        <textarea asp-for="Requirements" class="form-control ckeditor"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Responsibilities"></label>
+        <textarea asp-for="Responsibilities" class="form-control ckeditor"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Benefits"></label>
+        <textarea asp-for="Benefits" class="form-control ckeditor"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PositionCount">Position Count</label>
+        <input asp-for="PositionCount" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EmploymentType">Employment Type</label>
+        <select asp-for="EmploymentType" class="form-control">
+            <option value="FullTime">Full Time</option>
+            <option value="PartTime">Part Time</option>
+            <option value="Contract">Contract</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SalaryRangeMin">Salary RangeMin</label>
+        <input asp-for="SalaryRangeMin" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SalaryRangeMax">Salary RangeMax</label>
+        <input asp-for="SalaryRangeMax" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Status"></label>
+        <select asp-for="Status" class="form-control">
+            <option value="Open">Open</option>
+            <option value="Closed">Closed</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Deadline"></label>
+        <input asp-for="Deadline" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Projects with Priority</label>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.ProjectsWithPriority.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input type="hidden" asp-for="ProjectsWithPriority[@i].ProjectId" />
+                            @Model.ProjectsWithPriority[i].ProjectName
+                        </td>
+                        <td>
+                            <select asp-for="ProjectsWithPriority[@i].Priority" asp-items="Model.PriorityLevels" class="form-control"></select>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        document.querySelectorAll('.ckeditor').forEach((textarea) => {
+            ClassicEditor.create(textarea, {
+                toolbar: ['heading', '|', 'bold', 'italic', 'underline', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                height: 300
+            }).catch(error => { console.error(error); });
+        });
+    </script>
+}

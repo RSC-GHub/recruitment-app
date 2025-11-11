@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyViewModel>
+@using System.Linq
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">Create New Vacancy</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Job Description</th>
+            <th>Position Count</th>
+            <th>Status</th>
+            <th>Projects (Priority)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var vacancy in Model)
+        {
+            <tr>
+                <td>@vacancy.TitleName</td>
+                <td>@vacancy.JobDescription</td>
+                <td>@vacancy.PositionCount</td>
+                <td>@vacancy.Status</td>
+                <td>
+                    @if (vacancy.ProjectNames != null && vacancy.ProjectPriorities != null)
+                    {
+                        int count = Math.Min(vacancy.ProjectNames.Count, vacancy.ProjectPriorities.Count);
+                        for (int i = 0; i < count; i++)
+                        {
+                            <div>@vacancy.ProjectNames[i] (@vacancy.ProjectPriorities[i].ToString())</div>
+                        }
+                    }
+                    else if (vacancy.ProjectNames != null)
+                    {
+                        foreach (var name in vacancy.ProjectNames)
+                        {
+                            <div>@name (Medium)</div>
+                        }
+                    }
+
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@vacancy.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@vacancy.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@vacancy.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
