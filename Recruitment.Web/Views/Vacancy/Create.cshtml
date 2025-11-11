@@ -36,8 +36,9 @@
 
     <div class="form-group">
         <label asp-for="PositionCount">Position Count</label>
-        <input asp-for="PositionCount" class="form-control" />
+        <input asp-for="PositionCount" class="form-control" value="1" />
     </div>
+
 
     <div class="form-group">
         <label asp-for="EmploymentType">Employment Type</label>
@@ -49,12 +50,12 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="SalaryRangeMin">Salary RangeMin</label>
+        <label asp-for="SalaryRangeMin">Salary Range Min</label>
         <input asp-for="SalaryRangeMin" class="form-control" />
     </div>
 
     <div class="form-group">
-        <label asp-for="SalaryRangeMax">Salary RangeMax</label>
+        <label asp-for="SalaryRangeMax">Salary Range Max</label>
         <input asp-for="SalaryRangeMax" class="form-control" />
     </div>
 
@@ -71,30 +72,51 @@
         <input asp-for="Deadline" type="date" class="form-control" />
     </div>
 
+    <!-- Projects Multi-Select with Priority -->
     <div class="form-group">
-        <label>Projects with Priority</label>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Project</th>
-                    <th>Priority</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.ProjectsWithPriority.Count; i++)
+        <label>Projects</label>
+        <select id="projectsMultiSelect" class="form-control select2" multiple="multiple">
+            @foreach (var project in Model.ProjectsWithPriority)
+            {
+                if (project.IsSelected)
                 {
-                    <tr>
-                        <td>
-                            <input type="hidden" asp-for="ProjectsWithPriority[@i].ProjectId" />
-                            @Model.ProjectsWithPriority[i].ProjectName
-                        </td>
-                        <td>
-                            <select asp-for="ProjectsWithPriority[@i].Priority" asp-items="Model.PriorityLevels" class="form-control"></select>
-                        </td>
-                    </tr>
+                    <option value="@project.ProjectId" selected>@project.ProjectName</option>
                 }
-            </tbody>
-        </table>
+                else
+                {
+                    <option value="@project.ProjectId">@project.ProjectName</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="form-group" id="priorityContainer">
+        <label>Set Priority for Selected Projects</label>
+        <div id="prioritySelects">
+            @for (int i = 0; i < Model.ProjectsWithPriority.Count; i++)
+            {
+                var project = Model.ProjectsWithPriority[i];
+                var displayStyle = project.IsSelected ? "block" : "none";
+                <div class="priority-item" data-projectid="@project.ProjectId" style="display:@displayStyle">
+                    <span>@project.ProjectName</span>
+                    <select name="ProjectsWithPriority[@i].Priority" class="form-control">
+                        @foreach (var item in Model.PriorityLevels)
+                        {
+                            if (project.Priority.ToString() == item.Value)
+                            {
+                                <option value="@item.Value" selected>@item.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                    <input type="hidden" name="ProjectsWithPriority[@i].ProjectId" value="@project.ProjectId" />
+                    <input type="hidden" name="ProjectsWithPriority[@i].IsSelected" value="@project.IsSelected" />
+                </div>
+            }
+        </div>
     </div>
 
     <button type="submit" class="btn btn-success">Save</button>
@@ -104,12 +126,43 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
-        document.querySelectorAll('.ckeditor').forEach((textarea) => {
-            ClassicEditor.create(textarea, {
-                toolbar: ['heading', '|', 'bold', 'italic', 'underline', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
-                height: 300
-            }).catch(error => { console.error(error); });
+        $(document).ready(function() {
+            // Initialize CKEditor
+            document.querySelectorAll('.ckeditor').forEach((textarea) => {
+                ClassicEditor.create(textarea, {
+                    toolbar: ['heading', '|', 'bold', 'italic', 'underline', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                    height: 300
+                }).catch(error => { console.error(error); });
+            });
+
+            // Initialize Select2 for multi-select
+            $('.select2').select2({
+                placeholder: "Select projects",
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Show/hide priority selects based on selection
+            $('#projectsMultiSelect').on('change', function () {
+                var selected = $(this).val() || [];
+                $('.priority-item').hide();
+                selected.forEach(function (projectId) {
+                    $('.priority-item[data-projectid="' + projectId + '"]').show();
+                    $('.priority-item[data-projectid="' + projectId + '"] input[name$=".IsSelected"]').val(true);
+                });
+
+                // Hide unselected
+                $('.priority-item').each(function() {
+                    var pid = $(this).data('projectid').toString();
+                    if (!selected.includes(pid)) {
+                        $(this).find('input[name$=".IsSelected"]').val(false);
+                    }
+                });
+            });
         });
     </script>
 }

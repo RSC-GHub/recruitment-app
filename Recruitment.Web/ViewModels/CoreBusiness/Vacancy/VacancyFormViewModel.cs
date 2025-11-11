@@ -8,6 +8,8 @@ namespace Recruitment.Web.ViewModels.CoreBusiness.Vacancy
         public int ProjectId { get; set; }
         public string ProjectName { get; set; } = string.Empty;
         public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
+        public bool IsSelected { get; set; } = false;
+
     }
 
     public class VacancyFormViewModel
@@ -18,7 +20,7 @@ namespace Recruitment.Web.ViewModels.CoreBusiness.Vacancy
         public string Requirements { get; set; } = string.Empty;
         public string Responsibilities { get; set; } = string.Empty;
         public string Benefits { get; set; } = string.Empty;
-        public int PositionCount { get; set; }
+        public int PositionCount { get; set; } = 1;
         public EmploymentType EmploymentType { get; set; } = EmploymentType.FullTime;
         public decimal? SalaryRangeMin { get; set; }
         public decimal? SalaryRangeMax { get; set; }

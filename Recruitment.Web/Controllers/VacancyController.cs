@@ -43,8 +43,10 @@ namespace Recruitment.Web.Controllers
                 TitleId = v.TitleId,
                 TitleName = v.TitleName,
                 ProjectIds = v.ProjectIds,
-                ProjectNames = v.ProjectNames
+                ProjectNames = v.ProjectNames,
+                ProjectPriorities = v.Projects.Select(p => p.Priority).ToList() 
             }).ToList();
+
 
             return View(model);
         }
@@ -89,7 +91,8 @@ namespace Recruitment.Web.Controllers
                 {
                     ProjectId = p.Id,
                     ProjectName = p.ProjectName,
-                    Priority = PriorityLevel.Medium
+                    Priority = PriorityLevel.Medium,
+                    IsSelected = false 
                 }).ToList()
             };
 
@@ -104,13 +107,16 @@ namespace Recruitment.Web.Controllers
             {
                 var titles = await _titleService.GetAllAsync();
                 var projects = await _projectService.GetAllProjectsAsync();
+
                 model.Titles = titles.Select(t => new SelectListItem(t.Name, t.Id.ToString()));
                 model.ProjectsWithPriority = projects.Select(p => new ProjectWithPriority
                 {
                     ProjectId = p.Id,
                     ProjectName = p.ProjectName,
-                    Priority = PriorityLevel.Medium
+                    Priority = PriorityLevel.Medium,
+                    IsSelected = false
                 }).ToList();
+
                 return View(model);
             }
 
@@ -127,16 +133,20 @@ namespace Recruitment.Web.Controllers
                 SalaryRangeMax = model.SalaryRangeMax,
                 Status = model.Status,
                 Deadline = model.Deadline,
-                Projects = model.ProjectsWithPriority.Select(p => new ProjectPriorityDto
-                {
-                    ProjectId = p.ProjectId,
-                    Priority = p.Priority
-                }).ToList()
+                Projects = model.ProjectsWithPriority
+                            .Where(p => p.IsSelected) 
+                            .Select(p => new ProjectPriorityDto
+                            {
+                                ProjectId = p.ProjectId,
+                                Priority = p.Priority
+                            }).ToList()
             };
 
             await _vacancyService.CreateVacancyAsync(dto);
             return RedirectToAction(nameof(Index));
         }
+
+
 
         public async Task<IActionResult> Edit(int id)
         {

@@ -21,27 +21,36 @@
         {
             <tr>
                 <td>@vacancy.TitleName</td>
-                <td>@vacancy.JobDescription</td>
+                <td>@Html.Raw(vacancy.JobDescription)</td>
                 <td>@vacancy.PositionCount</td>
                 <td>@vacancy.Status</td>
                 <td>
-                    @if (vacancy.ProjectNames != null && vacancy.ProjectPriorities != null)
-                    {
-                        int count = Math.Min(vacancy.ProjectNames.Count, vacancy.ProjectPriorities.Count);
-                        for (int i = 0; i < count; i++)
+                    <table class="table table-borderless mb-0">
+                        @if (vacancy.ProjectNames != null && vacancy.ProjectPriorities != null)
                         {
-                            <div>@vacancy.ProjectNames[i] (@vacancy.ProjectPriorities[i].ToString())</div>
+                            int count = Math.Min(vacancy.ProjectNames.Count, vacancy.ProjectPriorities.Count);
+                            for (int i = 0; i < count; i++)
+                            {
+                                <tr>
+                                    <td style="border-right:1px solid #ccc; padding-right:5px;">@vacancy.ProjectNames[i]</td>
+                                    <td style="padding-left:5px;">@vacancy.ProjectPriorities[i].ToString()</td>
+                                </tr>
+                            }
                         }
-                    }
-                    else if (vacancy.ProjectNames != null)
-                    {
-                        foreach (var name in vacancy.ProjectNames)
+                        else if (vacancy.ProjectNames != null)
                         {
-                            <div>@name (Medium)</div>
+                            foreach (var name in vacancy.ProjectNames)
+                            {
+                                <tr>
+                                    <td style="border-right:1px solid #ccc; padding-right:5px;">@name</td>
+                                    <td style="padding-left:5px;">Medium</td>
+                                </tr>
+                            }
                         }
-                    }
-
+                    </table>
                 </td>
+
+
                 <td>
                     <a asp-action="Details" asp-route-id="@vacancy.Id" class="btn btn-info btn-sm">Details</a>
                     <a asp-action="Edit" asp-route-id="@vacancy.Id" class="btn btn-warning btn-sm">Edit</a>

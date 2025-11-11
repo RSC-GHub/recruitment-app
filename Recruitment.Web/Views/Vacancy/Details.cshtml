@@ -4,10 +4,10 @@
 
 <div>
     <h4>@Model.TitleName</h4>
-    <p><strong>Job Description:</strong> @Model.JobDescription</p>
-    <p><strong>Requirements:</strong> @Model.Requirements</p>
-    <p><strong>Responsibilities:</strong> @Model.Responsibilities</p>
-    <p><strong>Benefits:</strong> @Model.Benefits</p>
+    <p><strong>Job Description:</strong> @Html.Raw(Model.JobDescription)</p>
+    <p><strong>Requirements:</strong> @Html.Raw(Model.Requirements)</p>
+    <p><strong>Responsibilities:</strong> @Html.Raw(Model.Responsibilities)</p>
+    <p><strong>Benefits:</strong> @Html.Raw(Model.Benefits)</p>
     <p><strong>Position Count:</strong> @Model.PositionCount</p>
     <p><strong>Employment Type:</strong> @Model.EmploymentType</p>
     <p><strong>Salary Range:</strong> @Model.SalaryRangeMin - @Model.SalaryRangeMax</p>
