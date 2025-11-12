@@ -1,62 +1,89 @@
 ﻿@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyViewModel>
 @using System.Linq
 
-<div class="mb-3">
-    <a asp-action="Create" class="btn btn-primary">Create New Vacancy</a>
+<div class="page-header">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h1 class="page-title">Vacancies</h1>
+            <p class="page-breadcrumb">Track and manage job vacancies</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <span>➕</span>
+            <span>Create New Vacancy</span>
+        </a>
+    </div>
 </div>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Job Description</th>
-            <th>Position Count</th>
-            <th>Status</th>
-            <th>Projects (Priority)</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var vacancy in Model)
-        {
-            <tr>
-                <td>@vacancy.TitleName</td>
-                <td>@Html.Raw(vacancy.JobDescription)</td>
-                <td>@vacancy.PositionCount</td>
-                <td>@vacancy.Status</td>
-                <td>
-                    <table class="table table-borderless mb-0">
-                        @if (vacancy.ProjectNames != null && vacancy.ProjectPriorities != null)
-                        {
-                            int count = Math.Min(vacancy.ProjectNames.Count, vacancy.ProjectPriorities.Count);
-                            for (int i = 0; i < count; i++)
+<div class="card">
+    <div class="card-body" style="padding: 0; overflow-x: auto;">
+        <table class="table table-striped" style="margin: 0;">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Job Description</th>
+                    <th style="width: 120px;">Positions</th>
+                    <th style="width: 120px;">Status</th>
+                    <th>Projects (Priority)</th>
+                    <th style="width: 250px; text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vacancy in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong style="color: var(--heading-color);">@vacancy.TitleName</strong>
+                        </td>
+                        <td style="max-width: 300px;">
+                            <div style="max-height: 60px; overflow: hidden; text-overflow: ellipsis; color: var(--body-text-color); font-size: 0.85rem;">
+                                @Html.Raw(vacancy.JobDescription)
+                            </div>
+                        </td>
+                        <td style="text-align: center;">
+                            <span style="background: rgba(52, 101, 109, 0.1); color: var(--rsc-teal); padding: 0.25rem 0.75rem; border-radius: 6px; font-weight: 600;">
+                                @vacancy.PositionCount
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge" style="background: var(--rsc-sand); color: var(--rsc-dark-green);">
+                                @vacancy.Status
+                            </span>
+                        </td>
+                        <td>
+                            @if (vacancy.ProjectNames != null && vacancy.ProjectPriorities != null)
                             {
-                                <tr>
-                                    <td style="border-right:1px solid #ccc; padding-right:5px;">@vacancy.ProjectNames[i]</td>
-                                    <td style="padding-left:5px;">@vacancy.ProjectPriorities[i].ToString()</td>
-                                </tr>
+                                int count = Math.Min(vacancy.ProjectNames.Count, vacancy.ProjectPriorities.Count);
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                    @for (int i = 0; i < count; i++)
+                                    {
+                                        <div style="display: flex; gap: 0.5rem; font-size: 0.85rem;">
+                                            <span style="color: var(--body-text-color);">@vacancy.ProjectNames[i]</span>
+                                            <span style="color: var(--font-color-1); font-style: italic;">(@vacancy.ProjectPriorities[i])</span>
+                                        </div>
+                                    }
+                                </div>
                             }
-                        }
-                        else if (vacancy.ProjectNames != null)
-                        {
-                            foreach (var name in vacancy.ProjectNames)
+                            else if (vacancy.ProjectNames != null)
                             {
-                                <tr>
-                                    <td style="border-right:1px solid #ccc; padding-right:5px;">@name</td>
-                                    <td style="padding-left:5px;">Medium</td>
-                                </tr>
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                    @foreach (var name in vacancy.ProjectNames)
+                                    {
+                                        <div style="display: flex; gap: 0.5rem; font-size: 0.85rem;">
+                                            <span style="color: var(--body-text-color);">@name</span>
+                                            <span style="color: var(--font-color-1); font-style: italic;">(Medium)</span>
+                                        </div>
+                                    }
+                                </div>
                             }
-                        }
-                    </table>
-                </td>
-
-
-                <td>
-                    <a asp-action="Details" asp-route-id="@vacancy.Id" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Edit" asp-route-id="@vacancy.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@vacancy.Id" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        </td>
+                        <td style="text-align: center;">
+                            <a asp-action="Details" asp-route-id="@vacancy.Id" class="btn btn-info btn-sm">Details</a>
+                            <a asp-action="Edit" asp-route-id="@vacancy.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@vacancy.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

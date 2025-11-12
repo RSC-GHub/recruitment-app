@@ -3,108 +3,210 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Recruitment.Web</title>
+    <title>@ViewData["Title"] - Recruitment System</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Recruitment.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Recruitment.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- Left side nav -->
-                    <ul class="navbar-nav flex-grow-1">
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <a href="@Url.Action("Index", "Home")" class="sidebar-brand">
+                    <span class="brand-icon">R</span>
+                    <span>Recruitment</span>
+                </a>
+            </div>
+
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar-nav">
+                <!-- Main Section -->
+                <div class="nav-section">
+                    <ul style="list-style: none; padding: 0; margin: 0;">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a href="@Url.Action("Index", "Home")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                                <span class="nav-link-icon">🏠</span>
+                                <span class="nav-link-text">Home</span>
+                            </a>
                         </li>
-
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <!-- User Management Dropdown -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="userMgmtDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    User Management
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="UserManagement" asp-action="Index">Users</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Permission" asp-action="Index">Permissions</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Role" asp-action="Index">Roles</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- Setup Dropdown -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="setupDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Setup
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="setupDropdown">
-                                    <li><a class="dropdown-item" asp-controller="Country" asp-action="Index">Country</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Location" asp-action="Index">Location</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Department" asp-action="Index">Department</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Title" asp-action="Index">Title</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Project" asp-action="Index">Project</a></li>
-                                </ul>
-                            </li>
-                            <!-- Tracking Dropdown -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="setupDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    System tracking
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="setupDropdown">
-                                    <li><a class="dropdown-item" asp-controller="Vacancy" asp-action="Index">Vacancy</a></li>
-                                </ul>
-                            </li>
-                        }
-                    </ul>
-
-                    <!-- Right side nav -->
-                    <ul class="navbar-nav ms-auto">
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-dark">Hello, @User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
-                        }
                     </ul>
                 </div>
+
+                <!-- User Management Section -->
+                <div class="nav-section">
+                    <div class="nav-section-title">User Management</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" onclick="toggleSubmenu(event, 'userManagementSubmenu')">
+                                <span class="nav-link-icon">👥</span>
+                                <span class="nav-link-text">User Management</span>
+                                <span class="nav-link-arrow" id="userManagementArrow">▶</span>
+                            </a>
+                            <ul class="nav-submenu" id="userManagementSubmenu" style="list-style: none; padding: 0; margin: 0;">
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "UserManagement")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "UserManagement" ? "active" : "")">
+                                        <span class="nav-link-text">Users</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Permission")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Permission" ? "active" : "")">
+                                        <span class="nav-link-text">Permissions</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Role")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Role" ? "active" : "")">
+                                        <span class="nav-link-text">Roles</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Setup Section -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Configuration</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" onclick="toggleSubmenu(event, 'setupSubmenu')">
+                                <span class="nav-link-icon">⚙️</span>
+                                <span class="nav-link-text">Setup</span>
+                                <span class="nav-link-arrow" id="setupArrow">▶</span>
+                            </a>
+                            <ul class="nav-submenu" id="setupSubmenu" style="list-style: none; padding: 0; margin: 0;">
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Country")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Country" ? "active" : "")">
+                                        <span class="nav-link-text">Country</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Location")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Location" ? "active" : "")">
+                                        <span class="nav-link-text">Location</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Department")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Department" ? "active" : "")">
+                                        <span class="nav-link-text">Department</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Title")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Title" ? "active" : "")">
+                                        <span class="nav-link-text">Title</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Project")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Project" ? "active" : "")">
+                                        <span class="nav-link-text">Project</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- System Tracking Section -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Tracking</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" onclick="toggleSubmenu(event, 'trackingSubmenu')">
+                                <span class="nav-link-icon">📊</span>
+                                <span class="nav-link-text">System Tracking</span>
+                                <span class="nav-link-arrow" id="trackingArrow">▶</span>
+                            </a>
+                            <ul class="nav-submenu" id="trackingSubmenu" style="list-style: none; padding: 0; margin: 0;">
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Vacancy")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Vacancy" ? "active" : "")">
+                                        <span class="nav-link-text">Vacancy</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                        </div>
+                        <div class="user-info">
+                            <p class="user-name">@User.Identity.Name</p>
+                            <p class="user-role">Administrator</p>
+                        </div>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin: 0;">
+                        <button type="submit" class="logout-btn">
+                            <span>🚪</span>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                }
             </div>
-        </nav>
-    </header>
+        </aside>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-wrapper">
+                @RenderBody()
+            </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Recruitment.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <footer class="footer">
+                &copy; 2025 - Recruitment System - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </footer>
         </div>
-    </footer>
+    }
+    else
+    {
+        <!-- Auth Pages (Login/Register) - No Sidebar -->
+        <div class="auth-wrapper">
+            @RenderBody()
+        </div>
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        function toggleSubmenu(event, submenuId) {
+            event.preventDefault();
+            const submenu = document.getElementById(submenuId);
+            const arrow = document.getElementById(submenuId.replace('Submenu', 'Arrow'));
+
+            if (submenu.classList.contains('expanded')) {
+                submenu.classList.remove('expanded');
+                arrow.classList.remove('expanded');
+            } else {
+                submenu.classList.add('expanded');
+                arrow.classList.add('expanded');
+            }
+        }
+
+        // Auto-expand active submenu on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const activeLinks = document.querySelectorAll('.nav-submenu .nav-link.active');
+            activeLinks.forEach(link => {
+                const submenu = link.closest('.nav-submenu');
+                if (submenu) {
+                    submenu.classList.add('expanded');
+                    const submenuId = submenu.id;
+                    const arrow = document.getElementById(submenuId.replace('Submenu', 'Arrow'));
+                    if (arrow) {
+                        arrow.classList.add('expanded');
+                    }
+                }
+            });
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

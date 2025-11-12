@@ -4,18 +4,53 @@
     ViewData["Title"] = "Create Department";
 }
 
-<h2>Create Department</h2>
+<div class="page-header">
+    <h1 class="page-title">Create Department</h1>
+    <p class="page-breadcrumb">Setup / Departments / Create New</p>
+</div>
 
-<form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+<div class="row" style="margin: 0;">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Department Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter department name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-success">
+                            <span>💾</span>
+                            <span>Save Department</span>
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <span>❌</span>
+                            <span>Cancel</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+    <div class="col-md-4">
+        <div class="card" style="background: var(--bg-cream); border: 2px dashed var(--border-color);">
+            <div class="card-body">
+                <h6 style="color: var(--heading-color); margin-bottom: 1rem;">💡 Quick Tips</h6>
+                <ul style="font-size: 0.85rem; color: var(--body-text-color); line-height: 1.8; padding-left: 1.25rem;">
+                    <li>Department names should be unique</li>
+                    <li>Use clear and descriptive names</li>
+                    <li>Consider organizational structure</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
