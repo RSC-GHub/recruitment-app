@@ -18,6 +18,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
+	
   <ItemGroup>
     <ProjectReference Include="..\Recruitment.Application\Recruitment.Application.csproj" />
     <ProjectReference Include="..\Recruitment.Infrastructure\Recruitment.Infrastructure.csproj" />
