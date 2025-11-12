@@ -1,34 +1,52 @@
 ﻿@model IEnumerable<Recruitment.Web.ViewModels.UserManagement.User.UserWithRoleViewModel>
 
-<h2>User Management</h2>
+<div class="page-header">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h1 class="page-title">User Management</h1>
+            <p class="page-breadcrumb">Manage system users and their information</p>
+        </div>
+    </div>
+</div>
 
-<table class="table table-hover table-striped">
-    <thead>
-        <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr onclick="window.location='@Url.Action("Profile", "UserManagement", new { id = user.Id })'" style="cursor:pointer">
-                <td>@user.FullName</td>
-                <td>@user.Email</td>
-                <td>@user.DepartmentName</td>
-                <td>
-                    @if (user.IsActive)
-                    {
-                        <span class="badge bg-success">Active</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Inactive</span>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card">
+    <div class="card-body" style="padding: 0;">
+        <table class="table table-hover table-striped" style="margin: 0;">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th style="width: 120px; text-align: center;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr onclick="window.location='@Url.Action("Profile", "UserManagement", new { id = user.Id })'" style="cursor:pointer">
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--rsc-sand); color: var(--rsc-dark-green); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem;">
+                                    @(user.FullName?.Substring(0, 1).ToUpper() ?? "U")
+                                </div>
+                                <strong style="color: var(--heading-color);">@user.FullName</strong>
+                            </div>
+                        </td>
+                        <td style="color: var(--font-color-1);">@user.Email</td>
+                        <td style="color: var(--body-text-color);">@user.DepartmentName</td>
+                        <td style="text-align: center;">
+                            @if (user.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
