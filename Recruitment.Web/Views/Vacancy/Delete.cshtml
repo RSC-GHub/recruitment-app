@@ -1,16 +1,30 @@
-﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyViewModel
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyDetailsViewModel
+
+@{
+    ViewData["Title"] = "Delete Vacancy";
+}
 
 <h2>Delete Vacancy</h2>
 
-<div>
-    <h4>Are you sure you want to delete this vacancy?</h4>
-    <p><strong>Title:</strong> @Model.TitleName</p>
-    <p><strong>Job Description:</strong> @Model.JobDescription</p>
-    <p><strong>Projects:</strong> @string.Join(", ", Model.ProjectNames ?? new List<string>())</p>
+<div class="alert alert-danger">
+    Are you sure you want to delete this vacancy?
 </div>
 
-<form asp-action="Delete" method="post">
+<div class="mb-3">
+    <strong>Title:</strong> @Model.TitleName
+</div>
+<div class="mb-3">
+    <strong>Positions:</strong> @Model.PositionCount
+</div>
+<div class="mb-3">
+    <strong>Employment Type:</strong> @Model.EmploymentType
+</div>
+<div class="mb-3">
+    <strong>Status:</strong> @Model.Status
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
     <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Delete</button>
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>

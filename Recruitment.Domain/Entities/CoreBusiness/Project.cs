@@ -6,7 +6,7 @@ namespace Recruitment.Domain.Entities.CoreBusiness
     {
         public string ProjectName { get; set; } = string.Empty;
         public ProjectStatus Status { get; set; } = ProjectStatus.Active;
-
+      
         public int LocationId { get; set; }
         public Location? Location { get; set; }
 

@@ -3,39 +3,35 @@ using Recruitment.Domain.Enums;
 
 namespace Recruitment.Web.ViewModels.CoreBusiness.Vacancy
 {
-    public class ProjectWithPriority
+    public class ProjectVacancyFormViewModel
     {
         public int ProjectId { get; set; }
-        public string ProjectName { get; set; } = string.Empty;
         public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
-        public bool IsSelected { get; set; } = false;
-
     }
-
     public class VacancyFormViewModel
     {
-        public int Id { get; set; }
+        public int Id { get; set; }  // 0 = Create
+
         public int TitleId { get; set; }
+        public List<SelectListItem>? Titles { get; set; }
+
         public string JobDescription { get; set; } = string.Empty;
         public string Requirements { get; set; } = string.Empty;
         public string Responsibilities { get; set; } = string.Empty;
         public string Benefits { get; set; } = string.Empty;
+
         public int PositionCount { get; set; } = 1;
         public EmploymentType EmploymentType { get; set; } = EmploymentType.FullTime;
+
         public decimal? SalaryRangeMin { get; set; }
         public decimal? SalaryRangeMax { get; set; }
-        public VacancyStatus Status { get; set; } = VacancyStatus.Open;
+
         public DateTime? Deadline { get; set; }
 
-        public IEnumerable<SelectListItem>? Titles { get; set; }
-        public List<ProjectWithPriority> ProjectsWithPriority { get; set; } = new();
+        public List<ProjectVacancyFormViewModel> Projects { get; set; }
+            = new List<ProjectVacancyFormViewModel>();
 
-        public IEnumerable<SelectListItem> PriorityLevels => Enum.GetValues(typeof(PriorityLevel))
-            .Cast<PriorityLevel>()
-            .Select(p => new SelectListItem
-            {
-                Text = p.ToString(),
-                Value = p.ToString()
-            });
+        // Project List for Dropdown
+        public List<SelectListItem>? ProjectList { get; set; }
     }
 }

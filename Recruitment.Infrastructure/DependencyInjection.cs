@@ -49,6 +49,5 @@ namespace Recruitment.Infrastructure
 
             return services;
         }
-
     }
 }

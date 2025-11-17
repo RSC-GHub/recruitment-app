@@ -8,39 +8,32 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
 {
     public class VacancyRepository : GenericRepository<Vacancy>, IVacancyRepository
     {
-        public VacancyRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
-            : base(context, httpContextAccessor)
+        public VacancyRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
 
         public async Task<Vacancy?> GetVacancyWithProjectsAsync(int id)
         {
-            return await _context.Vacancies
-                .Include(v => v.Title)
+            return await _context.Set<Vacancy>()
                 .Include(v => v.ProjectVacancies)
-                    .ThenInclude(pv => pv.Project)
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
-
-        public async Task<IEnumerable<Vacancy>> GetAllVacanciesWithProjectsAsync()
+        public async Task<List<Vacancy>> GetAllVacanciesWithProjectsAsync()
         {
-            return await _context.Vacancies
+            return await _context.Set<Vacancy>()
                 .Include(v => v.Title)
-                .Include(v => v.ProjectVacancies)
+                .Include(v => v.ProjectVacancies!)
                     .ThenInclude(pv => pv.Project)
-                .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Vacancy>> GetOpenVacanciesAsync()
+        public async Task<Vacancy?> GetVacancyByIdAsync(int id)
         {
-            return await _context.Vacancies
-                .Where(v => v.Status == Domain.Enums.VacancyStatus.Open)
+            return await _context.Set<Vacancy>()
                 .Include(v => v.Title)
-                .Include(v => v.ProjectVacancies)
+                .Include(v => v.ProjectVacancies!)
                     .ThenInclude(pv => pv.Project)
-                .AsNoTracking()
-                .ToListAsync();
+                .FirstOrDefaultAsync(v => v.Id == id);
         }
     }
 }

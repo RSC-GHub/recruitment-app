@@ -1,60 +1,52 @@
-﻿@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyViewModel>
-@using System.Linq
+﻿@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyTableViewModel>
 
-<div class="mb-3">
-    <a asp-action="Create" class="btn btn-primary">Create New Vacancy</a>
+@{
+    ViewData["Title"] = "Vacancies";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Vacancies</h2>
+    <a asp-action="Create" class="btn btn-primary">Create Vacancy</a>
 </div>
 
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>Title</th>
-            <th>Job Description</th>
-            <th>Position Count</th>
+            <th>Positions</th>
+            <th>Type</th>
             <th>Status</th>
-            <th>Projects (Priority)</th>
-            <th>Actions</th>
+            <th>Projects</th>
+            <th style="width:180px;">Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var vacancy in Model)
+        @foreach (var item in Model)
         {
             <tr>
-                <td>@vacancy.TitleName</td>
-                <td>@Html.Raw(vacancy.JobDescription)</td>
-                <td>@vacancy.PositionCount</td>
-                <td>@vacancy.Status</td>
+                <td>@item.TitleName</td>
+                <td>@item.PositionCount</td>
+                <td>@item.EmploymentType</td>
+                <td>@item.Status</td>
                 <td>
-                    <table class="table table-borderless mb-0">
-                        @if (vacancy.ProjectNames != null && vacancy.ProjectPriorities != null)
+                    @if (item.Projects != null && item.Projects.Any())
+                    {
+                        @foreach (var p in item.Projects)
                         {
-                            int count = Math.Min(vacancy.ProjectNames.Count, vacancy.ProjectPriorities.Count);
-                            for (int i = 0; i < count; i++)
-                            {
-                                <tr>
-                                    <td style="border-right:1px solid #ccc; padding-right:5px;">@vacancy.ProjectNames[i]</td>
-                                    <td style="padding-left:5px;">@vacancy.ProjectPriorities[i].ToString()</td>
-                                </tr>
-                            }
+                            <span class="badge bg-secondary me-1">
+                                @p.ProjectName - @p.Priority
+                            </span>
                         }
-                        else if (vacancy.ProjectNames != null)
-                        {
-                            foreach (var name in vacancy.ProjectNames)
-                            {
-                                <tr>
-                                    <td style="border-right:1px solid #ccc; padding-right:5px;">@name</td>
-                                    <td style="padding-left:5px;">Medium</td>
-                                </tr>
-                            }
-                        }
-                    </table>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No Projects</span>
+                    }
                 </td>
-
-
                 <td>
-                    <a asp-action="Details" asp-route-id="@vacancy.Id" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Edit" asp-route-id="@vacancy.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@vacancy.Id" class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }

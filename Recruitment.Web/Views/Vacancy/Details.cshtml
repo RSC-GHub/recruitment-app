@@ -1,20 +1,55 @@
-﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyViewModel
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyDetailsViewModel
+
+@{
+    ViewData["Title"] = "Vacancy Details";
+}
 
 <h2>Vacancy Details</h2>
 
-<div>
-    <h4>@Model.TitleName</h4>
-    <p><strong>Job Description:</strong> @Html.Raw(Model.JobDescription)</p>
-    <p><strong>Requirements:</strong> @Html.Raw(Model.Requirements)</p>
-    <p><strong>Responsibilities:</strong> @Html.Raw(Model.Responsibilities)</p>
-    <p><strong>Benefits:</strong> @Html.Raw(Model.Benefits)</p>
-    <p><strong>Position Count:</strong> @Model.PositionCount</p>
-    <p><strong>Employment Type:</strong> @Model.EmploymentType</p>
-    <p><strong>Salary Range:</strong> @Model.SalaryRangeMin - @Model.SalaryRangeMax</p>
-    <p><strong>Status:</strong> @Model.Status</p>
-    <p><strong>Deadline:</strong> @Model.Deadline?.ToShortDateString()</p>
-    <p><strong>Projects:</strong> @string.Join(", ", Model.ProjectNames ?? new List<string>())</p>
+<div class="mb-3">
+    <strong>Title:</strong> @Model.TitleName
 </div>
+<div class="mb-3">
+    <strong>Positions:</strong> @Model.PositionCount
+</div>
+<div class="mb-3">
+    <strong>Employment Type:</strong> @Model.EmploymentType
+</div>
+<div class="mb-3">
+    <strong>Status:</strong> @Model.Status
+</div>
+<div class="mb-3">
+    <strong>Salary Range:</strong> @Model.SalaryRangeMin - @Model.SalaryRangeMax
+</div>
+<div class="mb-3">
+    <strong>Deadline:</strong> @Model.Deadline?.ToString("yyyy-MM-dd")
+</div>
+<hr />
+<div class="mb-3">
+    <strong>Job Description:</strong>
+    <p>@Model.JobDescription</p>
+</div>
+<div class="mb-3">
+    <strong>Requirements:</strong>
+    <p>@Model.Requirements</p>
+</div>
+<div class="mb-3">
+    <strong>Responsibilities:</strong>
+    <p>@Model.Responsibilities</p>
+</div>
+<div class="mb-3">
+    <strong>Benefits:</strong>
+    <p>@Model.Benefits</p>
+</div>
+<hr />
+<h4>Projects</h4>
+<ul>
+    @foreach (var p in Model.Projects)
+    {
+        <li>@p.ProjectName - @p.Priority</li>
+    }
+</ul>
 
 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
 <a asp-action="Index" class="btn btn-secondary">Back to List</a>
