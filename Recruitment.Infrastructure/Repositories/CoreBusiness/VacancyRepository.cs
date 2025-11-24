@@ -86,7 +86,7 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
             return await query.ToListAsync();
         }
 
-        public async Task<Application.Common.PagedResult<Vacancy>> GetPagedAsync(int page, int pageSize)
+        public async Task<PagedResult<Vacancy>> GetPagedAsync(int page, int pageSize)
         {
             var totalCount = await _context.Vacancies.CountAsync();
 
