@@ -8,5 +8,4 @@
         public List<int> DepartmentIds { get; set; } = new();
         public List<string> DepartmentNames { get; set; } = new();
     }
-
 }

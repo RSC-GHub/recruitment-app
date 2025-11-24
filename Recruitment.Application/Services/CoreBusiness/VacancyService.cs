@@ -1,8 +1,10 @@
-﻿using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
+﻿using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Services.CoreBusiness
 {
@@ -17,64 +19,101 @@ namespace Recruitment.Application.Services.CoreBusiness
             _vacancyRepository = vacancyRepository;
         }
 
-        // --------------------------------------------
-        //  GET TABLE VIEW
-        // --------------------------------------------
-        public async Task<List<VacancyTableDto>> GetVacanciesForTableAsync()
+        private VacancyDetailsDto MapToDetailsDto(Vacancy v)
         {
-            var vacancies = await _vacancyRepository.GetAllVacanciesWithProjectsAsync();
+            return new VacancyDetailsDto
+            {
+                Id = v.Id,
+                TitleName = v.Title?.Name ?? "",
+                JobDescription = v.JobDescription,
+                Requirements = v.Requirements,
+                Responsibilities = v.Responsibilities,
+                Benefits = v.Benefits,
+                PositionCount = v.PositionCount,
+                EmploymentType = v.EmploymentType,
+                SalaryRangeMin = v.SalaryRangeMin,
+                SalaryRangeMax = v.SalaryRangeMax,
+                Status = v.Status,
+                Deadline = v.Deadline,
+                Projects = v.ProjectVacancies?
+                    .Select(p => new ProjectSummaryDto
+                    {
+                        ProjectId = p.ProjectId,
+                        ProjectName = p.Project?.ProjectName ?? ""
+                    })
+                    .ToList() ?? new List<ProjectSummaryDto>()
+            };
+        }
 
-            return vacancies.Select(v => new VacancyTableDto
+        private VacancyListDto MapToListDto(Vacancy v)
+        {
+            return new VacancyListDto
             {
                 Id = v.Id,
                 TitleName = v.Title?.Name ?? "",
                 PositionCount = v.PositionCount,
                 EmploymentType = v.EmploymentType,
                 Status = v.Status,
-                Projects = v.ProjectVacancies?.Select(pv => new ProjectVacancyTableDto
-                {
-                    ProjectName = pv.Project?.ProjectName ?? "",
-                    Priority = pv.Priority
-                }).ToList() ?? new List<ProjectVacancyTableDto>()
-            }).ToList();
-        }
-
-        // --------------------------------------------
-        //  GET DETAILS VIEW
-        // --------------------------------------------
-        public async Task<VacancyViewDto?> GetVacancyDetailsAsync(int id)
-        {
-            var vacancy = await _vacancyRepository.GetVacancyByIdAsync(id);
-            if (vacancy == null) return null;
-
-            return new VacancyViewDto
-            {
-                Id = vacancy.Id,
-                TitleId = vacancy.TitleId,
-                TitleName = vacancy.Title?.Name ?? "",
-                JobDescription = vacancy.JobDescription,
-                Requirements = vacancy.Requirements,
-                Responsibilities = vacancy.Responsibilities,
-                Benefits = vacancy.Benefits,
-                PositionCount = vacancy.PositionCount,
-                EmploymentType = vacancy.EmploymentType,
-                SalaryRangeMin = vacancy.SalaryRangeMin,
-                SalaryRangeMax = vacancy.SalaryRangeMax,
-                Status = vacancy.Status,
-                Deadline = vacancy.Deadline,
-                Projects = vacancy.ProjectVacancies?.Select(pv => new ProjectVacancyViewDto
-                {
-                    ProjectId = pv.ProjectId,
-                    ProjectName = pv.Project?.ProjectName ?? "",
-                    Priority = pv.Priority
-                }).ToList() ?? new List<ProjectVacancyViewDto>()
+                ProjectNames = v.ProjectVacancies?
+                    .Select(p => p.Project?.ProjectName ?? "")
+                    .ToList() ?? new List<string>()
             };
         }
 
-        // --------------------------------------------
-        //  CREATE
-        // --------------------------------------------
-        public async Task<int> CreateVacancyAsync(VacancyCreateDto dto)
+        private void MapUpdateToEntity(VacancyUpdateDto dto, Vacancy v)
+        {
+            v.TitleId = dto.TitleId;
+            v.JobDescription = dto.JobDescription;
+            v.Requirements = dto.Requirements;
+            v.Responsibilities = dto.Responsibilities;
+            v.Benefits = dto.Benefits;
+            v.PositionCount = dto.PositionCount;
+            v.EmploymentType = dto.EmploymentType;
+            v.SalaryRangeMin = dto.SalaryRangeMin;
+            v.SalaryRangeMax = dto.SalaryRangeMax;
+            v.Status = dto.Status;
+            v.Deadline = dto.Deadline;
+        }
+
+        public async Task<VacancyDetailsDto?> GetByIdAsync(int id)
+        {
+            var vacancy = await _vacancyRepository.GetVacancyByIdAsync(id);
+
+            return vacancy == null ? null : MapToDetailsDto(vacancy);
+        }
+
+        public async Task<List<VacancyListDto>> GetAllAsync()
+        {
+            var vacancies = await _vacancyRepository.GetAllVacanciesWithProjectsAsync();
+            return vacancies.Select(MapToListDto).ToList();
+        }
+
+        public async Task<PagedResult<VacancyListDto>> GetPagedAsync(int page, int pageSize)
+        {
+            var paged = await _vacancyRepository.GetPagedAsync(page, pageSize);
+
+            return new PagedResult<VacancyListDto>
+            {
+                Items = paged.Items.Select(MapToListDto).ToList(),
+                TotalCount = paged.TotalCount,
+                Page = paged.Page,
+                PageSize = paged.PageSize
+            };
+        }
+
+        public async Task<List<VacancyListDto>> SearchAsync(string? keyword)
+        {
+            var data = await _vacancyRepository.SearchAsync(keyword);
+            return data.Select(MapToListDto).ToList();
+        }
+
+        public async Task<List<VacancyListDto>> FilterAsync(int? titleId, int? projectId, VacancyStatus? status)
+        {
+            var data = await _vacancyRepository.FilterAsync(titleId, projectId, status);
+            return data.Select(MapToListDto).ToList();
+        }
+
+        public async Task<VacancyDetailsDto> CreateAsync(VacancyCreateDto dto)
         {
             var vacancy = new Vacancy
             {
@@ -87,100 +126,39 @@ namespace Recruitment.Application.Services.CoreBusiness
                 EmploymentType = dto.EmploymentType,
                 SalaryRangeMin = dto.SalaryRangeMin,
                 SalaryRangeMax = dto.SalaryRangeMax,
-                Deadline = dto.Deadline,
-                Status = Domain.Enums.VacancyStatus.Open
+                Status = dto.Status,
+                Deadline = dto.Deadline
             };
 
             await _unitOfWork.Vacancies.AddAsync(vacancy);
             await _unitOfWork.CompleteAsync();
 
-            // Add project relations
-            foreach (var p in dto.Projects)
-            {
-                var pv = new ProjectVacancy
-                {
-                    ProjectId = p.ProjectId,
-                    VacancyId = vacancy.Id,
-                    Priority = p.Priority
-                };
-
-                await _unitOfWork.ProjectVacancies.AddAsync(pv);
-            }
-
-            await _unitOfWork.CompleteAsync();
-            return vacancy.Id;
+            return MapToDetailsDto(vacancy);
         }
 
-        // --------------------------------------------
-        //  UPDATE
-        // --------------------------------------------
-        public async Task<bool> UpdateVacancyAsync(int id, VacancyUpdateDto dto)
+        public async Task UpdateAsync(VacancyUpdateDto dto)
         {
-            var vacancy = await _vacancyRepository.GetVacancyWithProjectsAsync(id);
-            if (vacancy == null) return false;
+            var vacancy = await _vacancyRepository.GetForEditAsync(dto.Id);
 
-            // update main fields
-            vacancy.TitleId = dto.TitleId;
-            vacancy.JobDescription = dto.JobDescription;
-            vacancy.Requirements = dto.Requirements;
-            vacancy.Responsibilities = dto.Responsibilities;
-            vacancy.Benefits = dto.Benefits;
-            vacancy.PositionCount = dto.PositionCount;
-            vacancy.EmploymentType = dto.EmploymentType;
-            vacancy.SalaryRangeMin = dto.SalaryRangeMin;
-            vacancy.SalaryRangeMax = dto.SalaryRangeMax;
-            vacancy.Deadline = dto.Deadline;
+            if (vacancy == null)
+                throw new KeyNotFoundException($"Vacancy with Id {dto.Id} not found.");
 
-            // update ProjectVacancies
-            var existingRelations = vacancy.ProjectVacancies?.ToList() ?? new List<ProjectVacancy>();
-
-            // delete removed projects
-            foreach (var old in existingRelations)
-            {
-                if (!dto.Projects.Any(p => p.ProjectId == old.ProjectId))
-                    _unitOfWork.ProjectVacancies.Delete(old);
-            }
-
-            // add or update projects
-            foreach (var newP in dto.Projects)
-            {
-                var existing = existingRelations.FirstOrDefault(x => x.ProjectId == newP.ProjectId);
-
-                if (existing == null)
-                {
-                    var pv = new ProjectVacancy
-                    {
-                        ProjectId = newP.ProjectId,
-                        VacancyId = vacancy.Id,
-                        Priority = newP.Priority
-                    };
-                    await _unitOfWork.ProjectVacancies.AddAsync(pv);
-                }
-                else
-                {
-                    existing.Priority = newP.Priority;
-                    _unitOfWork.ProjectVacancies.Update(existing);
-                }
-            }
+            MapUpdateToEntity(dto, vacancy);
 
             _unitOfWork.Vacancies.Update(vacancy);
-            await _unitOfWork.CompleteAsync();
 
-            return true;
+            await _unitOfWork.CompleteAsync();
         }
 
-        // --------------------------------------------
-        //  DELETE
-        // --------------------------------------------
-        public async Task<bool> DeleteVacancyAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var vacancy = await _unitOfWork.Vacancies.GetByIdAsync(id);
-            if (vacancy == null) return false;
+
+            if (vacancy == null)
+                return;
 
             _unitOfWork.Vacancies.Delete(vacancy);
             await _unitOfWork.CompleteAsync();
-
-            return true;
         }
     }
 }

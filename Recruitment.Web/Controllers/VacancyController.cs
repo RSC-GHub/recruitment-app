@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Recruitment.Application.DTOs.CoreBusiness.Title;
 using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Web.ViewModels.CoreBusiness.Vacancy;
 
 namespace Recruitment.Web.Controllers
@@ -22,263 +23,168 @@ namespace Recruitment.Web.Controllers
             _projectService = projectService;
         }
 
-        // ============================
-        // 1️⃣ LIST (INDEX)
-        // ============================
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var data = await _vacancyService.GetVacanciesForTableAsync();
+            var paged = await _vacancyService.GetPagedAsync(page, pageSize);
 
-            var vm = data.Select(v => new VacancyTableViewModel
+            var vm = new VacancyIndexVM
             {
-                Id = v.Id,
-                TitleName = v.TitleName,
-                PositionCount = v.PositionCount,
-                EmploymentType = v.EmploymentType,
-                Status = v.Status,
-                Projects = v.Projects.Select(p => new ProjectVacancyTableViewModel
-                {
-                    ProjectName = p.ProjectName,
-                    Priority = p.Priority
-                }).ToList()
-            }).ToList();
+                Vacancies = paged.Items.ToList(),
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalCount = paged.TotalCount
+            };
 
             return View(vm);
         }
 
-        // ============================
-        // 2️⃣ DETAILS
-        // ============================
-        public async Task<IActionResult> Details(int id)
-        {
-            var dto = await _vacancyService.GetVacancyDetailsAsync(id);
-            if (dto == null)
-                return NotFound();
 
-            var vm = new VacancyDetailsViewModel
+
+        // GET: Vacancy/Create
+        public async Task<IActionResult> Create()
+        {
+            var titles = await _titleService.GetAllAsync();
+
+            var vm = new VacancyCreateVM
             {
-                Id = dto.Id,
-                TitleId = dto.TitleId,
-                TitleName = dto.TitleName,
-                JobDescription = dto.JobDescription,
-                Requirements = dto.Requirements,
-                Responsibilities = dto.Responsibilities,
-                Benefits = dto.Benefits,
-                PositionCount = dto.PositionCount,
-                EmploymentType = dto.EmploymentType,
-                SalaryRangeMin = dto.SalaryRangeMin,
-                SalaryRangeMax = dto.SalaryRangeMax,
-                Status = dto.Status,
-                Deadline = dto.Deadline,
-                Projects = dto.Projects.Select(p => new ProjectVacancyDetailsViewModel
+                Titles = titles.Select(t => new TitleDto
                 {
-                    ProjectId = p.ProjectId,
-                    ProjectName = p.ProjectName,
-                    Priority = p.Priority
+                    Id = t.Id,
+                    Name = t.Name
                 }).ToList()
             };
 
             return View(vm);
         }
 
-        // ============================
-        // 3️⃣ CREATE GET
-        // ============================
-        public async Task<IActionResult> Create()
-        {
-            var vm = await BuildVacancyFormViewModel(new VacancyFormViewModel());
-            return View(vm);
-        }
-
-        // ============================
-        // 4️⃣ CREATE POST
-        // ============================
+        // POST: Vacancy/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(VacancyFormViewModel vm)
+        public async Task<IActionResult> Create(VacancyCreateVM vm)
         {
             if (!ModelState.IsValid)
             {
-                vm = await BuildVacancyFormViewModel(vm);
+                var Titles = await _titleService.GetAllAsync();
+                vm.Titles.Select(t => new TitleDto
+                {
+                    Id = t.Id,
+                    Name = t.Name
+                });
                 return View(vm);
             }
 
-            var dto = new VacancyCreateDto
-            {
-                TitleId = vm.TitleId,
-                JobDescription = vm.JobDescription,
-                Requirements = vm.Requirements,
-                Responsibilities = vm.Responsibilities,
-                Benefits = vm.Benefits,
-                PositionCount = vm.PositionCount,
-                EmploymentType = vm.EmploymentType,
-                SalaryRangeMin = vm.SalaryRangeMin,
-                SalaryRangeMax = vm.SalaryRangeMax,
-                Deadline = vm.Deadline,
-                Projects = vm.Projects.Select(p => new ProjectVacancyDto
-                {
-                    ProjectId = p.ProjectId,
-                    Priority = p.Priority
-                }).ToList()
-            };
+            var createdVacancy = await _vacancyService.CreateAsync(vm.Vacancy);
 
-            var id = await _vacancyService.CreateVacancyAsync(dto);
+            TempData["Success"] = "Vacancy created successfully.";
 
-            TempData["Success"] = "Vacancy created successfully!";
-            return RedirectToAction(nameof(Details), new { id });
+            return RedirectToAction("Edit", new { id = createdVacancy.Id });
         }
-
-        // ============================
-        // 5️⃣ EDIT GET
-        // ============================
+        // GET: Vacancy/Edit/6
         public async Task<IActionResult> Edit(int id)
         {
-            var dto = await _vacancyService.GetVacancyDetailsAsync(id);
-            if (dto == null)
+            var vacancy = await _vacancyService.GetByIdAsync(id);
+            if (vacancy == null)
                 return NotFound();
 
-            var vm = new VacancyFormViewModel
+            var titles = await _titleService.GetAllAsync();
+            var projects = await _projectService.GetAllProjectsAsync();
+
+            var vm = new VacancyEditSectionVM
             {
-                Id = dto.Id,
-                TitleId = dto.TitleId,
-                JobDescription = dto.JobDescription,
-                Requirements = dto.Requirements,
-                Responsibilities = dto.Responsibilities,
-                Benefits = dto.Benefits,
-                PositionCount = dto.PositionCount,
-                EmploymentType = dto.EmploymentType,
-                SalaryRangeMin = dto.SalaryRangeMin,
-                SalaryRangeMax = dto.SalaryRangeMax,
-                Deadline = dto.Deadline,
-                Projects = dto.Projects.Select(p => new ProjectVacancyFormViewModel
+                VacancyId = vacancy.Id,
+                TitleName = vacancy.TitleName,
+                JobDescription = vacancy.JobDescription,
+                Requirements = vacancy.Requirements,
+                Responsibilities = vacancy.Responsibilities,
+                Benefits = vacancy.Benefits,
+                PositionCount = vacancy.PositionCount,
+                EmploymentType = vacancy.EmploymentType.ToString(),
+                SalaryRangeMin = vacancy.SalaryRangeMin,
+                SalaryRangeMax = vacancy.SalaryRangeMax,
+                Status = vacancy.Status.ToString(),
+                Deadline = vacancy.Deadline,
+                Titles = titles.Select(t => new TitleDto { Id = t.Id, Name = t.Name }).ToList(),
+                AllProjects = projects.Select(p => new ProjectSelectItemVM
                 {
-                    ProjectId = p.ProjectId,
-                    Priority = p.Priority
-                }).ToList()
+                    Id = p.Id,
+                    Name = p.ProjectName,
+                    Selected = vacancy.Projects.Any(vp => vp.ProjectId == p.Id)
+                }).ToList(),
+                SelectedProjectIds = vacancy.Projects.Select(p => p.ProjectId).ToList()
             };
 
-            vm = await BuildVacancyFormViewModel(vm);
-            return View(vm);
+            return View(vm); // هيرجع view Edit.cshtml
         }
 
-        // ============================
-        // 6️⃣ EDIT POST
-        // ============================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, VacancyFormViewModel vm)
-        {
-            if (id != vm.Id)
-                return BadRequest();
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateBasic(VacancyEditSectionVM vm)
+        {
             if (!ModelState.IsValid)
             {
-                vm = await BuildVacancyFormViewModel(vm);
-                return View(vm);
+                TempData["Error"] = "Please correct the input data.";
+                return RedirectToAction("Index", new { editId = vm.VacancyId });
             }
 
             var dto = new VacancyUpdateDto
             {
-                Id = vm.Id,
-                TitleId = vm.TitleId,
+                Id = vm.VacancyId,
+                TitleId = 0,
                 JobDescription = vm.JobDescription,
                 Requirements = vm.Requirements,
                 Responsibilities = vm.Responsibilities,
                 Benefits = vm.Benefits,
                 PositionCount = vm.PositionCount,
-                EmploymentType = vm.EmploymentType,
+                EmploymentType = Enum.Parse<Recruitment.Domain.Enums.EmploymentType>(vm.EmploymentType),
                 SalaryRangeMin = vm.SalaryRangeMin,
                 SalaryRangeMax = vm.SalaryRangeMax,
-                Deadline = vm.Deadline,
-                Projects = vm.Projects.Select(p => new ProjectVacancyDto
+                Status = Enum.Parse<Recruitment.Domain.Enums.VacancyStatus>(vm.Status),
+                Deadline = vm.Deadline
+            };
+
+            await _vacancyService.UpdateAsync(dto);
+
+            TempData["Success"] = "Vacancy updated successfully.";
+
+            return RedirectToAction("Index", new { editId = vm.VacancyId });
+        }
+
+        public async Task<IActionResult> LoadProjectSelector(int vacancyId)
+        {
+            var projects = await _projectService.GetAllProjectsAsync();
+            var vacancy = await _vacancyService.GetByIdAsync(vacancyId);
+
+            var vm = new AssignProjectsModalVM
+            {
+                VacancyId = vacancyId,
+                Projects = projects.Select(p => new ProjectSelectItemVM
                 {
-                    ProjectId = p.ProjectId,
-                    Priority = p.Priority
+                    Id = p.Id,
+                    Name = p.ProjectName,
+                    Selected = vacancy?.Projects.Any(vp => vp.ProjectId == p.Id) ?? false
                 }).ToList()
             };
 
-            var updated = await _vacancyService.UpdateVacancyAsync(id, dto);
-
-            if (!updated)
-                return NotFound();
-
-            TempData["Success"] = "Vacancy updated successfully!";
-            return RedirectToAction(nameof(Details), new { id });
+            return PartialView("_ProjectSelectorModal", vm);
         }
 
-        // ============================
-        // 7️⃣ DELETE GET
-        // ============================
+        [HttpPost]
+        public async Task<IActionResult> SaveProjects(AssignProjectsModalVM vm)
+        {
+            // TODO: بعد إنشاء ProjectVacancyService
+            // await _projectVacancyService.UpdateVacancyProjects(vm.VacancyId, vm.Projects.Where(x => x.Selected).Select(x => x.Id).ToList());
+
+            TempData["Success"] = "Projects updated successfully.";
+
+            return RedirectToAction("Index", new { editId = vm.VacancyId });
+        }
+
         public async Task<IActionResult> Delete(int id)
         {
-            var dto = await _vacancyService.GetVacancyDetailsAsync(id);
-            if (dto == null)
-                return NotFound();
+            await _vacancyService.DeleteAsync(id);
+            TempData["Success"] = "Vacancy deleted.";
 
-            var vm = new VacancyDetailsViewModel
-            {
-                Id = dto.Id,
-                TitleId = dto.TitleId,
-                TitleName = dto.TitleName,
-                JobDescription = dto.JobDescription,
-                Requirements = dto.Requirements,
-                Responsibilities = dto.Responsibilities,
-                Benefits = dto.Benefits,
-                PositionCount = dto.PositionCount,
-                EmploymentType = dto.EmploymentType,
-                SalaryRangeMin = dto.SalaryRangeMin,
-                SalaryRangeMax = dto.SalaryRangeMax,
-                Status = dto.Status,
-                Deadline = dto.Deadline,
-                Projects = dto.Projects.Select(p => new ProjectVacancyDetailsViewModel
-                {
-                    ProjectId = p.ProjectId,
-                    ProjectName = p.ProjectName,
-                    Priority = p.Priority
-                }).ToList()
-            };
-
-            return View(vm);
-        }
-
-        // ============================
-        // 8️⃣ DELETE POST
-        // ============================
-        [HttpPost, ActionName("DeleteConfirmed")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var deleted = await _vacancyService.DeleteVacancyAsync(id);
-
-            if (!deleted)
-                return NotFound();
-
-            TempData["Success"] = "Vacancy deleted successfully!";
-            return RedirectToAction(nameof(Index));
-        }
-
-
-        // ============================
-        // 🔧 Helper: Build Form ViewModel (Titles + Projects)
-        // ============================
-        private async Task<VacancyFormViewModel> BuildVacancyFormViewModel(VacancyFormViewModel vm)
-        {
-            var titles = await _titleService.GetAllAsync();
-            var projects = await _projectService.GetAllProjectsAsync();
-
-            vm.Titles = titles.Select(t => new SelectListItem
-            {
-                Value = t.Id.ToString(),
-                Text = t.Name
-            }).ToList();
-
-            vm.ProjectList = projects.Select(p => new SelectListItem
-            {
-                Value = p.Id.ToString(),
-                Text = p.ProjectName
-            }).ToList();
-
-            return vm;
+            return RedirectToAction("Index");
         }
     }
 }

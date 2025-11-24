@@ -9,6 +9,5 @@ namespace Recruitment.Domain.Entities.CoreBusiness
 
         public int VacancyId { get; set; }
         public Vacancy? Vacancy { get; set; }
-        public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
     }
 }

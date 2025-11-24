@@ -1,54 +1,64 @@
-﻿@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyTableViewModel>
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyIndexVM
 
-@{
-    ViewData["Title"] = "Vacancies";
-}
+<h2>Vacancies</h2>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Vacancies</h2>
-    <a asp-action="Create" class="btn btn-primary">Create Vacancy</a>
-</div>
+<a asp-action="Create" class="btn btn-success mb-3">Add Vacancy</a>
 
-<table class="table table-bordered table-striped">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>Title</th>
             <th>Positions</th>
-            <th>Type</th>
+            <th>Employment Type</th>
             <th>Status</th>
             <th>Projects</th>
-            <th style="width:180px;">Actions</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var v in Model.Vacancies)
         {
             <tr>
-                <td>@item.TitleName</td>
-                <td>@item.PositionCount</td>
-                <td>@item.EmploymentType</td>
-                <td>@item.Status</td>
+                <td>@v.TitleName</td>
+                <td>@v.PositionCount</td>
+                <td>@v.EmploymentType</td>
+                <td>@v.Status</td>
                 <td>
-                    @if (item.Projects != null && item.Projects.Any())
+                    @foreach (var p in v.ProjectNames)
                     {
-                        @foreach (var p in item.Projects)
-                        {
-                            <span class="badge bg-secondary me-1">
-                                @p.ProjectName - @p.Priority
-                            </span>
-                        }
-                    }
-                    else
-                    {
-                        <span class="text-muted">No Projects</span>
+                        <span class="badge bg-info">@p</span>
                     }
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@v.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@v.Id" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <!-- Previous Page -->
+            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
+            </li>
+
+            <!-- Page Numbers -->
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                </li>
+            }
+
+            <!-- Next Page -->
+            <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

@@ -1,161 +1,142 @@
-﻿@using Recruitment.Domain.Enums
-@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyFormViewModel
-
-@{
-    ViewData["Title"] = "Edit Vacancy";
-}
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyEditSectionVM
+@using Recruitment.Domain.Enums
 
 <h2>Edit Vacancy</h2>
 
-<form asp-action="Edit" method="post">
-
-    <input type="hidden" asp-for="Id" />
-
-    <div class="mb-3">
-        <label asp-for="TitleId" class="form-label">Title</label>
-        <select asp-for="TitleId" asp-items="Model.Titles" class="form-select"></select>
-    </div>
+<form asp-action="UpdateBasic" method="post">
+    <input type="hidden" name="VacancyId" value="@Model.VacancyId" />
 
     <div class="mb-3">
-        <label asp-for="JobDescription">Job Description</label>
-        <textarea asp-for="JobDescription" class="form-control"></textarea>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Requirements"></label>
-        <textarea asp-for="Requirements" class="form-control"></textarea>
+        <label>Title</label>
+        <select name="TitleId" class="form-control">
+            @foreach (var t in Model.Titles)
+            {
+                var isSelected = t.Name == Model.TitleName;
+                <option value="@t.Id" selected="@isSelected">@t.Name</option>
+            }
+        </select>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Responsibilities"></label>
-        <textarea asp-for="Responsibilities" class="form-control"></textarea>
+        <label>Job Description</label>
+        <textarea name="JobDescription" class="form-control">@Model.JobDescription</textarea>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Benefits"></label>
-        <textarea asp-for="Benefits" class="form-control"></textarea>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col">
-            <label asp-for="PositionCount">Position Count</label>
-            <input asp-for="PositionCount" class="form-control" />
-        </div>
-
-        <div class="col">
-            <label asp-for="EmploymentType">Employment Type</label>
-            <select asp-for="EmploymentType" class="form-select">
-                @foreach (var type in Enum.GetValues(typeof(EmploymentType)))
-                {
-                    <option value="@type" selected="@(type.Equals(Model.EmploymentType))">@type</option>
-                }
-            </select>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col">
-            <label asp-for="SalaryRangeMin">Salary Range Minimum</label>
-            <input asp-for="SalaryRangeMin" class="form-control" />
-        </div>
-
-        <div class="col">
-            <label asp-for="SalaryRangeMax">Salary Range Maximum</label>
-            <input asp-for="SalaryRangeMax" class="form-control" />
-        </div>
+        <label>Requirements</label>
+        <textarea name="Requirements" class="form-control">@Model.Requirements</textarea>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Deadline"></label>
-        <input asp-for="Deadline" type="date" class="form-control" />
+        <label>Responsibilities</label>
+        <textarea name="Responsibilities" class="form-control">@Model.Responsibilities</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Benefits</label>
+        <textarea name="Benefits" class="form-control">@Model.Benefits</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Position Count</label>
+        <input type="number" name="PositionCount" class="form-control" value="@Model.PositionCount" />
+    </div>
+
+    <div class="mb-3">
+        <label>Employment Type</label>
+        <select name="EmploymentType" class="form-control">
+            @foreach (var type in Enum.GetValues(typeof(EmploymentType)))
+            {
+                var isSelected = type.ToString() == Model.EmploymentType;
+                <option value="@type" selected="@isSelected">@type</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Salary Min</label>
+        <input type="number" name="SalaryRangeMin" class="form-control" value="@Model.SalaryRangeMin" />
+    </div>
+
+    <div class="mb-3">
+        <label>Salary Max</label>
+        <input type="number" name="SalaryRangeMax" class="form-control" value="@Model.SalaryRangeMax" />
+    </div>
+
+    <div class="mb-3">
+        <label>Status</label>
+        <select name="Status" class="form-control">
+            @foreach (var status in Enum.GetValues(typeof(VacancyStatus)))
+            {
+                var isSelected = status.ToString() == Model.Status;
+                <option value="@status" selected="@isSelected">@status</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Deadline</label>
+        <input type="date" name="Deadline" class="form-control" value="@(Model.Deadline?.ToString("yyyy-MM-dd"))" />
     </div>
 
     <hr />
-
     <h4>Projects</h4>
+    <button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#projectSelectorModal">Add Projects</button>
+    <ul>
+        @foreach(var p in Model.AllProjects.Where(p => Model.SelectedProjectIds.Contains(p.Id)))
+        {
+            <li>@p.Name</li>
+        }
+    </ul>
 
-    <table class="table table-bordered" id="projectsTable">
-        <thead>
-            <tr>
-                <th>Project</th>
-                <th>Priority</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.Projects.Count; i++)
-            {
-                <tr>
-                    <td>
-                        <select asp-for="Projects[@i].ProjectId"
-                                asp-items="Model.ProjectList"
-                                class="form-select">
-                        </select>
-                    </td>
-
-                    <td>
-                        <select asp-for="Projects[@i].Priority" class="form-select">
-                            <option value="0">Low</option>
-                            <option value="1">Medium</option>
-                            <option value="2">High</option>
-                        </select>
-                    </td>
-
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm removeRow">X</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <button type="button" class="btn btn-secondary mb-3" id="addProjectRow">+ Add Project</button>
-
-    <button type="submit" class="btn btn-primary">Update</button>
-
+    <button type="submit" class="btn btn-success">Save Vacancy</button>
 </form>
 
-@section Scripts {
-    <script>
-        let index = @Model.Projects.Count;
+<div class="modal fade" id="projectSelectorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Select Projects</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="projectSelectForm">
+                    @foreach(var p in Model.AllProjects)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="@p.Id" @(Model.SelectedProjectIds.Contains(p.Id) ? "checked" : "") />
+                            <label class="form-check-label">@p.Name</label>
+                        </div>
+                    }
+                    <button type="button" class="btn btn-primary mt-2" id="saveProjectsBtn">Save Projects</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-        document.getElementById("addProjectRow").addEventListener("click", function () {
-            let table = document.querySelector("#projectsTable tbody");
+<script>
+    var allProjects = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.AllProjects));
 
-            let row = `
-            <tr>
-                <td>
-                    <select name="Projects[${index}].ProjectId" class="form-select">
-                        ${document.querySelector("#projectOptions").innerHTML}
-                    </select>
-                </td>
-                <td>
-                    <select name="Projects[${index}].Priority" class="form-select">
-                        <option value="0">Low</option>
-                        <option value="1">Medium</option>
-                        <option value="2">High</option>
-                    </select>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-sm removeRow">X</button>
-                </td>
-            </tr>`;
+    document.getElementById("saveProjectsBtn").addEventListener("click", function () {
+        var selectedIds = Array.from(document.querySelectorAll("#projectSelectForm input[type=checkbox]:checked"))
+                               .map(cb => cb.value);
 
-            table.insertAdjacentHTML("beforeend", row);
-            index++;
-        });
+        console.log(selectedIds);
 
-        document.addEventListener("click", function (e) {
-            if (e.target.classList.contains("removeRow")) {
-                e.target.closest("tr").remove();
+        var modal = bootstrap.Modal.getInstance(document.getElementById('projectSelectorModal'));
+        modal.hide();
+
+        // تحديث الـ project list فورياً
+        var ul = document.querySelector("form ul");
+        ul.innerHTML = "";
+        selectedIds.forEach(id => {
+            var project = allProjects.find(p => p.id == id);
+            if(project){
+                var li = document.createElement("li");
+                li.textContent = project.name;
+                ul.appendChild(li);
             }
         });
-    </script>
-
-    <select id="projectOptions" class="d-none">
-        @foreach (var p in Model.ProjectList)
-        {
-            <option value="@p.Value">@p.Text</option>
-        }
-    </select>
-}
+    });
+</script>

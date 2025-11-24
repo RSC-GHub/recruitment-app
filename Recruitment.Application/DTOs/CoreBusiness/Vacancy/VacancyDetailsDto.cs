@@ -2,18 +2,9 @@
 
 namespace Recruitment.Application.DTOs.CoreBusiness.Vacancy
 {
-    public class ProjectVacancyViewDto
-    {
-        public int ProjectId { get; set; }
-        public string ProjectName { get; set; } = string.Empty;
-        public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
-    }
-
-    public class VacancyViewDto
+    public class VacancyDetailsDto
     {
         public int Id { get; set; }
-
-        public int TitleId { get; set; }
         public string TitleName { get; set; } = string.Empty;
 
         public string JobDescription { get; set; } = string.Empty;
@@ -21,15 +12,20 @@ namespace Recruitment.Application.DTOs.CoreBusiness.Vacancy
         public string Responsibilities { get; set; } = string.Empty;
         public string Benefits { get; set; } = string.Empty;
 
-        public int PositionCount { get; set; } = 1;
-        public EmploymentType EmploymentType { get; set; } = EmploymentType.FullTime;
+        public int PositionCount { get; set; }
+        public EmploymentType EmploymentType { get; set; }
 
         public decimal? SalaryRangeMin { get; set; }
         public decimal? SalaryRangeMax { get; set; }
 
-        public VacancyStatus Status { get; set; } = VacancyStatus.Open;
+        public VacancyStatus Status { get; set; }
         public DateTime? Deadline { get; set; }
 
-        public List<ProjectVacancyViewDto> Projects { get; set; } = new List<ProjectVacancyViewDto>();
+        public List<ProjectSummaryDto> Projects { get; set; } = new();
+    }
+    public class ProjectSummaryDto
+    {
+        public int ProjectId { get; set; }
+        public string ProjectName { get; set; } = string.Empty;
     }
 }

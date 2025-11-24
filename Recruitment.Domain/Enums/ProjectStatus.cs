@@ -3,7 +3,7 @@
     public enum ProjectStatus
     {
         Active = 1,
-        Completed = 2,
+        Closed = 2,
         OnHold = 3
     }
 }

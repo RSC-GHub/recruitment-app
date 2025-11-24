@@ -2,12 +2,6 @@
 
 namespace Recruitment.Application.DTOs.CoreBusiness.Vacancy
 {
-    public class ProjectVacancyDto
-    {
-        public int ProjectId { get; set; }
-        public PriorityLevel Priority { get; set; } = PriorityLevel.Medium;
-    }
-
     public class VacancyCreateDto
     {
         public int TitleId { get; set; }
@@ -23,7 +17,8 @@ namespace Recruitment.Application.DTOs.CoreBusiness.Vacancy
         public decimal? SalaryRangeMin { get; set; }
         public decimal? SalaryRangeMax { get; set; }
 
+        public VacancyStatus Status { get; set; } = VacancyStatus.Open;
         public DateTime? Deadline { get; set; }
-        public List<ProjectVacancyDto> Projects { get; set; } = new List<ProjectVacancyDto>();
     }
+
 }

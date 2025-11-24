@@ -12,12 +12,6 @@ namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
 
             builder.HasKey(pv => pv.Id);
 
-            builder.Property(pv => pv.Priority)
-                   .HasConversion<string>()
-                   .IsRequired()
-                   .HasMaxLength(20);
-
-
             builder.HasOne(pv => pv.Project)
                    .WithMany(p => p.ProjectVacancies)
                    .HasForeignKey(pv => pv.ProjectId)
