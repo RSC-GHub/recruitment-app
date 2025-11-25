@@ -10,12 +10,10 @@ namespace Recruitment.Application.Services.CoreBusiness
     public class TitleService : ITitleService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ITitleRepository _titleRepository;
 
-        public TitleService(IUnitOfWork unitOfWork, ITitleRepository titleRepository)
+        public TitleService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _titleRepository = titleRepository;
         }
 
         public async Task<IEnumerable<TitleDto>> GetAllAsync()
@@ -79,7 +77,7 @@ namespace Recruitment.Application.Services.CoreBusiness
 
         public async Task<TitleDto?> GetByIdWithDepartmentsAsync(int id)
         {
-            var entity = await _titleRepository.GetByIdWithDepartmentsAsync(id);
+            var entity = await _unitOfWork.TitleRepository.GetByIdWithDepartmentsAsync(id);
             if (entity == null) return null;
 
             return new TitleDto

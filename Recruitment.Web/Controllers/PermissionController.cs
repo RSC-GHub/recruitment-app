@@ -147,25 +147,14 @@ namespace Recruitment.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Permission/Delete/5
+        // POST: Permission/DeleteConfirmed
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         [HasPermission("Permission", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
-            var permission = await _permissionService.GetByIdAsync(id);
-            if (permission == null)
-                return NotFound();
-
-            return View(permission);
-        }
-
-        // POST: Permission/DeleteConfirmed
-        [HttpPost, ActionName("DeleteConfirmed")]
-        [ValidateAntiForgeryToken]
-        [HasPermission("Permission", "Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
             await _permissionService.DeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
     }
 }

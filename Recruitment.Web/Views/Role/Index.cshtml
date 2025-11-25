@@ -7,43 +7,89 @@
 <h2>Roles</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New Role</a>
+    <a asp-action="Create" class="btn btn-primary mb-3">Create New Role</a>
 </p>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Role Name</th>
-            <th>Description</th>
-            <th>Active</th>
-            <th>Permissions</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var role in Model)
-        {
-            <tr>
-                <td>@role.RoleName</td>
-                <td>@role.Description</td>
-                <td>@(role.IsActive ? "Yes" : "No")</td>
-                <td>
-                    @if (role.Permissions != null && role.Permissions.Any())
-                    {
-                        <ul>
-                            @foreach (var p in role.Permissions)
-                            {
-                                <li>@p.Resource - @p.Action</li>
-                            }
-                        </ul>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@role.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@role.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var role in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm" style="cursor:pointer;"
+                 onclick="location.href='@Url.Action("Edit", "Role", new { id = role.Id })'">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        @role.RoleName
+                        @if (role.IsActive)
+                        {
+                            <span class="badge bg-success ms-2">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary ms-2">Inactive</span>
+                        }
+                    </h5>
+                    <p class="card-text">@role.Description</p>
+                </div>
+                <div class="card-footer text-end">
+                    <button type="button" class="btn btn-sm btn-danger delete-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                            data-id="@role.Id"
+                            data-name="@role.RoleName">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete role <strong id="roleName"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" asp-action="Delete">
+                    <input type="hidden" name="id" id="deleteRoleId" value="" />
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // منع الكليك على زر Delete من الوصول للcard
+        var deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); // مهم جدًا
+            });
+        });
+
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Button that triggered the modal
+            var roleId = button.getAttribute('data-id');
+            var roleName = button.getAttribute('data-name');
+
+            // Update modal content
+            var modalRoleName = deleteModal.querySelector('#roleName');
+            modalRoleName.textContent = roleName;
+
+            // Update hidden input in the form
+            var deleteRoleIdInput = deleteModal.querySelector('#deleteRoleId');
+            deleteRoleIdInput.value = roleId;
+        });
+    </script>
+}
+

@@ -1,8 +1,10 @@
-﻿using Recruitment.Application.Interfaces.Persistence;
+﻿using Microsoft.AspNetCore.Http;
+using Recruitment.Application.Interfaces.Persistence;
+using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure.Data;
-using Microsoft.AspNetCore.Http;
+using Recruitment.Infrastructure.Repositories.CoreBusiness;
 
 namespace Recruitment.Infrastructure.Repositories
 {
@@ -25,6 +27,11 @@ namespace Recruitment.Infrastructure.Repositories
         public IGenericRepository<Permission> Permissions  { get; }
         public IGenericRepository<RolePermission> RolePermissions { get; set; }
 
+        public IVacancyRepository VacancyRepository { get; }
+        public IProjectRepository ProjectRepository { get; }
+        public ITitleRepository TitleRepository { get; }
+
+
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
@@ -40,6 +47,11 @@ namespace Recruitment.Infrastructure.Repositories
             Roles = new GenericRepository<Role>(_context, httpContextAccessor);
             Permissions = new GenericRepository<Permission>(_context, httpContextAccessor);
             RolePermissions = new GenericRepository<RolePermission>(_context, httpContextAccessor);
+
+            VacancyRepository = new VacancyRepository(context, httpContextAccessor);
+            ProjectRepository = new ProjectRepository(context, httpContextAccessor);
+            TitleRepository = new TitleRepository(context, httpContextAccessor);
+
         }
 
         public async Task<int> CompleteAsync()

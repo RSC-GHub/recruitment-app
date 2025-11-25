@@ -45,7 +45,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IProjectService, ProjectService>();
-            //services.AddScoped<IVacancyService, VacancyService>();
+            services.AddScoped<IVacancyService, VacancyService>();
 
             return services;
         }

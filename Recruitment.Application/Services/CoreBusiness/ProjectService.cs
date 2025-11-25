@@ -1,6 +1,5 @@
 ﻿using Recruitment.Application.DTOs.CoreBusiness.Project;
 using Recruitment.Application.Interfaces.Persistence;
-using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
 
@@ -9,12 +8,10 @@ namespace Recruitment.Application.Services.CoreBusiness
     public class ProjectService : IProjectService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IProjectRepository _projectRepository;
 
-        public ProjectService(IUnitOfWork unitOfWork, IProjectRepository projectRepository)
+        public ProjectService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _projectRepository = projectRepository;
         }
 
         // Mapping helper
@@ -85,7 +82,7 @@ namespace Recruitment.Application.Services.CoreBusiness
 
         public async Task<IEnumerable<ProjectDto>> GetAllProjectWithLocationAsync()
         {
-            var projects = await _projectRepository.GetAllProjectWithLocationAsync();
+            var projects = await _unitOfWork.ProjectRepository.GetAllProjectWithLocationAsync();
 
             var dtos = projects.Select(p => new ProjectDto
             {
@@ -101,7 +98,7 @@ namespace Recruitment.Application.Services.CoreBusiness
 
         public async Task<ProjectDto?> GetProjectWithLocationAsync(int projectId)
         {
-            var project = await _projectRepository.GetProjectWithLocationAsync(projectId);
+            var project = await _unitOfWork.ProjectRepository.GetProjectWithLocationAsync(projectId);
             if (project == null) return null;
 
             var dto = new ProjectDto
@@ -118,7 +115,7 @@ namespace Recruitment.Application.Services.CoreBusiness
 
         public async Task<ProjectDto?> GetProjectWithVacanciesAsync(int projectId)
         {
-            var project = await _projectRepository.GetProjectWithVacanciesAsync(projectId);
+            var project = await _unitOfWork.ProjectRepository.GetProjectWithVacanciesAsync(projectId);
             if (project == null) return null;
 
             var dto = MapToDto(project);
@@ -128,7 +125,7 @@ namespace Recruitment.Application.Services.CoreBusiness
 
         public async Task<IEnumerable<ProjectDto>> GetProjectsByLocationAsync(int locationId)
         {
-            var projects = await _projectRepository.GetProjectsByLocationAsync(locationId);
+            var projects = await _unitOfWork.ProjectRepository.GetProjectsByLocationAsync(locationId);
             return projects.Select(MapToDto);
         }
     }

@@ -15,7 +15,6 @@ namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
             builder.Property(v => v.JobDescription).IsRequired();
             builder.Property(v => v.Requirements).IsRequired();
             builder.Property(v => v.Responsibilities).IsRequired();
-            //builder.Property(v => v.Benefits).IsRequired();
             builder.Property(v => v.PositionCount).IsRequired(); 
 
             builder.Property(v => v.PositionCount)

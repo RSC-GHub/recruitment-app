@@ -1,0 +1,331 @@
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyCreateVM
+
+@{
+    ViewData["Title"] = "Create Vacancy";
+}
+
+<style>
+    .info-icon {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-color: white;
+        border: 1px solid black;
+        color: black;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 18px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: help;
+        margin-left: 5px;
+        position: relative;
+    }
+
+    .info-tooltip {
+        visibility: hidden;
+        width: 250px;
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        border-radius: 6px;
+        padding: 10px;
+        position: absolute;
+        z-index: 1000;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -125px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 13px;
+        font-weight: normal;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+        .info-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+    .info-icon:hover .info-tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+
+<h2>Create Vacancy</h2>
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+<form asp-action="Create" method="post">
+    <!-- Title -->
+    <div class="mb-3">
+        <label asp-for="TitleId" class="form-label">
+            Title <span class="text-danger">*</span>
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Select the job title for this vacancy. This helps categorize the position and makes it easier for candidates to find.</span>
+            </span>
+        </label>
+        <select asp-for="TitleId" class="form-select select2-dropdown" asp-items="Model.TitlesDropdown">
+            <option value="">-- Select Title --</option>
+        </select>
+        <span asp-validation-for="TitleId" class="text-danger validation-message" style="display:none;">The Title field is required.</span>
+    </div>
+
+    <!-- Job Description -->
+    <div class="mb-3">
+        <label asp-for="JobDescription" class="form-label">
+            Job Description <span class="text-danger">*</span>
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Provide a comprehensive overview of the role, including what the position entails and what the candidate will be doing day-to-day.</span>
+            </span>
+        </label>
+        <textarea asp-for="JobDescription" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="JobDescription" class="text-danger validation-message" style="display:none;">The Job Description field is required.</span>
+    </div>
+
+    <!-- Requirements -->
+    <div class="mb-3">
+        <label asp-for="Requirements" class="form-label">
+            Requirements  <span class="text-danger">*</span>
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">List the qualifications, skills, education, and experience required for this position. Include both must-have and nice-to-have requirements.</span>
+            </span>
+        </label>
+        <textarea asp-for="Requirements" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Requirements" class="text-danger validation-message" style="display:none;">The Requirements field is required.</span>
+    </div>
+
+    <!-- Responsibilities -->
+    <div class="mb-3">
+        <label asp-for="Responsibilities" class="form-label">
+            @Html.DisplayNameFor(m => m.Responsibilities) <span class="text-danger">*</span>
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Outline the key duties and responsibilities the candidate will be expected to perform in this role.</span>
+            </span>
+        </label>
+        <textarea asp-for="Responsibilities" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Responsibilities" class="text-danger validation-message" style="display:none;">The Responsibilities field is required.</span>
+    </div>
+
+    <!-- Benefits -->
+    <div class="mb-3">
+        <label asp-for="Benefits" class="form-label">
+            Benefits
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Describe the benefits package offered with this position, such as health insurance, retirement plans, paid time off, etc.</span>
+            </span>
+        </label>
+        <textarea asp-for="Benefits" class="form-control" rows="3"></textarea>
+    </div>
+
+    <!-- Position Count -->
+    <div class="mb-3">
+        <label asp-for="PositionCount" class="form-label">
+            Position Count <span class="text-danger">*</span>
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Enter the number of open positions available for this vacancy. If hiring multiple candidates for the same role, specify the count here.</span>
+            </span>
+        </label>
+        <input asp-for="PositionCount" class="form-control" type="number" min="1" />
+        <span asp-validation-for="PositionCount" class="text-danger validation-message" style="display:none;"></span>
+    </div>
+
+    <!-- Employment Type -->
+    <div class="mb-3">
+        <label asp-for="EmploymentType" class="form-label">
+            Employment Type <span class="text-danger">*</span>
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Select the type of employment: Full-time, Part-time, Contract, Temporary, or Internship.</span>
+            </span>
+        </label>
+        <select asp-for="EmploymentType" class="form-select select2-dropdown">
+            @foreach (var type in Enum.GetValues(typeof(Recruitment.Domain.Enums.EmploymentType)))
+            {
+                <option value="@type" selected="@(type.ToString() == Model.EmploymentType.ToString())">@type</option>
+            }
+        </select>
+        <span asp-validation-for="EmploymentType" class="text-danger validation-message" style="display:none;"></span>
+    </div>
+
+    <!-- Salary Range -->
+    <div class="mb-3">
+        <label asp-for="SalaryRangeMin" class="form-label">
+            Salary Range Minimum
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Enter the minimum salary offered for this position. This helps set candidate expectations and attracts qualified applicants.</span>
+            </span>
+        </label>
+        <input asp-for="SalaryRangeMin" class="form-control" type="number" step="0.01" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SalaryRangeMax" class="form-label">
+            Salary Range Maximum
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Enter the maximum salary offered for this position. Leave blank if there's no upper limit or if you prefer not to disclose.</span>
+            </span>
+        </label>
+        <input asp-for="SalaryRangeMax" class="form-control" type="number" step="0.01" />
+    </div>
+
+    <!-- Deadline -->
+    <div class="mb-3">
+        <label asp-for="Deadline" class="form-label">
+            @Html.DisplayNameFor(m => m.Deadline)
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Set the application deadline. After this date, the vacancy will no longer accept new applications.</span>
+            </span>
+        </label>
+        <input asp-for="Deadline" class="form-control" type="date" />
+    </div>
+
+    <!-- Projects Multi-Select -->
+    <div class="mb-3">
+        <label asp-for="ProjectIds" class="form-label">
+            @Html.DisplayNameFor(m => m.ProjectIds)
+            <span class="info-icon">
+                i
+                <span class="info-tooltip">Associate this vacancy with one or more projects. Selected candidates will be assigned to work on these projects.</span>
+            </span>
+        </label>
+        <select asp-for="ProjectIds" class="form-select select2-dropdown" asp-items="Model.ProjectsDropdown" multiple="multiple"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Vacancy</button>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <!-- jQuery + Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(function () {
+            // Initialize Select2
+            $('.select2-dropdown').select2({
+                width: '100%',
+                placeholder: "-- Select --",
+                allowClear: true
+            });
+
+            // Hide all validation messages on page load
+            $('.validation-message').hide();
+
+            // Track which fields have been touched
+            var touchedFields = new Set();
+
+            // Handle blur event for regular inputs and textareas
+            $('input[type="text"], input[type="number"], input[type="date"], textarea').on('blur', function() {
+                var $field = $(this);
+                var fieldName = $field.attr('name');
+                touchedFields.add(fieldName);
+
+                validateField($field);
+            });
+
+            // Handle blur event for Select2 dropdowns
+            $('.select2-dropdown').on('select2:close', function() {
+                var $field = $(this);
+                var fieldName = $field.attr('name');
+                touchedFields.add(fieldName);
+
+                validateField($field);
+            });
+
+            // Function to validate individual field
+            function validateField($field) {
+                var $validationSpan = $field.siblings('.validation-message').first();
+
+                // If no validation span found, try to find it after Select2 container
+                if ($validationSpan.length === 0) {
+                    $validationSpan = $field.next('.select2-container').next('.validation-message');
+                }
+
+                var value = $field.val();
+                var isRequired = $field.closest('.mb-3').find('label .text-danger').length > 0;
+
+                // Projects field is optional (no red asterisk in label)
+                var fieldName = $field.attr('name');
+                if (fieldName === 'ProjectIds') {
+                    return; // Skip validation for ProjectIds
+                }
+
+                // Check if field is empty and required
+                if (isRequired && (!value || value === '' || (Array.isArray(value) && value.length === 0))) {
+                    $validationSpan.show();
+                    $field.addClass('is-invalid');
+                } else {
+                    $validationSpan.hide();
+                    $field.removeClass('is-invalid');
+                }
+            }
+
+
+            // Validate all touched fields on form submit
+            $('form').on('submit', function(e) {
+                var isValid = true;
+
+                // Validate all required fields
+                $('input[type="text"], input[type="number"], input[type="date"], textarea, select').each(function() {
+                    var $field = $(this);
+                    var fieldName = $field.attr('name');
+                    touchedFields.add(fieldName);
+
+                    validateField($field);
+
+                    var $validationSpan = $field.siblings('.validation-message').first();
+                    if ($validationSpan.length === 0) {
+                        $validationSpan = $field.next('.select2-container').next('.validation-message');
+                    }
+
+                    if ($validationSpan.is(':visible')) {
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Optional: Real-time validation as user types (only for touched fields)
+            $('input[type="text"], input[type="number"], input[type="date"], textarea').on('input', function() {
+                var fieldName = $(this).attr('name');
+                if (touchedFields.has(fieldName)) {
+                    validateField($(this));
+                }
+            });
+
+            // Real-time validation for Select2 changes
+            $('.select2-dropdown').on('change', function() {
+                var fieldName = $(this).attr('name');
+                if (touchedFields.has(fieldName)) {
+                    validateField($(this));
+                }
+            });
+        });
+    </script>
+}

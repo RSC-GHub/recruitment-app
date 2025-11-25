@@ -13,25 +13,28 @@
     <!-- ================== USER INFO ================== -->
     <div class="col-md-12 mb-4">
         <h4>User Information</h4>
-        <form asp-action="EditUser" method="post" class="card p-4 shadow-sm border-0">
+        <form asp-action="EditUser" method="post" class="card p-4 shadow-sm border-0" id="userForm">
             <input type="hidden" asp-for="Id" />
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="form-label">Full Name</label>
-                    <input asp-for="FullName" class="form-control" />
+                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                    <input asp-for="FullName" class="form-control" required />
+                    <div class="invalid-feedback">Full Name is required.</div>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Email</label>
-                    <input asp-for="Email" class="form-control" />
+                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                    <input asp-for="Email" class="form-control" type="email" required />
+                    <div class="invalid-feedback">Valid email is required.</div>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">Department</label>
-                    <select asp-for="DepartmentId" class="form-control" asp-items="Model.Departments">
+                <div class="col-md-6 mt-3">
+                    <label class="form-label">Department <span class="text-danger">*</span></label>
+                    <select asp-for="DepartmentId" class="form-select" asp-items="Model.Departments" required>
                         <option value="">-- Select Department --</option>
                     </select>
+                    <div class="invalid-feedback">Please select a department.</div>
                 </div>
             </div>
 
@@ -80,7 +83,7 @@
 <div class="modal fade" id="rolesModal" tabindex="-1" aria-labelledby="rolesModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form asp-action="UpdateRoles" method="post">
+            <form asp-action="UpdateRoles" method="post" id="rolesForm">
                 <div class="modal-header">
                     <h5 class="modal-title" id="rolesModalLabel">Edit Roles</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -89,13 +92,14 @@
                     <input type="hidden" asp-for="Id" />
 
                     <div class="form-group">
-                        <label>Select Roles</label>
+                        <label>Select Roles <span class="text-danger">*</span></label>
                         <select asp-for="SelectedRoleIds"
                                 class="form-control select2"
                                 multiple="multiple"
-                                asp-items="Model.AvailableRoles">
+                                asp-items="Model.AvailableRoles"
+                                required>
                         </select>
-                        
+                        <div class="invalid-feedback">Please select at least one role.</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -108,32 +112,81 @@
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- REMOVE THIS LINE -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
     <script>
         $(document).ready(function () {
-            function initSelect2() {
-                $('.select2').select2({
+
+            // ================== SELECT2 MODAL ==================
+            function initModalSelect2() {
+                $('#rolesModal .select2').select2({
                     placeholder: "Select roles",
                     allowClear: true,
                     width: '100%',
                     dropdownParent: $('#rolesModal')
                 });
             }
+            initModalSelect2();
 
-            initSelect2();
-
-            // Re-initialize Select2 when modal opens
             $('#rolesModal').on('shown.bs.modal', function () {
-                initSelect2();
+                initModalSelect2();
             });
 
-            // Destroy Select2 when modal closes
             $('#rolesModal').on('hidden.bs.modal', function () {
-                $('.select2').select2('destroy');
+                $('#rolesModal .select2').select2('destroy');
             });
+
+            // ================== REAL-TIME VALIDATION ==================
+            function validateField($field) {
+                var isRequired = $field.prop('required');
+                var value = $field.val();
+
+                if (isRequired) {
+                    if (!value || value.length === 0 || (Array.isArray(value) && value.length === 0)) {
+                        $field.addClass('is-invalid').removeClass('is-valid');
+                        return false;
+                    } else {
+                        $field.addClass('is-valid').removeClass('is-invalid');
+                        return true;
+                    }
+                }
+                return true;
+            }
+
+            function attachValidation(formSelector) {
+                var $form = $(formSelector);
+                var $fields = $form.find('input, select, textarea');
+
+                $fields.each(function () {
+                    var $field = $(this);
+                    $field.on('input change blur', function () {
+                        validateField($field);
+                    });
+                });
+
+                $form.on('submit', function (e) {
+                    var isValid = true;
+                    $fields.each(function () {
+                        if (!validateField($(this))) {
+                            isValid = false;
+                        }
+                    });
+
+                    if (!isValid) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+            }
+
+            // Attach validation to user info form
+            attachValidation('#userForm');
+
+            // Attach validation to roles modal form
+            attachValidation('#rolesForm');
+
         });
     </script>
 }
+

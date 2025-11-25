@@ -10,7 +10,7 @@
     <input type="hidden" asp-for="Id" />
 
     <div class="form-group">
-        <label asp-for="RoleName"></label>
+        <label asp-for="RoleName"></label><span class="text-danger"> *</span>
         <input asp-for="RoleName" class="form-control" />
         <span asp-validation-for="RoleName" class="text-danger"></span>
     </div>
@@ -63,6 +63,42 @@
 
 @section Scripts {
     <script>
+        function toggleGroup(resourceId, masterCheckbox) {
+            const checkboxes = document.querySelectorAll(`.perm_${resourceId}`);
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            var $roleName = $('input[name="RoleName"]');
+            var $validationMsg = $('span[data-valmsg-for="RoleName"]');
+
+            function validateRoleName() {
+                if (!$roleName.val().trim()) {
+                    $validationMsg.text('Role Name is required').show();
+                    $roleName.addClass('is-invalid').removeClass('is-valid');
+                    return false;
+                } else {
+                    $validationMsg.text('').hide();
+                    $roleName.addClass('is-valid').removeClass('is-invalid');
+                    return true;
+                }
+            }
+
+            $roleName.on('input blur', function () {
+                validateRoleName();
+            });
+
+            $('form').on('submit', function (e) {
+                if (!validateRoleName()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            });
+
+        });
+
         function toggleGroup(resourceId, masterCheckbox) {
             const checkboxes = document.querySelectorAll(`.perm_${resourceId}`);
             checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
