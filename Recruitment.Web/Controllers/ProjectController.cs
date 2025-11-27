@@ -22,6 +22,7 @@ namespace Recruitment.Web.Controllers
         [HasPermission("Project", "View")]
         public async Task<IActionResult> Index()
         {
+            // Load all projects
             var projectsDto = await _projectService.GetAllProjectWithLocationAsync();
             var model = projectsDto.Select(p => new ProjectViewModel
             {
@@ -32,37 +33,8 @@ namespace Recruitment.Web.Controllers
                 LocationName = p.LocationName
             }).ToList();
 
-            return View(model);
-        }
-
-        // GET: Project/Details/5
-        [HasPermission("Project", "View")]
-        public async Task<IActionResult> Details(int id)
-        {
-            var project = await _projectService.GetProjectWithLocationAsync(id);
-            if (project == null) return NotFound();
-
-            var model = new ProjectViewModel
-            {
-                Id = project.Id,
-                ProjectName = project.ProjectName,
-                Status = project.Status,
-                LocationId = project.LocationId,
-                LocationName = project.LocationName
-            };
-
-            return View(model);
-        }
-
-        // GET: Project/Create
-        [HasPermission("Project", "Create")]
-        public async Task<IActionResult> Create()
-        {
             var locations = await _locationService.GetAllAsync();
-            var model = new ProjectFormViewModel
-            {
-                Locations = locations.Select(l => new SelectListItem(l.Name, l.Id.ToString()))
-            };
+            ViewBag.Locations = locations.Select(l => new SelectListItem(l.Name, l.Id.ToString()));
 
             return View(model);
         }
@@ -77,7 +49,8 @@ namespace Recruitment.Web.Controllers
             {
                 var locations = await _locationService.GetAllAsync();
                 model.Locations = locations.Select(l => new SelectListItem(l.Name, l.Id.ToString()));
-                return View(model);
+                ViewBag.Locations = model.Locations; 
+                return View("Index", await GetProjectsViewModel());
             }
 
             var dto = new ProjectCreateDto
@@ -91,28 +64,7 @@ namespace Recruitment.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Project/Edit/5
-        [HasPermission("Project", "Edit")]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null) return NotFound();
-
-            var locations = await _locationService.GetAllAsync();
-
-            var model = new ProjectFormViewModel
-            {
-                Id = project.Id,
-                ProjectName = project.ProjectName,
-                Status = project.Status,
-                LocationId = project.LocationId,
-                Locations = locations.Select(l => new SelectListItem(l.Name, l.Id.ToString()))
-            };
-
-            return View("Create", model);
-        }
-
-        // POST: Project/Edit/5
+        // POST: Project/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HasPermission("Project", "Edit")]
@@ -122,7 +74,8 @@ namespace Recruitment.Web.Controllers
             {
                 var locations = await _locationService.GetAllAsync();
                 model.Locations = locations.Select(l => new SelectListItem(l.Name, l.Id.ToString()));
-                return View(model);
+                ViewBag.Locations = model.Locations; // For modal dropdown
+                return View("Index", await GetProjectsViewModel());
             }
 
             var dto = new ProjectUpdateDto
@@ -137,26 +90,7 @@ namespace Recruitment.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Project/Delete/5
-        [HasPermission("Project", "Delete")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var project = await _projectService.GetProjectWithLocationAsync(id);
-            if (project == null) return NotFound();
-
-            var model = new ProjectViewModel
-            {
-                Id = project.Id,
-                ProjectName = project.ProjectName,
-                Status = project.Status,
-                LocationId = project.LocationId,
-                LocationName = project.LocationName
-            };
-
-            return View(model);
-        }
-
-        // POST: Project/Delete/5
+        // POST: Project/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [HasPermission("Project", "Delete")]
@@ -165,5 +99,20 @@ namespace Recruitment.Web.Controllers
             await _projectService.DeleteProjectAsync(id);
             return RedirectToAction(nameof(Index));
         }
+
+        // Helper method to reload projects for Index view
+        private async Task<List<ProjectViewModel>> GetProjectsViewModel()
+        {
+            var projectsDto = await _projectService.GetAllProjectWithLocationAsync();
+            return projectsDto.Select(p => new ProjectViewModel
+            {
+                Id = p.Id,
+                ProjectName = p.ProjectName,
+                Status = p.Status,
+                LocationId = p.LocationId,
+                LocationName = p.LocationName
+            }).ToList();
+        }
     }
+
 }

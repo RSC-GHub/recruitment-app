@@ -17,7 +17,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IGenericRepository<Role> Roles { get; }
         IGenericRepository<Permission> Permissions { get; } 
         IGenericRepository<RolePermission> RolePermissions { get; }
-
+        IGenericRepository<Currency> Currencies { get; }
         IProjectRepository ProjectRepository { get; }
         ITitleRepository TitleRepository { get; }
         IVacancyRepository VacancyRepository { get; }

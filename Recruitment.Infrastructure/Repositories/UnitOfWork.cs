@@ -26,6 +26,7 @@ namespace Recruitment.Infrastructure.Repositories
         public IGenericRepository<Role> Roles { get; }
         public IGenericRepository<Permission> Permissions  { get; }
         public IGenericRepository<RolePermission> RolePermissions { get; set; }
+        public IGenericRepository<Currency> Currencies { get; }
 
         public IVacancyRepository VacancyRepository { get; }
         public IProjectRepository ProjectRepository { get; }
@@ -51,7 +52,7 @@ namespace Recruitment.Infrastructure.Repositories
             VacancyRepository = new VacancyRepository(context, httpContextAccessor);
             ProjectRepository = new ProjectRepository(context, httpContextAccessor);
             TitleRepository = new TitleRepository(context, httpContextAccessor);
-
+            Currencies = new GenericRepository<Currency>(_context, httpContextAccessor);
         }
 
         public async Task<int> CompleteAsync()

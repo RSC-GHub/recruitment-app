@@ -38,9 +38,28 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
         }
         public async Task<IEnumerable<Project>> GetAllProjectWithLocationAsync()
         {
-            return await _context.Projects
-                                 .Include(p => p.Location)
-                                 .ToListAsync();
+            var projects = await _context.Projects
+                                         .AsNoTracking()
+                                         .ToListAsync(); 
+
+            var projectIds = projects.Select(p => p.LocationId).ToList();
+
+            var locations = await _context.Locations
+                                          .IgnoreQueryFilters()
+                                          .Where(l => projectIds.Contains(l.Id))
+                                          .ToListAsync();
+
+            foreach (var project in projects)
+            {
+                var loc = locations.FirstOrDefault(l => l.Id == project.LocationId && !l.IsDeleted);
+
+                project.Location = new Location
+                {
+                    Name = loc?.Name ?? ""   
+                };
+            }
+
+            return projects;
         }
     }
 }

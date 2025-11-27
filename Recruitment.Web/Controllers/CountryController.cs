@@ -20,7 +20,7 @@ namespace Recruitment.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var dtos = await _countryService.GetAllAsync();
-            var vmList = dtos.Select(c => new CountryListViewModel
+            var vmList = dtos.Select(c => new CountryViewModel
             {
                 Id = c.Id,
                 Name = c.Name,
@@ -63,7 +63,7 @@ namespace Recruitment.Web.Controllers
             var dto = await _countryService.GetByIdAsync(id);
             if (dto == null) return NotFound();
 
-            var vm = new EditCountryViewModel
+            var vm = new CountryViewModel
             {
                 Id = dto.Id,
                 Name = dto.Name,
@@ -77,7 +77,7 @@ namespace Recruitment.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HasPermission("Country", "Edit")]
-        public async Task<IActionResult> Edit(EditCountryViewModel vm)
+        public async Task<IActionResult> Edit(CountryViewModel vm)
         {
             if (!ModelState.IsValid)
                 return View(vm);
@@ -100,7 +100,7 @@ namespace Recruitment.Web.Controllers
             var dto = await _countryService.GetByIdAsync(id);
             if (dto == null) return NotFound();
 
-            var vm = new CountryDeleteViewModel
+            var vm = new CountryViewModel
             {
                 Id = dto.Id,
                 Name = dto.Name,
@@ -127,7 +127,7 @@ namespace Recruitment.Web.Controllers
             var dto = await _countryService.GetByIdAsync(id);
             if (dto == null) return NotFound();
 
-            var vm = new CountryDetailsViewModel
+            var vm = new CountryViewModel
             {
                 Id = dto.Id,
                 Name = dto.Name,

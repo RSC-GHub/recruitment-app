@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
-using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.CoreBusiness.Vacancy;

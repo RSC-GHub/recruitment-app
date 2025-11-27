@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Setup";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">System Setup</h2>
+
+    <div class="row g-4">
+
+        <!-- Country -->
+        <div class="col-md-4">
+            <a asp-controller="Country" asp-action="Index" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 setup-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Country</h5>
+                        <p class="text-muted">Manage countries</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Location -->
+        <div class="col-md-4">
+            <a asp-controller="Location" asp-action="Index" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 setup-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Location</h5>
+                        <p class="text-muted">Manage locations</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Department -->
+        <div class="col-md-4">
+            <a asp-controller="Department" asp-action="Index" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 setup-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Department</h5>
+                        <p class="text-muted">Manage departments</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Title -->
+        <div class="col-md-4">
+            <a asp-controller="Title" asp-action="Index" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 setup-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Title</h5>
+                        <p class="text-muted">Manage titles</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Project -->
+        <div class="col-md-4">
+            <a asp-controller="Project" asp-action="Index" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 setup-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Project</h5>
+                        <p class="text-muted">Manage projects</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Currency -->
+        <div class="col-md-4">
+            <a asp-controller="Currency" asp-action="Index" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 setup-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Currency</h5>
+                        <p class="text-muted">Manage currencies</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .setup-card {
+        transition: transform .2s ease, box-shadow .2s ease;
+        cursor: pointer;
+        border-radius: 10px;
+    }
+
+        .setup-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+</style>

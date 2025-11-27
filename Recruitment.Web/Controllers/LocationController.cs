@@ -29,7 +29,16 @@ namespace Recruitment.Web.Controllers
             {
                 Id = l.Id,
                 Name = l.Name,
+                CountryId = l.CountryId,
                 CountryName = l.CountryName
+            }).ToList();
+
+            // Load countries for Create/Edit modals
+            var countries = await _countryService.GetAllAsync();
+            ViewBag.Countries = countries.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
             }).ToList();
 
             return View(viewModel);
@@ -43,7 +52,7 @@ namespace Recruitment.Web.Controllers
             if (dto == null)
                 return NotFound();
 
-            var viewModel = new LocationDetailsViewModel
+            var viewModel = new LocationListViewModel
             {
                 Id = dto.Id,
                 Name = dto.Name,
@@ -154,7 +163,7 @@ namespace Recruitment.Web.Controllers
             if (dto == null)
                 return NotFound();
 
-            var viewModel = new LocationDeleteViewModel
+            var viewModel = new LocationListViewModel
             {
                 Id = dto.Id,
                 Name = dto.Name,

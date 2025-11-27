@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Recruitment.Web.ViewModels.CoreBusiness.Location
+namespace Recruitment.Web.ViewModels.CoreBusiness.Department
 {
-    public class LocationEditViewModel
+    public class DepartmentViewModel
     {
         public int Id { get; set; }
         [Required]
         public string Name { get; set; } = string.Empty;
-        [Required]
-        public int CountryId { get; set; }
     }
 }

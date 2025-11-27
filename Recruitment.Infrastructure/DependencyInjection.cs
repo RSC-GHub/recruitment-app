@@ -46,6 +46,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IVacancyService, VacancyService>();
+            services.AddScoped<ICurrencyService, CurrencyService>();
 
             return services;
         }

@@ -29,6 +29,7 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<Department> Departments { get; set; } = null!;
         public DbSet<DepartmentTitle> DepartmentTitles { get; set; } = null!;
         public DbSet<AuditLog> AuditLogs { get; set; } = null!;
+        public DbSet<Currency> Currencies { get; set; } = null!;
 
         // User Management
         public DbSet<Permission> Permissions { get; set; } = null!;

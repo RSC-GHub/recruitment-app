@@ -34,32 +34,24 @@
                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="userMgmtDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     User Management
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu" aria-labelledby="userMgmtDropdown">
                                     <li><a class="dropdown-item" asp-controller="UserManagement" asp-action="Index">Users</a></li>
                                     <li><a class="dropdown-item" asp-controller="Permission" asp-action="Index">Permissions</a></li>
                                     <li><a class="dropdown-item" asp-controller="Role" asp-action="Index">Roles</a></li>
                                 </ul>
                             </li>
 
-                            <!-- Setup Dropdown -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="setupDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Setup
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="setupDropdown">
-                                    <li><a class="dropdown-item" asp-controller="Country" asp-action="Index">Country</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Location" asp-action="Index">Location</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Department" asp-action="Index">Department</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Title" asp-action="Index">Title</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Project" asp-action="Index">Project</a></li>
-                                </ul>
+                            <!-- Setup -->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AppSetup" asp-action="Index">Setup</a>
                             </li>
+
                             <!-- Tracking Dropdown -->
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="setupDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="trackingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     System tracking
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="setupDropdown">
+                                <ul class="dropdown-menu" aria-labelledby="trackingDropdown">
                                     <li><a class="dropdown-item" asp-controller="Vacancy" asp-action="Index">Vacancy</a></li>
                                 </ul>
                             </li>
@@ -106,17 +98,17 @@
         </div>
     </footer>
 
+    <!-- jQuery must be loaded first -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-
+    <!-- Bootstrap JS - load only once -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-
+    <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-
+    <!-- Site JS -->
     <script src="~/js/site.js" asp-append-version="true"></script>
-
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

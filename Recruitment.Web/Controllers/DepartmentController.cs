@@ -20,7 +20,7 @@ namespace Recruitment.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var departments = await _departmentService.GetAllAsync();
-            var viewModel = departments.Select(d => new DepartmentListViewModel
+            var viewModel = departments.Select(d => new DepartmentViewModel
             {
                 Id = d.Id,
                 Name = d.Name
@@ -36,7 +36,7 @@ namespace Recruitment.Web.Controllers
             if (dto == null)
                 return NotFound();
 
-            var viewModel = new DepartmentDetailsViewModel
+            var viewModel = new DepartmentViewModel
             {
                 Id = dto.Id,
                 Name = dto.Name
@@ -78,7 +78,7 @@ namespace Recruitment.Web.Controllers
             if (dto == null)
                 return NotFound();
 
-            var viewModel = new DepartmentEditViewModel
+            var viewModel = new DepartmentViewModel
             {
                 Id = dto.Id,
                 Name = dto.Name
@@ -91,7 +91,7 @@ namespace Recruitment.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HasPermission("Department", "Edit")]
-        public async Task<IActionResult> Edit(DepartmentEditViewModel model)
+        public async Task<IActionResult> Edit(DepartmentViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -114,7 +114,7 @@ namespace Recruitment.Web.Controllers
             if (dto == null)
                 return NotFound();
 
-            var viewModel = new DepartmentDeleteViewModel
+            var viewModel = new DepartmentViewModel
             {
                 Id = dto.Id,
                 Name = dto.Name

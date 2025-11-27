@@ -1,5 +1,4 @@
 ﻿using Recruitment.Domain.Entities.UserManagement;
-using System.Security.Principal;
 
 namespace Recruitment.Domain.Entities.CoreBusiness
 {

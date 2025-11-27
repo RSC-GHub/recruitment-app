@@ -4,12 +4,18 @@
     ViewData["Title"] = "Locations";
 }
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
 <h2>Locations</h2>
 
+<!-- Create Button -->
 <p>
-    <a asp-action="Create" class="btn btn-primary">Add New Location</a>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
+        Add New Location
+    </button>
 </p>
 
+<!-- Locations Table -->
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -25,11 +31,142 @@
                 <td>@item.Name</td>
                 <td>@item.CountryName</td>
                 <td>
-                    @* <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a> *@
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                    <button type="button" class="btn btn-warning btn-sm edit-btn"
+                            data-bs-toggle="modal" data-bs-target="#editModal"
+                            data-id="@item.Id"
+                            data-name="@item.Name"
+                            data-country-id="@item.CountryId"
+                            title="Edit">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm delete-btn"
+                            data-bs-toggle="modal" data-bs-target="#deleteModal"
+                            data-id="@item.Id"
+                            data-name="@item.Name"
+                            title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">Add New Location</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="createName">Name</label><span class="text-danger"> *</span>
+                        <input type="text" class="form-control" id="createName" name="Name" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="createCountry">Country</label><span class="text-danger"> *</span>
+                        <select class="form-control" id="createCountry" name="CountryId" required>
+                            <option value="">-- Select Country --</option>
+                            @foreach (var country in ViewBag.Countries as IEnumerable<SelectListItem>)
+                            {
+                                <option value="@country.Value">@country.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Location</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editId" name="Id" />
+                    <div class="form-group mb-3">
+                        <label for="editName">Name</label><span class="text-danger"> *</span>
+                        <input type="text" class="form-control" id="editName" name="Name" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="editCountry">Country</label><span class="text-danger"> *</span>
+                        <select class="form-control" id="editCountry" name="CountryId" required>
+                            <option value="">-- Select Country --</option>
+                            @foreach (var country in ViewBag.Countries as IEnumerable<SelectListItem>)
+                            {
+                                <option value="@country.Value">@country.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Update</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Delete" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <strong id="deleteLocationName"></strong>?
+                    <input type="hidden" id="deleteLocationId" name="Id" />
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Fill Edit Modal
+        var editModal = document.getElementById('editModal');
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var name = button.getAttribute('data-name');
+            var countryId = button.getAttribute('data-country-id');
+
+            document.getElementById('editId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editCountry').value = countryId;
+        });
+
+        // Fill Delete Modal
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var name = button.getAttribute('data-name');
+
+            document.getElementById('deleteLocationId').value = id;
+            document.getElementById('deleteLocationName').textContent = name;
+        });
+    </script>
+}

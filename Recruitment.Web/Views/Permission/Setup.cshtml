@@ -4,88 +4,300 @@
     ViewData["Title"] = "Setup Permissions";
 }
 
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .is-valid {
+        border-color: #198754 !important;
+    }
+
+    .validation-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+
+    .submit-btn-disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
+
 <h2>Setup Permissions</h2>
 
-<form asp-action="GeneratePermissions" method="post">
+<form asp-action="GeneratePermissions" method="post" id="permissionsForm" novalidate>
     <div class="form-group mb-3">
-        <label for="resourceSelect">Select Resource</label>
-        <select id="resourceSelect" class="form-control">
+        <label for="resourceSelect">Select Resource</label><span class="text-danger"> *</span>
+        <select id="resourceSelect" class="form-control" required>
             <option value="">-- Select Resource --</option>
             @foreach (var resource in Model.Resources)
             {
                 <option value="@resource">@resource</option>
             }
         </select>
+        <span class="validation-message" id="resourceError" style="display:none;"></span>
     </div>
 
     <div class="form-group mb-3">
-        <label for="actionSelect">Select Action</label>
-        <select id="actionSelect" class="form-control">
+        <label for="actionSelect">Select Action</label><span class="text-danger"> *</span>
+        <select id="actionSelect" class="form-control" required>
             <option value="">-- Select Action --</option>
             @foreach (var action in Model.Actions)
             {
                 <option value="@action">@action</option>
             }
         </select>
+        <span class="validation-message" id="actionError" style="display:none;"></span>
     </div>
 
-    <button type="button" id="addPermissionBtn" class="btn btn-secondary mb-3">Add Permission</button>
+    <button type="button" id="addPermissionBtn" class="btn btn-secondary mb-3" disabled>
+        Add Permission
+    </button>
 
-    <table class="table table-bordered" id="permissionsTable">
-        <thead>
-            <tr>
-                <th>Resource</th>
-                <th>Action</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div class="mb-3">
+        <div id="tableValidation" class="validation-message" style="display:none;"></div>
+        <table class="table table-bordered" id="permissionsTable">
+            <thead>
+                <tr>
+                    <th>Resource</th>
+                    <th>Action</th>
+                    <th style="width: 100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="emptyTableRow">
+                    <td colspan="3" class="text-center text-muted">No permissions added yet</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <input type="hidden" id="SelectedPermissions" name="SelectedPermissions" />
 
-    <button type="submit" class="btn btn-primary">Generate Permissions</button>
+    <button type="submit" id="submitBtn" class="btn btn-primary" disabled>
+        Generate Permissions
+    </button>
 </form>
 
 @section Scripts {
     <script>
+        // DOM Elements
         const tableBody = document.querySelector("#permissionsTable tbody");
+        const emptyTableRow = document.querySelector("#emptyTableRow");
         const selectedInput = document.querySelector("#SelectedPermissions");
         const permissions = new Set();
 
-        document.querySelector("#addPermissionBtn").addEventListener("click", () => {
-            const resource = document.querySelector("#resourceSelect").value;
-            const action = document.querySelector("#actionSelect").value;
-            if (!resource || !action) return;
+        const resourceSelect = document.querySelector("#resourceSelect");
+        const actionSelect = document.querySelector("#actionSelect");
+        const resourceError = document.querySelector("#resourceError");
+        const actionError = document.querySelector("#actionError");
+        const tableValidation = document.querySelector("#tableValidation");
+        const addPermissionBtn = document.querySelector("#addPermissionBtn");
+        const submitBtn = document.querySelector("#submitBtn");
+        const form = document.querySelector("#permissionsForm");
 
-            const key = `${resource}_${action}`;
-            if (permissions.has(key)) return;
+        // Validation Messages
+        const validationMessages = {
+            resourceRequired: "Please select a resource",
+            actionRequired: "Please select an action",
+            duplicatePermission: "This permission combination already exists",
+            noPermissions: "Please add at least one permission before submitting",
+            permissionAdded: "Permission added successfully"
+        };
 
-            permissions.add(key);
+        // Validate Individual Field
+        function validateField(field, errorElement, message) {
+            if (!field.value) {
+                field.classList.add("is-invalid");
+                field.classList.remove("is-valid");
+                errorElement.textContent = message;
+                errorElement.style.display = "block";
+                return false;
+            } else {
+                field.classList.remove("is-invalid");
+                field.classList.add("is-valid");
+                errorElement.style.display = "none";
+                return true;
+            }
+        }
 
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${resource}</td>
-                <td>${action}</td>
-                <td><button type="button" class="btn btn-danger btn-sm remove-btn">Remove</button></td>
-            `;
-            tableBody.appendChild(row);
-            updateHiddenInput();
-        });
+        // Validate Both Fields
+        function validateSelections() {
+            const resourceValid = validateField(
+                resourceSelect,
+                resourceError,
+                validationMessages.resourceRequired
+            );
+            const actionValid = validateField(
+                actionSelect,
+                actionError,
+                validationMessages.actionRequired
+            );
 
-        tableBody.addEventListener("click", (e) => {
-            if (e.target.classList.contains("remove-btn")) {
-                const row = e.target.closest("tr");
-                const resource = row.children[0].textContent;
-                const action = row.children[1].textContent;
-                permissions.delete(`${resource}_${action}`);
-                row.remove();
-                updateHiddenInput();
+            // Enable/Disable Add button based on validation
+            if (resourceValid && actionValid) {
+                addPermissionBtn.disabled = false;
+                addPermissionBtn.classList.remove("submit-btn-disabled");
+            } else {
+                addPermissionBtn.disabled = true;
+                addPermissionBtn.classList.add("submit-btn-disabled");
+            }
+
+            return resourceValid && actionValid;
+        }
+
+        // Validate Table Has Permissions
+        function validateTable() {
+            if (permissions.size === 0) {
+                tableValidation.textContent = validationMessages.noPermissions;
+                tableValidation.style.display = "block";
+                submitBtn.disabled = true;
+                submitBtn.classList.add("submit-btn-disabled");
+                return false;
+            } else {
+                tableValidation.style.display = "none";
+                submitBtn.disabled = false;
+                submitBtn.classList.remove("submit-btn-disabled");
+                return true;
+            }
+        }
+
+        // Real-time validation on field change
+        resourceSelect.addEventListener("change", validateSelections);
+        actionSelect.addEventListener("change", validateSelections);
+
+        // Real-time validation on input/focus
+        resourceSelect.addEventListener("blur", () => {
+            if (resourceSelect.value) {
+                validateField(resourceSelect, resourceError, validationMessages.resourceRequired);
             }
         });
 
+        actionSelect.addEventListener("blur", () => {
+            if (actionSelect.value) {
+                validateField(actionSelect, actionError, validationMessages.actionRequired);
+            }
+        });
+
+        // Add Permission
+        addPermissionBtn.addEventListener("click", () => {
+            if (!validateSelections()) return;
+
+            const resource = resourceSelect.value;
+            const action = actionSelect.value;
+            const key = `${resource}_${action}`;
+
+            // Check for duplicates
+            if (permissions.has(key)) {
+                showAlert(validationMessages.duplicatePermission, 'warning');
+                return;
+            }
+
+            permissions.add(key);
+
+            // Hide empty row
+            if (emptyTableRow) {
+                emptyTableRow.style.display = "none";
+            }
+
+            // Add new row
+            const row = document.createElement("tr");
+            row.classList.add("fade-in");
+            row.innerHTML = `
+                <td>${resource}</td>
+                <td>${action}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm remove-btn" title="Remove permission">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+            updateHiddenInput();
+            validateTable();
+
+            // Reset selects and validation
+            resourceSelect.value = "";
+            actionSelect.value = "";
+            resourceSelect.classList.remove("is-valid");
+            actionSelect.classList.remove("is-valid");
+            addPermissionBtn.disabled = true;
+            addPermissionBtn.classList.add("submit-btn-disabled");
+
+            showAlert(validationMessages.permissionAdded, 'success');
+        });
+
+        // Remove Permission
+        tableBody.addEventListener("click", (e) => {
+            if (e.target.classList.contains("remove-btn") || e.target.closest(".remove-btn")) {
+                const button = e.target.classList.contains("remove-btn") ? e.target : e.target.closest(".remove-btn");
+                const row = button.closest("tr");
+                const resource = row.children[0].textContent;
+                const action = row.children[1].textContent;
+
+                permissions.delete(`${resource}_${action}`);
+                row.remove();
+                updateHiddenInput();
+                validateTable();
+
+                // Show empty row if no permissions
+                if (permissions.size === 0 && emptyTableRow) {
+                    emptyTableRow.style.display = "";
+                }
+
+                showAlert('Permission removed', 'info');
+            }
+        });
+
+        // Update Hidden Input
         function updateHiddenInput() {
             selectedInput.value = Array.from(permissions).join(",");
         }
+
+        // Form Submit Validation
+        form.addEventListener("submit", (e) => {
+            if (!validateTable()) {
+                e.preventDefault();
+                showAlert(validationMessages.noPermissions, 'danger');
+            }
+        });
+
+        // Show Alert (Bootstrap Toast alternative)
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.custom-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show custom-alert`;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.style.minWidth = '300px';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.body.appendChild(alertDiv);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Initialize validation state
+        validateTable();
     </script>
 }
