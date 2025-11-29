@@ -15,5 +15,11 @@
         public string Status { get; set; } = string.Empty;
         public DateTime? Deadline { get; set; }
         public List<string> ProjectNames { get; set; } = new();
+        
+        // Audit
+        public string? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }

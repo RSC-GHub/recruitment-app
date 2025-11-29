@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Recruitment.Application.Interfaces.Services.File;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure;
 using Recruitment.Infrastructure.Data;
 using Recruitment.Web.Authorization;
 using Recruitment.Web.Middleware.AuditTrailMiddleware;
 using Recruitment.Web.Middleware.ExceptionMiddleware;
+using Recruitment.Web.Services;
 
 namespace Recruitment.Web
 {
@@ -18,6 +20,7 @@ namespace Recruitment.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddScoped<IFileStorageService, FileService>();
 
             builder.Services.AddIdentity<User, Role>(options =>
             {

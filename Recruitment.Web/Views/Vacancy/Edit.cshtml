@@ -224,22 +224,27 @@
 
     <script>
         $(function () {
+
+            /* --- Select2 Initialization --- */
             $('.select2-dropdown').select2({
                 width: '100%',
                 placeholder: "-- Select --",
                 allowClear: true
             });
 
-            // Hide all validation messages on load
+            /* --- Hide all validation on load --- */
             $('.validation-message').hide();
 
-            // Skip validation for ProjectIds
+            /* --- Validation function --- */
             function validateField($field) {
                 var fieldName = $field.attr('name');
+
+                // Skip validation for ProjectIds (multi-select)
                 if (fieldName === 'ProjectIds') return;
 
                 var $validationSpan = $field.siblings('.validation-message').first();
                 var isRequired = $field.closest('.mb-3').find('label .text-danger').length > 0;
+
                 var value = $field.val();
 
                 if (isRequired && (!value || value === '' || (Array.isArray(value) && value.length === 0))) {
@@ -253,24 +258,41 @@
 
             var touchedFields = new Set();
 
+            /* --- Field change/blur validation --- */
             $('input, textarea, select').on('blur change input', function () {
                 var $field = $(this);
                 touchedFields.add($field.attr('name'));
                 validateField($field);
             });
 
+            /* --- Form submit --- */
             $('form').on('submit', function (e) {
+
+                // IMPORTANT FIX:
+                // Ensure ProjectIds always sends empty array instead of null
+                var projectSelect = $('select[name="ProjectIds"]');
+                if (projectSelect.val() === null) {
+                    projectSelect.val([]);   // This ensures backend receives an empty list
+                }
+
                 var isValid = true;
+
                 $('input, textarea, select').each(function () {
                     var $field = $(this);
                     touchedFields.add($field.attr('name'));
                     validateField($field);
+
                     var $validationSpan = $field.siblings('.validation-message').first();
-                    if ($validationSpan.length === 0) $validationSpan = $field.next('.select2-container').next('.validation-message');
-                    if ($validationSpan.is(':visible')) isValid = false;
+                    if ($validationSpan.length === 0)
+                        $validationSpan = $field.next('.select2-container').next('.validation-message');
+
+                    if ($validationSpan.is(':visible'))
+                        isValid = false;
                 });
+
                 if (!isValid) e.preventDefault();
             });
+
         });
     </script>
 }

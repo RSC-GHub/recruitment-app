@@ -10,6 +10,8 @@
         public DateTime? Deadline { get; set; }
 
         public List<string> ProjectNames { get; set; } = new();
+
+
     }
 
 }

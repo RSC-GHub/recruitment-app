@@ -1,0 +1,308 @@
+﻿@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantCreateVM
+
+@{
+    ViewData["Title"] = "Create Applicant";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Add New Applicant</h2>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3" id="applicantForm">
+
+        <div class="col-md-6">
+            <label class="form-label">Full Name</label><span class="text-danger"> *</span>
+            <input asp-for="FullName" class="form-control" id="fullName" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Email</label><span class="text-danger"> *</span>
+            <input asp-for="Email" class="form-control" type="email" id="email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Phone Number</label><span class="text-danger"> *</span>
+            <input asp-for="PhoneNumber" class="form-control" id="phoneNumber" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Country</label><span class="text-danger"> *</span>
+            <select asp-for="CountryId" asp-items="Model.Countries" class="form-select" id="countryId">
+                <option value="">-- Select Country --</option>
+            </select>
+            <span asp-validation-for="CountryId" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">City</label><span class="text-danger"> *</span>
+            <input asp-for="City" class="form-control" id="city" />
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Nationality</label><span class="text-danger"> *</span>
+            <input asp-for="Nationality" class="form-control" id="nationality" />
+            <span asp-validation-for="Nationality" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Gender</label><span class="text-danger"> *</span>
+            <select asp-for="Gender" asp-items="Model.GenderType" class="form-select" id="gender">
+                <option value="">-- Select Gender --</option>
+            </select>
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Military Status</label><span class="text-danger"> *</span>
+            <select asp-for="MilitaryStatus" asp-items="Model.MilitaryStatuses" class="form-select" id="militaryStatus">
+                <option value="">-- Select Military Status --</option>
+            </select>
+            <span asp-validation-for="MilitaryStatus" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Current Job</label><span class="text-danger"> *</span>
+            <input asp-for="CurrentJob" class="form-control" id="currentJob" />
+            <span asp-validation-for="CurrentJob" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Current Employer</label><span class="text-danger"> *</span>
+            <input asp-for="CurrentEmployer" class="form-control" id="currentEmployer" />
+            <span asp-validation-for="CurrentEmployer" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Current Salary</label><span class="text-danger"> *</span>
+            <input asp-for="CurrentSalary" class="form-control" type="number" step="0.01" id="currentSalary" />
+            <span asp-validation-for="CurrentSalary" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Expected Salary</label><span class="text-danger"> *</span>
+            <input asp-for="ExpectedSalary" class="form-control" type="number" step="0.01" id="expectedSalary" />
+            <span asp-validation-for="ExpectedSalary" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Currency</label><span class="text-danger"> *</span>
+            <select asp-for="CurrencyId" asp-items="Model.Currencies" class="form-select" id="currencyId">
+                <option value="">-- Select Currency --</option>
+            </select>
+            <span asp-validation-for="CurrencyId" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Address</label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Education Degree</label><span class="text-danger"> *</span>
+            <select asp-for="EducationDegree" asp-items="Model.EducationDegrees" class="form-select" id="educationDegree">
+                <option value="">-- Select Degree --</option>
+            </select>
+            <span asp-validation-for="EducationDegree" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Graduation Year</label>
+            <input asp-for="GraduationYear" class="form-control" type="number" />
+            <span asp-validation-for="GraduationYear" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Major</label>
+            <input asp-for="Major" class="form-control" />
+            <span asp-validation-for="Major" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Notice Period (days)</label><span class="text-danger"> *</span>
+            <input asp-for="NoticePeriod" class="form-control" type="number" id="noticePeriod" />
+            <span asp-validation-for="NoticePeriod" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-12">
+            <label class="form-label">Extra Certificate</label>
+            <textarea asp-for="ExtraCertificate" class="form-control"></textarea>
+            <span asp-validation-for="ExtraCertificate" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-12">
+            <label class="form-label">Upload CV (PDF)</label><span class="text-danger"> *</span>
+            <input asp-for="CV" type="file" class="form-control" accept=".pdf" id="cv" />
+            <span asp-validation-for="CV" class="text-danger"></span>
+        </div>
+
+        <div class="col-12 text-end mt-4">
+            <button type="submit" class="btn btn-success px-4" id="saveBtn">
+                <i class="bi bi-check-circle me-1"></i> Save
+            </button>
+            <a asp-action="Index" class="btn btn-secondary px-4 ms-2">
+                <i class="bi bi-x-circle me-1"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Gender change handler to disable/enable Military Status
+            $('#gender').on('change', function() {
+                var genderValue = $(this).val();
+                var militaryStatusSelect = $('#militaryStatus');
+
+                if (genderValue == '2') { // Female
+                    militaryStatusSelect.prop('disabled', true);
+                    militaryStatusSelect.val(''); // Clear selection
+                    militaryStatusSelect.removeClass('is-invalid');
+                    militaryStatusSelect.siblings('.text-danger').text('');
+                } else {
+                    militaryStatusSelect.prop('disabled', false);
+                }
+            });
+
+            // Trigger on page load in case there's a pre-selected value
+            $('#gender').trigger('change');
+
+            // Real-time validation for required fields
+            var requiredFieldIds = ['fullName', 'email', 'phoneNumber', 'countryId', 'city', 'nationality', 'gender', 'militaryStatus', 'currentJob', 'currentEmployer', 'currentSalary', 'expectedSalary', 'currencyId', 'educationDegree', 'noticePeriod', 'cv'];
+
+            for (var i = 0; i < requiredFieldIds.length; i++) {
+                var fieldId = requiredFieldIds[i];
+                var $field = $('#' + fieldId);
+
+                $field.on('blur change', function() {
+                    validateField($(this));
+                });
+
+                // Also validate on input for text fields
+                if ($field.is('input[type="text"], input[type="email"], input[type="number"], textarea')) {
+                    $field.on('input', function() {
+                        validateField($(this));
+                    });
+                }
+            }
+
+            function validateField($field) {
+                var fieldId = $field.attr('id');
+                var value = $field.val();
+                var isValid = true;
+                var errorMessage = '';
+
+                // Skip validation for disabled fields
+                if ($field.prop('disabled')) {
+                    $field.removeClass('is-invalid is-valid');
+                    $field.siblings('span.text-danger').text('');
+                    return true;
+                }
+
+                // Check if field is empty
+                if (!value || value.trim() === '') {
+                    isValid = false;
+                    errorMessage = 'This field is required.';
+                }
+
+                // Email validation
+                if (fieldId === 'email' && value) {
+                    var emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                    if (!emailPattern.test(value)) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid email address.';
+                    }
+                }
+
+                // Phone validation (basic)
+                if (fieldId === 'phoneNumber' && value) {
+                    var phonePattern = /^[\d\s\-\+\(\)]+$/;
+                    if (!phonePattern.test(value) || value.length < 10) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid phone number.';
+                    }
+                }
+
+                // Number validation
+                if ($field.attr('type') === 'number' && value) {
+                    if (isNaN(value) || parseFloat(value) < 0) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid number.';
+                    }
+                }
+
+                // File validation
+                if (fieldId === 'cv' && $field[0].files.length > 0) {
+                    var file = $field[0].files[0];
+                    if (file.type !== 'application/pdf') {
+                        isValid = false;
+                        errorMessage = 'Please upload a PDF file.';
+                    }
+                    if (file.size > 5242880) { // 5MB
+                        isValid = false;
+                        errorMessage = 'File size must be less than 5MB.';
+                    }
+                }
+
+                // Find the validation span (asp-validation-for span)
+                var $validationSpan = $field.siblings('span.text-danger[data-valmsg-for="' + $field.attr('name') + '"]');
+                if ($validationSpan.length === 0) {
+                    $validationSpan = $field.siblings('span.text-danger').first();
+                }
+
+                // Update UI
+                if (isValid) {
+                    $field.removeClass('is-invalid').addClass('is-valid');
+                    $validationSpan.text('').hide();
+                } else {
+                    $field.removeClass('is-valid').addClass('is-invalid');
+                    $validationSpan.text(errorMessage).show();
+                }
+
+                return isValid;
+            }
+
+            // Form submission validation
+            $('#applicantForm').on('submit', function(e) {
+                // Don't prevent default initially - let it try to submit
+                var isFormValid = true;
+                var firstInvalidField = null;
+
+                for (var i = 0; i < requiredFieldIds.length; i++) {
+                    var $field = $('#' + requiredFieldIds[i]);
+                    if (!$field.prop('disabled')) {
+                        if (!validateField($field)) {
+                            isFormValid = false;
+                            if (firstInvalidField === null) {
+                                firstInvalidField = $field;
+                            }
+                        }
+                    }
+                }
+
+                if (!isFormValid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Focus on first invalid field
+                    if (firstInvalidField !== null) {
+                        firstInvalidField.focus();
+                    }
+
+                    alert('Please fill in all required fields correctly.');
+                    return false;
+                }
+
+                // If valid, allow form to submit naturally
+                return true;
+            });
+        });
+    </script>
+}

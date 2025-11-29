@@ -40,7 +40,7 @@ namespace Recruitment.Web.ViewModels.CoreBusiness.Vacancy
 
         // MultiSelect Projects
         [Display(Name = "Projects")]
-        public List<int> ProjectIds { get; set; } = new();
+        public List<int>? ProjectIds { get; set; } = new();
         public List<SelectListItem>? TitlesDropdown { get; set; }
         public List<SelectListItem>? ProjectsDropdown { get; set; }
     }

@@ -34,6 +34,7 @@ namespace Recruitment.Infrastructure.Data
         // User Management
         public DbSet<Permission> Permissions { get; set; } = null!;
         public DbSet<RolePermission> RolePermissions { get; set; } = null!;
+        public DbSet<Applicant> Applicants { get; set; } = null!;
 
         private string GetCurrentUsername()
         {

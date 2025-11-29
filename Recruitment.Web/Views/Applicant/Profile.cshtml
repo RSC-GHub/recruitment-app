@@ -1,0 +1,148 @@
+﻿@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantProfileVM
+
+@{
+    ViewData["Title"] = "Applicant Profile";
+}
+
+@* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" /> *@
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">@Model.FullName</h2>
+
+        <!-- Action Buttons on Right -->
+        <div class="d-flex gap-2">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-success">Edit</a>
+            <a href="@Url.Action("History", new { id = Model.Id })" class="btn btn-info">History</a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <strong>@Model.FullName</strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                    <form asp-action="Delete" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Summary Card -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title text-primary">@Model.CurrentJob</h4>
+            <p class="text-muted mb-1">
+                <strong>@Model.City</strong>, @Model.CountryName |
+                <strong>Nationality:</strong> @Model.Nationality
+            </p>
+            <p class="mb-0">
+                <strong>Expected Salary:</strong> @Model.ExpectedSalary @Model.CurrencyName
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Left Column -->
+        <div class="col-md-6">
+
+            <!-- Contact Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white fw-bold">Contact Details</div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+                    <p><strong>Address:</strong> @(string.IsNullOrEmpty(Model.Address) ? "N/A" : Model.Address)</p>
+                </div>
+            </div>
+
+            <!-- Job Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white fw-bold">Professional Information</div>
+                <div class="card-body">
+                    <p><strong>Current Job:</strong> @Model.CurrentJob</p>
+                    <p><strong>Current Employer:</strong> @Model.CurrentEmployer</p>
+                    <p><strong>Current Salary:</strong> @Model.CurrentSalary @Model.CurrencyName</p>
+                    <p><strong>Notice Period:</strong> @(string.IsNullOrEmpty(Model.NoticePeriod) ? "N/A" : Model.NoticePeriod)</p>
+                    <p><strong>Extra Certifications:</strong> @(string.IsNullOrEmpty(Model.ExtraCertificate) ? "N/A" : Model.ExtraCertificate)</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-6">
+
+            <!-- Education -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white fw-bold">Education</div>
+                <div class="card-body">
+                    <p><strong>Degree:</strong> @Model.EducationDegree</p>
+                    <p><strong>Major:</strong> @(string.IsNullOrEmpty(Model.Major) ? "N/A" : Model.Major)</p>
+                    <p><strong>Graduation Year:</strong> @(Model.GraduationYear ?? 0)</p>
+                </div>
+            </div>
+
+            <!-- Personal Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white fw-bold">Personal Information</div>
+                <div class="card-body">
+                    <p><strong>Gender:</strong> @Model.Gender</p>
+                    <p><strong>Military Status:</strong> @Model.MilitaryStatus</p>
+                </div>
+            </div>
+
+            <!-- CV -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white fw-bold">CV</div>
+                <div class="card-body">
+                    @if (!string.IsNullOrWhiteSpace(Model.CVFilePath))
+                    {
+                        <a class="btn btn-success" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">Download CV</a>
+                    }
+                    else
+                    {
+                        <p class="text-danger">No CV uploaded.</p>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Audit Info -->
+    <div class="card shadow-sm mt-4 mb-4">
+        <div class="card-header bg-dark text-white fw-bold">Audit Information</div>
+        <div class="card-body">
+            <p><strong>Created By:</strong> @Model.CreatedBy</p>
+            <p><strong>Created On:</strong> @Model.CreatedOn</p>
+
+            @if (Model.ModifiedOn.HasValue)
+            {
+                <p><strong>Modified By:</strong> @Model.ModifiedBy</p>
+                <p><strong>Modified On:</strong> @Model.ModifiedOn</p>
+            }
+            else
+            {
+                <p class="text-muted">Never modified.</p>
+            }
+        </div>
+    </div>
+
+</div>

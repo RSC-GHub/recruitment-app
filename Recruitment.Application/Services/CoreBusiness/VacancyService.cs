@@ -50,9 +50,18 @@ namespace Recruitment.Application.Services.CoreBusiness
                 SalaryRangeMax = vacancy.SalaryRangeMax,
                 Status = vacancy.Status.ToString(),
                 Deadline = vacancy.Deadline,
-                ProjectNames = vacancy.ProjectVacancies?.Select(pv => pv.Project?.ProjectName ?? "").ToList() ?? new List<string>()
+                ProjectNames = vacancy.ProjectVacancies?
+                                    .Select(pv => pv.Project?.ProjectName ?? "")
+                                    .ToList() ?? new List<string>(),
+
+                // Audit
+                CreatedBy = vacancy.CreatedBy,
+                CreatedOn = vacancy.CreatedOn,
+                ModifiedBy = vacancy.ModifiedBy,
+                ModifiedOn = vacancy.ModifiedOn
             };
         }
+
 
         public async Task<VacancyDetailsDTO> CreateVacancyAsync(VacancyCreateDTO dto)
         {

@@ -1,0 +1,207 @@
+﻿@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantEditVM
+
+@{
+    ViewData["Title"] = "Edit Applicant";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Edit Applicant</h2>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="row g-3" id="applicantForm">
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Full Name -->
+        <div class="col-md-6">
+            <label class="form-label">Full Name</label><span class="text-danger"> *</span>
+            <input asp-for="FullName" class="form-control" id="fullName" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-6">
+            <label class="form-label">Email</label><span class="text-danger"> *</span>
+            <input asp-for="Email" class="form-control" type="email" id="email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="col-md-6">
+            <label class="form-label">Phone Number</label><span class="text-danger"> *</span>
+            <input asp-for="PhoneNumber" class="form-control" id="phoneNumber" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <!-- Country -->
+        <div class="col-md-6">
+            <label class="form-label">Country</label><span class="text-danger"> *</span>
+            <select asp-for="CountryId" asp-items="Model.Countries" class="form-select" id="countryId">
+                <option value="">-- Select Country --</option>
+            </select>
+            <span asp-validation-for="CountryId" class="text-danger"></span>
+        </div>
+
+        <!-- City -->
+        <div class="col-md-6">
+            <label class="form-label">City</label><span class="text-danger"> *</span>
+            <input asp-for="City" class="form-control" id="city" />
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+
+        <!-- Nationality -->
+        <div class="col-md-6">
+            <label class="form-label">Nationality</label><span class="text-danger"> *</span>
+            <input asp-for="Nationality" class="form-control" id="nationality" />
+            <span asp-validation-for="Nationality" class="text-danger"></span>
+        </div>
+
+        <!-- Gender -->
+        <div class="col-md-6">
+            <label class="form-label">Gender</label><span class="text-danger"> *</span>
+            <select asp-for="Gender" asp-items="Model.GenderType" class="form-select" id="gender">
+                <option value="">-- Select Gender --</option>
+            </select>
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+
+        <!-- Military Status -->
+        <div class="col-md-6">
+            <label class="form-label">Military Status</label><span class="text-danger"> *</span>
+            <select asp-for="MilitaryStatus" asp-items="Model.MilitaryStatuses" class="form-select" id="militaryStatus">
+                <option value="">-- Select Military Status --</option>
+            </select>
+            <span asp-validation-for="MilitaryStatus" class="text-danger"></span>
+        </div>
+
+        <!-- Current Job -->
+        <div class="col-md-6">
+            <label class="form-label">Current Job</label><span class="text-danger"> *</span>
+            <input asp-for="CurrentJob" class="form-control" id="currentJob" />
+            <span asp-validation-for="CurrentJob" class="text-danger"></span>
+        </div>
+
+        <!-- Current Employer -->
+        <div class="col-md-6">
+            <label class="form-label">Current Employer</label><span class="text-danger"> *</span>
+            <input asp-for="CurrentEmployer" class="form-control" id="currentEmployer" />
+            <span asp-validation-for="CurrentEmployer" class="text-danger"></span>
+        </div>
+
+        <!-- Current Salary -->
+        <div class="col-md-6">
+            <label class="form-label">Current Salary</label><span class="text-danger"> *</span>
+            <input asp-for="CurrentSalary" class="form-control" type="number" step="0.01" id="currentSalary" />
+            <span asp-validation-for="CurrentSalary" class="text-danger"></span>
+        </div>
+
+        <!-- Expected Salary -->
+        <div class="col-md-6">
+            <label class="form-label">Expected Salary</label><span class="text-danger"> *</span>
+            <input asp-for="ExpectedSalary" class="form-control" type="number" step="0.01" id="expectedSalary" />
+            <span asp-validation-for="ExpectedSalary" class="text-danger"></span>
+        </div>
+
+        <!-- Currency -->
+        <div class="col-md-6">
+            <label class="form-label">Currency</label><span class="text-danger"> *</span>
+            <select asp-for="CurrencyId" asp-items="Model.Currencies" class="form-select" id="currencyId">
+                <option value="">-- Select Currency --</option>
+            </select>
+            <span asp-validation-for="CurrencyId" class="text-danger"></span>
+        </div>
+
+        <!-- Address -->
+        <div class="col-md-6">
+            <label class="form-label">Address</label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <!-- Education Degree -->
+        <div class="col-md-6">
+            <label class="form-label">Education Degree</label><span class="text-danger"> *</span>
+            <select asp-for="EducationDegree" asp-items="Model.EducationDegrees" class="form-select" id="educationDegree">
+                <option value="">-- Select Degree --</option>
+            </select>
+            <span asp-validation-for="EducationDegree" class="text-danger"></span>
+        </div>
+
+        <!-- Graduation Year -->
+        <div class="col-md-6">
+            <label class="form-label">Graduation Year</label>
+            <input asp-for="GraduationYear" class="form-control" type="number" />
+            <span asp-validation-for="GraduationYear" class="text-danger"></span>
+        </div>
+
+        <!-- Major -->
+        <div class="col-md-6">
+            <label class="form-label">Major</label>
+            <input asp-for="Major" class="form-control" />
+            <span asp-validation-for="Major" class="text-danger"></span>
+        </div>
+
+        <!-- Notice Period -->
+        <div class="col-md-6">
+            <label class="form-label">Notice Period (days)</label><span class="text-danger"> *</span>
+            <input asp-for="NoticePeriod" class="form-control" type="number" id="noticePeriod" />
+            <span asp-validation-for="NoticePeriod" class="text-danger"></span>
+        </div>
+
+        <!-- Extra Certificate -->
+        <div class="col-md-12">
+            <label class="form-label">Extra Certificate</label>
+            <textarea asp-for="ExtraCertificate" class="form-control"></textarea>
+            <span asp-validation-for="ExtraCertificate" class="text-danger"></span>
+        </div>
+
+        <!-- CV Upload -->
+        <div class="col-md-12">
+            <label class="form-label">Upload New CV (PDF)</label>
+
+            @if (!string.IsNullOrWhiteSpace(Model.ExistingCVPath))
+            {
+                <p class="text-muted">
+                    A CV is already uploaded. Leave this empty if you do not want to replace it.
+                </p>
+            }
+
+            <input asp-for="CV" type="file" class="form-control" accept=".pdf,.doc,.docx" />
+            <span asp-validation-for="CV" class="text-danger"></span>
+
+            @if (!string.IsNullOrWhiteSpace(Model.ExistingCVPath))
+            {
+                <div class="mt-2">
+                    <strong>Existing CV:</strong>
+                    <a href="@Model.ExistingCVPath" class="btn btn-sm btn-outline-primary" target="_blank">View / Download</a>
+                </div>
+            }
+        </div>
+
+
+        <div class="col-12 text-end mt-4">
+            <button type="submit" class="btn btn-success px-4">Save Changes</button>
+            <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            // Gender / Military Status logic
+            $('#gender').on('change', function() {
+                var genderValue = $(this).val();
+                var militaryStatusSelect = $('#militaryStatus');
+
+                if (genderValue == '2') { // Female
+                    militaryStatusSelect.prop('disabled', true).val('');
+                    militaryStatusSelect.removeClass('is-invalid');
+                    militaryStatusSelect.siblings('.text-danger').text('');
+                } else {
+                    militaryStatusSelect.prop('disabled', false);
+                }
+            });
+            $('#gender').trigger('change');
+        });
+    </script>
+}

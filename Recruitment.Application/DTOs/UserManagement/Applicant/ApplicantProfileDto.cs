@@ -1,40 +1,48 @@
-﻿using Recruitment.Domain.Entities.CoreBusiness;
-using Recruitment.Domain.Enums;
+﻿using Recruitment.Domain.Enums;
 
-namespace Recruitment.Domain.Entities.UserManagement
+namespace Recruitment.Application.DTOs.UserManagement.Applicant
 {
-    public class Applicant : BaseEntity
+    public class ApplicantProfileDto
     {
-        // Required
+        public int Id { get; set; }
+
+        // Basic Info
         public string FullName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
 
+        // Location
         public int CountryId { get; set; }
-        public Country Country { get; set; } = null!;
-
+        public string CountryName { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Nationality { get; set; } = null!;
 
+        // Job Info
         public string CurrentJob { get; set; } = null!;
         public string CurrentEmployer { get; set; } = null!;
 
         public decimal CurrentSalary { get; set; }
         public decimal ExpectedSalary { get; set; }
 
+        // Currency
         public int CurrencyId { get; set; }
-        public Currency Currency { get; set; } = null!;
+        public string CurrencyName { get; set; } = null!;
 
-        // Optional
+        // Optional fields
         public string? Address { get; set; }
         public Gender Gender { get; set; }
         public MilitaryStatus MilitaryStatus { get; set; }
-        public EducationDegree EducationDegree { get; set; } 
+        public EducationDegree EducationDegree { get; set; }
         public short? GraduationYear { get; set; }
         public string? Major { get; set; }
         public string? NoticePeriod { get; set; }
         public string? ExtraCertificate { get; set; }
         public string CVFilePath { get; set; } = null!;
 
+        // Audit
+        public string? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
     }
 }

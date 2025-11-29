@@ -1,9 +1,9 @@
-﻿using Recruitment.Domain.Entities.CoreBusiness;
+﻿using Microsoft.AspNetCore.Http;
 using Recruitment.Domain.Enums;
 
-namespace Recruitment.Domain.Entities.UserManagement
+namespace Recruitment.Application.DTOs.UserManagement.Applicant
 {
-    public class Applicant : BaseEntity
+    public class ApplicantCreateDto
     {
         // Required
         public string FullName { get; set; } = null!;
@@ -11,8 +11,6 @@ namespace Recruitment.Domain.Entities.UserManagement
         public string PhoneNumber { get; set; } = null!;
 
         public int CountryId { get; set; }
-        public Country Country { get; set; } = null!;
-
         public string City { get; set; } = null!;
         public string Nationality { get; set; } = null!;
 
@@ -23,18 +21,17 @@ namespace Recruitment.Domain.Entities.UserManagement
         public decimal ExpectedSalary { get; set; }
 
         public int CurrencyId { get; set; }
-        public Currency Currency { get; set; } = null!;
 
         // Optional
         public string? Address { get; set; }
         public Gender Gender { get; set; }
         public MilitaryStatus MilitaryStatus { get; set; }
-        public EducationDegree EducationDegree { get; set; } 
+        public EducationDegree EducationDegree { get; set; }
         public short? GraduationYear { get; set; }
         public string? Major { get; set; }
         public string? NoticePeriod { get; set; }
         public string? ExtraCertificate { get; set; }
-        public string CVFilePath { get; set; } = null!;
 
+        public IFormFile? CV { get; set; }   
     }
 }

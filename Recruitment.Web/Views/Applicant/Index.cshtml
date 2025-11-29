@@ -1,0 +1,98 @@
+﻿@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantIndexVM
+
+@{
+    ViewData["Title"] = "Applicants";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Applicants</h2>
+    <a asp-action="Create" class="btn btn-success mb-3">Add Applicant</a>
+
+    <!-- Search Form -->
+    <form asp-action="Index" method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Search by name, email, City, Nationality, Phone..." />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="submit">Search</button>
+        </div>
+    </form>
+
+    <!-- Applicants Table -->
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Country</th>
+                <th>Degree</th>
+                <th>Graduation Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Applicants != null && Model.Applicants.Any())
+            {
+                foreach (var a in Model.Applicants)
+                {
+                    <tr style="cursor:pointer;" onclick="location.href='@Url.Action("Profile", "Applicant", new { id = a.Id })'">
+                        <td>@a.FullName</td>
+                        <td>@a.Email</td>
+                        <td>@a.PhoneNumber</td>
+                        <td>@a.CountryName</td>
+                        <td>@a.EducationDegree</td>
+                        <td>@a.GraduationYear</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No applicants found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    @{
+        int totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
+    }
+
+    @if (totalPages > 1)
+    {
+        <nav>
+            <ul class="pagination justify-content-center">
+
+                <!-- Prev -->
+                <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@(Model.Page - 1)"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">Previous</a>
+                </li>
+
+                <!-- Page Numbers -->
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-search="@Model.Search">@i</a>
+                    </li>
+                }
+
+                <!-- Next -->
+                <li class="page-item @(Model.Page == totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@(Model.Page + 1)"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">Next</a>
+                </li>
+
+            </ul>
+        </nav>
+    }
+</div>

@@ -100,11 +100,18 @@ namespace Recruitment.Web.Controllers
                 SalaryRangeMax = vacancy.SalaryRangeMax,
                 Status = vacancy.Status,
                 Deadline = vacancy.Deadline,
-                ProjectNames = vacancy.ProjectNames
+                ProjectNames = vacancy.ProjectNames,
+
+                // Audit
+                CreatedBy = vacancy.CreatedBy,
+                CreatedOn = vacancy.CreatedOn,
+                ModifiedBy = vacancy.ModifiedBy,
+                ModifiedOn = vacancy.ModifiedOn
             };
 
             return View(vm);
         }
+
 
         // GET: Vacancy/Create
         public async Task<IActionResult> Create()
