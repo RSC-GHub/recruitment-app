@@ -24,6 +24,9 @@
             <a asp-action="GetSubmission" asp-route-id="@Model.Id" class="btn btn-success">
                 <i class="bi bi-file-earmark-text"></i> View Submissions
             </a>
+            <a asp-action="AssignApplicant" asp-route-id="@Model.Id" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignApplicantModal">
+                <i class="bi bi-person-plus"></i> Assign Applicant
+            </a>
 
             <form asp-action="Delete" asp-route-id="@Model.Id" method="post"
                   onsubmit="return confirm('Are you sure you want to delete this vacancy?');">
@@ -170,3 +173,112 @@
         </div>
     </div>
 </div>
+<!-- Assign Applicant Modal -->
+<div class="modal fade" id="assignApplicantModal" tabindex="-1" aria-labelledby="assignApplicantModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="assignApplicantForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignApplicantModalLabel">Assign Applicant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="VacancyId" name="VacancyId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label for="SelectedApplicantId" class="form-label">Select Applicant</label><span class="text-danger"> *</span>
+                        <select id="SelectedApplicantId" name="SelectedApplicantId" class="form-select">
+                            <option value="">-- Select Applicant --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Note" class="form-label">Note</label>
+                        <textarea id="Note" name="Note" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div id="assignApplicantError" class="text-danger"></div>
+                    <div id="assignApplicantSuccess" class="text-success"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Assign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        var assignModal = document.getElementById('assignApplicantModal');
+               assignModal.addEventListener('show.bs.modal', function (event) {
+            var select = document.getElementById('SelectedApplicantId');
+            select.innerHTML = '<option value="">Loading...</option>';
+
+            fetch('/Vacancy/GetAllApplicants')
+                .then(response => response.json())
+                .then(data => {
+                    select.innerHTML = '<option value="">-- Select Applicant --</option>';
+                    data.forEach(a => {
+                        var opt = document.createElement('option');
+                        opt.value = a.id;
+                        opt.text = a.name + ' (' + (a.currentJob || '-') + ')';
+                        select.appendChild(opt);
+                    });
+
+                    // Init Select2 with search
+                    $(select).select2({
+                        dropdownParent: $('#assignApplicantModal'),
+                        width: '100%',
+                        placeholder: '-- Select Applicant --'
+                    });
+                })
+                .catch(err => {
+                    select.innerHTML = '<option value="">Error loading applicants</option>';
+                });
+        });
+
+    </script>
+
+    <script>
+                document.getElementById('assignApplicantForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var vacancyId = document.getElementById('VacancyId').value;
+            var selectedApplicantId = document.getElementById('SelectedApplicantId').value;
+            var note = document.getElementById('Note').value;
+
+            if (!selectedApplicantId) {
+                document.getElementById('assignApplicantError').innerText = 'Please select an applicant';
+                return;
+            }
+
+            fetch('/Vacancy/AssignApplicant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    VacancyId: parseInt(vacancyId),
+                    SelectedApplicantId: parseInt(selectedApplicantId),
+                    Note: note // <-- explicitly send Note
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('assignApplicantSuccess').innerText = data.message;
+                    document.getElementById('assignApplicantError').innerText = '';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    document.getElementById('assignApplicantError').innerText = data.message;
+                    document.getElementById('assignApplicantSuccess').innerText = '';
+                }
+            })
+            .catch(err => {
+                document.getElementById('assignApplicantError').innerText = 'An error occurred';
+            });
+        });
+
+    </script>
+}

@@ -93,6 +93,43 @@ namespace Recruitment.Application.Services.UserManagement
             return true;
         }
 
+        public async Task<List<ApplicantDropdownDto>> GetAvailableApplicantsForVacancyAsync(int vacancyId)
+        {
+            var allApplicants = await _unitOfWork.ApplicantRepository.GetAllAsync();
+
+            var appliedApplicants = await _unitOfWork.ApplicationRepository
+                .FindAsync(a => a.VacancyId == vacancyId);
+
+            var appliedIds = appliedApplicants.Select(a => a.ApplicantId).ToHashSet();
+
+            var availableApplicants = allApplicants
+                .Where(a => !appliedIds.Contains(a.Id))
+                .Select(a => new ApplicantDropdownDto
+                {
+                    Id = a.Id,
+                    FullName = a.FullName,
+                    Email = a.Email,
+                    CurrentJob = a.CurrentJob,
+                })
+                .ToList();
+
+            return availableApplicants;
+        }
+
+        public async Task<List<ApplicantDropdownDto>> GetAllApplicantsAsync()
+        {
+            var allApplicants = await _unitOfWork.ApplicantRepository.GetAllAsync();
+
+            return allApplicants.Select(a => new ApplicantDropdownDto
+            {
+                Id = a.Id,
+                FullName = a.FullName,
+                Email = a.Email,
+                CurrentJob = a.CurrentJob
+            }).ToList();
+        }
+
+
         public async Task<ApplicantUpdateDto?> GetApplicantByIdAsync(int id)
         {
             var applicant = await _unitOfWork.ApplicantRepository.GetApplicantProfileAsync(id);

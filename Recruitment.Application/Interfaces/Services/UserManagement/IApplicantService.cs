@@ -11,5 +11,8 @@ namespace Recruitment.Application.Interfaces.Services.UserManagement
         Task<int> CreateApplicantAsync(ApplicantCreateDto dto);
         Task<bool> UpdateApplicantAsync(ApplicantUpdateDto dto);
         Task<bool> DeleteApplicantAsync(int id);
+        Task<List<ApplicantDropdownDto>> GetAvailableApplicantsForVacancyAsync(int vacancyId);
+        Task<List<ApplicantDropdownDto>> GetAllApplicantsAsync();
+
     }
 }

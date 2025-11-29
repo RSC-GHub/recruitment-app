@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.Recruitment_Proccess;
 
 namespace Recruitment.Domain.Entities.UserManagement
 {
@@ -21,5 +22,8 @@ namespace Recruitment.Domain.Entities.UserManagement
 
         public bool IsDeleted { get; set; } = false;
         public ICollection<RolePermission>? RolePermissions { get; set; }
+
+        public ICollection<ApplicantApplication> ReviewedApplications { get; set; } = new List<ApplicantApplication>();
+
     }
 }

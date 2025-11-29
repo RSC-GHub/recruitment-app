@@ -1,4 +1,5 @@
 ﻿using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Enums;
 
 namespace Recruitment.Domain.Entities.UserManagement
@@ -35,6 +36,9 @@ namespace Recruitment.Domain.Entities.UserManagement
         public string? NoticePeriod { get; set; }
         public string? ExtraCertificate { get; set; }
         public string CVFilePath { get; set; } = null!;
+
+        public ICollection<ApplicantApplication> Applications { get; set; } = new List<ApplicantApplication>();
+
 
     }
 }

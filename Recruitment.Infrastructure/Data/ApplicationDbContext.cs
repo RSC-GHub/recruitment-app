@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.UserManagement;
 using System.Linq.Expressions;
 
@@ -35,6 +36,9 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<Permission> Permissions { get; set; } = null!;
         public DbSet<RolePermission> RolePermissions { get; set; } = null!;
         public DbSet<Applicant> Applicants { get; set; } = null!;
+
+        // Recruitment Process
+        public DbSet<ApplicantApplication> Applications { get; set; } 
 
         private string GetCurrentUsername()
         {

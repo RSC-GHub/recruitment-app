@@ -1,4 +1,5 @@
 ﻿using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
+using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.UserManagement;
@@ -24,6 +25,8 @@ namespace Recruitment.Application.Interfaces.Persistence
         ITitleRepository TitleRepository { get; }
         IVacancyRepository VacancyRepository { get; }
         IApplicantRepository ApplicantRepository { get; }
+        IApplicantApplicationRepository ApplicationRepository { get; }
         Task<int> CompleteAsync();
     }
 }
+ 

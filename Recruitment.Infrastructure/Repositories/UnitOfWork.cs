@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
+using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.UserManagement;
@@ -34,6 +35,7 @@ namespace Recruitment.Infrastructure.Repositories
         public IProjectRepository ProjectRepository { get; }
         public ITitleRepository TitleRepository { get; }
         public IApplicantRepository ApplicantRepository { get; }
+        public IApplicantApplicationRepository ApplicationRepository { get; }
 
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
@@ -57,6 +59,7 @@ namespace Recruitment.Infrastructure.Repositories
             TitleRepository = new TitleRepository(context, httpContextAccessor);
             Currencies = new GenericRepository<Currency>(_context, httpContextAccessor);
             ApplicantRepository = new ApplicantRepository(context, httpContextAccessor);
+            ApplicationRepository = new RecruitmentProcess.ApplicantApplicationRepository(context, httpContextAccessor);
         }
 
         public async Task<int> CompleteAsync()

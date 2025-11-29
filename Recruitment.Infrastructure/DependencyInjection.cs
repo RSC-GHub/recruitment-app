@@ -3,14 +3,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
+using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Application.Services.CoreBusiness;
+using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Application.Services.UserManagement;
 using Recruitment.Infrastructure.Data;
 using Recruitment.Infrastructure.Repositories;
 using Recruitment.Infrastructure.Repositories.CoreBusiness;
+using Recruitment.Infrastructure.Repositories.RecruitmentProcess;
 using Recruitment.Infrastructure.Repositories.UserManagement;
 
 namespace Recruitment.Infrastructure
@@ -33,6 +37,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IVacancyRepository, VacancyRepository>();
             services.AddScoped<IApplicantRepository, ApplicantRepository>();
+            services.AddScoped<IApplicantApplicationRepository, ApplicantApplicationRepository>();
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -49,6 +54,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IVacancyService, VacancyService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<IApplicantService, ApplicantService>();
+            services.AddScoped<IApplicantApplicationService, ApplicantApplicationService>();
 
             return services;
         }

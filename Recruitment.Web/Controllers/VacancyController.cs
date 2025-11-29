@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
+using Recruitment.Application.DTOs.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.CoreBusiness.Vacancy;
+using Recruitment.Web.ViewModels.RecruitmentProcess;
 
 namespace Recruitment.Web.Controllers
 {
@@ -12,12 +16,16 @@ namespace Recruitment.Web.Controllers
         private readonly IVacancyService _vacancyService;
         private readonly ITitleService _titleService;
         private readonly IProjectService _projectService;
-
-        public VacancyController(ITitleService titleService, IVacancyService vacancyService, IProjectService projectService)
+        private readonly IApplicantService _applicantService;
+        private readonly IApplicantApplicationService _ApplicationService;
+        
+        public VacancyController(ITitleService titleService, IVacancyService vacancyService, IProjectService projectService, IApplicantApplicationService applicantApplicationService, IApplicantService applicantService)
         {
             _vacancyService = vacancyService;
             _titleService = titleService;
             _projectService = projectService;
+            _ApplicationService = applicantApplicationService;
+            _applicantService = applicantService;
         }
 
         private async Task PopulateDropdowns(VacancyCreateVM vm)
@@ -110,6 +118,32 @@ namespace Recruitment.Web.Controllers
             };
 
             return View(vm);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllApplicants()
+        {
+            var applicants = await _applicantService.GetAllApplicantsAsync();
+            var result = applicants.Select(a => new { a.Id, Name = a.FullName, a.Email, a.CurrentJob }).ToList();
+            return Json(result);
+        }
+
+        // POST: assign applicant
+        [HttpPost]
+        public async Task<IActionResult> AssignApplicant([FromBody] AssignApplicantVM vm)
+        {
+            if (vm.SelectedApplicantId == 0)
+                return Json(new { success = false, message = "Please select an applicant" });
+
+            await _ApplicationService.AssignApplicantAsync(new ApplicationCreateDto
+            {
+                ApplicantId = vm.SelectedApplicantId,
+                VacancyId = vm.VacancyId,
+                Note = vm.Note
+            });
+
+            return Json(new { success = true, message = "Applicant assigned successfully" });
         }
 
 

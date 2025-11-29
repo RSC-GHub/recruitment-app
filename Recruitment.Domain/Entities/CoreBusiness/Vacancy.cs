@@ -1,4 +1,5 @@
-﻿using Recruitment.Domain.Enums;
+﻿using Recruitment.Domain.Entities.Recruitment_Proccess;
+using Recruitment.Domain.Enums;
 
 namespace Recruitment.Domain.Entities.CoreBusiness
 {
@@ -23,5 +24,8 @@ namespace Recruitment.Domain.Entities.CoreBusiness
         public DateTime? Deadline { get; set; }
 
         public ICollection<ProjectVacancy>? ProjectVacancies { get; set; }
+
+        public ICollection<ApplicantApplication> Applications { get; set; } = new List<ApplicantApplication>();
+
     }
 }
