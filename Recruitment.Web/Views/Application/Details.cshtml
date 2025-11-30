@@ -1,0 +1,150 @@
+﻿@using Recruitment.Domain.Enums
+@model Recruitment.Web.ViewModels.RecruitmentProcess.Application.ApplicationDetailVM
+
+@{
+    ViewData["Title"] = "Application Details";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Application Details</h2>
+
+    <!-- Make a decision button -->
+    <a href="#" class="btn btn-warning mb-4" data-bs-toggle="modal" data-bs-target="#reviewModal">
+        Make a decision
+    </a>
+
+    @if (Model.ApplicationStatus == ApplicationStatus.ToInterview)
+    {
+        <a asp-controller="Interview"
+           asp-action="Create"
+           asp-route-applicationId="@Model.Id"
+           class="btn btn-primary mb-4 ms-2">
+            Schedule Interview
+        </a>
+    }
+
+    <div class="row g-3">
+        <!-- Applicant Info -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-primary text-white">Applicant Information</div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> @Model.ApplicantName</p>
+                    <p><strong>Email:</strong> @Model.ApplicantEmail</p>
+                    <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+                    <p><strong>Current Job:</strong> @(Model.CurrentJob ?? "-")</p>
+                    <p><strong>Current Employer:</strong> @(Model.CurrentEmployer ?? "-")</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vacancy Info -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-success text-white">Vacancy Information</div>
+                <div class="card-body">
+                    <p><strong>Title:</strong> @Model.VacancyTitle</p>
+                    <p><strong>Description:</strong> @(Model.VacancyDescription ?? "-")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Info -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-header bg-info text-white">Application Details</div>
+        <div class="card-body">
+            <p><strong>Status:</strong> @Model.ApplicationStatus</p>
+            <p><strong>Applied On:</strong> @Model.ApplicationDate.ToString("yyyy-MM-dd HH:mm")</p>
+            <p><strong>Reviewed By:</strong> @(Model.ReviewedByUserName ?? "-")</p>
+            <p><strong>Review Date:</strong> @(Model.ReviewDate?.ToString("yyyy-MM-dd HH:mm") ?? "-")</p>
+            <p><strong>Note:</strong> @(Model.Note ?? "-")</p>
+        </div>
+    </div>
+</div>
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="reviewForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewModalLabel">Review Application</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="ApplicationId" value="@Model.Id" />
+                    <!-- REMOVED: ReviewedBy hidden input -->
+
+                    <div class="mb-3">
+                        <label class="form-label">Decision</label>
+                        <select name="ApplicationStatus" class="form-select" required>
+                            <option value="">-- Select Decision --</option>
+                            @foreach (var status in Enum.GetValues(typeof(ApplicationStatus)).Cast<ApplicationStatus>())
+                            {
+                                if (status == ApplicationStatus.Submitted || status == ApplicationStatus.InterviewScheduled)
+                                {
+                                    continue; 
+                                }
+                                <option value="@( (int)status )">@status.ToString()</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Note</label>
+                        <textarea name="Note" class="form-control" rows="3" maxlength="1000"></textarea>
+                    </div>
+
+                    <div id="reviewError" class="text-danger"></div>
+                    <div id="reviewSuccess" class="text-success"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+                document.getElementById('reviewForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var form = e.target;
+            var data = {
+                ApplicationId: parseInt(form.ApplicationId.value),
+                ApplicationStatus: parseInt(form.ApplicationStatus.value),
+                Note: form.Note.value
+            };
+
+            fetch('@Url.Action("Review", "Application")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': '@Html.AntiForgeryToken()' 
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    document.getElementById('reviewSuccess').innerText = result.message;
+                    document.getElementById('reviewError').innerText = '';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    document.getElementById('reviewError').innerText = result.message;
+                    document.getElementById('reviewSuccess').innerText = '';
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                document.getElementById('reviewError').innerText = 'An error occurred';
+            });
+        });
+    </script>
+}

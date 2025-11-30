@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Recruitment.Web.ViewModels.RecruitmentProcess
+namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
 {
     public class AssignVacancyVM
     {

@@ -7,6 +7,7 @@ using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Domain.Enums;
+using System;
 
 namespace Recruitment.Application.Services.RecruitmentProccess
 {
@@ -48,9 +49,14 @@ namespace Recruitment.Application.Services.RecruitmentProccess
         // Review an application
         public async Task ReviewApplicationAsync(ApplicationReviewDto dto)
         {
-            await _unitOfWork.ApplicationRepository.ReviewApplicationAsync(dto.ApplicationId, dto.ReviewedBy, dto.ApplicationStatus, dto.Note);
+            var user = await GetCurrentUserIdAsync(); 
+            if (user == null)
+                throw new InvalidOperationException("Current user not found.");
+
+            await _unitOfWork.ApplicationRepository.ReviewApplicationAsync(dto.ApplicationId, user.Value, dto.ApplicationStatus, dto.Note);
             await _unitOfWork.CompleteAsync();
         }
+
 
         // Get application by ID (details)
         public async Task<ApplicationDetailDto?> GetByIdAsync(int applicationId)
@@ -109,16 +115,21 @@ namespace Recruitment.Application.Services.RecruitmentProccess
         }
 
         // Get all applications (paged)
-        public async Task<PagedResult<ApplicationListDto>> GetAllApplicationsAsync(int page, int pageSize)
+        public async Task<PagedResult<ApplicationListDto>> GetAllApplicationsAsync(int page, int pageSize, ApplicationStatus? status, string? search)
         {
-            var paged = await _unitOfWork.ApplicationRepository.GetAllWithDetailsAsync(page, pageSize);
+            var paged = await _unitOfWork.ApplicationRepository.GetAllWithDetailsAsync(page, pageSize, status, search);
             return MapToPagedResult(paged);
         }
 
         // Get applications by vacancy (paged)
-        public async Task<PagedResult<ApplicationListDto>> GetByVacancyIdAsync(int vacancyId, int page, int pageSize)
+        public async Task<PagedResult<ApplicationListDto>> GetByVacancyIdAsync(
+            int vacancyId,
+            int page,
+            int pageSize,
+            string? search = null)   
         {
-            var paged = await _unitOfWork.ApplicationRepository.GetByVacancyIdAsync(vacancyId, page, pageSize);
+            var paged = await _unitOfWork.ApplicationRepository.GetByVacancyIdAsync(vacancyId, page, pageSize, search);
+
             return MapToPagedResult(paged);
         }
 
@@ -154,6 +165,76 @@ namespace Recruitment.Application.Services.RecruitmentProccess
         {
             var entity = await _unitOfWork.ApplicationRepository.GetByApplicantAndVacancyAsync(applicantId, vacancyId);
             return entity != null;
+        }
+
+        public async Task<ApplicationDetailDto?> GetByApplicantAndVacancyAsync(int applicantId, int vacancyId)
+        {
+            var entity = await _unitOfWork.ApplicationRepository.GetByApplicantAndVacancyAsync(applicantId, vacancyId);
+            if (entity == null) return null;
+
+            return new ApplicationDetailDto
+            {
+                Id = entity.Id,
+
+                ApplicantId = entity.ApplicantId,
+                ApplicantName = entity.Applicant?.FullName ?? "",
+                ApplicantEmail = entity.Applicant?.Email ?? "",
+                PhoneNumber = entity.Applicant?.PhoneNumber ?? "",
+                CurrentJob = entity.Applicant?.CurrentJob,
+                CurrentEmployer = entity.Applicant?.CurrentEmployer,
+
+                VacancyId = entity.VacancyId,
+                VacancyTitle = entity.Vacancy?.Title!.Name ?? "",
+                VacancyDescription = entity.Vacancy?.JobDescription,
+
+                ApplicationStatus = entity.ApplicationStatus,
+                ApplicationDate = entity.ApplicationDate,
+
+                ReviewedBy = entity.ReviewedBy,
+                ReviewedByUserName = entity.Reviewer?.FullName,
+                ReviewDate = entity.ReviewDate,
+                Note = entity.Note
+            };
+        }
+
+        public async Task<ApplicationDetailDto?> GetApplicationDetails(int applicationId)
+        {
+            var entity = await _unitOfWork.ApplicationRepository.GetApplicationWithRelatedData(applicationId);
+            if (entity == null) return null;
+
+            return new ApplicationDetailDto
+            {
+                Id = entity.Id,
+
+                ApplicantId = entity.ApplicantId,
+                ApplicantName = entity.Applicant?.FullName ?? "",
+                ApplicantEmail = entity.Applicant?.Email ?? "",
+                PhoneNumber = entity.Applicant?.PhoneNumber ?? "",
+                CurrentJob = entity.Applicant?.CurrentJob,
+                CurrentEmployer = entity.Applicant?.CurrentEmployer,
+
+                VacancyId = entity.VacancyId,
+                VacancyTitle = entity.Vacancy?.Title!.Name ?? "",
+                VacancyDescription = entity.Vacancy?.JobDescription,
+
+                ApplicationStatus = entity.ApplicationStatus,
+                ApplicationDate = entity.ApplicationDate,
+
+                ReviewedBy = entity.ReviewedBy,
+                ReviewedByUserName = entity.Reviewer?.FullName,
+                ReviewDate = entity.ReviewDate,
+                Note = entity.Note
+            };
+        }
+
+        public async Task<bool> DeleteApplicationAsync(int id)
+        {
+            var application = await _unitOfWork.ApplicationRepository.GetByIdAsync(id);
+            if (application == null) return false;
+
+            _unitOfWork.ApplicationRepository.Delete(application);
+            await _unitOfWork.CompleteAsync();
+            return true;
         }
     }
 }

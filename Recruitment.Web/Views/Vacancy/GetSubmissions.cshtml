@@ -10,6 +10,13 @@
     ← Back to Vacancy Details
 </a>
 
+<!-- Search Form -->
+<form method="get" class="mb-3">
+    <input type="text" name="search" value="@Model.Search" placeholder="Search by applicant, email or note..." class="form-control" />
+    <input type="hidden" name="vacancyId" value="@Model.VacancyId" />
+    <button type="submit" class="btn btn-primary mt-2">Search</button>
+</form>
+
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -24,7 +31,8 @@
     <tbody>
         @foreach (var app in Model.Applications)
         {
-            <tr>
+            <tr style="cursor:pointer;"
+                onclick="location.href='@Url.Action("Details", "Application", new { id = app.Id })'">
                 <td>@app.ApplicantName</td>
                 <td>@app.PhoneNumber</td>
                 <td>@app.ApplicantEmail</td>
@@ -36,6 +44,7 @@
     </tbody>
 </table>
 
+
 <!-- Paging -->
 <nav>
     <ul class="pagination">
@@ -44,10 +53,11 @@
         {
             <li class="page-item">
                 <a class="page-link"
-                   asp-action="Applications"
+                   asp-action="GetSubmissions"
                    asp-route-vacancyId="@Model.VacancyId"
                    asp-route-page="@(Model.Page - 1)"
-                   asp-route-pageSize="@Model.PageSize">Previous</a>
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search">Previous</a> 
             </li>
         }
 
@@ -61,10 +71,11 @@
         {
             <li class="page-item">
                 <a class="page-link"
-                   asp-action="Applications"
+                   asp-action="GetSubmissions"
                    asp-route-vacancyId="@Model.VacancyId"
                    asp-route-page="@(Model.Page + 1)"
-                   asp-route-pageSize="@Model.PageSize">Next</a>
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search">Next</a> 
             </li>
         }
 

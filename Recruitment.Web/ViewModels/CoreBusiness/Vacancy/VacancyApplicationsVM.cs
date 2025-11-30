@@ -9,6 +9,8 @@ namespace Recruitment.Web.ViewModels.CoreBusiness.Vacancy
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
 
+        //serach
+        public string? Search { get; set; }
         public IEnumerable<ApplicationListDto> Applications { get; set; } = new List<ApplicationListDto>();
     }
 

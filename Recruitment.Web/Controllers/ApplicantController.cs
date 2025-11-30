@@ -7,7 +7,7 @@ using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.Common;
-using Recruitment.Web.ViewModels.RecruitmentProcess;
+using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
 using Recruitment.Web.ViewModels.UserManagement.Applicant;
 
 namespace Recruitment.Web.Controllers

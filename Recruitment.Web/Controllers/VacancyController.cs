@@ -7,7 +7,7 @@ using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.CoreBusiness.Vacancy;
-using Recruitment.Web.ViewModels.RecruitmentProcess;
+using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
 
 namespace Recruitment.Web.Controllers
 {
@@ -146,9 +146,13 @@ namespace Recruitment.Web.Controllers
             return Json(new { success = true, message = "Applicant assigned successfully" });
         }
 
-        public async Task<IActionResult> GetSubmissions(int vacancyId, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetSubmissions(
+            int vacancyId,
+            int page = 1,
+            int pageSize = 10,
+            string? search = null) 
         {
-            var result = await _applicationService.GetByVacancyIdAsync(vacancyId, page, pageSize);
+            var result = await _applicationService.GetByVacancyIdAsync(vacancyId, page, pageSize, search);
 
             var vm = new VacancyApplicationsVM
             {
@@ -156,11 +160,13 @@ namespace Recruitment.Web.Controllers
                 Page = page,
                 PageSize = pageSize,
                 TotalCount = result.TotalCount,
-                Applications = result.Items
+                Applications = result.Items,
+                Search = search 
             };
 
             return View(vm);
         }
+
 
 
         // GET: Vacancy/Create

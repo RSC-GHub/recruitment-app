@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Common;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
+using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Domain.Enums;
@@ -27,18 +28,33 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             return new PagedResult<ApplicantApplication>(items, totalCount, page, pageSize);
         }
 
-        public async Task<PagedResult<ApplicantApplication>> GetByVacancyIdAsync(int vacancyId, int page, int pageSize)
+        public async Task<PagedResult<ApplicantApplication>> GetByVacancyIdAsync(
+            int vacancyId,
+            int page,
+            int pageSize,
+            string? search = null)
         {
             var query = _context.Applications
                 .Include(a => a.Applicant)
                 .Include(a => a.Vacancy)
-                    .ThenInclude(v => v.Title)
                 .Include(a => a.Reviewer)
-                .Where(a => a.VacancyId == vacancyId)
-                .OrderByDescending(a => a.ApplicationDate);
+                .Where(a => a.VacancyId == vacancyId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(a =>
+                    a.Applicant.FullName.Contains(search) ||
+                    a.Applicant.Email.Contains(search) ||
+                    a.Applicant.PhoneNumber.Contains(search) ||
+                    a.Note != null && a.Note.Contains(search)
+                );
+            }
+
+            query = query.OrderByDescending(a => a.ApplicationDate);
 
             return await ToPagedResultAsync(query, page, pageSize);
         }
+
 
         public async Task<PagedResult<ApplicantApplication>> GetByApplicantIdAsync(int applicantId, int page, int pageSize)
         {
@@ -50,6 +66,15 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             return await ToPagedResultAsync(query, page, pageSize);
         }
 
+        public async Task<ApplicantApplication?> GetApplicationWithRelatedData(int id)
+        {
+            return await _context.Applications
+                .Include(a => a.Applicant)
+                .Include(a => a.Vacancy)
+                    .ThenInclude(v => v.Title)
+                .Include(a => a.Reviewer)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
         public async Task<ApplicantApplication?> GetByApplicantAndVacancyAsync(int applicantId, int vacancyId)
         {
             return await _context.Applications
@@ -59,15 +84,41 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 .FirstOrDefaultAsync(a => a.ApplicantId == applicantId && a.VacancyId == vacancyId);
         }
 
-        public async Task<PagedResult<ApplicantApplication>> GetAllWithDetailsAsync(int page, int pageSize)
+        public async Task<PagedResult<ApplicantApplication>> GetAllWithDetailsAsync(
+            int page,
+            int pageSize,
+            ApplicationStatus? status,
+            string? search)
         {
             var query = _context.Applications
                 .Include(a => a.Applicant)
-                .Include(a => a.Vacancy)
-                .Include(a => a.Reviewer);
+                .Include(a => a.Vacancy).ThenInclude(v => v.Title)
+                .Include(a => a.Reviewer)
+                .AsQueryable();
+
+            // TEXT SEARCH
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(a =>
+                    (a.Applicant.FullName != null && a.Applicant.FullName.Contains(search)) ||
+                    (a.Applicant.Email != null && a.Applicant.Email.Contains(search)) ||
+                    (a.Applicant.PhoneNumber != null && a.Applicant.PhoneNumber.Contains(search)) ||
+                    (a.Note != null && a.Note.Contains(search)) ||
+                    (a.Vacancy.Title != null && a.Vacancy.Title.Name.Contains(search))
+                );
+            }
+
+            // STATUS FILTER
+            if (status.HasValue)
+            {
+                query = query.Where(a => a.ApplicationStatus == status.Value);
+            }
+
+            query = query.OrderByDescending(a => a.ApplicationDate);
 
             return await ToPagedResultAsync(query, page, pageSize);
         }
+
 
         public async Task<PagedResult<ApplicantApplication>> GetByStatusAsync(ApplicationStatus status, int page, int pageSize)
         {

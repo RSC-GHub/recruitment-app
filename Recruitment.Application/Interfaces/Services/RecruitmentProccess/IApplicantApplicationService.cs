@@ -15,14 +15,18 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
         // Get application by ID (for details)
         Task<ApplicationDetailDto?> GetByIdAsync(int applicationId);
 
+        Task<ApplicationDetailDto?> GetApplicationDetails(int applicationId);
+
         // Get paged applications (all)
-        Task<PagedResult<ApplicationListDto>> GetAllApplicationsAsync(int page, int pageSize);
+        Task<PagedResult<ApplicationListDto>> GetAllApplicationsAsync(int page, int pageSize, ApplicationStatus? status, string search = null!);
 
         // Get paged applications by vacancy
-        Task<PagedResult<ApplicationListDto>> GetByVacancyIdAsync(int vacancyId, int page, int pageSize);
+        Task<PagedResult<ApplicationListDto>> GetByVacancyIdAsync(int vacancyId, int page, int pageSize, string? search = null);
 
         // Get paged applications by applicant
         Task<PagedResult<ApplicationListDto>> GetByApplicantIdAsync(int applicantId, int page, int pageSize);
+
+        Task<ApplicationDetailDto?> GetByApplicantAndVacancyAsync(int applicantId, int vacancyId);
 
         // Get paged applications by status
         Task<PagedResult<ApplicationListDto>> GetByStatusAsync(ApplicationStatus status, int page, int pageSize);
@@ -35,5 +39,7 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
 
         // Optional: check if applicant already applied to a vacancy
         Task<bool> HasAppliedAsync(int applicantId, int vacancyId);
+
+        Task<bool> DeleteApplicationAsync(int id);
     }
 }

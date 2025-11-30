@@ -1,0 +1,127 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Recruitment.Application.DTOs.RecruitmentProccess;
+using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Domain.Enums;
+using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
+
+namespace Recruitment.Web.Controllers
+{
+    public class ApplicationController : Controller
+    {
+        private readonly IApplicantApplicationService _applicationService;
+
+        public ApplicationController(IApplicantApplicationService applicationService)
+        {
+            _applicationService = applicationService;
+        }
+
+        public async Task<IActionResult> Index(
+             ApplicationStatus? status,
+                string? search,
+                int page = 1,
+                int pageSize = 10)
+        {
+            var pagedResult = await _applicationService
+                .GetAllApplicationsAsync(page, pageSize, status, search);
+
+            var vm = new ApplicationIndexVM
+            {
+                Search = search,
+                Status = status,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = pagedResult.TotalCount,
+                Applications = pagedResult.Items,
+
+                StatusList = Enum.GetValues(typeof(ApplicationStatus))
+                    .Cast<ApplicationStatus>()
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.ToString(),
+                        Text = s.ToString(),
+                        Selected = (status == s)
+                    })
+                    .ToList()
+            };
+
+            return View(vm);
+        }
+
+
+        // GET: /Application/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var application = await _applicationService.GetApplicationDetails(id);
+            if (application == null)
+                return NotFound();
+
+            var vm = new ApplicationDetailVM
+            {
+                Id = application.Id,
+                ApplicantId = application.ApplicantId,
+                ApplicantName = application.ApplicantName,
+                ApplicantEmail = application.ApplicantEmail,
+                PhoneNumber = application.PhoneNumber,
+                CurrentJob = application.CurrentJob,
+                CurrentEmployer = application.CurrentEmployer,
+                VacancyId = application.VacancyId,
+                VacancyTitle = application.VacancyTitle,
+                VacancyDescription = application.VacancyDescription,
+                ApplicationStatus = application.ApplicationStatus,
+                ApplicationDate = application.ApplicationDate,
+                ReviewedBy = application.ReviewedBy,
+                ReviewedByUserName = application.ReviewedByUserName,
+                ReviewDate = application.ReviewDate,
+                Note = application.Note
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Review([FromBody] ApplicationReviewVM vm)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Get the current user ID from claims
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int reviewedBy))
+            {
+                return Json(new { success = false, message = "User not authenticated" });
+            }
+
+            var dto = new ApplicationReviewDto
+            {
+                ApplicationId = vm.ApplicationId,
+                ReviewedBy = reviewedBy, 
+                ApplicationStatus = vm.ApplicationStatus,
+                Note = vm.Note
+            };
+
+            try
+            {
+                await _applicationService.ReviewApplicationAsync(dto);
+                return Json(new { success = true, message = "Application reviewed successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var result = await _applicationService.DeleteApplicationAsync(id);
+
+            if (!result)
+                return NotFound();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+    }
+}
