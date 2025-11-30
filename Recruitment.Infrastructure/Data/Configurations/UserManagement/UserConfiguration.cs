@@ -39,6 +39,11 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                 .HasForeignKey(u => u.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasMany(u => u.ReviewedApplications)
+                   .WithOne(a => a.Reviewer)
+                   .HasForeignKey(a => a.ReviewedBy)
+                   .OnDelete(DeleteBehavior.SetNull);
+
         }
     }
 }

@@ -15,6 +15,15 @@ namespace Recruitment.Application.Services.CoreBusiness
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<List<VacancyListDTO>> GetOpenedVacanciesAsync()
+        {
+            var vacancies = await _unitOfWork.VacancyRepository.GetAllOpenedVacancies();
+            return vacancies.Select(v => new VacancyListDTO
+            {
+                Id = v.Id,
+                TitleName = v.Title?.Name ?? ""
+            }).ToList();
+        }
         public async Task<List<VacancyListDTO>> GetAllVacanciesAsync()
         {
             var vacancies = await _unitOfWork.VacancyRepository.GetAllVacanciesWithProjectsAsync();

@@ -17,14 +17,14 @@ namespace Recruitment.Web.Controllers
         private readonly ITitleService _titleService;
         private readonly IProjectService _projectService;
         private readonly IApplicantService _applicantService;
-        private readonly IApplicantApplicationService _ApplicationService;
+        private readonly IApplicantApplicationService _applicationService;
         
         public VacancyController(ITitleService titleService, IVacancyService vacancyService, IProjectService projectService, IApplicantApplicationService applicantApplicationService, IApplicantService applicantService)
         {
             _vacancyService = vacancyService;
             _titleService = titleService;
             _projectService = projectService;
-            _ApplicationService = applicantApplicationService;
+            _applicationService = applicantApplicationService;
             _applicantService = applicantService;
         }
 
@@ -136,7 +136,7 @@ namespace Recruitment.Web.Controllers
             if (vm.SelectedApplicantId == 0)
                 return Json(new { success = false, message = "Please select an applicant" });
 
-            await _ApplicationService.AssignApplicantAsync(new ApplicationCreateDto
+            await _applicationService.AssignApplicantAsync(new ApplicationCreateDto
             {
                 ApplicantId = vm.SelectedApplicantId,
                 VacancyId = vm.VacancyId,
@@ -144,6 +144,22 @@ namespace Recruitment.Web.Controllers
             });
 
             return Json(new { success = true, message = "Applicant assigned successfully" });
+        }
+
+        public async Task<IActionResult> GetSubmissions(int vacancyId, int page = 1, int pageSize = 10)
+        {
+            var result = await _applicationService.GetByVacancyIdAsync(vacancyId, page, pageSize);
+
+            var vm = new VacancyApplicationsVM
+            {
+                VacancyId = vacancyId,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = result.TotalCount,
+                Applications = result.Items
+            };
+
+            return View(vm);
         }
 
 

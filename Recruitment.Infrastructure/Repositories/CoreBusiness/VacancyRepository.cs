@@ -24,6 +24,15 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
+        public async Task<List<Vacancy>> GetAllOpenedVacancies()
+        {
+            return await _context.Vacancies
+                .Include(v => v.Title)
+                .Where(v => v.Status == VacancyStatus.Open)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task<List<Vacancy>> GetAllVacanciesWithProjectsAsync()
         {
             return await _context.Vacancies

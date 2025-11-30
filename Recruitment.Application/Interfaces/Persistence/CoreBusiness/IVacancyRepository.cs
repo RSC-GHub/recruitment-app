@@ -10,6 +10,8 @@ namespace Recruitment.Application.Interfaces.Persistence.CoreBusiness
         Task<Vacancy?> GetVacancyByIdAsync(int id);
         Task<List<Vacancy>> GetAllVacanciesWithProjectsAsync();
 
+        Task<List<Vacancy>> GetAllOpenedVacancies();
+
         Task<bool> NameExistsAsync(string name, int? excludeId = null);
 
         Task<List<Vacancy>> SearchAsync(string? keyword);

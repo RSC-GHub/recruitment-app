@@ -26,7 +26,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
         private async Task<int?> GetCurrentUserIdAsync()
         {
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User!);
             return user?.Id;
         }
 
@@ -36,16 +36,9 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             if (exists != null)
                 throw new InvalidOperationException("Applicant already assigned to this vacancy.");
 
-            // Get current user id
-            var currentUserId = await GetCurrentUserIdAsync();
-            if (currentUserId == null)
-                throw new InvalidOperationException("Unable to determine current user.");
-
-
             await _unitOfWork.ApplicationRepository.AssignApplicantAsync(
                 dto.ApplicantId,
                 dto.VacancyId,
-                currentUserId.Value,
                 dto.Note!
             );
 
@@ -84,7 +77,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ApplicationDate = entity.ApplicationDate,
 
                 ReviewedBy = entity.ReviewedBy,
-                ReviewedByUserName = entity.User?.FullName,
+                ReviewedByUserName = entity.Reviewer?.FullName,
                 ReviewDate = entity.ReviewDate,
                 Note = entity.Note
             };
@@ -102,12 +95,12 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 PhoneNumber = a.Applicant?.PhoneNumber ?? "",
 
                 VacancyId = a.VacancyId,
-                VacancyTitle = a.Vacancy?.Title!.Name ?? "",
+                VacancyTitle = a.Vacancy?.Title?.Name ?? "",
 
                 ApplicationStatus = a.ApplicationStatus,
                 ApplicationDate = a.ApplicationDate,
 
-                ReviewedByUserName = a.User?.FullName,
+                ReviewedByUserName = a.Reviewer?.FullName,
                 ReviewDate = a.ReviewDate,
                 Note = a.Note
             }).ToList();

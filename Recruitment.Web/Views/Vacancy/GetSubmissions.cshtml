@@ -1,0 +1,72 @@
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyApplicationsVM
+
+@{
+    ViewData["Title"] = "Applications for Vacancy";
+}
+
+<h2>Applications</h2>
+
+<a asp-action="Details" asp-route-id="@Model.VacancyId" class="btn btn-secondary mb-3">
+    ← Back to Vacancy Details
+</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Applicant Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Applied On</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var app in Model.Applications)
+        {
+            <tr>
+                <td>@app.ApplicantName</td>
+                <td>@app.PhoneNumber</td>
+                <td>@app.ApplicantEmail</td>
+                <td>@app.ApplicationStatus</td>
+                <td>@app.ApplicationDate.ToString("yyyy-MM-dd")</td>
+                <td>@app.Note</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Paging -->
+<nav>
+    <ul class="pagination">
+
+        @if (Model.Page > 1)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Applications"
+                   asp-route-vacancyId="@Model.VacancyId"
+                   asp-route-page="@(Model.Page - 1)"
+                   asp-route-pageSize="@Model.PageSize">Previous</a>
+            </li>
+        }
+
+        <li class="page-item disabled">
+            <span class="page-link">
+                Page @Model.Page of @(Math.Ceiling((double)Model.TotalCount / Model.PageSize))
+            </span>
+        </li>
+
+        @if (Model.Page * Model.PageSize < Model.TotalCount)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Applications"
+                   asp-route-vacancyId="@Model.VacancyId"
+                   asp-route-page="@(Model.Page + 1)"
+                   asp-route-pageSize="@Model.PageSize">Next</a>
+            </li>
+        }
+
+    </ul>
+</nav>

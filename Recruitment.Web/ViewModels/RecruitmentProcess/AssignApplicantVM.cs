@@ -11,6 +11,5 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess
         public List<SelectListItem> ApplicantsDropdown { get; set; } = new List<SelectListItem>();
 
         public string? Note { get; set; }
-        public int UserId { get; set; }
     }
 }

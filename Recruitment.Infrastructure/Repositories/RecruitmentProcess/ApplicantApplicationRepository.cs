@@ -32,7 +32,10 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             var query = _context.Applications
                 .Include(a => a.Applicant)
                 .Include(a => a.Vacancy)
-                .Where(a => a.VacancyId == vacancyId);
+                    .ThenInclude(v => v.Title)
+                .Include(a => a.Reviewer)
+                .Where(a => a.VacancyId == vacancyId)
+                .OrderByDescending(a => a.ApplicationDate);
 
             return await ToPagedResultAsync(query, page, pageSize);
         }
@@ -41,7 +44,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
         {
             var query = _context.Applications
                 .Include(a => a.Vacancy)
-                .Include(a => a.User)
+                .Include(a => a.Reviewer)
                 .Where(a => a.ApplicantId == applicantId);
 
             return await ToPagedResultAsync(query, page, pageSize);
@@ -52,7 +55,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             return await _context.Applications
                 .Include(a => a.Applicant)
                 .Include(a => a.Vacancy)
-                .Include(a => a.User)
+                .Include(a => a.Reviewer)
                 .FirstOrDefaultAsync(a => a.ApplicantId == applicantId && a.VacancyId == vacancyId);
         }
 
@@ -61,7 +64,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             var query = _context.Applications
                 .Include(a => a.Applicant)
                 .Include(a => a.Vacancy)
-                .Include(a => a.User);
+                .Include(a => a.Reviewer);
 
             return await ToPagedResultAsync(query, page, pageSize);
         }
@@ -92,7 +95,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 .CountAsync(a => a.VacancyId == vacancyId);
         }
 
-        public async Task AssignApplicantAsync(int applicantId, int vacancyId, int userId, string Note)
+        public async Task AssignApplicantAsync(int applicantId, int vacancyId, string Note)
         {
             var exists = await GetByApplicantAndVacancyAsync(applicantId, vacancyId);
             if (exists != null) return;
@@ -104,7 +107,6 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 ApplicationDate = DateTime.Now,
                 ApplicationStatus = ApplicationStatus.Submitted,
                 Note = Note,
-                UserId = userId
             };
 
             await AddAsync(application);

@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Recruitment.Application.DTOs.RecruitmentProccess;
 using Recruitment.Application.DTOs.UserManagement.Applicant;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.Common;
+using Recruitment.Web.ViewModels.RecruitmentProcess;
 using Recruitment.Web.ViewModels.UserManagement.Applicant;
 
 namespace Recruitment.Web.Controllers
@@ -14,18 +17,24 @@ namespace Recruitment.Web.Controllers
         private readonly IApplicantService _applicantService;
         private readonly ICountryService _countryService;
         private readonly ICurrencyService _currencyService;
+        private readonly IApplicantApplicationService _applicationService;
+        private readonly IVacancyService _vacancyService;
         private readonly IWebHostEnvironment _env;
 
         public ApplicantController(
             IApplicantService applicantService,
             ICountryService countryService,
             ICurrencyService currencyService,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            IApplicantApplicationService applicantApplicationService,
+            IVacancyService vacancyService)
         {
             _applicantService = applicantService;
             _countryService = countryService;
             _currencyService = currencyService;
             _env = env;
+            _applicationService = applicantApplicationService;
+            _vacancyService = vacancyService;
         }
 
         public async Task<IActionResult> Index(string? search, int page = 1, int pageSize = 10)
@@ -52,6 +61,42 @@ namespace Recruitment.Web.Controllers
 
             return View(vm);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllVacancies()
+        {
+            var vacancies = await _vacancyService.GetOpenedVacanciesAsync();
+            var result = vacancies.Select(a => new { a.Id, Name = a.TitleName}).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignVacancy([FromBody] AssignVacancyVM vm)
+        {
+            if (vm.SelectedVacancyId == 0)
+                return Json(new { success = false, message = "Please select a vacancy" });
+
+            try
+            {
+                await _applicationService.AssignApplicantAsync(new ApplicationCreateDto
+                {
+                    ApplicantId = vm.AppliantId,
+                    VacancyId = vm.SelectedVacancyId,
+                    Note = vm.Note
+                });
+
+                return Json(new { success = true, message = "Applicant assigned successfully" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
 
         public async Task<IActionResult> Create()
         {

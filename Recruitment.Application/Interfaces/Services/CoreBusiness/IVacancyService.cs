@@ -7,6 +7,7 @@ namespace Recruitment.Application.Interfaces.Services.CoreBusiness
     public interface IVacancyService
     {
         Task<List<VacancyListDTO>> GetAllVacanciesAsync();
+        Task<List<VacancyListDTO>> GetOpenedVacanciesAsync();
         Task<VacancyDetailsDTO?> GetVacancyByIdAsync(int id);
         Task<VacancyDetailsDTO> CreateVacancyAsync(VacancyCreateDTO dto);
         Task<VacancyDetailsDTO?> UpdateVacancyAsync(VacancyUpdateDTO dto);

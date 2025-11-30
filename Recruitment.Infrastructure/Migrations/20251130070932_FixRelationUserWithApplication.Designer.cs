@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruitment.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Recruitment.Infrastructure.Data;
 namespace Recruitment.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251130070932_FixRelationUserWithApplication")]
+    partial class FixRelationUserWithApplication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -584,6 +587,9 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Property<int?>("ReviewedBy")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("VacancyId")
                         .HasColumnType("int");
 
@@ -592,6 +598,8 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasIndex("ApplicantId");
 
                     b.HasIndex("ReviewedBy");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("VacancyId");
 
@@ -1097,9 +1105,13 @@ namespace Recruitment.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Recruitment.Domain.Entities.UserManagement.User", "Reviewer")
-                        .WithMany("ReviewedApplications")
+                        .WithMany()
                         .HasForeignKey("ReviewedBy")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Recruitment.Domain.Entities.UserManagement.User", null)
+                        .WithMany("ReviewedApplications")
+                        .HasForeignKey("UserId");
 
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Vacancy", "Vacancy")
                         .WithMany("Applications")

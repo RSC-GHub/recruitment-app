@@ -13,9 +13,7 @@ namespace Recruitment.Domain.Entities.Recruitment_Proccess
         public Applicant Applicant { get; set; } = null!;
 
         public int? ReviewedBy { get; set; }
-
-        public int UserId { get; set; }
-        public User? User { get; set; } 
+        public User? Reviewer { get; set; }
 
         public DateTime? ReviewDate { get; set; }
         public DateTime ApplicationDate { get; set; } = DateTime.Now;

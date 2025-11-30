@@ -29,11 +29,11 @@ namespace Recruitment.Infrastructure.Data.Configurations.Recruitment_Process
                    .HasForeignKey(a => a.VacancyId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            // Reviewer User (optional)
-            builder.HasOne(a => a.User)
-                   .WithMany() 
+            builder.HasOne(a => a.Reviewer)
+                   .WithMany()
                    .HasForeignKey(a => a.ReviewedBy)
                    .OnDelete(DeleteBehavior.SetNull);
+
 
             // Properties
 

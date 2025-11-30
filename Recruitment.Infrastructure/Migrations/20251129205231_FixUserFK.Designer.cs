@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruitment.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Recruitment.Infrastructure.Data;
 namespace Recruitment.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251129205231_FixUserFK")]
+    partial class FixUserFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -584,6 +587,12 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Property<int?>("ReviewedBy")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("VacancyId")
                         .HasColumnType("int");
 
@@ -592,6 +601,10 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasIndex("ApplicantId");
 
                     b.HasIndex("ReviewedBy");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.HasIndex("VacancyId");
 
@@ -1097,9 +1110,19 @@ namespace Recruitment.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Recruitment.Domain.Entities.UserManagement.User", "Reviewer")
-                        .WithMany("ReviewedApplications")
+                        .WithMany()
                         .HasForeignKey("ReviewedBy")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Recruitment.Domain.Entities.UserManagement.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Recruitment.Domain.Entities.UserManagement.User", null)
+                        .WithMany("ReviewedApplications")
+                        .HasForeignKey("UserId1");
 
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Vacancy", "Vacancy")
                         .WithMany("Applications")
@@ -1110,6 +1133,8 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Navigation("Applicant");
 
                     b.Navigation("Reviewer");
+
+                    b.Navigation("User");
 
                     b.Navigation("Vacancy");
                 });
