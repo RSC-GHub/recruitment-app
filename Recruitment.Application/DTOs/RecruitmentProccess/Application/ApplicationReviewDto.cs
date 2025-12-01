@@ -1,6 +1,6 @@
 ﻿using Recruitment.Domain.Enums;
 
-namespace Recruitment.Application.DTOs.RecruitmentProccess
+namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
 {
     public class ApplicationReviewDto
     {

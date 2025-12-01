@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Recruitment.Application.DTOs.RecruitmentProccess;
+using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.DTOs.UserManagement.Applicant;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
@@ -97,7 +97,46 @@ namespace Recruitment.Web.Controllers
             }
         }
 
+        // GET: Applicant/History/5
+        public async Task<IActionResult> History(int id)
+        {
+            var dto = await _applicantService.GetApplicantHistoryAsync(id);
+            if (dto == null) return NotFound();
 
+            // Map DTO to VM
+            var vm = new ApplicantHistoryVM
+            {
+                Id = dto.Id,
+                FullName = dto.FullName,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                CountryName = dto.CountryName,
+                CityName = dto.CityName,
+
+                Applications = dto.Applications.Select(app => new ApplicationHistoryVM
+                {
+                    Id = app.Id,
+                    VacancyTitle = app.VacancyTitle,
+                    ApplicationStatus = app.ApplicationStatus,
+                    ApplicationDate = app.ApplicationDate,
+                    ReviewedByUserName = app.ReviewedByUserName,
+                    Note = app.Note,
+                    Interviews = app.Interviews.Select(i => new InterviewHistoryVM
+                    {
+                        Id = i.Id,
+                        InterViewer = i.InterViewer,
+                        ScheduledDate = i.ScheduledDate,
+                        InterviewType = i.InterviewType,
+                        InterviewStatus = i.InterviewStatus,
+                        InterviewResult = i.InterviewResult,
+                        Feedback = i.Feedback,
+                        InterViewNote = i.InterViewNote,
+                    }).ToList()
+                }).ToList()
+            };
+
+            return View(vm);
+        }
         public async Task<IActionResult> Create()
         {
             var vm = new ApplicantCreateVM();

@@ -13,6 +13,7 @@ namespace Recruitment.Application.Interfaces.Services.UserManagement
         Task<bool> DeleteApplicantAsync(int id);
         Task<List<ApplicantDropdownDto>> GetAvailableApplicantsForVacancyAsync(int vacancyId);
         Task<List<ApplicantDropdownDto>> GetAllApplicantsAsync();
+        Task<ApplicantHistoryDto?> GetApplicantHistoryAsync(int applicantId);
 
     }
 }

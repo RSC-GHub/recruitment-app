@@ -13,12 +13,9 @@
         Make a decision
     </a>
 
-    @if (Model.ApplicationStatus == ApplicationStatus.ToInterview)
+    @if (Model.ApplicationStatus == ApplicationStatus.ToInterview || Model.ApplicationStatus == ApplicationStatus.ToSecondInterview)
     {
-        <a asp-controller="Interview"
-           asp-action="Create"
-           asp-route-applicationId="@Model.Id"
-           class="btn btn-primary mb-4 ms-2">
+        <a href="#" class="btn btn-primary mb-4 ms-2" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
             Schedule Interview
         </a>
     }
@@ -62,6 +59,7 @@
         </div>
     </div>
 </div>
+
 <!-- Review Modal -->
 <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -74,7 +72,6 @@
 
                 <div class="modal-body">
                     <input type="hidden" name="ApplicationId" value="@Model.Id" />
-                    <!-- REMOVED: ReviewedBy hidden input -->
 
                     <div class="mb-3">
                         <label class="form-label">Decision</label>
@@ -83,9 +80,7 @@
                             @foreach (var status in Enum.GetValues(typeof(ApplicationStatus)).Cast<ApplicationStatus>())
                             {
                                 if (status == ApplicationStatus.Submitted || status == ApplicationStatus.InterviewScheduled)
-                                {
-                                    continue; 
-                                }
+                                    continue;
                                 <option value="@( (int)status )">@status.ToString()</option>
                             }
                         </select>
@@ -109,10 +104,68 @@
     </div>
 </div>
 
+<!-- Add Interview Modal -->
+<div class="modal fade" id="addInterviewModal" tabindex="-1" aria-labelledby="addInterviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addInterviewForm">
+                @Html.AntiForgeryToken() <!-- <-- Add this -->
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addInterviewModalLabel">Schedule Interview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="ApplicationId" name="ApplicationId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label for="Interviewer" class="form-label">Interviewer</label><span class="text-danger">*</span>
+                        <input type="text" id="Interviewer" name="Interviewer" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ScheduledDate" class="form-label">Scheduled Date</label><span class="text-danger">*</span>
+                        <input type="datetime-local" id="ScheduledDate" name="ScheduledDate" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="InterviewType" class="form-label">Interview Type</label>
+                        <select id="InterviewType" name="InterviewType" class="form-select">
+                            <option value="Technical">Technical</option>
+                            <option value="HR">HR</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="DurationMinutes" class="form-label">Duration (minutes)</label>
+                        <input type="number" id="DurationMinutes" name="DurationMinutes" class="form-control" value="60" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Note" class="form-label">Note</label>
+                        <input type="text" id="Note" name="Note" class="form-control" />
+                    </div>
+
+
+                    <div id="addInterviewError" class="text-danger"></div>
+                    <div id="addInterviewSuccess" class="text-success"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Interview</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts {
     <script>
-                document.getElementById('reviewForm').addEventListener('submit', function (e) {
+        // Review Form
+        document.getElementById('reviewForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
             var form = e.target;
@@ -126,7 +179,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'RequestVerificationToken': '@Html.AntiForgeryToken()' 
+                    'RequestVerificationToken': '@Html.AntiForgeryToken()'
                 },
                 body: JSON.stringify(data)
             })
@@ -142,8 +195,48 @@
                 }
             })
             .catch(err => {
-                console.error('Error:', err);
                 document.getElementById('reviewError').innerText = 'An error occurred';
+            });
+        });
+
+                               // Add Interview Form
+        document.getElementById('addInterviewForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var form = e.target;
+
+            if (!form.Interviewer.value) {  // Changed from InterViewer
+                document.getElementById('addInterviewError').innerText = 'Please enter interviewer';
+                return;
+            }
+
+            var formData = new FormData(form);
+
+            fetch('@Url.Action("CreateInterview", "Interview")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Server returned ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('addInterviewSuccess').innerText = data.message;
+                    document.getElementById('addInterviewError').innerText = '';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    document.getElementById('addInterviewError').innerText = data.message;
+                    document.getElementById('addInterviewSuccess').innerText = '';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('addInterviewError').innerText = err.message;
             });
         });
     </script>

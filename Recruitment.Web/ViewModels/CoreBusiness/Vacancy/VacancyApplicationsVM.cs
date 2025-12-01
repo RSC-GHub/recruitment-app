@@ -1,4 +1,4 @@
-﻿using Recruitment.Application.DTOs.RecruitmentProccess;
+﻿using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 
 namespace Recruitment.Web.ViewModels.CoreBusiness.Vacancy
 {

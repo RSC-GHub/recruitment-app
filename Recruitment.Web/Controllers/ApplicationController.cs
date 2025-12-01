@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Recruitment.Application.DTOs.RecruitmentProccess;
+using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;

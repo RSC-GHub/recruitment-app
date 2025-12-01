@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruitment.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Recruitment.Infrastructure.Data;
 namespace Recruitment.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251130234255_AddNotePropertyToInterview")]
+    partial class AddNotePropertyToInterview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -567,9 +570,6 @@ namespace Recruitment.Infrastructure.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<string>("InterViewNote")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InterViewer")
                         .HasMaxLength(150)
                         .IsUnicode(false)
@@ -596,6 +596,9 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ScheduledDate")
                         .HasColumnType("datetime2");

@@ -5,13 +5,14 @@
         Submitted = 1,
         UnderReview = 2,
         ToInterview = 3,
-        InterviewScheduled = 4,
-        SecondChoice = 5,
-        SecondInterview = 6,
-        Offered = 7,
-        Rejected = 8,
-        Hired = 9,
-        NoAction = 10
+        ToSecondInterview = 4,
+        InterviewScheduled = 5,
+        SecondChoice = 6,
+        SecondInterview = 7,
+        Offered = 8,
+        Rejected = 9,
+        Hired = 10,
+        NoAction = 11
     }
 }
  

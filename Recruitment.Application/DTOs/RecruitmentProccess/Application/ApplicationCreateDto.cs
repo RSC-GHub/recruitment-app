@@ -1,4 +1,4 @@
-﻿namespace Recruitment.Application.DTOs.RecruitmentProccess
+﻿namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
 {
     public class ApplicationCreateDto
     {

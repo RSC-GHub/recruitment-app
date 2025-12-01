@@ -5,6 +5,7 @@ using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
+using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Entities.UserManagement;
 using System.Linq.Expressions;
 
@@ -38,7 +39,8 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<Applicant> Applicants { get; set; } = null!;
 
         // Recruitment Process
-        public DbSet<ApplicantApplication> Applications { get; set; } 
+        public DbSet<ApplicantApplication> Applications { get; set; }
+        public DbSet<Interview> Interviews { get; set; }
 
         private string GetCurrentUsername()
         {

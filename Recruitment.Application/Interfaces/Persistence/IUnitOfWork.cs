@@ -26,6 +26,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IVacancyRepository VacancyRepository { get; }
         IApplicantRepository ApplicantRepository { get; }
         IApplicantApplicationRepository ApplicationRepository { get; }
+        IInterviewRepository InterviewRepository { get; }
         Task<int> CompleteAsync();
     }
 }

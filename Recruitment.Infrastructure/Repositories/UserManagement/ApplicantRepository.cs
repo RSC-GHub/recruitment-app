@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.UserManagement.Applicant;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure.Data;
@@ -51,6 +52,21 @@ namespace Recruitment.Infrastructure.Repositories.UserManagement
                 .ToListAsync();
 
             return new PagedResult<Applicant>(items, totalCount, page, pageSize);
+        }
+
+        public async Task<Applicant?> GetByIdWithHistoryAsync(int applicantId)
+        {
+            return await _context.Applicants
+                    .Include(a => a.Country)
+                    .Include(a => a.Currency)
+                    .Include(a => a.Applications)
+                        .ThenInclude(app => app.Vacancy)
+                            .ThenInclude(v => v.Title)
+                    .Include(a => a.Applications)
+                        .ThenInclude(app => app.Reviewer)
+                    .Include(a => a.Applications)
+                        .ThenInclude(app => app.Interviews)
+                    .FirstOrDefaultAsync(a => a.Id == applicantId);
         }
     }
 }

@@ -1,29 +1,25 @@
 ﻿using Recruitment.Domain.Enums;
 
-namespace Recruitment.Application.DTOs.RecruitmentProccess
+namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
 {
-    public class ApplicationDetailDto
+    public class ApplicationListDto
     {
         public int Id { get; set; }
 
-        // Applicant details
+        // Applicant info
         public int ApplicantId { get; set; }
         public string ApplicantName { get; set; } = null!;
         public string ApplicantEmail { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
-        public string? CurrentJob { get; set; }
-        public string? CurrentEmployer { get; set; }
 
-        // Vacancy details
+        // Vacancy info
         public int VacancyId { get; set; }
         public string VacancyTitle { get; set; } = null!;
-        public string? VacancyDescription { get; set; }
 
         public ApplicationStatus ApplicationStatus { get; set; }
         public DateTime ApplicationDate { get; set; }
 
         // Review info
-        public int? ReviewedBy { get; set; }
         public string? ReviewedByUserName { get; set; }
         public DateTime? ReviewDate { get; set; }
         public string? Note { get; set; }

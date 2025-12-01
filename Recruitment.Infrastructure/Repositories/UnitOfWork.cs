@@ -7,6 +7,7 @@ using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure.Data;
 using Recruitment.Infrastructure.Repositories.CoreBusiness;
+using Recruitment.Infrastructure.Repositories.RecruitmentProcess;
 using Recruitment.Infrastructure.Repositories.UserManagement;
 
 namespace Recruitment.Infrastructure.Repositories
@@ -36,6 +37,7 @@ namespace Recruitment.Infrastructure.Repositories
         public ITitleRepository TitleRepository { get; }
         public IApplicantRepository ApplicantRepository { get; }
         public IApplicantApplicationRepository ApplicationRepository { get; }
+        public IInterviewRepository InterviewRepository { get; set; } 
 
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
@@ -59,7 +61,8 @@ namespace Recruitment.Infrastructure.Repositories
             TitleRepository = new TitleRepository(context, httpContextAccessor);
             Currencies = new GenericRepository<Currency>(_context, httpContextAccessor);
             ApplicantRepository = new ApplicantRepository(context, httpContextAccessor);
-            ApplicationRepository = new RecruitmentProcess.ApplicantApplicationRepository(context, httpContextAccessor);
+            ApplicationRepository = new ApplicantApplicationRepository(context, httpContextAccessor);
+            InterviewRepository = new InterviewRepository(context, httpContextAccessor);
         }
 
         public async Task<int> CompleteAsync()

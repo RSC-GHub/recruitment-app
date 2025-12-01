@@ -1,5 +1,5 @@
 ﻿using Recruitment.Application.Common;
-using Recruitment.Application.DTOs.RecruitmentProccess;
+using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
@@ -41,5 +41,7 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
         Task<bool> HasAppliedAsync(int applicantId, int vacancyId);
 
         Task<bool> DeleteApplicationAsync(int id);
+
+        Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus);
     }
 }

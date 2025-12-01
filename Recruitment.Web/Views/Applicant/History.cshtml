@@ -1,0 +1,84 @@
+﻿@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantHistoryVM
+
+@{
+    ViewData["Title"] = "Applicant History";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">History for @Model.FullName</h2>
+
+    <div class="mb-3">
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+        <p><strong>Country:</strong> @(Model.CountryName ?? "-")</p>
+        <p><strong>City:</strong> @(Model.CityName ?? "-")</p>
+    </div>
+
+    <div class="accordion" id="applicationsAccordion">
+        @if (Model.Applications.Any())
+        {
+            int appIndex = 0;
+            foreach (var app in Model.Applications)
+            {
+                string appHeaderId = $"heading{appIndex}";
+                string appCollapseId = $"collapse{appIndex}";
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="@appHeaderId">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@appCollapseId" aria-expanded="false" aria-controls="@appCollapseId">
+                            Application: @app.VacancyTitle (@app.ApplicationStatus)
+                        </button>
+                    </h2>
+                    <div id="@appCollapseId" class="accordion-collapse collapse" aria-labelledby="@appHeaderId" data-bs-parent="#applicationsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Applied On:</strong> @app.ApplicationDate.ToString("yyyy-MM-dd HH:mm")</p>
+                            <p><strong>Reviewed By:</strong> @app.ReviewedByUserName</p>
+                            <p><strong>Note:</strong> @(app.Note ?? "-")</p>
+
+                            @if (app.Interviews.Any())
+                            {
+                                <h5 class="mt-3">Interviews</h5>
+                                <table class="table table-bordered table-striped">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Interviewer</th>
+                                            <th>Scheduled Date</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Result</th>
+                                            <th>Feedback</th>
+                                            <th>Note</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var interview in app.Interviews)
+                                        {
+                                            <tr>
+                                                <td>@interview.InterViewer</td>
+                                                <td>@interview.ScheduledDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                                <td>@interview.InterviewType</td>
+                                                <td>@interview.InterviewStatus</td>
+                                                <td>@interview.InterviewResult</td>
+                                                <td>@interview.Feedback</td>
+                                                <td>@interview.InterViewNote</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p>No interviews for this application.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                appIndex++;
+            }
+        }
+        else
+        {
+            <p>No applications found for this applicant.</p>
+        }
+    </div>
+</div>
+

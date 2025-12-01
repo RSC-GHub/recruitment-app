@@ -175,5 +175,18 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
             Update(application);
         }
+
+        public async Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus)
+        {
+            var application = await _context.Applications.FindAsync(applicationId);
+            if (application == null)
+                return; 
+
+
+            application.ApplicationStatus = newStatus;
+
+            _context.Applications.Update(application);
+            await _context.SaveChangesAsync();
+        }
     }
 }

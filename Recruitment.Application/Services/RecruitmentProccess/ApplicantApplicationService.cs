@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Recruitment.Application.Common;
-using Recruitment.Application.DTOs.RecruitmentProccess;
+using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
@@ -236,5 +236,17 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             await _unitOfWork.CompleteAsync();
             return true;
         }
+
+        public async Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus)
+        {
+            var application = await _unitOfWork.ApplicationRepository.GetByIdAsync(applicationId);
+            if (application == null)
+                throw new InvalidOperationException("Application not found.");
+
+            await _unitOfWork.ApplicationRepository.UpdateApplicationStatusAsync(applicationId, newStatus);
+
+            await _unitOfWork.CompleteAsync();
+        }
+
     }
 }

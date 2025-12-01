@@ -235,5 +235,43 @@ namespace Recruitment.Application.Services.UserManagement
 
             return new PagedResult<ApplicantListDto>(dtoItems, pagedResult.TotalCount, pagedResult.Page, pagedResult.PageSize);
         }
+
+        public async Task<ApplicantHistoryDto?> GetApplicantHistoryAsync(int applicantId)
+        {
+            var applicant = await _unitOfWork.ApplicantRepository.GetByIdWithHistoryAsync(applicantId);
+            if (applicant == null) return null;
+
+            return new ApplicantHistoryDto
+            {
+                Id = applicant.Id,
+                FullName = applicant.FullName,
+                Email = applicant.Email,
+                PhoneNumber = applicant.PhoneNumber,
+                CountryName = applicant.Country?.Name,
+                CityName = applicant.City,
+
+                Applications = applicant.Applications.Select(app => new ApplicationHistoryDto
+                {
+                    Id = app.Id,
+                    VacancyTitle = app.Vacancy?.Title?.Name ?? "-",
+                    ApplicationStatus = app.ApplicationStatus,
+                    ApplicationDate = app.ApplicationDate,
+                    ReviewedByUserName = app.Reviewer?.FullName ?? "-",
+                    Note = app.Note,
+                    Interviews = app.Interviews.Select(i => new InterviewHistoryDto
+                    {
+                        Id = i.Id,
+                        InterViewer = i.InterViewer,
+                        ScheduledDate = i.ScheduledDate,
+                        InterviewType = i.InterviewType.ToString(),
+                        InterviewStatus = i.InterviewStatus,
+                        InterviewResult = i.InterviewResult.ToString(),
+                        Feedback = i.Feedback,
+                        InterViewNote = i.InterViewNote,
+                    }).ToList()
+                }).ToList()
+            };
+        }
+
     }
 }

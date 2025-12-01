@@ -1,4 +1,5 @@
 ﻿using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Domain.Enums;
 
@@ -21,5 +22,7 @@ namespace Recruitment.Domain.Entities.Recruitment_Proccess
         public ApplicationStatus ApplicationStatus { get; set; } = ApplicationStatus.Submitted;
 
         public string? Note { get; set; }
+
+        public ICollection<Interview>? Interviews { get; set; }
     }
 }
