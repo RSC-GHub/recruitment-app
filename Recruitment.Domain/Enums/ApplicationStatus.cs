@@ -7,12 +7,14 @@
         ToInterview = 3,
         ToSecondInterview = 4,
         InterviewScheduled = 5,
-        SecondChoice = 6,
-        SecondInterview = 7,
-        Offered = 8,
-        Rejected = 9,
-        Hired = 10,
-        NoAction = 11
+        InterviewCancelled = 6,
+        InterviewRescheduled = 7,
+        SecondChoice = 8,
+        Offered = 9,
+        Rejected = 10,
+        UnQualified = 11,
+        OverQualified = 12,
+        Hired = 13,
+        NoAction = 14
     }
 }
- 

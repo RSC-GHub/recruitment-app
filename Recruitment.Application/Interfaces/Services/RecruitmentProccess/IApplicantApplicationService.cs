@@ -43,5 +43,6 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
         Task<bool> DeleteApplicationAsync(int id);
 
         Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus);
+        Task<bool> CanMoveToSecondInterviewAsync(int applicationId);
     }
 }

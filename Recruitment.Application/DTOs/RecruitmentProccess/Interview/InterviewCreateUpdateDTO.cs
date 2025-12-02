@@ -16,5 +16,4 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Interview
         public string? Feedback { get; set; }
         public string? InterViewNote { get; set; }
     }
-
 }

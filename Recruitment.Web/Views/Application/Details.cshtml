@@ -77,13 +77,25 @@
                         <label class="form-label">Decision</label>
                         <select name="ApplicationStatus" class="form-select" required>
                             <option value="">-- Select Decision --</option>
-                            @foreach (var status in Enum.GetValues(typeof(ApplicationStatus)).Cast<ApplicationStatus>())
+
+                            @if (!Model.HasFirstInterview && Model.ApplicationStatus != ApplicationStatus.Rejected)
                             {
-                                if (status == ApplicationStatus.Submitted || status == ApplicationStatus.InterviewScheduled)
-                                    continue;
-                                <option value="@( (int)status )">@status.ToString()</option>
+                                <option value="@((int)ApplicationStatus.ToInterview)">ToInterview</option>
                             }
+
+                            @if (Model.HasFirstInterview)
+                            {
+                                <option value="@((int)ApplicationStatus.ToSecondInterview)">ToSecondInterview</option>
+                            }
+
+                            <option value="@((int)ApplicationStatus.UnderReview)">Under Review</option>
+                            <option value="@((int)ApplicationStatus.UnQualified)">Un Qualified</option>
+                            <option value="@((int)ApplicationStatus.OverQualified)">Over Qualified</option>
+                            <option value="@((int)ApplicationStatus.Offered)">Offered</option>
+                            <option value="@((int)ApplicationStatus.Hired)">Hired</option>
+                            <option value="@((int)ApplicationStatus.NoAction)">No Action</option>
                         </select>
+
                     </div>
 
                     <div class="mb-3">

@@ -5,6 +5,7 @@
         Accepted = 1,
         Rejected = 2,
         SecondChoice = 3,
-        Pending = 4
+        Pending = 4,
+        NoResult = 5
     }
 }

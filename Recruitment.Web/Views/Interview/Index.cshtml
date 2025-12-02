@@ -1,4 +1,5 @@
-﻿@model Recruitment.Web.ViewModels.RecruitmentProcess.Interview.InterviewIndexVM
+﻿@using Recruitment.Domain.Enums
+@model Recruitment.Web.ViewModels.RecruitmentProcess.Interview.InterviewIndexVM
 
 @{
     ViewData["Title"] = "Interviews";
@@ -8,14 +9,55 @@
     <h2 class="mb-4">Interviews</h2>
 
     <!-- Search -->
-    <form method="get" class="row g-3 mb-4">
-        <div class="col-auto w-100">
-            <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Search by applicant or vacancy..." />
+    <form method="get" class="row g-3 mb-4 align-items-end">
+
+        <div class="col-md-3">
+            <label class="form-label">Search</label>
+            <input type="text" name="search" value="@Model.Search"
+                   class="form-control" placeholder="Applicant, Vacancy, Interviewer..." />
         </div>
-        <div class="col-auto w-20">
-            <button type="submit" class="btn btn-primary">Search</button>
+
+        <div class="col-md-2">
+            <label class="form-label">Type</label>
+            <select name="type" class="form-select">
+                <option value="">-- All Types --</option>
+                @foreach (var t in Enum.GetValues(typeof(InterviewType)))
+                {
+                    var isSelected = Model.Type == (InterviewType)t;
+                    <option value="@t" selected="@isSelected">@t</option>
+                }
+            </select>
         </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Result</label>
+            <select name="result" class="form-select">
+                <option value="">-- All Results --</option>
+                @foreach (var r in Enum.GetValues(typeof(InterviewResult)))
+                {
+                    var isSelected = Model.Result == (InterviewResult)r;
+                    <option value="@r" selected="@isSelected">@r</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">From Date</label>
+            <input type="date" name="fromDate" value="@Model.FromDate?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">To Date</label>
+            <input type="date" name="toDate" value="@Model.ToDate?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+
     </form>
+
+
 
     <!-- Interviews Table -->
     <div class="table-responsive">
@@ -40,7 +82,7 @@
                     foreach (var interview in Model.Interviews)
                     {
                         index++;
-                        <tr>
+                        <tr style="cursor:pointer;" onclick="window.location.href='@Url.Action("Details", "Interview", new { id = interview.Id })'">
                             <td>@index</td>
                             <td>@interview.ApplicantName</td>
                             <td>@interview.VacancyTitle</td>
@@ -56,7 +98,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="8" class="text-center">No interviews found.</td>
+                        <td colspan="9" class="text-center">No interviews found.</td>
                     </tr>
                 }
             </tbody>

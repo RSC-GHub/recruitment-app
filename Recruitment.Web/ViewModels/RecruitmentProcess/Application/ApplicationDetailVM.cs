@@ -24,6 +24,8 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
         public string? ReviewedByUserName { get; set; }
         public DateTime? ReviewDate { get; set; }
         public string? Note { get; set; }
+        public bool HasFirstInterview { get; set; }
+
     }
 
 }

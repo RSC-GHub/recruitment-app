@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
 
@@ -73,12 +74,13 @@ namespace Recruitment.Web.Controllers
                 ReviewedBy = application.ReviewedBy,
                 ReviewedByUserName = application.ReviewedByUserName,
                 ReviewDate = application.ReviewDate,
-                Note = application.Note
+                Note = application.Note,
+                HasFirstInterview = await _applicationService.CanMoveToSecondInterviewAsync(application.Id)
             };
 
             return View(vm);
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> Review([FromBody] ApplicationReviewVM vm)
         {

@@ -247,6 +247,22 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
             await _unitOfWork.CompleteAsync();
         }
+        public async Task<bool> CanMoveToSecondInterviewAsync(int applicationId)
+        {
+            var application = await _unitOfWork.ApplicationRepository.GetByIdAsync(applicationId);
+            if (application == null)
+                return false;
+
+            if (application.ApplicationStatus != ApplicationStatus.InterviewScheduled || application.ApplicationStatus != ApplicationStatus.Rejected)
+                return false;
+
+            var interviews = await _unitOfWork.InterviewRepository
+                .GetAllByApplicationIdAsync(applicationId);
+
+            bool firstInterviewDone = interviews.Any(i => i.InterviewResult == InterviewResult.Accepted);
+
+            return firstInterviewDone;
+        }
 
     }
 }

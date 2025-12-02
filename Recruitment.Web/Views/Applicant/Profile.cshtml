@@ -1,4 +1,5 @@
-﻿@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantProfileVM
+﻿@using Recruitment.Domain.Enums
+@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantProfileVM
 
 @{
     ViewData["Title"] = "Applicant Profile";
@@ -81,7 +82,7 @@
                     <p><strong>Current Job:</strong> @Model.CurrentJob</p>
                     <p><strong>Current Employer:</strong> @Model.CurrentEmployer</p>
                     <p><strong>Current Salary:</strong> @Model.CurrentSalary @Model.CurrencyName</p>
-                    <p><strong>Notice Period:</strong> @(string.IsNullOrEmpty(Model.NoticePeriod) ? "N/A" : Model.NoticePeriod)</p>
+                    <p><strong>Notice Period:</strong> @(string.IsNullOrEmpty(Model.NoticePeriod) ? "N/A" : Model.NoticePeriod) days</p>
                     <p><strong>Extra Certifications:</strong> @(string.IsNullOrEmpty(Model.ExtraCertificate) ? "N/A" : Model.ExtraCertificate)</p>
                 </div>
             </div>
@@ -106,7 +107,11 @@
                 <div class="card-header bg-primary text-white fw-bold">Personal Information</div>
                 <div class="card-body">
                     <p><strong>Gender:</strong> @Model.Gender</p>
-                    <p><strong>Military Status:</strong> @Model.MilitaryStatus</p>
+
+                    @if (Model.Gender != Gender.Female)
+                    {
+                        <p><strong>Military Status:</strong> @Model.MilitaryStatus</p>
+                    }
                 </div>
             </div>
 

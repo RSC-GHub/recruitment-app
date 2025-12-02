@@ -140,7 +140,7 @@
                             onclick="window.location='@Url.Action("Details", new { id = app.Id })'">
 
                             <td>@app.Id</td>
-                            <td>@app.ApplicantName</td>
+                            <td><a asp-action="Profile" asp-controller="Applicant" asp-route-id="@app.ApplicantId">@app.ApplicantName</a></td>
                             <td>@app.ApplicantEmail</td>
                             <td>@app.PhoneNumber</td>
                             <td>@app.VacancyTitle</td>
