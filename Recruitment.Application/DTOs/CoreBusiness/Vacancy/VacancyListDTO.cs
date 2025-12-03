@@ -11,7 +11,6 @@
 
         public List<string> ProjectNames { get; set; } = new();
 
-
     }
 
 }

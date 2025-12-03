@@ -115,19 +115,6 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Scheduled Date</label>
-                        <input type="datetime-local" class="form-control" id="ScheduledDate" name="ScheduledDate" value="@Model.ScheduledDate.ToString("yyyy-MM-ddTHH:mm")" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Type</label>
-                        <select class="form-select" id="InterviewType" name="InterviewType">
-                            <option value="Technical" selected=@(Model.InterviewType == InterviewType.Technical ? "selected" : "")>Technical</option>
-                            <option value="HR" selected=@(Model.InterviewType == InterviewType.HR ? "selected" : "")>HR</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Status</label>
                         <select class="form-select" id="InterviewStatus" name="InterviewStatus">
                             <option value="Postponed" selected=@(Model.InterviewStatus == InterviewStatus.Postponed ? "selected" : "")>Postponed</option>
@@ -143,11 +130,6 @@
                     <div class="mb-3">
                         <label class="form-label">Note</label>
                         <textarea class="form-control" id="InterviewNote" name="InterviewNote">@Model.InterViewNote</textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Feedback</label>
-                        <textarea class="form-control" id="Feedback" name="Feedback">@Model.Feedback</textarea>
                     </div>
 
                     <div id="editInterviewError" class="text-danger"></div>
@@ -184,6 +166,7 @@
                             <option value="">-- Select Result --</option>
                             <option value="Accepted">Accepted</option>
                             <option value="Rejected">Rejected</option>
+                            <option value="SecondChoice">SecondChoice</option>
                         </select>
                     </div>
 

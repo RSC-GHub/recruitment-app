@@ -214,12 +214,9 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             bool result = await _unitOfWork.InterviewRepository.UpdateInterviewAsync(
                 dto.Id,
                 dto.InterViewer,
-                dto.ScheduledDate,
-                dto.InterviewType,
                 dto.InterviewStatus,
                 dto.DurationMinutes,
-                dto.InterviewNote,
-                dto.Feedback
+                dto.InterviewNote
             );
 
             return result;

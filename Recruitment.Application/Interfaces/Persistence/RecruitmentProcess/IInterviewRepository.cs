@@ -10,6 +10,7 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
 
         Task<PagedResult<Interview>> GetByApplicationIdAsync(
             int applicationId, int page, int pageSize);
+        Task<Interview> GetWithApplicationIdAsync(int id);
         Task<List<Interview>> GetAllByApplicationIdAsync(int applicationId);
         Task<PagedResult<Interview>> SearchAsync(
             string? search,
@@ -25,8 +26,8 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
         Task<Interview?> GetWithRelatedDataAsync(int id);
 
         Task<bool> UpdateInterviewResultAsync(int id, InterviewResult result, string? feedback, string? Note);
-        Task<bool> UpdateInterviewAsync(int id, string? interViewer, DateTime scheduledDate,
-                                                 InterviewType interviewType, InterviewStatus interviewStatus,
-                                                 int durationMinutes, string? interviewNote, string? feedback);
+        Task<bool> UpdateInterviewAsync(int id, string? interViewer,
+                                                InterviewStatus interviewStatus,
+                                                int durationMinutes, string? interviewNote);
     }
 }

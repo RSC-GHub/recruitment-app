@@ -6,12 +6,8 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Interview
     {
         public int Id { get; set; }  
         public string? InterViewer { get; set; }
-        public DateTime ScheduledDate { get; set; }
-        public InterviewType InterviewType { get; set; }
         public InterviewStatus InterviewStatus { get; set; }
         public int DurationMinutes { get; set; }
         public string? InterviewNote { get; set; }
-        public string? Feedback { get; set; }
     }
-
 }

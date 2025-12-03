@@ -1,4 +1,5 @@
-﻿using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
+﻿using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
@@ -154,20 +155,27 @@ namespace Recruitment.Application.Services.CoreBusiness
             return await _unitOfWork.VacancyRepository.NameExistsAsync(name, excludeId);
         }
 
-        public async Task<List<VacancyListDTO>> SearchVacanciesAsync(string? keyword)
+        public async Task<PagedResult<VacancyListDTO>> SearchAsync(
+            string? search, int? titleId, int? projectId, VacancyStatus? status,
+            int page, int pageSize)
         {
-            var vacancies = await _unitOfWork.VacancyRepository.SearchAsync(keyword);
-            return vacancies.Select(v => new VacancyListDTO
+            var paged = await _unitOfWork.VacancyRepository.SearchAsync(
+                search, titleId, projectId, status, page, pageSize);
+
+            var dtoItems = paged.Items.Select(v => new VacancyListDTO
             {
                 Id = v.Id,
-                TitleName = v.Title?.Name ?? "",
+                TitleName = v.Title.Name,
                 PositionCount = v.PositionCount,
                 EmploymentType = v.EmploymentType.ToString(),
                 Status = v.Status.ToString(),
                 Deadline = v.Deadline,
-                ProjectNames = v.ProjectVacancies?.Select(pv => pv.Project?.ProjectName ?? "").ToList() ?? new List<string>()
+                ProjectNames = v.ProjectVacancies.Select(pv => pv.Project.ProjectName).ToList()
             }).ToList();
+
+            return new PagedResult<VacancyListDTO>(dtoItems, paged.TotalCount, page, pageSize);
         }
+
 
         public async Task<List<VacancyListDTO>> FilterVacanciesAsync(int? titleId, int? projectId, VacancyStatus? status)
         {

@@ -14,7 +14,9 @@ namespace Recruitment.Application.Interfaces.Services.CoreBusiness
         Task<bool> DeleteVacancyAsync(int id);
         Task<bool> TitleNameExistsAsync(string name, int? excludeId = null);
 
-        Task<List<VacancyListDTO>> SearchVacanciesAsync(string? keyword);
+        Task<PagedResult<VacancyListDTO>> SearchAsync(
+                string? search, int? titleId, int? projectId, VacancyStatus? status,
+                int page, int pageSize);
         Task<List<VacancyListDTO>> FilterVacanciesAsync(int? titleId, int? projectId, VacancyStatus? status);
     }
 }

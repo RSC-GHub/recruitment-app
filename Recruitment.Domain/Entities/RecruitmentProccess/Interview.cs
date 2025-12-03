@@ -9,7 +9,7 @@ namespace Recruitment.Domain.Entities.RecruitmentProccess
         public ApplicantApplication Application { get; set; } = null!;
 
         public string? InterViewer { get; set; }
-        public DateTime ScheduledDate { get; set; }
+        public DateTime ScheduledDate { get; set; } = DateTime.UtcNow;
         public InterviewType InterviewType { get; set; }
         public InterviewStatus InterviewStatus { get; set; } = InterviewStatus.Scheduled;
         public InterviewResult InterviewResult { get; set; } = InterviewResult.Pending;

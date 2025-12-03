@@ -14,7 +14,13 @@ namespace Recruitment.Application.Interfaces.Persistence.CoreBusiness
 
         Task<bool> NameExistsAsync(string name, int? excludeId = null);
 
-        Task<List<Vacancy>> SearchAsync(string? keyword);
+        Task<PagedResult<Vacancy>> SearchAsync(
+            string? search,
+            int? titleId,
+            int? projectId,
+            VacancyStatus? status,
+            int page,
+            int pageSize);
 
         Task<List<Vacancy>> FilterAsync(int? titleId, int? projectId, VacancyStatus? status);
 

@@ -52,24 +52,52 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
             );
         }
 
-        public async Task<List<Vacancy>> SearchAsync(string? keyword)
+        public async Task<PagedResult<Vacancy>> SearchAsync(
+            string? search,
+            int? titleId,
+            int? projectId,
+            VacancyStatus? status,
+            int page,
+            int pageSize)
         {
-            keyword = keyword?.Trim().ToLower();
-
-            return await _context.Vacancies
+            var query = _context.Vacancies
                 .Include(v => v.Title)
-                .Include(v => v.ProjectVacancies!)
+                .Include(v => v.ProjectVacancies)
                     .ThenInclude(pv => pv.Project)
-                .Where(v =>
-                    string.IsNullOrEmpty(keyword) ||
-                    v.JobDescription.ToLower().Contains(keyword) ||
-                    v.Requirements.ToLower().Contains(keyword) ||
-                    v.Responsibilities.ToLower().Contains(keyword) ||
-                    v.Benefits.ToLower().Contains(keyword) ||
-                    v.Title!.Name.ToLower().Contains(keyword)
-                )
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim().ToLower();
+                query = query.Where(v =>
+                    v.Title!.Name.ToLower().Contains(search) ||
+                    v.JobDescription.ToLower().Contains(search) ||
+                    v.Requirements.ToLower().Contains(search) ||
+                    v.Responsibilities.ToLower().Contains(search) ||
+                    v.Benefits.ToLower().Contains(search)
+                );
+            }
+
+            if (titleId.HasValue)
+                query = query.Where(v => v.TitleId == titleId);
+
+            if (projectId.HasValue)
+                query = query.Where(v => v.ProjectVacancies.Any(pv => pv.ProjectId == projectId));
+
+            if (status.HasValue)
+                query = query.Where(v => v.Status == status);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(v => v.Deadline)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return new PagedResult<Vacancy>(items, totalCount, page, pageSize);
         }
+
 
         public async Task<List<Vacancy>> FilterAsync(
             int? titleId,

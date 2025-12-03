@@ -13,8 +13,8 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Interview
         public InterviewStatus? Status { get; set; }
         public InterviewResult? Result { get; set; }
         public InterviewType? Type { get; set; }
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
+        public DateTime? FromDate { get; set; } = DateTime.MinValue;
+        public DateTime? ToDate { get; set; } = DateTime.MaxValue;
 
         // Pagination
         public int Page { get; set; }

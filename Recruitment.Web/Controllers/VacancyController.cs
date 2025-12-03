@@ -18,7 +18,7 @@ namespace Recruitment.Web.Controllers
         private readonly IProjectService _projectService;
         private readonly IApplicantService _applicantService;
         private readonly IApplicantApplicationService _applicationService;
-        
+
         public VacancyController(ITitleService titleService, IVacancyService vacancyService, IProjectService projectService, IApplicantApplicationService applicantApplicationService, IApplicantService applicantService)
         {
             _vacancyService = vacancyService;
@@ -53,39 +53,50 @@ namespace Recruitment.Web.Controllers
         // GET: Vacancy
         public async Task<IActionResult> Index(string? search, int? titleId, int? projectId, VacancyStatus? status, int page = 1, int pageSize = 10)
         {
-            var vacancies = await _vacancyService.GetAllVacanciesAsync();
+            var paged = await _vacancyService.SearchAsync(
+                    search, titleId, projectId, status, page, pageSize);
 
-            if (!string.IsNullOrEmpty(search))
-                vacancies = await _vacancyService.SearchVacanciesAsync(search);
+            var allTitles = await _titleService.GetAllAsync();
+            var allProjects = await _projectService.GetAllProjectsAsync();
 
-            if (titleId.HasValue || projectId.HasValue || status.HasValue)
-                vacancies = await _vacancyService.FilterVacanciesAsync(titleId, projectId, status);
-
-            ViewBag.Titles = new SelectList(await _titleService.GetAllAsync(), "Id", "Name", titleId);
-            ViewBag.Projects = new SelectList(await _projectService.GetAllProjectsAsync(), "Id", "ProjectName", projectId);
-            ViewBag.Statuses = new SelectList(Enum.GetValues(typeof(VacancyStatus)), status);
-
-            // Pagination
-            var totalCount = vacancies.Count;
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-            var pagedVacancies = vacancies.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            var vmList = pagedVacancies.Select(v => new VacancyListVM
+            var vm = new VacancyIndexVM
             {
-                Id = v.Id,
-                TitleName = v.TitleName,
-                PositionCount = v.PositionCount,
-                EmploymentType = v.EmploymentType,
-                Status = v.Status,
-                Deadline = v.Deadline,
-                ProjectNames = v.ProjectNames
-            }).ToList();
+                Search = search,
+                TitleId = titleId,
+                ProjectId = projectId,
+                Status = status,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = paged.TotalCount,
+                Vacancies = paged.Items,
 
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
+                Titles = allTitles.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.Name,
+                    Selected = (t.Id == titleId)
+                }),
 
-            return View(vmList);
+                Projects = allProjects.Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = p.ProjectName,
+                    Selected = (p.Id == projectId)
+                }),
+
+                Statuses = Enum.GetValues(typeof(VacancyStatus))
+                               .Cast<VacancyStatus>()
+                               .Select(s => new SelectListItem
+                               {
+                                   Value = s.ToString(),
+                                   Text = s.ToString(),
+                                   Selected = (s == status)
+                               })
+            };
+
+            return View(vm);
         }
+
 
 
         // GET: Vacancy/Details/5
@@ -150,7 +161,7 @@ namespace Recruitment.Web.Controllers
             int vacancyId,
             int page = 1,
             int pageSize = 10,
-            string? search = null) 
+            string? search = null)
         {
             var result = await _applicationService.GetByVacancyIdAsync(vacancyId, page, pageSize, search);
 
@@ -161,7 +172,7 @@ namespace Recruitment.Web.Controllers
                 PageSize = pageSize,
                 TotalCount = result.TotalCount,
                 Applications = result.Items,
-                Search = search 
+                Search = search
             };
 
             return View(vm);

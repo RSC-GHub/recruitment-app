@@ -253,7 +253,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             if (application == null)
                 return false;
 
-            if (application.ApplicationStatus != ApplicationStatus.InterviewScheduled || application.ApplicationStatus != ApplicationStatus.Rejected)
+            if (application.ApplicationStatus != ApplicationStatus.InterviewScheduled && application.ApplicationStatus != ApplicationStatus.Rejected)
                 return false;
 
             var interviews = await _unitOfWork.InterviewRepository
@@ -263,6 +263,5 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
             return firstInterviewDone;
         }
-
     }
 }
