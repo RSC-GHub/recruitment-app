@@ -64,6 +64,15 @@
             <span asp-validation-for="MilitaryStatus" class="text-danger"></span>
         </div>
 
+        <!-- Marital Status -->
+        <div class="col-md-6">
+            <label class="form-label">Marital Status</label><span class="text-danger"> *</span>
+            <select asp-for="MaritalStatus" asp-items="Model.MaritalStatuses" class="form-select" id="maritalStatus">
+                <option value="">-- Select Marital Status --</option>
+            </select>
+            <span asp-validation-for="MaritalStatuses" class="text-danger"></span>
+        </div>
+
         <div class="col-md-6">
             <label class="form-label">Current Job</label><span class="text-danger"> *</span>
             <input asp-for="CurrentJob" class="form-control" id="currentJob" />

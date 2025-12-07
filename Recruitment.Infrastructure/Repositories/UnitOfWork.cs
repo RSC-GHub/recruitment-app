@@ -27,11 +27,11 @@ namespace Recruitment.Infrastructure.Repositories
         public IGenericRepository<DepartmentTitle> DepartmentTitles { get; }
 
         // User Management Repositories
-        public IGenericRepository<Role> Roles { get; }
         public IGenericRepository<Permission> Permissions  { get; }
         public IGenericRepository<RolePermission> RolePermissions { get; set; }
         public IGenericRepository<Currency> Currencies { get; }
 
+        public IRoleRepository Roles { get; }
         public IVacancyRepository VacancyRepository { get; }
         public IProjectRepository ProjectRepository { get; }
         public ITitleRepository TitleRepository { get; }
@@ -52,7 +52,9 @@ namespace Recruitment.Infrastructure.Repositories
             Titles = new GenericRepository<Title>(_context, httpContextAccessor);
             Departments = new GenericRepository<Department>(_context, httpContextAccessor);
             DepartmentTitles = new GenericRepository<DepartmentTitle>(_context, httpContextAccessor);
-            Roles = new GenericRepository<Role>(_context, httpContextAccessor);
+
+            Roles = new RoleRepository(_context);
+            
             Permissions = new GenericRepository<Permission>(_context, httpContextAccessor);
             RolePermissions = new GenericRepository<RolePermission>(_context, httpContextAccessor);
 

@@ -17,6 +17,7 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
             InterviewStatus? status,
             InterviewResult? result,
             InterviewType? type,
+            InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
             int page,
@@ -28,6 +29,7 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
         Task<bool> UpdateInterviewResultAsync(int id, InterviewResult result, string? feedback, string? Note);
         Task<bool> UpdateInterviewAsync(int id, string? interViewer,
                                                 InterviewStatus interviewStatus,
+                                                InterviewType interviewType,
                                                 int durationMinutes, string? interviewNote);
     }
 }

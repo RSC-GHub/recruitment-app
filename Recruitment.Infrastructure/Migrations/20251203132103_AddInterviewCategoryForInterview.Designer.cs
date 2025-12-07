@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruitment.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Recruitment.Infrastructure.Data;
 namespace Recruitment.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251203132103_AddInterviewCategoryForInterview")]
+    partial class AddInterviewCategoryForInterview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,7 +188,8 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -204,11 +208,12 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Currency", b =>
@@ -236,11 +241,12 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Department", b =>
@@ -268,11 +274,12 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.DepartmentTitle", b =>
@@ -310,7 +317,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("TitleId");
 
-                    b.ToTable("DepartmentTitles");
+                    b.ToTable("DepartmentTitles", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Location", b =>
@@ -341,13 +348,14 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Project", b =>
@@ -378,16 +386,19 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.ProjectVacancy", b =>
@@ -425,7 +436,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("VacancyId");
 
-                    b.ToTable("ProjectVacancies");
+                    b.ToTable("ProjectVacancies", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Title", b =>
@@ -453,11 +464,12 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Titles");
+                    b.ToTable("Titles", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Vacancy", b =>
@@ -481,8 +493,10 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Property<DateTime?>("Deadline")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmploymentType")
-                        .HasColumnType("int");
+                    b.Property<string>("EmploymentType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -498,7 +512,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PositionCount")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Requirements")
                         .IsRequired()
@@ -514,8 +530,10 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Property<decimal?>("SalaryRangeMin")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("TitleId")
                         .HasColumnType("int");
@@ -524,7 +542,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("TitleId");
 
-                    b.ToTable("Vacancies");
+                    b.ToTable("Vacancies", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interview", b =>
@@ -548,22 +566,30 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("InterViewNote")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InterViewer")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<int>("InterviewCategory")
                         .HasColumnType("int");
 
                     b.Property<int>("InterviewResult")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(4);
 
                     b.Property<int>("InterviewStatus")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<int>("InterviewType")
                         .HasColumnType("int");
@@ -584,7 +610,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.ToTable("Interviews");
+                    b.ToTable("Interviews", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", b =>
@@ -620,15 +646,13 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime?>("ReviewDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("ReviewedBy")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReviewerId")
                         .HasColumnType("int");
 
                     b.Property<int>("VacancyId")
@@ -638,11 +662,11 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("ApplicantId");
 
-                    b.HasIndex("ReviewerId");
+                    b.HasIndex("ReviewedBy");
 
                     b.HasIndex("VacancyId");
 
-                    b.ToTable("Applications");
+                    b.ToTable("Applications", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Applicant", b =>
@@ -654,15 +678,18 @@ namespace Recruitment.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("CVFilePath")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
@@ -678,11 +705,13 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("CurrentEmployer")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("CurrentJob")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("CurrentSalary")
                         .HasColumnType("decimal(18,2)");
@@ -692,17 +721,20 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<decimal>("ExpectedSalary")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ExtraCertificate")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
@@ -714,7 +746,8 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Major")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<int>("MaritalStatus")
                         .HasColumnType("int");
@@ -730,14 +763,17 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Nationality")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("NoticePeriod")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -745,7 +781,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.ToTable("Applicants");
+                    b.ToTable("Applicants", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Permission", b =>
@@ -758,7 +794,8 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -767,7 +804,8 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -780,15 +818,17 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("PermissionName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Resource")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Role", b =>
@@ -810,10 +850,13 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -825,6 +868,7 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -833,6 +877,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -885,7 +932,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RolePermissions");
+                    b.ToTable("RolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.User", b =>
@@ -913,6 +960,7 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -921,10 +969,13 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -974,6 +1025,9 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -1042,13 +1096,13 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Department", "Department")
                         .WithMany("DepartmentTitles")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Title", "Title")
                         .WithMany("DepartmentTitles")
                         .HasForeignKey("TitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Department");
@@ -1061,7 +1115,7 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Country", "Country")
                         .WithMany("Locations")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Country");
@@ -1072,7 +1126,7 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Location", "Location")
                         .WithMany("Projects")
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Location");
@@ -1083,7 +1137,7 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Project", "Project")
                         .WithMany("ProjectVacancies")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Vacancy", "Vacancy")
@@ -1102,7 +1156,7 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Title", "Title")
                         .WithMany("Vacancies")
                         .HasForeignKey("TitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Title");
@@ -1129,7 +1183,8 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasOne("Recruitment.Domain.Entities.UserManagement.User", "Reviewer")
                         .WithMany("ReviewedApplications")
-                        .HasForeignKey("ReviewerId");
+                        .HasForeignKey("ReviewedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Vacancy", "Vacancy")
                         .WithMany("Applications")
@@ -1149,13 +1204,13 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Currency", "Currency")
                         .WithMany()
                         .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Country");
@@ -1190,7 +1245,8 @@ namespace Recruitment.Infrastructure.Migrations
                 {
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Department", "Department")
                         .WithMany("Users")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Department");
                 });

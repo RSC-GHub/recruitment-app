@@ -4,6 +4,7 @@ using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.File;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Entities.UserManagement;
+using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Services.UserManagement
 {
@@ -36,6 +37,7 @@ namespace Recruitment.Application.Services.UserManagement
                 Address = dto.Address,
                 Gender = dto.Gender,
                 MilitaryStatus = dto.MilitaryStatus,
+                MaritalStatus = dto.MaritalStatus,
                 EducationDegree = dto.EducationDegree,
                 GraduationYear = dto.GraduationYear,
                 Major = dto.Major,
@@ -73,6 +75,7 @@ namespace Recruitment.Application.Services.UserManagement
             applicant.Address = dto.Address;
             applicant.Gender = dto.Gender;
             applicant.MilitaryStatus = dto.MilitaryStatus;
+            applicant.MaritalStatus = dto.MaritalStatus;
             applicant.EducationDegree = dto.EducationDegree;
             applicant.GraduationYear = dto.GraduationYear;
             applicant.Major = dto.Major;
@@ -152,6 +155,7 @@ namespace Recruitment.Application.Services.UserManagement
                 Address = applicant.Address,
                 Gender = applicant.Gender,
                 MilitaryStatus = applicant.MilitaryStatus,
+                MaritalStatus = applicant.MaritalStatus,
                 EducationDegree = applicant.EducationDegree,
                 GraduationYear = applicant.GraduationYear,
                 Major = applicant.Major,
@@ -190,6 +194,7 @@ namespace Recruitment.Application.Services.UserManagement
                 Address = applicant.Address,
                 Gender = applicant.Gender,
                 MilitaryStatus = applicant.MilitaryStatus,
+                MaritalStatus = applicant.MaritalStatus,
                 EducationDegree = applicant.EducationDegree,
                 GraduationYear = applicant.GraduationYear,
                 Major = applicant.Major,

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Recruitment.Application.Interfaces.Common;
 
 namespace Recruitment.Domain.Entities.UserManagement
 {
-    public class Role : IdentityRole<int>
+    public class Role : IdentityRole<int>, ISoftDeletable
     {
         public string? Description { get; set; }
         public bool IsActive { get; set; } = true;

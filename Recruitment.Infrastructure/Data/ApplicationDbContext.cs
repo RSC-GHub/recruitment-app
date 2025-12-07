@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Recruitment.Application.Interfaces.Common;
 using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
@@ -8,6 +9,7 @@ using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Entities.UserManagement;
 using System.Linq.Expressions;
+using System.Text.Json;
 
 namespace Recruitment.Infrastructure.Data
 {
@@ -16,7 +18,7 @@ namespace Recruitment.Infrastructure.Data
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
-            : base(options) 
+            : base(options)
         {
             _httpContextAccessor = httpContextAccessor;
         }
@@ -51,57 +53,97 @@ namespace Recruitment.Infrastructure.Data
         {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+                if (typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
                 {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
-                    var prop = Expression.Property(parameter, nameof(BaseEntity.IsDeleted));
+                    var prop = Expression.Property(parameter, "IsDeleted");
                     var condition = Expression.Equal(prop, Expression.Constant(false));
                     var lambda = Expression.Lambda(condition, parameter);
+
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
                 }
             }
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
         }
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+
+        public override async Task<int> SaveChangesAsync(
+    CancellationToken cancellationToken = default)
         {
             var auditEntries = new List<AuditLog>();
 
-            foreach (var entry in ChangeTracker.Entries().Where(e =>
-                e.Entity is BaseEntity &&
-                (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted)))
+            foreach (var entry in ChangeTracker.Entries()
+                .Where(e =>
+                    e.Entity is BaseEntity &&
+                    (e.State == EntityState.Added ||
+                     e.State == EntityState.Modified ||
+                     e.State == EntityState.Deleted)))
             {
                 var entityName = entry.Entity.GetType().Name;
                 var baseEntity = (BaseEntity)entry.Entity;
+                var currentUser = GetCurrentUsername();
 
-                switch (entry.State)
+                // Handle Added
+                if (entry.State == EntityState.Added)
                 {
-                    case EntityState.Added:
-                        baseEntity.CreatedOn = DateTime.UtcNow;
-                        baseEntity.CreatedBy ??= GetCurrentUsername();
-                        break;
-
-                    case EntityState.Modified:
-                        baseEntity.ModifiedOn = DateTime.UtcNow;
-                        baseEntity.ModifiedBy ??= GetCurrentUsername();
-                        break;
-
-                    case EntityState.Deleted:
-                        baseEntity.ModifiedOn = DateTime.UtcNow;
-                        baseEntity.ModifiedBy ??= GetCurrentUsername();
-                        baseEntity.IsDeleted = true;
-                        entry.State = EntityState.Modified;
-                        break;
+                    baseEntity.CreatedOn = DateTime.UtcNow;
+                    baseEntity.CreatedBy ??= currentUser;
                 }
 
-                // Audit log
+                // Handle Modified
+                else if (entry.State == EntityState.Modified)
+                {
+                    baseEntity.ModifiedOn = DateTime.UtcNow;
+                    baseEntity.ModifiedBy ??= currentUser;
+                }
+
+                // Handle Deleted (soft delete with related data check)
+                else if (entry.State == EntityState.Deleted &&
+                         entry.Entity is ISoftDeletable softDeletable)
+                {
+                    // Check related collections for any not-deleted entities
+                    var navigationProperties = entry.Navigations
+                             .Where(n => n.Metadata.IsCollection)
+                             .ToList();
+
+
+                    foreach (var nav in navigationProperties)
+                    {
+                        if (!nav.IsLoaded)
+                            await nav.LoadAsync(cancellationToken);
+
+                        var relatedEntities = ((IEnumerable<object>)nav.CurrentValue!)
+                            .OfType<ISoftDeletable>()
+                            .Where(r => !r.IsDeleted)
+                            .ToList();
+
+                        if (relatedEntities.Any())
+                        {
+                            throw new InvalidOperationException(
+                                $"Cannot delete {entityName} because it has related {nav.Metadata.Name}.");
+                        }
+                    }
+
+                    // Apply soft delete
+                    softDeletable.IsDeleted = true;
+                    baseEntity.ModifiedOn = DateTime.UtcNow;
+                    baseEntity.ModifiedBy ??= currentUser;
+
+                    entry.State = EntityState.Modified;
+                }
+
+                // Prepare Audit Log
                 var audit = new AuditLog
                 {
                     TableName = entityName,
-                    ActionType = entry.State.ToString(),
-                    ChangedBy = GetCurrentUsername(),
+                    ActionType =
+                        entry.State == EntityState.Modified &&
+                        entry.Entity is ISoftDeletable sd &&
+                        sd.IsDeleted
+                            ? "Deleted"
+                            : entry.State.ToString(),
+                    ChangedBy = currentUser,
                     ChangedOn = DateTime.UtcNow
                 };
 
@@ -116,36 +158,28 @@ namespace Recruitment.Infrastructure.Data
                     if (prop.Metadata.IsPrimaryKey())
                         keyValues[propName] = prop.CurrentValue;
 
-                    switch (entry.State)
+                    if (entry.State == EntityState.Added)
                     {
-                        case EntityState.Added:
-                            newValues[propName] = prop.CurrentValue;
-                            break;
-
-                        case EntityState.Deleted:
-                            oldValues[propName] = prop.OriginalValue;
-                            break;
-
-                        case EntityState.Modified:
-                            if (prop.IsModified)
-                            {
-                                oldValues[propName] = prop.OriginalValue;
-                                newValues[propName] = prop.CurrentValue;
-                            }
-                            break;
+                        newValues[propName] = prop.CurrentValue;
+                    }
+                    else if (entry.State == EntityState.Modified && prop.IsModified)
+                    {
+                        oldValues[propName] = prop.OriginalValue;
+                        newValues[propName] = prop.CurrentValue;
                     }
                 }
 
-                audit.KeyValues = System.Text.Json.JsonSerializer.Serialize(keyValues);
-                audit.OldValues = oldValues.Any() ? System.Text.Json.JsonSerializer.Serialize(oldValues) : null;
-                audit.NewValues = newValues.Any() ? System.Text.Json.JsonSerializer.Serialize(newValues) : null;
+                audit.KeyValues = JsonSerializer.Serialize(keyValues);
+                audit.OldValues = oldValues.Any() ? JsonSerializer.Serialize(oldValues) : null;
+                audit.NewValues = newValues.Any() ? JsonSerializer.Serialize(newValues) : null;
 
                 auditEntries.Add(audit);
             }
 
-            // Save entity changes first
+            // Save main changes
             var result = await base.SaveChangesAsync(cancellationToken);
 
+            // Save audit logs
             if (auditEntries.Any())
             {
                 await AuditLogs.AddRangeAsync(auditEntries, cancellationToken);
@@ -154,5 +188,7 @@ namespace Recruitment.Infrastructure.Data
 
             return result;
         }
+
+
     }
 }

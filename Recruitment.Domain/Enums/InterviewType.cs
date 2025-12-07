@@ -2,9 +2,8 @@
 {
     public enum InterviewType
     {
-        Technical = 1,
-        HR = 2,
-        Behavioral = 3,
-        Final = 4,
+        FaceToFace = 1,  
+        OnlineZoom = 2,   
+        Teams = 3
     }
 }

@@ -72,6 +72,7 @@
             <p><strong>Interviewer:</strong> @(Model.InterViewer ?? "-")</p>
             <p><strong>Scheduled Date:</strong> @Model.ScheduledDate.ToString("yyyy-MM-dd HH:mm")</p>
             <p><strong>Type:</strong> @Model.InterviewType</p>
+            <p><strong>Category:</strong> @Model.InterviewCategory</p>
             <p><strong>Status:</strong> @Model.InterviewStatus</p>
             <p><strong>Result:</strong> @Model.InterviewResult</p>
             <p><strong>Duration (minutes):</strong> @Model.DurationMinutes</p>
@@ -116,9 +117,19 @@
 
                     <div class="mb-3">
                         <label class="form-label">Status</label>
+                        <select class="form-select" id="InterviewType" name="InterviewType">
+                            <option value="Postponed" selected="@(Model.InterviewType == InterviewType.FaceToFace)">Face To Face</option>
+                            <option value="OnlineZoom" selected="@(Model.InterviewType == InterviewType.OnlineZoom)">Online Zoom</option>
+                            <option value="Teams" selected="@(Model.InterviewType == InterviewType.Teams)">Teams</option>
+                            
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
                         <select class="form-select" id="InterviewStatus" name="InterviewStatus">
-                            <option value="Postponed" selected=@(Model.InterviewStatus == InterviewStatus.Postponed ? "selected" : "")>Postponed</option>
-                            <option value="Cancelled" selected=@(Model.InterviewStatus == InterviewStatus.Cancelled ? "selected" : "")>Cancelled</option>
+                            <option value="Postponed" selected="@(Model.InterviewStatus == InterviewStatus.Postponed)">Postponed</option>
+                            <option value="Cancelled" selected="@(Model.InterviewStatus == InterviewStatus.Cancelled)">Cancelled</option>
                         </select>
                     </div>
 
@@ -250,7 +261,6 @@
                     document.getElementById('completeInterviewError').innerText = 'An error occurred.';
                 });
         });
-
 
     </script>
 }

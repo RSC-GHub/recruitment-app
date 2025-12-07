@@ -13,6 +13,7 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
                         InterviewStatus? status,
                         InterviewResult? result,
                         InterviewType? type,
+                        InterviewCategory? category,
                         DateTime? fromDate,
                         DateTime? toDate);
         Task<PagedResult<InterviewListDTO>> GetByApplicationIdAsync(int applicationId, int page, int pageSize);
@@ -21,6 +22,7 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
             InterviewStatus? status,
             InterviewResult? result,
             InterviewType? type,
+            InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
             int page,

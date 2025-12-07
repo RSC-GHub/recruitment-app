@@ -59,6 +59,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string? Major { get; set; }
         public string? ExtraCertificate { get; set; }
         public MilitaryStatus MilitaryStatus { get; set; }
+        public MaritalStatus MaritalStatus { get; set; }
 
         public IFormFile? CV { get; set; }  
         public string? ExistingCVPath { get; set; }
@@ -67,6 +68,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public IEnumerable<SelectListItem>? Currencies { get; set; }
         public IEnumerable<SelectListItem>? GenderType { get; set; }
         public IEnumerable<SelectListItem>? MilitaryStatuses { get; set; }
+        public IEnumerable<SelectListItem>? MaritalStatuses { get; set; }
         public IEnumerable<SelectListItem>? EducationDegrees { get; set; }
     }
 

@@ -26,13 +26,14 @@ namespace Recruitment.Web.Controllers
             InterviewStatus? status,
             InterviewResult? result,
             InterviewType? type,
+            InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
             int page = 1,
             int pageSize = 10)
         {
             var pagedResult = await _interviewService.SearchAsync(
-                search, status, result, type, fromDate, toDate, page, pageSize);
+                search, status, result, type, category, fromDate, toDate, page, pageSize);
 
             var vm = new InterviewIndexVM
             {
@@ -40,6 +41,7 @@ namespace Recruitment.Web.Controllers
                 Status = status,
                 Result = result,
                 Type = type,
+                InterviewCategory = category,
                 FromDate = fromDate,
                 ToDate = toDate,
                 Page = page,
@@ -66,6 +68,7 @@ namespace Recruitment.Web.Controllers
                     Interviewer = vm.Interviewer,
                     ScheduledDate = vm.ScheduledDate,
                     InterviewType = vm.InterviewType,
+                    InterviewCategory = vm.InterviewCategory,
                     DurationMinutes = vm.DurationMinutes,
                     InterViewNote = vm.InterViewNote,
                 };
@@ -108,6 +111,7 @@ namespace Recruitment.Web.Controllers
                 InterViewer = dto.InterViewer,
                 ScheduledDate = dto.ScheduledDate,
                 InterviewType = dto.InterviewType,
+                InterviewCategory = dto.InterviewCategory,
                 InterviewStatus = dto.InterviewStatus,
                 InterviewResult = dto.InterviewResult,
                 Feedback = dto.Feedback,

@@ -7,5 +7,10 @@ namespace Recruitment.Application.Interfaces.Persistence.UserManagement
         Task<IEnumerable<Role>> GetAllWithPermissionsAsync();
         Task<Role?> GetByIdWithPermissionsAsync(int id);
 
+        Task<Role> GetByIdAsync(int id);
+        Task AddAsync(Role role);
+        void Update(Role role);
+        void Delete(Role role);
+
     }
 }

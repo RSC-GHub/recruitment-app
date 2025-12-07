@@ -72,7 +72,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 .Include(a => a.Applicant)
                 .Include(a => a.Vacancy)
                     .ThenInclude(v => v.Title)
-                .Include(a => a.Reviewer)
+                .Include(a => a.Reviewer).IgnoreQueryFilters()
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
         public async Task<ApplicantApplication?> GetByApplicantAndVacancyAsync(int applicantId, int vacancyId)

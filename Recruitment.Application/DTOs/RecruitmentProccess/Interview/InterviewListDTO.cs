@@ -10,9 +10,9 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Interview
         public string? InterViewer { get; set; }
         public DateTime ScheduledDate { get; set; }
         public InterviewType InterviewType { get; set; }
+        public InterviewCategory InterviewCategory { get; set; }
         public InterviewStatus InterviewStatus { get; set; }
         public InterviewResult InterviewResult { get; set; }
         public string? InterViewNote { get; set; }
     }
-
 }

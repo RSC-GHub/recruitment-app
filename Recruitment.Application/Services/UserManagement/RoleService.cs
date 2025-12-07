@@ -42,7 +42,7 @@ namespace Recruitment.Application.Services.UserManagement
         }
         public async Task<IEnumerable<RoleReadDto>> GetAllAsync()
         {
-            var roles = await _unitOfWork.Roles.GetAllAsync();
+            var roles = await _unitOfWork.Roles.GetAllWithPermissionsAsync();
             return roles.Select(r => new RoleReadDto
             {
                 Id = r.Id,

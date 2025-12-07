@@ -22,13 +22,14 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             InterviewStatus? status,
             InterviewResult? result,
             InterviewType? type,
+            InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
             int page,
             int pageSize)
         {
             var paged = await _unitOfWork.InterviewRepository.SearchAsync(
-                search, status, result, type, fromDate, toDate, page, pageSize);
+                search, status, result, type, category, fromDate, toDate, page, pageSize);
 
             var dtoItems = paged.Items.Select(i => new InterviewListDTO
             {
@@ -38,6 +39,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 InterViewer = i.InterViewer,
                 ScheduledDate = i.ScheduledDate,
                 InterviewType = i.InterviewType,
+                InterviewCategory = i.InterviewCategory,
                 InterviewStatus = i.InterviewStatus,
                 InterviewResult = i.InterviewResult,
                 InterViewNote = i.InterViewNote
@@ -54,6 +56,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 InterviewStatus? status,
                 InterviewResult? result,
                 InterviewType? type,
+                InterviewCategory? category,
                 DateTime? fromDate,
                 DateTime? toDate)
 
@@ -67,6 +70,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     status,
                     result,
                     type,
+                    category,
                     fromDate,
                     toDate,
                     page,
@@ -86,6 +90,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 InterViewer = i.InterViewer ?? "-",
                 ScheduledDate = i.ScheduledDate,
                 InterviewType = i.InterviewType,
+                InterviewCategory = i.InterviewCategory,
                 InterviewStatus = i.InterviewStatus,
                 InterviewResult = i.InterviewResult,
                 InterViewNote = i.InterViewNote,
@@ -107,6 +112,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 InterViewer = i.InterViewer ?? "-",
                 ScheduledDate = i.ScheduledDate,
                 InterviewType = i.InterviewType,
+                InterviewCategory = i.InterviewCategory,
                 InterviewStatus = i.InterviewStatus,
                 InterviewResult = i.InterviewResult,
                 InterViewNote = i.InterViewNote
@@ -134,6 +140,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ApplicantEmail = interview.Application?.Applicant?.Email ?? "-",
                 VacancyTitle = title?.Name ?? "-",
                 EmploymentType = vacancy?.EmploymentType ?? EmploymentType.FullTime,
+
                 VacancyProjects = vacancy?.ProjectVacancies?
                                     .Where(pv => pv.Project != null)
                                     .Select(pv => pv.Project!.ProjectName)
@@ -142,6 +149,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 InterViewer = interview.InterViewer,
                 ScheduledDate = interview.ScheduledDate,
                 InterviewType = interview.InterviewType,
+                InterviewCategory = interview.InterviewCategory,
                 InterviewStatus = interview.InterviewStatus,
                 InterviewResult = interview.InterviewResult,
                 Feedback = interview.Feedback,
@@ -164,6 +172,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 InterViewer = dto.Interviewer,
                 ScheduledDate = dto.ScheduledDate,
                 InterviewType = dto.InterviewType,
+                InterviewCategory = dto.InterviewCategory,
                 DurationMinutes = dto.DurationMinutes,
                 InterviewStatus = dto.InterviewStatus ?? InterviewStatus.Scheduled,
                 InterviewResult = dto.InterviewResult ?? InterviewResult.Pending,
@@ -183,6 +192,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             interview.InterViewer = dto.Interviewer;
             interview.ScheduledDate = dto.ScheduledDate;
             interview.InterviewType = dto.InterviewType;
+            interview.InterviewCategory = dto.InterviewCategory;
             interview.DurationMinutes = dto.DurationMinutes;
             interview.Feedback = dto.Feedback;
             interview.InterViewNote = dto.InterViewNote;
@@ -215,6 +225,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 dto.Id,
                 dto.InterViewer,
                 dto.InterviewStatus,
+                dto.InterviewType,
                 dto.DurationMinutes,
                 dto.InterviewNote
             );

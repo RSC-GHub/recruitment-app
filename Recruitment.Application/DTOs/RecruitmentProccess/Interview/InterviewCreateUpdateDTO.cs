@@ -8,6 +8,7 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Interview
         public string? Interviewer { get; set; }
         public DateTime ScheduledDate { get; set; }
         public InterviewType InterviewType { get; set; }
+        public InterviewCategory InterviewCategory { get; set; }
         public int DurationMinutes { get; set; }
 
         // Optional update fields

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Recruitment.Application.DTOs.CoreBusiness.Country;
+using Recruitment.Application.Interfaces.Common;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
@@ -49,13 +50,20 @@ namespace Recruitment.Application.Services.CoreBusiness
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await _unitOfWork.Countries.GetByIdAsync(id);
-            if (entity != null)
-            {
-                _unitOfWork.Countries.Delete(entity); 
-                await _unitOfWork.CompleteAsync();
-            }
-        }
+            var country = await _unitOfWork.Countries.GetByIdAsync(id);
 
+            if (country == null)
+                throw new Exception("Country not found");
+
+            var hasActiveLocations = await _unitOfWork.Locations
+                .AnyAsync(l => l.CountryId == id);
+
+
+            if (hasActiveLocations)
+                throw new Exception("Cannot delete country with active locations");
+
+            _unitOfWork.Countries.Delete(country);
+            await _unitOfWork.CompleteAsync();
+        }
     }
 }

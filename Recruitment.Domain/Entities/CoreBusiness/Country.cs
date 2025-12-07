@@ -1,4 +1,6 @@
-﻿namespace Recruitment.Domain.Entities.CoreBusiness
+﻿using Recruitment.Application.Interfaces.Common;
+
+namespace Recruitment.Domain.Entities.CoreBusiness
 {
     public class Country : BaseEntity
     {

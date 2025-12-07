@@ -198,6 +198,7 @@ namespace Recruitment.Web.Controllers
                     Address = vm.Address,
                     Gender = vm.Gender,
                     MilitaryStatus = vm.MilitaryStatus,
+                    MaritalStatus = vm.MaritalStatus,
                     EducationDegree = vm.EducationDegree,
                     GraduationYear = vm.GraduationYear,
                     Major = vm.Major,
@@ -243,6 +244,7 @@ namespace Recruitment.Web.Controllers
                 Address = dto.Address,
                 Gender = dto.Gender,
                 MilitaryStatus = dto.MilitaryStatus,
+                MaritalStatus = dto.MaritalStatus,
                 EducationDegree = dto.EducationDegree,
                 GraduationYear = dto.GraduationYear,
                 Major = dto.Major,
@@ -306,6 +308,7 @@ namespace Recruitment.Web.Controllers
                 Address = vm.Address,
                 Gender = vm.Gender,
                 MilitaryStatus = vm.MilitaryStatus,
+                MaritalStatus = vm.MaritalStatus,
                 EducationDegree = vm.EducationDegree,
                 GraduationYear = vm.GraduationYear,
                 Major = vm.Major,
@@ -349,6 +352,8 @@ namespace Recruitment.Web.Controllers
                 Address = dto.Address,
                 Gender = dto.Gender,
                 MilitaryStatus = dto.MilitaryStatus,
+                MaritalStatus = dto.MaritalStatus,
+
                 EducationDegree = dto.EducationDegree,
                 GraduationYear = dto.GraduationYear,
                 Major = dto.Major,
@@ -400,6 +405,14 @@ namespace Recruitment.Web.Controllers
 
             vm.MilitaryStatuses = Enum.GetValues(typeof(MilitaryStatus))
                 .Cast<MilitaryStatus>()
+                .Select(e => new SelectListItem
+                {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString()
+                });
+
+            vm.MaritalStatuses = Enum.GetValues(typeof(MaritalStatus))
+                .Cast<MaritalStatus>()
                 .Select(e => new SelectListItem
                 {
                     Value = ((int)e).ToString(),

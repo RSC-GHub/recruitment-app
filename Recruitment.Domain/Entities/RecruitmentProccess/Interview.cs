@@ -11,6 +11,7 @@ namespace Recruitment.Domain.Entities.RecruitmentProccess
         public string? InterViewer { get; set; }
         public DateTime ScheduledDate { get; set; } = DateTime.UtcNow;
         public InterviewType InterviewType { get; set; }
+        public InterviewCategory InterviewCategory { get; set; }
         public InterviewStatus InterviewStatus { get; set; } = InterviewStatus.Scheduled;
         public InterviewResult InterviewResult { get; set; } = InterviewResult.Pending;
         public string? Feedback { get; set; }

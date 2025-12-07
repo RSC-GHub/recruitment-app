@@ -9,12 +9,13 @@
         InterviewScheduled = 5,
         InterviewCancelled = 6,
         InterviewRescheduled = 7,
-        SecondChoice = 8,
-        Offered = 9,
-        Rejected = 10,
-        UnQualified = 11,
-        OverQualified = 12,
-        Hired = 13,
-        NoAction = 14
+        InterviewPostponed = 8,
+        SecondChoice = 9,
+        Offered = 10,
+        Rejected = 11,
+        UnQualified = 12,
+        OverQualified = 13,
+        Hired = 14,
+        NoAction = 15
     }
 }

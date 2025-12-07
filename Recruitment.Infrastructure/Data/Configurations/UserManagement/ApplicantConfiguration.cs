@@ -69,6 +69,9 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
             builder.Property(x => x.MilitaryStatus)
                 .IsRequired();
 
+            builder.Property(x => x.MaritalStatus)
+                .IsRequired();
+
             builder.Property(x => x.EducationDegree)
                 .IsRequired();
 

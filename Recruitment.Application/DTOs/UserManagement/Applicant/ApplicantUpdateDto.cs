@@ -28,6 +28,7 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string? Address { get; set; }
         public Gender Gender { get; set; }
         public MilitaryStatus MilitaryStatus { get; set; }
+        public MaritalStatus MaritalStatus { get; set; } 
         public EducationDegree EducationDegree { get; set; }
         public short? GraduationYear { get; set; }
         public string? Major { get; set; }

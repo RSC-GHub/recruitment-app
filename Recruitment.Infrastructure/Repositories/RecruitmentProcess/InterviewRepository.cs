@@ -72,6 +72,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             InterviewStatus? status,
             InterviewResult? result,
             InterviewType? type,
+            InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
             int page,
@@ -103,6 +104,9 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
             if (type.HasValue)
                 query = query.Where(i => i.InterviewType == type.Value);
+
+            if (category.HasValue)
+                query = query.Where(i => i.InterviewCategory == category.Value);
 
             if (fromDate.HasValue && toDate.HasValue)
             {
@@ -149,7 +153,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                         .ThenInclude(v => v.Title)
                 .Include(i => i.Application)
                     .ThenInclude(a => a.Vacancy)
-                        .ThenInclude(v => v.ProjectVacancies)
+                        .ThenInclude(v => v.ProjectVacancies!)
                             .ThenInclude(pv => pv.Project)
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
@@ -183,6 +187,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
         public async Task<bool> UpdateInterviewAsync(int id, string? interViewer,
                                               InterviewStatus interviewStatus,
+                                                InterviewType interviewType,
                                              int durationMinutes, string? interviewNote)
         {
             var interview = await GetWithApplicationIdAsync(id);
@@ -198,6 +203,13 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 interview.Application.ApplicationStatus = ApplicationStatus.InterviewCancelled;
             }
 
+            if(interviewStatus == InterviewStatus.Postponed)
+            {
+                interview.InterviewResult = InterviewResult.NoResult;
+                interview.Application.ApplicationStatus = ApplicationStatus.InterviewPostponed;
+            }
+
+            interview.InterviewType = interviewType;
             interview.DurationMinutes = durationMinutes;
             interview.InterViewNote = interviewNote;
 

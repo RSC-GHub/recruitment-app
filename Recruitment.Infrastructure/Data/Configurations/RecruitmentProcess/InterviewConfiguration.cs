@@ -37,6 +37,10 @@ namespace Recruitment.Infrastructure.Data.Configurations.RecruitmentProcess
                    .HasConversion<int>()
                    .IsRequired();
 
+            builder.Property(i => i.InterviewCategory)
+                   .HasConversion<int>()
+                   .IsRequired();
+
             builder.Property(i => i.InterviewStatus)
                    .HasConversion<int>()
                    .HasDefaultValue(InterviewStatus.Scheduled)

@@ -10,7 +10,8 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Interview
             public int ApplicationId { get; set; }  
             public string? Interviewer { get; set; } 
             public DateTime ScheduledDate { get; set; } = DateTime.Now;
-            public InterviewType InterviewType { get; set; } = InterviewType.Technical;
+            public InterviewType InterviewType { get; set; } = InterviewType.FaceToFace;
+            public InterviewCategory InterviewCategory { get; set; } = InterviewCategory.Technical;
             public int DurationMinutes { get; set; } = 60;
             public string? InterViewNote { get; set; }
         }

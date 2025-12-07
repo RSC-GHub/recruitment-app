@@ -84,6 +84,10 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         [Display(Name = "Military Status")]
         public MilitaryStatus MilitaryStatus { get; set; }
 
+        [Required(ErrorMessage = "Marital status is required")]
+        [Display(Name = "Marital Status")]
+        public MaritalStatus MaritalStatus { get; set; } 
+
         // Optional Fields
         [StringLength(200, ErrorMessage = "Address cannot exceed 200 characters")]
         [Display(Name = "Address")]
@@ -105,6 +109,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public IEnumerable<SelectListItem>? Countries { get; set; }
         public IEnumerable<SelectListItem>? Currencies { get; set; }
         public IEnumerable<SelectListItem>? MilitaryStatuses { get; set; } = null!;
+        public IEnumerable<SelectListItem>? MaritalStatuses { get; set; } = null!;
         public IEnumerable<SelectListItem>? EducationDegrees { get; set; } = null!;
         public IEnumerable<SelectListItem>? GenderType { get; set; } = null!;
     }

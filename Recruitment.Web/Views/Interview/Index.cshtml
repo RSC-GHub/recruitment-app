@@ -30,6 +30,18 @@
         </div>
 
         <div class="col-md-2">
+            <label class="form-label">Category</label>
+            <select name="type" class="form-select">
+                <option value="">-- All Categories --</option>
+                @foreach (var t in Enum.GetValues(typeof(InterviewCategory)))
+                {
+                    var isSelected = Model.InterviewCategory == (InterviewCategory)t;
+                    <option value="@t" selected="@isSelected">@t</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
             <label class="form-label">Result</label>
             <select name="result" class="form-select">
                 <option value="">-- All Results --</option>
@@ -70,6 +82,7 @@
                     <th>Interviewer</th>
                     <th>Scheduled Date</th>
                     <th>Type</th>
+                    <th>Category</th>
                     <th>Status</th>
                     <th>Result</th>
                     <th>Note</th>
@@ -89,6 +102,7 @@
                             <td>@interview.InterViewer</td>
                             <td>@interview.ScheduledDate.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>@interview.InterviewType</td>
+                            <td>@interview.InterviewCategory</td>
                             <td>@interview.InterviewStatus</td>
                             <td>@(interview.InterviewResult.ToString() ?? "-")</td>
                             <td>@interview.InterViewNote</td>

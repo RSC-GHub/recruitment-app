@@ -13,6 +13,7 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Interview
         public InterviewStatus? Status { get; set; }
         public InterviewResult? Result { get; set; }
         public InterviewType? Type { get; set; }
+        public InterviewCategory? InterviewCategory { get; set; }
         public DateTime? FromDate { get; set; } = DateTime.MinValue;
         public DateTime? ToDate { get; set; } = DateTime.MaxValue;
 

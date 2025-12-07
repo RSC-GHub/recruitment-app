@@ -1,6 +1,8 @@
-﻿namespace Recruitment.Domain.Entities
+﻿using Recruitment.Application.Interfaces.Common;
+
+namespace Recruitment.Domain.Entities
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity : ISoftDeletable
     {
         public int Id { get; set; }
 

@@ -13,7 +13,7 @@
         Action
     </a>
 
-    @if (Model.ApplicationStatus == ApplicationStatus.ToInterview || Model.ApplicationStatus == ApplicationStatus.ToSecondInterview)
+    @if (Model.ApplicationStatus == ApplicationStatus.ToInterview || Model.ApplicationStatus == ApplicationStatus.ToSecondInterview || Model.ApplicationStatus == ApplicationStatus.InterviewPostponed)
     {
         <a href="#" class="btn btn-primary mb-4 ms-2" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
             Schedule Interview
