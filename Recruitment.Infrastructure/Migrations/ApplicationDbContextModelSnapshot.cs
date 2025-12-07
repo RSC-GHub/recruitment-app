@@ -172,7 +172,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Country", b =>
@@ -208,7 +208,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Currency", b =>
@@ -240,7 +240,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Department", b =>
@@ -272,7 +272,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.DepartmentTitle", b =>
@@ -310,7 +310,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("TitleId");
 
-                    b.ToTable("DepartmentTitles");
+                    b.ToTable("DepartmentTitles", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Location", b =>
@@ -347,7 +347,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Project", b =>
@@ -387,7 +387,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.ProjectVacancy", b =>
@@ -425,7 +425,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("VacancyId");
 
-                    b.ToTable("ProjectVacancies");
+                    b.ToTable("ProjectVacancies", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Title", b =>
@@ -457,7 +457,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Titles");
+                    b.ToTable("Titles", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Vacancy", b =>
@@ -524,7 +524,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("TitleId");
 
-                    b.ToTable("Vacancies");
+                    b.ToTable("Vacancies", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interview", b =>
@@ -584,7 +584,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("ApplicationId");
 
-                    b.ToTable("Interviews");
+                    b.ToTable("Interviews", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", b =>
@@ -642,7 +642,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("VacancyId");
 
-                    b.ToTable("Applications");
+                    b.ToTable("Applications", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Applicant", b =>
@@ -745,7 +745,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.ToTable("Applicants");
+                    b.ToTable("Applicants", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Permission", b =>
@@ -788,7 +788,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Role", b =>
@@ -885,7 +885,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RolePermissions");
+                    b.ToTable("RolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.User", b =>

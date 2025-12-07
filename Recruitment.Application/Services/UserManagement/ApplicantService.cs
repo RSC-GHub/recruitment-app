@@ -243,19 +243,27 @@ namespace Recruitment.Application.Services.UserManagement
 
         public async Task<ApplicantHistoryDto?> GetApplicantHistoryAsync(int applicantId)
         {
-            var applicant = await _unitOfWork.ApplicantRepository.GetByIdWithHistoryAsync(applicantId);
-            if (applicant == null) return null;
+            var applicants = await _unitOfWork.ApplicantRepository.GetApplicantsWithHistoryAsync(applicantId);
+            if (applicants == null || !applicants.Any())
+                return null;
+
+            var baseApplicant = applicants.First();
+
+            var allApplications = applicants
+                .SelectMany(a => a.Applications)
+                .OrderByDescending(app => app.ApplicationDate)
+                .ToList();
 
             return new ApplicantHistoryDto
             {
-                Id = applicant.Id,
-                FullName = applicant.FullName,
-                Email = applicant.Email,
-                PhoneNumber = applicant.PhoneNumber,
-                CountryName = applicant.Country?.Name,
-                CityName = applicant.City,
+                Id = baseApplicant.Id,
+                FullName = baseApplicant.FullName,
+                Email = baseApplicant.Email,
+                PhoneNumber = baseApplicant.PhoneNumber,
+                CountryName = baseApplicant.Country?.Name,
+                CityName = baseApplicant.City,
 
-                Applications = applicant.Applications.Select(app => new ApplicationHistoryDto
+                Applications = allApplications.Select(app => new ApplicationHistoryDto
                 {
                     Id = app.Id,
                     VacancyTitle = app.Vacancy?.Title?.Name ?? "-",
@@ -277,6 +285,7 @@ namespace Recruitment.Application.Services.UserManagement
                 }).ToList()
             };
         }
+
 
     }
 }

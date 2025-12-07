@@ -8,6 +8,6 @@ namespace Recruitment.Application.Interfaces.Persistence.UserManagement
     {
         Task<Applicant?> GetApplicantProfileAsync(int applicantId);
         Task<PagedResult<Applicant>> GetPagedApplicantsAsync(int page, int pageSize, string? search = null);
-        Task<Applicant?> GetByIdWithHistoryAsync(int applicantId);
+        Task<List<Applicant>> GetApplicantsWithHistoryAsync(int applicantId);
     }
 }

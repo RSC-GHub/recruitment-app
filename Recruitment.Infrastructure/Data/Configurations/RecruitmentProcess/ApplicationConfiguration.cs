@@ -29,8 +29,9 @@ namespace Recruitment.Infrastructure.Data.Configurations.Recruitment_Process
                    .HasForeignKey(a => a.VacancyId)
                    .OnDelete(DeleteBehavior.Cascade);
 
+            // في ApplicationConfiguration
             builder.HasOne(a => a.Reviewer)
-                   .WithMany()
+                   .WithMany(u => u.ReviewedApplications) 
                    .HasForeignKey(a => a.ReviewedBy)
                    .OnDelete(DeleteBehavior.SetNull);
 

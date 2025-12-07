@@ -54,19 +54,33 @@ namespace Recruitment.Infrastructure.Repositories.UserManagement
             return new PagedResult<Applicant>(items, totalCount, page, pageSize);
         }
 
-        public async Task<Applicant?> GetByIdWithHistoryAsync(int applicantId)
+        public async Task<List<Applicant>> GetApplicantsWithHistoryAsync(int applicantId)
         {
-            return await _context.Applicants
-                    .Include(a => a.Country)
-                    .Include(a => a.Currency)
-                    .Include(a => a.Applications)
-                        .ThenInclude(app => app.Vacancy)
-                            .ThenInclude(v => v.Title)
-                    .Include(a => a.Applications)
-                        .ThenInclude(app => app.Reviewer)
-                    .Include(a => a.Applications)
-                        .ThenInclude(app => app.Interviews)
-                    .FirstOrDefaultAsync(a => a.Id == applicantId);
+            var baseApplicant = await _context.Applicants
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == applicantId);
+
+            if (baseApplicant == null)
+                return new List<Applicant>();
+
+            var matchingApplicants = await _context.Applicants
+                .AsNoTracking()
+                .Include(a => a.Country)
+                .Include(a => a.Currency)
+                .Include(a => a.Applications)
+                    .ThenInclude(app => app.Vacancy)
+                        .ThenInclude(v => v.Title)
+                .Include(a => a.Applications)
+                    .ThenInclude(app => app.Reviewer)
+                .Include(a => a.Applications)
+                    .ThenInclude(app => app.Interviews)
+                .Where(a =>
+                    a.Email == baseApplicant.Email ||
+                    (a.FullName == baseApplicant.FullName && a.PhoneNumber == baseApplicant.PhoneNumber)
+                )
+                .ToListAsync();
+
+            return matchingApplicants;
         }
     }
 }
