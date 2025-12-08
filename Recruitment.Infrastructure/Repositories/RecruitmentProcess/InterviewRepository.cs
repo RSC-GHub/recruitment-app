@@ -166,29 +166,38 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 return false;
 
             interview.InterviewResult = result;
-            if (result == InterviewResult.Rejected)
+            interview.InterviewStatus = InterviewStatus.Completed;
+
+            switch (result)
             {
-                interview.Application.ApplicationStatus = ApplicationStatus.Rejected;
-            }
-            else if (result == InterviewResult.SecondChoice)
-            {
-                interview.Application.ApplicationStatus = ApplicationStatus.SecondChoice;
+                case InterviewResult.Accepted:
+                    interview.Application.ApplicationStatus = ApplicationStatus.Offered;
+                    break;
+                case InterviewResult.SecondChoice:
+                    interview.Application.ApplicationStatus = ApplicationStatus.OnHold;
+                    break;
+                case InterviewResult.Rejected:
+                    interview.Application.ApplicationStatus = ApplicationStatus.Rejected;
+                    break;
+                default:
+                    break; 
             }
 
             interview.Feedback = feedback;
             interview.InterViewNote = Note;
 
-            interview.InterviewStatus = InterviewStatus.Completed;
-
             _context.Interviews.Update(interview);
             await _context.SaveChangesAsync();
             return true;
         }
-
-        public async Task<bool> UpdateInterviewAsync(int id, string? interViewer,
-                                              InterviewStatus interviewStatus,
-                                                InterviewType interviewType,
-                                             int durationMinutes, string? interviewNote)
+        public async Task<bool> UpdateInterviewAsync(
+            int id,
+            string? interViewer,
+            InterviewStatus interviewStatus,
+            InterviewType interviewType,
+            int durationMinutes,
+            string? interviewNote
+                )
         {
             var interview = await GetWithApplicationIdAsync(id);
             if (interview == null)
@@ -196,26 +205,20 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
             interview.InterViewer = interViewer;
             interview.InterviewStatus = interviewStatus;
-
-            if (interviewStatus == InterviewStatus.Cancelled)
-            {
-                interview.InterviewResult = InterviewResult.NoResult;
-                interview.Application.ApplicationStatus = ApplicationStatus.InterviewCancelled;
-            }
-
-            if(interviewStatus == InterviewStatus.Postponed)
-            {
-                interview.InterviewResult = InterviewResult.NoResult;
-                interview.Application.ApplicationStatus = ApplicationStatus.InterviewPostponed;
-            }
-
             interview.InterviewType = interviewType;
             interview.DurationMinutes = durationMinutes;
             interview.InterViewNote = interviewNote;
+
+            if (interviewStatus == InterviewStatus.Cancelled || interviewStatus == InterviewStatus.Postponed)
+            {
+                interview.InterviewResult = InterviewResult.Pending;
+                interview.Application.ApplicationStatus = ApplicationStatus.OnHold;
+            }
 
             _context.Interviews.Update(interview);
             await _context.SaveChangesAsync();
             return true;
         }
+
     }
 }

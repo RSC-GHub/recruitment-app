@@ -1,5 +1,6 @@
 ﻿@using Recruitment.Domain.Enums
 @model Recruitment.Web.ViewModels.RecruitmentProcess.Application.ApplicationDetailVM
+@using Recruitment.Domain.Workflows
 
 @{
     ViewData["Title"] = "Application Details";
@@ -8,12 +9,13 @@
 <div class="container py-4">
     <h2 class="mb-4">Application Details</h2>
 
-    <!-- Make a decision button -->
+    <!-- Action Button -->
     <a href="#" class="btn btn-warning mb-4" data-bs-toggle="modal" data-bs-target="#reviewModal">
         Action
     </a>
 
-    @if (Model.ApplicationStatus == ApplicationStatus.ToInterview || Model.ApplicationStatus == ApplicationStatus.ToSecondInterview || Model.ApplicationStatus == ApplicationStatus.InterviewPostponed)
+    @* Show Schedule Interview only if allowed *@
+    @if (ViewBag.CanAddInterview)
     {
         <a href="#" class="btn btn-primary mb-4 ms-2" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
             Schedule Interview
@@ -65,6 +67,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="reviewForm">
+                @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title" id="reviewModalLabel">Review Application</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -78,24 +81,15 @@
                         <select name="ApplicationStatus" class="form-select" required>
                             <option value="">-- Select Decision --</option>
 
-                            @if (!Model.HasFirstInterview && Model.ApplicationStatus != ApplicationStatus.Rejected)
-                            {
-                                <option value="@((int)ApplicationStatus.ToInterview)">ToInterview</option>
-                            }
+                            @* Generate options dynamically based on workflow *@
+                            @{
+                                @foreach (var status in ApplicationWorkflow.GetAllowedTransitions(Model.ApplicationStatus))
+                                {
+                                    <option value="@((int)status)">@status</option>
+                                }
 
-                            @if (Model.HasFirstInterview)
-                            {
-                                <option value="@((int)ApplicationStatus.ToSecondInterview)">ToSecondInterview</option>
                             }
-
-                            <option value="@((int)ApplicationStatus.UnderReview)">Under Review</option>
-                            <option value="@((int)ApplicationStatus.UnQualified)">Un Qualified</option>
-                            <option value="@((int)ApplicationStatus.OverQualified)">Over Qualified</option>
-                            <option value="@((int)ApplicationStatus.Offered)">Offered</option>
-                            <option value="@((int)ApplicationStatus.Hired)">Hired</option>
-                            <option value="@((int)ApplicationStatus.NoAction)">No Action</option>
                         </select>
-
                     </div>
 
                     <div class="mb-3">
@@ -121,7 +115,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="addInterviewForm">
-                @Html.AntiForgeryToken() <!-- <-- Add this -->
+                @Html.AntiForgeryToken()
 
                 <div class="modal-header">
                     <h5 class="modal-title" id="addInterviewModalLabel">Schedule Interview</h5>
@@ -144,21 +138,29 @@
                     <div class="mb-3">
                         <label for="InterviewType" class="form-label">Interview Type</label>
                         <select id="InterviewType" name="InterviewType" class="form-select">
+                            <option value="FaceToFace">Face To Face</option>
+                            <option value="OnlineZoom">Online Zoom</option>
+                            <option value="Teams">Teams</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="InterviewCategory" class="form-label">Interview Type</label>
+                        <select id="InterviewCategory" name="InterviewCategory" class="form-select">
                             <option value="Technical">Technical</option>
                             <option value="HR">HR</option>
+                            <option value="Managerial">Managerial</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label for="DurationMinutes" class="form-label">Duration (minutes)</label>
-                        <input type="number" id="DurationMinutes" name="DurationMinutes" class="form-control" value="60" />
+                        <input type="number" id="DurationMinutes" name="DurationMinutes" class="form-control" value="60" min="1" />
                     </div>
 
                     <div class="mb-3">
                         <label for="Note" class="form-label">Note</label>
                         <input type="text" id="Note" name="Note" class="form-control" />
                     </div>
-
 
                     <div id="addInterviewError" class="text-danger"></div>
                     <div id="addInterviewSuccess" class="text-success"></div>
@@ -173,14 +175,13 @@
     </div>
 </div>
 
-
 @section Scripts {
     <script>
         // Review Form
         document.getElementById('reviewForm').addEventListener('submit', function (e) {
             e.preventDefault();
-
             var form = e.target;
+
             var data = {
                 ApplicationId: parseInt(form.ApplicationId.value),
                 ApplicationStatus: parseInt(form.ApplicationStatus.value),
@@ -191,11 +192,11 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'RequestVerificationToken': '@Html.AntiForgeryToken()'
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(result => {
                 if (result.success) {
                     document.getElementById('reviewSuccess').innerText = result.message;
@@ -211,15 +212,23 @@
             });
         });
 
-                               // Add Interview Form
-        document.getElementById('addInterviewForm').addEventListener('submit', function (e) {
+        // Add Interview Form
+        document.getElementById('addInterviewForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
             var form = e.target;
 
-            if (!form.Interviewer.value) {  // Changed from InterViewer
+            if (!form.Interviewer.value) {
                 document.getElementById('addInterviewError').innerText = 'Please enter interviewer';
                 return;
+            }
+
+            if (!form.ScheduledDate.value) {
+                document.getElementById('addInterviewError').innerText = 'Please select scheduled date';
+                return;
+            }
+
+            if (parseInt(form.DurationMinutes.value) < 1) {
+                form.DurationMinutes.value = 60;
             }
 
             var formData = new FormData(form);
@@ -230,9 +239,7 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error(`Server returned ${response.status}: ${text}`);
-                    });
+                    return response.text().then(text => { throw new Error(`Server returned ${response.status}: ${text}`); });
                 }
                 return response.json();
             })

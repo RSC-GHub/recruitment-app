@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
-using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
+using System;
 
 namespace Recruitment.Web.Controllers
 {
@@ -56,6 +56,10 @@ namespace Recruitment.Web.Controllers
             var application = await _applicationService.GetApplicationDetails(id);
             if (application == null)
                 return NotFound();
+
+            ViewBag.CanAddInterview = await _applicationService
+                .CanAddInterviewAsync(id);
+
 
             var vm = new ApplicationDetailVM
             {

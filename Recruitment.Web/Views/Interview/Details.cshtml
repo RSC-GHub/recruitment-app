@@ -8,25 +8,23 @@
 
 <div class="container py-4">
     <h2 class="mb-4">Interview Details</h2>
+
     <div class="d-flex justify-content-end">
         <div class="btn-group">
-
-            @if (Model.InterviewResult != InterviewResult.Accepted && Model.InterviewStatus != InterviewStatus.Cancelled)
+            @if (Model.InterviewStatus != InterviewStatus.Completed && Model.InterviewStatus != InterviewStatus.Postponed && Model.InterviewStatus != InterviewStatus.Cancelled)
             {
                 <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editInterviewModal">
                     <i class="bi bi-pencil"></i> Edit Interview
                 </button>
-                <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#CompeleteInterviewModal">
+                <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#completeInterviewModal">
                     <i class="bi bi-check-lg"></i> Mark As Complete
                 </button>
             }
-
         </div>
     </div>
 
-
+    <!-- Applicant & Vacancy Info -->
     <div class="row g-3">
-        <!-- Applicant & Vacancy Info -->
         <div class="col-md-6">
             <div class="card shadow-sm mb-3">
                 <div class="card-header bg-primary text-white">Applicant Information</div>
@@ -44,7 +42,6 @@
                 <div class="card-body">
                     <p><strong>Title:</strong> @Model.VacancyTitle</p>
                     <p><strong>Employment Type:</strong> @Model.EmploymentType</p>
-
                     <p><strong>Projects:</strong></p>
                     @if (Model.VacancyProjects != null && Model.VacancyProjects.Any())
                     {
@@ -62,7 +59,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Interview Info -->
@@ -116,26 +112,32 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Status</label>
+                        <label class="form-label">Interview Type</label>
                         <select class="form-select" id="InterviewType" name="InterviewType">
-                            <option value="Postponed" selected="@(Model.InterviewType == InterviewType.FaceToFace)">Face To Face</option>
-                            <option value="OnlineZoom" selected="@(Model.InterviewType == InterviewType.OnlineZoom)">Online Zoom</option>
-                            <option value="Teams" selected="@(Model.InterviewType == InterviewType.Teams)">Teams</option>
-                            
+                            @foreach (var type in Enum.GetValues(typeof(InterviewType)).Cast<InterviewType>())
+                            {
+                                <option value="@type" selected="@(Model.InterviewType == type)">
+                                    @type
+                                </option>
+                            }
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Status</label>
+                        <label class="form-label">Interview Status</label>
                         <select class="form-select" id="InterviewStatus" name="InterviewStatus">
-                            <option value="Postponed" selected="@(Model.InterviewStatus == InterviewStatus.Postponed)">Postponed</option>
-                            <option value="Cancelled" selected="@(Model.InterviewStatus == InterviewStatus.Cancelled)">Cancelled</option>
+                            @foreach (var status in Enum.GetValues(typeof(InterviewStatus)).Cast<InterviewStatus>())
+                            {
+                                <option value="@status" selected="@(Model.InterviewStatus == status)">
+                                    @status
+                                </option>
+                            }
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Duration (minutes)</label>
-                        <input type="number" class="form-control" id="DurationMinutes" name="DurationMinutes" value="@Model.DurationMinutes" />
+                        <input type="number" class="form-control" id="DurationMinutes" name="DurationMinutes" value="@Model.DurationMinutes" min="1" />
                     </div>
 
                     <div class="mb-3">
@@ -156,8 +158,8 @@
     </div>
 </div>
 
-<!-- Mark Interview as Complete Modal -->
-<div class="modal fade" id="CompeleteInterviewModal" tabindex="-1" aria-labelledby="completeInterviewLabel" aria-hidden="true">
+<!-- Mark As Complete Modal -->
+<div class="modal fade" id="completeInterviewModal" tabindex="-1" aria-labelledby="completeInterviewLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="completeInterviewForm">
@@ -175,9 +177,10 @@
                         <label class="form-label">Result</label>
                         <select class="form-select" name="InterviewResult" required>
                             <option value="">-- Select Result --</option>
-                            <option value="Accepted">Accepted</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="SecondChoice">SecondChoice</option>
+                            @foreach (var result in Enum.GetValues(typeof(InterviewResult)).Cast<InterviewResult>())
+                            {
+                                <option value="@result">@result</option>
+                            }
                         </select>
                     </div>
 
@@ -206,17 +209,16 @@
 
 @section Scripts {
     <script>
+        // Edit Interview
         document.getElementById('editInterviewForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            var form = e.target;
-            var formData = new FormData(form);
+            var formData = new FormData(e.target);
 
             fetch('@Url.Action("UpdateInterview", "Interview")', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 if (data.success) {
                     document.getElementById('editInterviewSuccess').innerText = data.message;
@@ -233,34 +235,30 @@
             });
         });
 
-        // Mark As Complete Modal
-                document.getElementById('completeInterviewForm').addEventListener('submit', function (e) {
+        // Complete Interview
+        document.getElementById('completeInterviewForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            var form = e.target;
-            var formData = new FormData(form);
+            var formData = new FormData(e.target);
 
             fetch('@Url.Action("UpdateInterviewResult", "Interview")', {
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('completeInterviewSuccess').innerText = data.message;
-                        document.getElementById('completeInterviewError').innerText = '';
-
-                        setTimeout(() => location.reload(), 1000);
-                    } else {
-                        document.getElementById('completeInterviewError').innerText = data.message;
-                        document.getElementById('completeInterviewSuccess').innerText = '';
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('completeInterviewError').innerText = 'An error occurred.';
-                });
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('completeInterviewSuccess').innerText = data.message;
+                    document.getElementById('completeInterviewError').innerText = '';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    document.getElementById('completeInterviewError').innerText = data.message;
+                    document.getElementById('completeInterviewSuccess').innerText = '';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('completeInterviewError').innerText = 'An error occurred.';
+            });
         });
-
     </script>
 }

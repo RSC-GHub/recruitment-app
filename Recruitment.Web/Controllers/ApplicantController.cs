@@ -127,6 +127,7 @@ namespace Recruitment.Web.Controllers
                         InterViewer = i.InterViewer,
                         ScheduledDate = i.ScheduledDate,
                         InterviewType = i.InterviewType,
+                        InterviewCategory = i.InterviewCategory,
                         InterviewStatus = i.InterviewStatus,
                         InterviewResult = i.InterviewResult,
                         Feedback = i.Feedback,

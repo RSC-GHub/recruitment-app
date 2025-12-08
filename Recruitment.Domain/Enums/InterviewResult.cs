@@ -2,10 +2,9 @@
 {
     public enum InterviewResult
     {
-        Accepted = 1,
-        Rejected = 2,
-        SecondChoice = 3,
-        Pending = 4,
-        NoResult = 5
+        Pending = 1,
+        Accepted = 2,
+        Rejected = 3,
+        SecondChoice = 4
     }
 }

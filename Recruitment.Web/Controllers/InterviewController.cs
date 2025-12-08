@@ -55,7 +55,7 @@ namespace Recruitment.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateInterview(InterviewCreateVM vm) 
+        public async Task<IActionResult> CreateInterview(InterviewCreateVM vm)
         {
             try
             {
@@ -70,24 +70,26 @@ namespace Recruitment.Web.Controllers
                     InterviewType = vm.InterviewType,
                     InterviewCategory = vm.InterviewCategory,
                     DurationMinutes = vm.DurationMinutes,
-                    InterViewNote = vm.InterViewNote,
+                    InterViewNote = vm.InterViewNote
                 };
 
-                var result = await _interviewService.CreateAsync(dto);
-                if (result)
+                var created = await _interviewService.CreateAsync(dto);
+
+                if (!created)
+                    return Json(new { success = false, message = "Failed to create interview" });
+
+                return Json(new
                 {
-                    await _applicantApplicationService.UpdateApplicationStatusAsync(vm.ApplicationId, ApplicationStatus.InterviewScheduled);
-                    return Json(new { success = true, message = "Interview created successfully" });
-                }
-
-
-                return Json(new { success = false, message = "Failed to create interview" });
+                    success = true,
+                    message = "Interview scheduled successfully"
+                });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = $"Error: {ex.Message}" });
+                return Json(new { success = false, message = ex.Message });
             }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
@@ -144,22 +146,31 @@ namespace Recruitment.Web.Controllers
         public async Task<IActionResult> UpdateInterviewResult(UpdateInterviewResultDTO dto)
         {
             if (!ModelState.IsValid)
-            {
                 return Json(new { success = false, message = "Invalid input" });
-            }
 
-            bool updated = await _interviewService.UpdateInterviewResultAsync(
+            var applicationId = await _interviewService.UpdateInterviewResultAsync(
                 dto.Id,
                 dto.InterviewResult,
                 dto.Feedback,
                 dto.Note
             );
 
-            if (!updated)
+            if (applicationId == null)
                 return Json(new { success = false, message = "Failed to update interview result." });
 
-            return Json(new { success = true, message = "Interview marked as completed." });
+            await _applicantApplicationService.ProcessInterviewResultAsync(
+                applicationId.Value,
+                dto.InterviewResult
+            );
+
+            return Json(new
+            {
+                success = true,
+                message = "Interview completed and application updated successfully."
+            });
         }
+
+
 
     }
 }

@@ -33,7 +33,11 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
         Task<bool> CreateAsync(InterviewCreateUpdateDTO dto);
         Task<bool> UpdateAsync(int id, InterviewCreateUpdateDTO dto);
 
-        Task<bool> UpdateInterviewResultAsync(int id, InterviewResult result, string? feedback, string? Note);
+        Task<int?> UpdateInterviewResultAsync(
+            int interviewId,
+            InterviewResult result,
+            string? feedback,
+            string? note);
         Task<bool> UpdateInterviewAsync(UpdateInterviewDTO dto);
     }
 

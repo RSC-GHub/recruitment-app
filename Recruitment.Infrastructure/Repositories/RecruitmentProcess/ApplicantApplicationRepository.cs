@@ -21,24 +21,27 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
         private async Task<PagedResult<ApplicantApplication>> ToPagedResultAsync(IQueryable<ApplicantApplication> query, int page, int pageSize)
         {
             var totalCount = await query.CountAsync();
-            var items = await query.Skip((page - 1) * pageSize).Take(pageSize)
-                .AsNoTracking()
-                .ToListAsync();
+            var items = await query.Skip((page - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToListAsync();
+
+            // Load Reviewer explicitly for each item
+            foreach (var app in items.Where(a => a.ReviewedBy != null))
+            {
+                app.Reviewer = await _context.Users
+                                             .IgnoreQueryFilters()
+                                             .FirstOrDefaultAsync(u => u.Id == app.ReviewedBy);
+            }
 
             return new PagedResult<ApplicantApplication>(items, totalCount, page, pageSize);
         }
 
-        public async Task<PagedResult<ApplicantApplication>> GetByVacancyIdAsync(
-            int vacancyId,
-            int page,
-            int pageSize,
-            string? search = null)
+        public async Task<PagedResult<ApplicantApplication>> GetByVacancyIdAsync(int vacancyId, int page, int pageSize, string? search = null)
         {
             var query = _context.Applications
-                .Include(a => a.Applicant)
-                .Include(a => a.Vacancy)
-                .Include(a => a.Reviewer)
-                .Where(a => a.VacancyId == vacancyId);
+                                .Include(a => a.Applicant)
+                                .Include(a => a.Vacancy)
+                                .Where(a => a.VacancyId == vacancyId);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -46,8 +49,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                     a.Applicant.FullName.Contains(search) ||
                     a.Applicant.Email.Contains(search) ||
                     a.Applicant.PhoneNumber.Contains(search) ||
-                    a.Note != null && a.Note.Contains(search)
-                );
+                    (a.Note != null && a.Note.Contains(search)));
             }
 
             query = query.OrderByDescending(a => a.ApplicationDate);
@@ -68,35 +70,45 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
         public async Task<ApplicantApplication?> GetApplicationWithRelatedData(int id)
         {
-            return await _context.Applications
+            var application = await _context.Applications
                 .Include(a => a.Applicant)
                 .Include(a => a.Vacancy)
                     .ThenInclude(v => v.Title)
-                .Include(a => a.Reviewer)
                 .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (application?.ReviewedBy != null)
+            {
+                application.Reviewer = await _context.Users
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(u => u.Id == application.ReviewedBy);
+            }
+
+            return application;
         }
         public async Task<ApplicantApplication?> GetByApplicantAndVacancyAsync(int applicantId, int vacancyId)
         {
-            return await _context.Applications
-                .Include(a => a.Applicant)
-                .Include(a => a.Vacancy)
-                .Include(a => a.Reviewer)
-                .FirstOrDefaultAsync(a => a.ApplicantId == applicantId && a.VacancyId == vacancyId);
+            var application = await _context.Applications
+                                            .Include(a => a.Applicant)
+                                            .Include(a => a.Vacancy)
+                                            .FirstOrDefaultAsync(a => a.ApplicantId == applicantId && a.VacancyId == vacancyId);
+
+            if (application?.ReviewedBy != null)
+            {
+                application.Reviewer = await _context.Users
+                                                     .IgnoreQueryFilters()
+                                                     .FirstOrDefaultAsync(u => u.Id == application.ReviewedBy);
+            }
+
+            return application;
         }
 
-        public async Task<PagedResult<ApplicantApplication>> GetAllWithDetailsAsync(
-            int page,
-            int pageSize,
-            ApplicationStatus? status,
-            string? search)
+        public async Task<PagedResult<ApplicantApplication>> GetAllWithDetailsAsync(int page, int pageSize, ApplicationStatus? status, string? search)
         {
             var query = _context.Applications
-                .Include(a => a.Applicant)
-                .Include(a => a.Vacancy).ThenInclude(v => v.Title)
-                .Include(a => a.Reviewer)
-                .AsQueryable();
+                                .Include(a => a.Applicant)
+                                .Include(a => a.Vacancy).ThenInclude(v => v.Title)
+                                .AsQueryable();
 
-            // TEXT SEARCH
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(a =>
@@ -108,7 +120,6 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 );
             }
 
-            // STATUS FILTER
             if (status.HasValue)
             {
                 query = query.Where(a => a.ApplicationStatus == status.Value);
@@ -180,7 +191,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
         {
             var application = await _context.Applications.FindAsync(applicationId);
             if (application == null)
-                return; 
+                return;
 
 
             application.ApplicationStatus = newStatus;
@@ -188,5 +199,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             _context.Applications.Update(application);
             await _context.SaveChangesAsync();
         }
+
+
     }
 }

@@ -7,6 +7,7 @@ using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Domain.Enums;
+using Recruitment.Domain.Workflows;
 using System;
 
 namespace Recruitment.Application.Services.RecruitmentProccess
@@ -46,14 +47,71 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             await _unitOfWork.CompleteAsync();
         }
 
+        public async Task ChangeStatusAsync(int applicationId, ApplicationStatus newStatus)
+        {
+            var application = await _unitOfWork.ApplicationRepository
+                .GetByIdAsync(applicationId);
+
+            if (application == null)
+                throw new InvalidOperationException("Application not found.");
+
+            ApplicationWorkflow.ValidateTransition(
+                application.ApplicationStatus,
+                newStatus);
+
+            application.ApplicationStatus = newStatus;
+
+            _unitOfWork.ApplicationRepository.Update(application);
+            await _unitOfWork.CompleteAsync();
+        }
+
+
         // Review an application
         public async Task ReviewApplicationAsync(ApplicationReviewDto dto)
         {
-            var user = await GetCurrentUserIdAsync(); 
-            if (user == null)
+            var userId = await GetCurrentUserIdAsync();
+            if (userId == null)
                 throw new InvalidOperationException("Current user not found.");
 
-            await _unitOfWork.ApplicationRepository.ReviewApplicationAsync(dto.ApplicationId, user.Value, dto.ApplicationStatus, dto.Note);
+            var application = await _unitOfWork.ApplicationRepository
+                .GetByIdAsync(dto.ApplicationId);
+
+            if (application == null)
+                throw new InvalidOperationException("Application not found.");
+
+            ApplicationWorkflow.ValidateTransition(
+                application.ApplicationStatus,
+                dto.ApplicationStatus);
+
+            application.ApplicationStatus = dto.ApplicationStatus;
+            application.ReviewedBy = userId.Value;
+            application.ReviewDate = DateTime.UtcNow;
+            application.Note = dto.Note;
+
+            _unitOfWork.ApplicationRepository.Update(application);
+            await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task ProcessInterviewResultAsync(
+                int applicationId,
+                InterviewResult result)
+        {
+            var application = await _unitOfWork.ApplicationRepository.GetByIdAsync(applicationId);
+            if (application == null)
+                throw new InvalidOperationException("Application not found");
+
+            ApplicationStatus nextStatus = result switch
+            {
+                InterviewResult.Accepted => ApplicationStatus.Offered,
+                InterviewResult.SecondChoice => ApplicationStatus.OnHold,
+                InterviewResult.Rejected => ApplicationStatus.Rejected,
+                _ => throw new InvalidOperationException("Invalid interview result")
+            };
+
+            ApplicationWorkflow.ValidateTransition(application.ApplicationStatus, nextStatus);
+
+            application.ApplicationStatus = nextStatus;
+            _unitOfWork.ApplicationRepository.Update(application);
             await _unitOfWork.CompleteAsync();
         }
 
@@ -126,7 +184,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             int vacancyId,
             int page,
             int pageSize,
-            string? search = null)   
+            string? search = null)
         {
             var paged = await _unitOfWork.ApplicationRepository.GetByVacancyIdAsync(vacancyId, page, pageSize, search);
 
@@ -237,31 +295,41 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             return true;
         }
 
-        public async Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus)
-        {
-            var application = await _unitOfWork.ApplicationRepository.GetByIdAsync(applicationId);
-            if (application == null)
-                throw new InvalidOperationException("Application not found.");
-
-            await _unitOfWork.ApplicationRepository.UpdateApplicationStatusAsync(applicationId, newStatus);
-
-            await _unitOfWork.CompleteAsync();
-        }
         public async Task<bool> CanMoveToSecondInterviewAsync(int applicationId)
         {
-            var application = await _unitOfWork.ApplicationRepository.GetByIdAsync(applicationId);
+            var application = await _unitOfWork.ApplicationRepository
+                .GetByIdAsync(applicationId);
+
             if (application == null)
                 return false;
 
-            if (application.ApplicationStatus != ApplicationStatus.InterviewScheduled && application.ApplicationStatus != ApplicationStatus.Rejected)
+            if (application.ApplicationStatus != ApplicationStatus.Interviewing)
                 return false;
 
             var interviews = await _unitOfWork.InterviewRepository
                 .GetAllByApplicationIdAsync(applicationId);
 
-            bool firstInterviewDone = interviews.Any(i => i.InterviewResult == InterviewResult.Accepted);
+            return interviews.Any(i =>
+                i.InterviewStatus == InterviewStatus.Completed &&
+                i.InterviewResult == InterviewResult.Accepted);
+        }
 
-            return firstInterviewDone;
+        public async Task<bool> CanAddInterviewAsync(int applicationId)
+        {
+            var application = await _unitOfWork.ApplicationRepository
+                .GetByIdAsync(applicationId);
+
+            if (application == null)
+                return false;
+
+            if (application.ApplicationStatus != ApplicationStatus.Interviewing)
+                return false;
+
+            var interviews = await _unitOfWork.InterviewRepository
+                .GetAllByApplicationIdAsync(applicationId);
+
+            return !interviews.Any(i =>
+                i.InterviewStatus == InterviewStatus.Scheduled);
         }
     }
 }

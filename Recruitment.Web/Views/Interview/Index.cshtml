@@ -52,6 +52,17 @@
                 }
             </select>
         </div>
+        <div class="col-md-2">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+                <option value="">-- All status --</option>
+                @foreach (var r in Enum.GetValues(typeof(InterviewStatus)))
+                {
+                    var isSelected = Model.Status == (InterviewStatus)r;
+                    <option value="@r" selected="@isSelected">@r</option>
+                }
+            </select>
+        </div>
 
         <div class="col-md-2">
             <label class="form-label">From Date</label>

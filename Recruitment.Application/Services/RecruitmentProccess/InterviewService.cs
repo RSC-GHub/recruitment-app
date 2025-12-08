@@ -210,11 +210,28 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             return await _unitOfWork.CompleteAsync() > 0;
         }
 
-        public async Task<bool> UpdateInterviewResultAsync(int id, InterviewResult result, string? feedback, string? Note)
+        public async Task<int?> UpdateInterviewResultAsync(
+            int interviewId,
+            InterviewResult result,
+            string? feedback,
+            string? note)
         {
-            return await _unitOfWork.InterviewRepository.UpdateInterviewResultAsync(id, result, feedback, Note);
-        }
+            var interview = await _unitOfWork.InterviewRepository
+                .GetByIdAsync(interviewId);
 
+            if (interview == null)
+                return null;
+
+            interview.InterviewResult = result;
+            interview.Feedback = feedback;
+            interview.InterViewNote = note;
+            interview.InterviewStatus = InterviewStatus.Completed;
+
+            _unitOfWork.InterviewRepository.Update(interview);
+            await _unitOfWork.CompleteAsync();
+
+            return interview.ApplicationId;
+        }
         public async Task<bool> UpdateInterviewAsync(UpdateInterviewDTO dto)
         {
             if (dto == null)

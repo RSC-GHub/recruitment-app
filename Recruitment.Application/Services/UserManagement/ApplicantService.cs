@@ -277,6 +277,7 @@ namespace Recruitment.Application.Services.UserManagement
                         InterViewer = i.InterViewer,
                         ScheduledDate = i.ScheduledDate,
                         InterviewType = i.InterviewType.ToString(),
+                        InterviewCategory = i.InterviewCategory.ToString(),
                         InterviewStatus = i.InterviewStatus,
                         InterviewResult = i.InterviewResult.ToString(),
                         Feedback = i.Feedback,

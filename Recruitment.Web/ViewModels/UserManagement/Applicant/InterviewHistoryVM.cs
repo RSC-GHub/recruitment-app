@@ -9,6 +9,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string InterViewer { get; set; } = "-";
         public DateTime ScheduledDate { get; set; }
         public string InterviewType { get; set; } = "-";
+        public string InterviewCategory { get; set; } = "-";
         public InterviewStatus InterviewStatus { get; set; }
         public string InterviewResult { get; set; } = "-";
         public string? Feedback { get; set; }

@@ -63,15 +63,13 @@ namespace Recruitment.Infrastructure.Repositories.UserManagement
             if (baseApplicant == null)
                 return new List<Applicant>();
 
-            var matchingApplicants = await _context.Applicants
+            var applicants = await _context.Applicants
                 .AsNoTracking()
                 .Include(a => a.Country)
                 .Include(a => a.Currency)
                 .Include(a => a.Applications)
                     .ThenInclude(app => app.Vacancy)
                         .ThenInclude(v => v.Title)
-                .Include(a => a.Applications)
-                    .ThenInclude(app => app.Reviewer)
                 .Include(a => a.Applications)
                     .ThenInclude(app => app.Interviews)
                 .Where(a =>
@@ -80,7 +78,32 @@ namespace Recruitment.Infrastructure.Repositories.UserManagement
                 )
                 .ToListAsync();
 
-            return matchingApplicants;
+            var reviewerIds = applicants
+                .SelectMany(a => a.Applications)
+                .Where(app => app.ReviewedBy != null)
+                .Select(app => app.ReviewedBy!.Value)
+                .Distinct()
+                .ToList();
+
+            if (reviewerIds.Any())
+            {
+                var reviewers = await _context.Users
+                    .IgnoreQueryFilters()
+                    .Where(u => reviewerIds.Contains(u.Id))
+                    .ToDictionaryAsync(u => u.Id);
+
+                foreach (var application in applicants.SelectMany(a => a.Applications))
+                {
+                    if (application.ReviewedBy != null &&
+                        reviewers.TryGetValue(application.ReviewedBy.Value, out var reviewer))
+                    {
+                        application.Reviewer = reviewer;
+                    }
+                }
+            }
+
+            return applicants;
         }
+
     }
 }
