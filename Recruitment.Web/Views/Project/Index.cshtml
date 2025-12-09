@@ -46,9 +46,9 @@
                                 </td>
                                 <td>
                                     @{
-                                        var statusClass = project.Status == "Active" ? "badge-success" : 
-                                                         project.Status == "Completed" ? "badge-secondary" : 
-                                                         "badge-warning";
+                                        var statusClass = project.Status.ToString() == "Active" ? "badge-success" :
+                                        project.Status.ToString() == "Completed" ? "badge-secondary" :
+                                        "badge-warning";
                                     }
                                     <span class="badge-component @statusClass">@project.Status</span>
                                 </td>

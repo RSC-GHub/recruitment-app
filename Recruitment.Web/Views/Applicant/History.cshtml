@@ -48,9 +48,9 @@
                 {
                     string appHeaderId = $"heading{appIndex}";
                     string appCollapseId = $"collapse{appIndex}";
-                    var statusClass = app.ApplicationStatus == "Approved" ? "badge-success" : 
-                                     app.ApplicationStatus == "Pending" ? "badge-warning" :
-                                     app.ApplicationStatus == "Rejected" ? "badge-destructive" :
+                    var statusClass = app.ApplicationStatus.ToString() == "Approved" ? "badge-success" :
+                    app.ApplicationStatus.ToString() == "Pending" ? "badge-warning" :
+                    app.ApplicationStatus.ToString() == "Rejected" ? "badge-destructive" :
                                      "badge-default";
                     <div class="accordion-item border rounded mb-2">
                         <h2 class="accordion-header" id="@appHeaderId">

@@ -45,7 +45,6 @@
                                     </span>
                                 </label>
                                 <input asp-for="FullName" class="form-field-input" required />
-                                <span class="form-field-description">Enter the user's complete name</span>
                                 <div class="invalid-feedback">Full Name is required.</div>
                             </div>
                         </div>
@@ -61,7 +60,6 @@
                                     </span>
                                 </label>
                                 <input asp-for="Email" class="form-field-input" type="email" required />
-                                <span class="form-field-description">User's email address</span>
                                 <div class="invalid-feedback">Valid email is required.</div>
                             </div>
                         </div>
@@ -79,7 +77,6 @@
                                 <select asp-for="DepartmentId" class="form-field-select" asp-items="Model.Departments" required>
                                     <option value="">-- Select Department --</option>
                                 </select>
-                                <span class="form-field-description">User's department assignment</span>
                                 <div class="invalid-feedback">Please select a department.</div>
                             </div>
                         </div>
@@ -99,7 +96,6 @@
                                         Active Account
                                     </label>
                                 </div>
-                                <span class="form-field-description">Enable or disable user access</span>
                             </div>
                         </div>
                     </div>
