@@ -1,24 +1,97 @@
 ﻿@model Recruitment.Web.ViewModels.UserManagement.Account.LoginViewModel
 
-<h2>Login</h2>
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<form asp-action="Login" method="post">
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, hsl(222, 47%, 11%) 0%, hsl(197, 78.9%, 14.9%) 100%);">
+    <div class="card-component" style="max-width: 450px; width: 100%; margin: 2rem;">
+        <div class="card-header text-center">
+            <h2 class="card-title mb-2">
+                <i class="bi bi-shield-lock-fill me-2"></i>
+                Welcome Back
+            </h2>
+            <p class="card-description">Sign in to your account to continue</p>
+        </div>
+
+        <div class="card-content">
+            <form asp-action="Login" method="post">
+                <div class="form-field">
+                    <label asp-for="Email" class="form-label">
+                        Email Address <span class="text-danger">*</span>
+                    </label>
+                    <div class="position-relative">
+                        <i class="bi bi-envelope position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: hsl(0, 0%, 60%);"></i>
+                        <input asp-for="Email" 
+                               class="form-input" 
+                               style="padding-left: 40px;"
+                               placeholder="Enter your email"
+                               autofocus />
+                    </div>
+                    <span asp-validation-for="Email" class="form-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="Password" class="form-label">
+                        Password <span class="text-danger">*</span>
+                    </label>
+                    <div class="position-relative">
+                        <i class="bi bi-lock position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: hsl(0, 0%, 60%);"></i>
+                        <input asp-for="Password" 
+                               type="password" 
+                               class="form-input" 
+                               style="padding-left: 40px;"
+                               placeholder="Enter your password" />
+                    </div>
+                    <span asp-validation-for="Password" class="form-error"></span>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input asp-for="RememberMe" 
+                           class="form-check-input" 
+                           type="checkbox" 
+                           id="rememberMe" />
+                    <label asp-for="RememberMe" 
+                           class="form-check-label" 
+                           for="rememberMe">
+                        Remember me for 30 days
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-component btn-primary w-100 mb-3">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Sign In
+                </button>
+
+                <div class="text-center">
+                    <p class="text-muted small mb-0">
+                        Don't have an account? 
+                        <a asp-action="Register" class="text-primary fw-semibold">Register here</a>
+                    </p>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        // Show any login errors as toast
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["ErrorMessage"]', 'error');
+            </text>
+        }
 
-    <div class="form-check mb-2">
-        <input asp-for="RememberMe" class="form-check-input" />
-        <label asp-for="RememberMe" class="form-check-label"></label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["SuccessMessage"]', 'success');
+            </text>
+        }
+    </script>
+}

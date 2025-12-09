@@ -59,25 +59,25 @@
     }
 </style>
 
-<h2>Edit Vacancy</h2>
-
-<div class="mb-3">
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</div>
-
-<form asp-action="Edit" method="post">
+<div class="card-component">
+    <div class="card-header flex-between">
+        <h2 class="card-title"><i class="bi bi-pencil-square me-2"></i>Edit Vacancy</h2>
+        <a asp-action="Index" class="button-secondary"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+    </div>
+    <div class="card-content">
+        <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
 
     <!-- Title -->
     <div class="mb-3">
-        <label asp-for="TitleId" class="form-label">
+        <label asp-for="TitleId" class="form-field-label">
             Title <span class="text-danger">*</span>
             <span class="info-icon">
                 i
                 <span class="info-tooltip">Select the job title for this vacancy. This helps categorize the position and makes it easier for candidates to find.</span>
             </span>
         </label>
-        <select asp-for="TitleId" class="form-select select2-dropdown" asp-items="Model.TitlesDropdown">
+        <select asp-for="TitleId" class="form-field-select select2-dropdown" asp-items="Model.TitlesDropdown">
             <option value="">-- Select Title --</option>
         </select>
         <span asp-validation-for="TitleId" class="text-danger validation-message" style="display:none;"></span>
@@ -85,79 +85,79 @@
 
     <!-- Job Description -->
     <div class="mb-3">
-        <label asp-for="JobDescription" class="form-label">
+        <label asp-for="JobDescription" class="form-field-label">
             Job Description <span class="text-danger">*</span>
             <span class="info-icon">
                 i
                 <span class="info-tooltip">Provide a comprehensive overview of the role, including what the position entails and what the candidate will be doing day-to-day.</span>
             </span>
         </label>
-        <textarea asp-for="JobDescription" class="form-control" rows="4"></textarea>
+        <textarea asp-for="JobDescription" class="form-field-input" rows="4"></textarea>
         <span asp-validation-for="JobDescription" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
     <!-- Requirements -->
     <div class="mb-3">
-        <label asp-for="Requirements" class="form-label">
+        <label asp-for="Requirements" class="form-field-label">
             Requirements <span class="text-danger">*</span>
             <span class="info-icon">
                 i
                 <span class="info-tooltip">List the qualifications, skills, education, and experience required for this position. Include both must-have and nice-to-have requirements.</span>
             </span>
         </label>
-        <textarea asp-for="Requirements" class="form-control" rows="4"></textarea>
+        <textarea asp-for="Requirements" class="form-field-input" rows="4"></textarea>
         <span asp-validation-for="Requirements" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
     <!-- Responsibilities -->
     <div class="mb-3">
-        <label asp-for="Responsibilities" class="form-label">
+        <label asp-for="Responsibilities" class="form-field-label">
             Responsibilities <span class="text-danger">*</span>
             <span class="info-icon">
                 i
                 <span class="info-tooltip">Outline the key duties and responsibilities the candidate will be expected to perform in this role.</span>
             </span>
         </label>
-        <textarea asp-for="Responsibilities" class="form-control" rows="4"></textarea>
+        <textarea asp-for="Responsibilities" class="form-field-input" rows="4"></textarea>
         <span asp-validation-for="Responsibilities" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
     <!-- Benefits -->
     <div class="mb-3">
-        <label asp-for="Benefits" class="form-label">
+        <label asp-for="Benefits" class="form-field-label">
             Benefits
             <span class="info-icon">
                 i
                 <span class="info-tooltip">Describe the benefits package offered with this position, such as health insurance, retirement plans, paid time off, etc.</span>
             </span>
         </label>
-        <textarea asp-for="Benefits" class="form-control" rows="3"></textarea>
+        <textarea asp-for="Benefits" class="form-field-input" rows="3"></textarea>
         <span asp-validation-for="Benefits" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
     <!-- Position Count -->
     <div class="mb-3">
-        <label asp-for="PositionCount" class="form-label">
+        <label asp-for="PositionCount" class="form-field-label">
             Position Count <span class="text-danger">*</span>
             <span class="info-icon">
                 i
                 <span class="info-tooltip">Enter the number of open positions available for this vacancy. If hiring multiple candidates for the same role, specify the count here.</span>
             </span>
         </label>
-        <input asp-for="PositionCount" class="form-control" type="number" min="1" />
+        <input asp-for="PositionCount" class="form-field-input" type="number" min="1" />
         <span asp-validation-for="PositionCount" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
     <!-- Employment Type -->
     <div class="mb-3">
-        <label asp-for="EmploymentType" class="form-label">
+        <label asp-for="EmploymentType" class="form-field-label">
             Employment Type <span class="text-danger">*</span>
             <span class="info-icon">
                 i
                 <span class="info-tooltip">Select the type of employment: Full-time, Part-time, Contract, Temporary, or Internship.</span>
             </span>
         </label>
-        <select asp-for="EmploymentType" class="form-select select2-dropdown">
+        <select asp-for="EmploymentType" class="form-field-select select2-dropdown">
             @foreach (var type in Enum.GetValues(typeof(Recruitment.Domain.Enums.EmploymentType)))
             {
                 <option value="@type" selected="@(type.ToString() == Model.EmploymentType.ToString())">@type</option>
@@ -168,14 +168,14 @@
 
     <!-- Status -->
     <div class="mb-3">
-        <label asp-for="Status" class="form-label">
+        <label asp-for="Status" class="form-field-label">
             Status <span class="text-danger">*</span>
             <span class="info-icon">
                 i
                 <span class="info-tooltip">Set the current status of this vacancy.</span>
             </span>
         </label>
-        <select asp-for="Status" class="form-select select2-dropdown">
+        <select asp-for="Status" class="form-field-select select2-dropdown">
             @foreach (var status in Enum.GetValues(typeof(Recruitment.Domain.Enums.VacancyStatus)))
             {
                 <option value="@status" selected="@(status.ToString() == Model.Status.ToString())">@status</option>
@@ -186,33 +186,35 @@
 
     <!-- Salary Range -->
     <div class="mb-3">
-        <label asp-for="SalaryRangeMin" class="form-label">Salary Range Minimum</label>
-        <input asp-for="SalaryRangeMin" class="form-control" type="number" step="0.01" />
+        <label asp-for="SalaryRangeMin" class="form-field-label">Salary Range Minimum</label>
+        <input asp-for="SalaryRangeMin" class="form-field-input" type="number" step="0.01" />
         <span asp-validation-for="SalaryRangeMin" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="SalaryRangeMax" class="form-label">Salary Range Maximum</label>
-        <input asp-for="SalaryRangeMax" class="form-control" type="number" step="0.01" />
+        <label asp-for="SalaryRangeMax" class="form-field-label">Salary Range Maximum</label>
+        <input asp-for="SalaryRangeMax" class="form-field-input" type="number" step="0.01" />
         <span asp-validation-for="SalaryRangeMax" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
     <!-- Deadline -->
     <div class="mb-3">
-        <label asp-for="Deadline" class="form-label">Deadline</label>
-        <input asp-for="Deadline" class="form-control" type="date" />
+        <label asp-for="Deadline" class="form-field-label">Deadline</label>
+        <input asp-for="Deadline" class="form-field-input" type="date" />
         <span asp-validation-for="Deadline" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
     <!-- Projects Multi-Select -->
     <div class="mb-3">
-        <label asp-for="ProjectIds" class="form-label">Projects</label>
-        <select asp-for="ProjectIds" class="form-select select2-dropdown" asp-items="Model.ProjectsDropdown" multiple="multiple"></select>
+        <label asp-for="ProjectIds" class="form-field-label">Projects</label>
+        <select asp-for="ProjectIds" class="form-field-select select2-dropdown" asp-items="Model.ProjectsDropdown" multiple="multiple"></select>
         <span asp-validation-for="ProjectIds" class="text-danger validation-message" style="display:none;"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <button type="submit" class="button-primary"><i class="bi bi-check-circle me-1"></i>Save Changes</button>
 </form>
+    </div>
+</div>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")

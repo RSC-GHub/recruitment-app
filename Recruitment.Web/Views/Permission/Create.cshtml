@@ -4,33 +4,91 @@
     ViewData["Title"] = "Create Permission";
 }
 
-<h2>Create Permission</h2>
-
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="PermissionName"></label>
-        <input asp-for="PermissionName" class="form-control" />
-        <span asp-validation-for="PermissionName" class="text-danger"></span>
+<div class="card-component" style="max-width: 700px; margin: 2rem auto;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="bi bi-shield-plus me-2"></i>
+            Create New Permission
+        </h2>
+        <p class="card-description">Define a new system permission</p>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Resource"></label>
-        <input asp-for="Resource" class="form-control" />
-        <span asp-validation-for="Resource" class="text-danger"></span>
-    </div>
+    <div class="card-content">
+        <form asp-action="Create" method="post">
+            <div class="form-field">
+                <label asp-for="PermissionName" class="form-label">
+                    Permission Name <span class="text-danger">*</span>
+                </label>
+                <input asp-for="PermissionName" 
+                       class="form-input" 
+                       placeholder="Enter permission name" />
+                <span asp-validation-for="PermissionName" class="form-error"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Action"></label>
-        <input asp-for="Action" class="form-control" />
-        <span asp-validation-for="Action" class="text-danger"></span>
-    </div>
+            <div class="form-field">
+                <label asp-for="Resource" class="form-label">
+                    Resource <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Resource" 
+                       class="form-input" 
+                       placeholder="Enter resource name" />
+                <span asp-validation-for="Resource" class="form-error"></span>
+                <p class="form-description">The resource this permission applies to (e.g., Vacancy, User)</p>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
+            <div class="form-field">
+                <label asp-for="Action" class="form-label">
+                    Action <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Action" 
+                       class="form-input" 
+                       placeholder="Enter action" />
+                <span asp-validation-for="Action" class="form-error"></span>
+                <p class="form-description">The action allowed (e.g., Create, Read, Update, Delete)</p>
+            </div>
 
-    <button type="submit" class="btn btn-success mt-3">Save</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
-</form>
+            <div class="form-field">
+                <label asp-for="Description" class="form-label">
+                    Description
+                </label>
+                <textarea asp-for="Description" 
+                          class="form-textarea" 
+                          rows="3"
+                          placeholder="Enter description"></textarea>
+                <span asp-validation-for="Description" class="form-error"></span>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn-component btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Create Permission
+                </button>
+                <a asp-action="Index" class="btn-component btn-secondary">
+                    <i class="bi bi-x-circle me-2"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        // Show toast notifications
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["SuccessMessage"])), 'success');
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ErrorMessage"])), 'error');
+            </text>
+        }
+    </script>
+}

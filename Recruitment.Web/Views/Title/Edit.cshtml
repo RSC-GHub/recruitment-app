@@ -1,43 +1,66 @@
 ﻿@model Recruitment.Web.ViewModels.CoreBusiness.Title.TitleEditViewModel
 @using Newtonsoft.Json
 
-
 @{
     ViewData["Title"] = "Edit Title";
 }
 
-<h2>Edit Title</h2>
-
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
-
-    <div class="form-group">
-        <label asp-for="Name">Title Name</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+<div class="card-component" style="max-width: 700px; margin: 2rem auto;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="bi bi-pencil me-2"></i>
+            Edit Title
+        </h2>
+        <p class="card-description">Update job title information</p>
     </div>
 
-    <div class="form-group mt-3">
-        <label for="Departments">Departments</label>
-        <select asp-for="SelectedDepartmentIds"
-                asp-items="Model.DepartmentList"
-                multiple
-                class="form-control select2">
-        </select>
-        <span asp-validation-for="SelectedDepartmentIds" class="text-danger"></span>
+    <div class="card-content">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-field">
+                <label asp-for="Name" class="form-label">
+                    Title Name <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Name" 
+                       class="form-input" 
+                       placeholder="Enter job title name" />
+                <span asp-validation-for="Name" class="form-error"></span>
+            </div>
+
+            <div class="form-field">
+                <label for="Departments" class="form-label">
+                    Departments
+                </label>
+                <select asp-for="SelectedDepartmentIds"
+                        asp-items="Model.DepartmentList"
+                        multiple
+                        class="form-select select2">
+                </select>
+                <span asp-validation-for="SelectedDepartmentIds" class="form-error"></span>
+                <p class="form-description">Select one or more departments for this title</p>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn-component btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Update Title
+                </button>
+                <a asp-action="Index" class="btn-component btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Back to List
+                </a>
+            </div>
+        </form>
     </div>
+</div>
 
-    <button type="submit" class="btn btn-success mt-3">Update</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
-</form>
-
-<!-- Include Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 @section Scripts {
-    <!-- Include jQuery and Select2 JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
 
     <script>
         $(document).ready(function () {
@@ -47,9 +70,24 @@
                 width: '100%'
             });
 
-            // Preselect the current departments (if not automatically bound)
+            // Preselect the current departments
             var selectedIds = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedDepartmentIds));
             $('.select2').val(selectedIds).trigger('change');
         });
+
+        // Show toast notifications
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["SuccessMessage"])), 'success');
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ErrorMessage"])), 'error');
+            </text>
+        }
     </script>
 }

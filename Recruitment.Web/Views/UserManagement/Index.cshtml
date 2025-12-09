@@ -1,34 +1,120 @@
-﻿@model IEnumerable<Recruitment.Web.ViewModels.UserManagement.User.UserWithRoleViewModel>
+@model IEnumerable<Recruitment.Web.ViewModels.UserManagement.User.UserWithRoleViewModel>
 
-<h2>User Management</h2>
+@{
+    ViewData["Title"] = "User Management";
+}
 
-<table class="table table-hover table-striped">
-    <thead>
-        <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr onclick="window.location='@Url.Action("Profile", "UserManagement", new { id = user.Id })'" style="cursor:pointer">
-                <td>@user.FullName</td>
-                <td>@user.Email</td>
-                <td>@user.DepartmentName</td>
-                <td>
-                    @if (user.IsActive)
+<div class="card-component">
+    <div class="card-header">
+        <div class="flex-between">
+            <div>
+                <h2 class="card-title">User Management</h2>
+                <p class="card-description">Manage and view all system users</p>
+            </div>
+            <a asp-controller="UserManagement" asp-action="Create" class="btn-component btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add New User
+            </a>
+        </div>
+    </div>
+
+    <div class="card-content">
+        <div class="table-component" style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
                     {
-                        <span class="badge bg-success">Active</span>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-person-circle fs-5"></i>
+                                        <span class="fw-semibold">@user.FullName</span>
+                                    </div>
+                                </td>
+                                <td>@user.Email</td>
+                                <td>@user.DepartmentName</td>
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge-component badge-success">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-component badge-secondary">
+                                            <i class="bi bi-x-circle me-1"></i>
+                                            Inactive
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="@Url.Action("Profile", "UserManagement", new { id = user.Id })" 
+                                           class="btn-component btn-sm btn-outline"
+                                           title="View Profile">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <button type="button" 
+                                                class="btn-component btn-sm btn-destructive"
+                                                onclick="confirmDelete('@user.Id', '@user.FullName')"
+                                                title="Delete User">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                     }
                     else
                     {
-                        <span class="badge bg-secondary">Inactive</span>
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                                <span class="text-muted">No users found</span>
+                            </td>
+                        </tr>
                     }
-                </td>
-            </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(userId, userName) {
+            if (confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
+                fetch(`/UserManagement/Delete/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showToast(`User "${userName}" has been deleted successfully`, 'success');
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        showToast('Failed to delete user', 'error');
+                    }
+                })
+                .catch(error => {
+                    showToast('An error occurred', 'error');
+                });
+            }
         }
-    </tbody>
-</table>
+    </script>
+}
