@@ -33,78 +33,81 @@
                 <form asp-action="EditUser" method="post" id="userForm">
                     <input type="hidden" asp-for="Id" />
 
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-field">
-                                <label class="form-field-label">
-                                    <i class="bi bi-person me-1"></i>Full Name
-                                    <span class="text-danger">*</span>
-                                    <span class="tooltip-trigger">
-                                        <i>i</i>
-                                        <span class="tooltip-content">Enter user's complete first and last name</span>
-                                    </span>
-                                </label>
-                                <input asp-for="FullName" class="form-field-input" required />
-                                <div class="invalid-feedback">Full Name is required.</div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-field">
-                                <label class="form-field-label">
-                                    <i class="bi bi-envelope me-1"></i>Email
-                                    <span class="text-danger">*</span>
-                                    <span class="tooltip-trigger">
-                                        <i>i</i>
-                                        <span class="tooltip-content">User's primary email for login and notifications</span>
-                                    </span>
-                                </label>
-                                <input asp-for="Email" class="form-field-input" type="email" required />
-                                <div class="invalid-feedback">Valid email is required.</div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-field">
-                                <label class="form-field-label">
-                                    <i class="bi bi-building me-1"></i>Department
-                                    <span class="text-danger">*</span>
-                                    <span class="tooltip-trigger">
-                                        <i>i</i>
-                                        <span class="tooltip-content">Select the department this user belongs to</span>
-                                    </span>
-                                </label>
-                                <select asp-for="DepartmentId" class="form-field-select" asp-items="Model.Departments" required>
-                                    <option value="">-- Select Department --</option>
-                                </select>
-                                <div class="invalid-feedback">Please select a department.</div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-field">
-                                <label class="form-field-label">
-                                    <i class="bi bi-toggle-on me-1"></i>Account Status
-                                    <span class="tooltip-trigger">
-                                        <i>i</i>
-                                        <span class="tooltip-content">Enable or disable user's system access</span>
-                                    </span>
-                                </label>
-                                <div class="d-flex align-items-center gap-2 mt-2">
-                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveCheck" style="width: 20px; height: 20px; cursor: pointer;" />
-                                    <label class="form-check-label mb-0" for="isActiveCheck" style="cursor: pointer; font-weight: 500;">
-                                        Active Account
+                    <div class="field-group">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="field">
+                                    <label class="field-label" for="FullName">
+                                        <i class="bi bi-person me-1"></i>Full Name
+                                        <span class="text-danger">*</span>
+                                        <span class="tooltip-trigger">
+                                            <i>i</i>
+                                            <span class="tooltip-content multiline">Enter user's complete first and last name</span>
+                                        </span>
                                     </label>
+                                    <input asp-for="FullName" id="FullName" class="form-field-input" required />
+                                    <span class="field-description">This will be displayed across the system</span>
+                                    <span class="field-error" style="display:none;">Full Name is required.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="field">
+                                    <label class="field-label" for="Email">
+                                        <i class="bi bi-envelope me-1"></i>Email
+                                        <span class="text-danger">*</span>
+                                        <span class="tooltip-trigger">
+                                            <i>i</i>
+                                            <span class="tooltip-content multiline">User's primary email for login and notifications</span>
+                                        </span>
+                                    </label>
+                                    <input asp-for="Email" id="Email" class="form-field-input" type="email" required />
+                                    <span class="field-description">Used for login and system notifications</span>
+                                    <span class="field-error" style="display:none;">Valid email is required.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="field">
+                                    <label class="field-label" for="DepartmentId">
+                                        <i class="bi bi-building me-1"></i>Department
+                                        <span class="text-danger">*</span>
+                                        <span class="tooltip-trigger">
+                                            <i>i</i>
+                                            <span class="tooltip-content multiline">Select the department this user belongs to</span>
+                                        </span>
+                                    </label>
+                                    <select asp-for="DepartmentId" id="DepartmentId" class="form-field-select" asp-items="Model.Departments" required>
+                                        <option value="">-- Select Department --</option>
+                                    </select>
+                                    <span class="field-description">Determines user access and permissions</span>
+                                    <span class="field-error" style="display:none;">Please select a department.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="field orientation-horizontal">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveCheck" style="width: 20px; height: 20px; cursor: pointer;" />
+                                    <div class="field-content">
+                                        <label class="field-label mb-0" for="isActiveCheck" style="cursor: pointer;">
+                                            <i class="bi bi-toggle-on me-1"></i>Active Account
+                                            <span class="tooltip-trigger">
+                                                <i>i</i>
+                                                <span class="tooltip-content multiline">Enable or disable user's system access</span>
+                                            </span>
+                                        </label>
+                                        <span class="field-description">Toggle to enable or disable user access</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-4 pt-3" style="border-top: 1px solid hsl(0, 0%, 90%);">
-                        <button type="submit" class="button-primary">
-                            <i class="bi bi-check-circle me-2"></i>Save Changes
-                        </button>
-                    </div>
+                    <div class="field-separator"></div>
+
+                    <button type="submit" class="btn-component btn-primary">
+                        <i class="bi bi-check-circle me-2"></i>Save Changes
+                    </button>
                 </form>
             </div>
         </div>
@@ -218,13 +221,19 @@
             function validateField($field) {
                 var isRequired = $field.prop('required');
                 var value = $field.val();
+                var $fieldContainer = $field.closest('.field');
+                var $fieldError = $fieldContainer.find('.field-error');
 
                 if (isRequired) {
                     if (!value || value.length === 0 || (Array.isArray(value) && value.length === 0)) {
                         $field.addClass('is-invalid').removeClass('is-valid');
+                        $fieldContainer.attr('data-invalid', 'true');
+                        if ($fieldError.length) $fieldError.show();
                         return false;
                     } else {
                         $field.addClass('is-valid').removeClass('is-invalid');
+                        $fieldContainer.removeAttr('data-invalid');
+                        if ($fieldError.length) $fieldError.hide();
                         return true;
                     }
                 }

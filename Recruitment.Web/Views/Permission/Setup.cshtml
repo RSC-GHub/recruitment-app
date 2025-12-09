@@ -37,58 +37,70 @@
     </div>
     <div class="card-content">
         <form asp-action="GeneratePermissions" method="post" id="permissionsForm" novalidate>
-    <div class="form-group mb-3">
-        <label for="resourceSelect">Select Resource</label><span class="text-danger"> *</span>
-        <select id="resourceSelect" class="form-field-input" required>
-            <option value="">-- Select Resource --</option>
-            @foreach (var resource in Model.Resources)
-            {
-                <option value="@resource">@resource</option>
-            }
-        </select>
-        <span class="validation-message" id="resourceError" style="display:none;"></span>
-    </div>
+            <div class="field-group">
+                <div class="field">
+                    <label class="field-label" for="resourceSelect">
+                        Select Resource
+                        <span class="text-danger">*</span>
+                    </label>
+                    <select id="resourceSelect" class="form-field-select" required>
+                        <option value="">-- Select Resource --</option>
+                        @foreach (var resource in Model.Resources)
+                        {
+                            <option value="@resource">@resource</option>
+                        }
+                    </select>
+                    <span class="field-description">Choose the resource to create permissions for</span>
+                    <span class="field-error" id="resourceError" style="display:none;"></span>
+                </div>
 
-    <div class="form-group mb-3">
-        <label for="actionSelect">Select Action</label><span class="text-danger"> *</span>
-        <select id="actionSelect" class="form-field-input" required>
-            <option value="">-- Select Action --</option>
-            @foreach (var action in Model.Actions)
-            {
-                <option value="@action">@action</option>
-            }
-        </select>
-        <span class="validation-message" id="actionError" style="display:none;"></span>
-    </div>
+                <div class="field">
+                    <label class="field-label" for="actionSelect">
+                        Select Action
+                        <span class="text-danger">*</span>
+                    </label>
+                    <select id="actionSelect" class="form-field-select" required>
+                        <option value="">-- Select Action --</option>
+                        @foreach (var action in Model.Actions)
+                        {
+                            <option value="@action">@action</option>
+                        }
+                    </select>
+                    <span class="field-description">Choose the action type for this permission</span>
+                    <span class="field-error" id="actionError" style="display:none;"></span>
+                </div>
+            </div>
 
-    <button type="button" id="addPermissionBtn" class="button-secondary mb-3" disabled>
-        <i class="bi bi-plus-circle me-1"></i>Add Permission
-    </button>
+            <button type="button" id="addPermissionBtn" class="btn-component btn-secondary mb-3" disabled>
+                <i class="bi bi-plus-circle me-1"></i>Add Permission
+            </button>
 
-    <div class="mb-3">
-        <div id="tableValidation" class="validation-message" style="display:none;"></div>
-        <table class="table table-bordered" id="permissionsTable">
-            <thead>
-                <tr>
-                    <th>Resource</th>
-                    <th>Action</th>
-                    <th style="width: 100px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr id="emptyTableRow">
-                    <td colspan="3" class="text-center text-muted">No permissions added yet</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+            <div class="mb-3">
+                <div id="tableValidation" class="field-error" style="display:none;"></div>
+                <div class="table-component">
+                    <table id="permissionsTable">
+                        <thead>
+                            <tr>
+                                <th>Resource</th>
+                                <th>Action</th>
+                                <th style="width: 100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="emptyTableRow">
+                                <td colspan="3" class="text-center text-muted">No permissions added yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-    <input type="hidden" id="SelectedPermissions" name="SelectedPermissions" />
+            <input type="hidden" id="SelectedPermissions" name="SelectedPermissions" />
 
-    <button type="submit" id="submitBtn" class="button-primary" disabled>
-        <i class="bi bi-check-circle me-1"></i>Generate Permissions
-    </button>
-</form>
+            <button type="submit" id="submitBtn" class="btn-component btn-primary" disabled>
+                <i class="bi bi-check-circle me-1"></i>Generate Permissions
+            </button>
+        </form>
     </div>
 </div>
 

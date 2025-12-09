@@ -6,88 +6,156 @@
 
 <div class="card-component">
     <div class="card-header flex-between">
-        <h2 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>Applications</h2>
-        <a asp-action="Details" asp-route-id="@Model.VacancyId" class="button-secondary">
+        <div>
+            <h2 class="card-title mb-1"><i class="bi bi-file-earmark-text me-2"></i>Applications</h2>
+            <p class="card-description mb-0">View and manage all applications for this vacancy</p>
+        </div>
+        <a asp-action="Details" asp-route-id="@Model.VacancyId" class="btn-component btn-secondary">
             <i class="bi bi-arrow-left me-1"></i> Back to Vacancy Details
         </a>
     </div>
     <div class="card-content">
 
         <!-- Search Form -->
-        <form method="get" class="mb-3">
-            <div class="d-flex gap-2">
-                <input type="text" name="search" value="@Model.Search" placeholder="Search by applicant, email or note..." class="form-field-input flex-grow-1" />
-                <input type="hidden" name="vacancyId" value="@Model.VacancyId" />
-                <button type="submit" class="button-primary"><i class="bi bi-search me-1"></i>Search</button>
+        <form method="get" class="mb-4">
+            <div class="field">
+                <label class="field-label" for="search">Search Applications</label>
+                <div class="d-flex gap-2">
+                    <input type="text" 
+                           id="search"
+                           name="search" 
+                           value="@Model.Search" 
+                           placeholder="Search by applicant name, email, or note..." 
+                           class="form-field-input flex-grow-1" />
+                    <input type="hidden" name="vacancyId" value="@Model.VacancyId" />
+                    <button type="submit" class="btn-component btn-primary">
+                        <i class="bi bi-search me-1"></i>Search
+                    </button>
+                    @if (!string.IsNullOrEmpty(Model.Search))
+                    {
+                        <a href="@Url.Action("GetSubmissions", new { vacancyId = Model.VacancyId })" 
+                           class="btn-component btn-outline">
+                            <i class="bi bi-x-circle me-1"></i>Clear
+                        </a>
+                    }
+                </div>
+                <span class="field-description">Filter applications by applicant information or notes</span>
             </div>
         </form>
 
-        <div class="table-component">
-            <table>
+        <div class="table-scroll-wrapper">
+            <div class="table-component" style="border: none;">
+                <table>
     <thead>
         <tr>
-            <th>Applicant Name</th>
-            <th>Phone Number</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Applied On</th>
-            <th>Note</th>
+            <th style="min-width: 150px;">Applicant Name</th>
+            <th style="min-width: 120px;">Phone Number</th>
+            <th style="min-width: 180px;">Email</th>
+            <th style="min-width: 100px;">Status</th>
+            <th style="min-width: 120px;">Applied On</th>
+            <th style="min-width: 200px;">Note</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var app in Model.Applications)
+        @if (Model.Applications.Any())
         {
-            <tr style="cursor:pointer;"
-                onclick="location.href='@Url.Action("Details", "Application", new { id = app.Id })'">
-                <td>@app.ApplicantName</td>
-                <td>@app.PhoneNumber</td>
-                <td>@app.ApplicantEmail</td>
-                <td>@app.ApplicationStatus</td>
-                <td>@app.ApplicationDate.ToString("yyyy-MM-dd")</td>
-                <td>@app.Note</td>
+            @foreach (var app in Model.Applications)
+            {
+                <tr style="cursor:pointer;"
+                    onclick="location.href='@Url.Action("Details", "Application", new { id = app.Id })'">
+                    <td>
+                        <span class="fw-semibold">@app.ApplicantName</span>
+                    </td>
+                    <td>@app.PhoneNumber</td>
+                    <td>
+                        <span class="text-muted" style="font-size: 0.875rem;">@app.ApplicantEmail</span>
+                    </td>
+                    <td>
+                        <span class="badge-component @(app.ApplicationStatus == "Pending" ? "badge-warning" : app.ApplicationStatus == "Approved" ? "badge-success" : "badge-secondary")">
+                            @app.ApplicationStatus
+                        </span>
+                    </td>
+                    <td>@app.ApplicationDate.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <span class="text-muted" style="font-size: 0.875rem;">@(string.IsNullOrEmpty(app.Note) ? "—" : app.Note)</span>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                    <div class="text-muted">No applications found</div>
+                    @if (!string.IsNullOrEmpty(Model.Search))
+                    {
+                        <a href="@Url.Action("GetSubmissions", new { vacancyId = Model.VacancyId })" 
+                           class="btn-component btn-outline mt-3">
+                            Clear Search
+                        </a>
+                    }
+                </td>
             </tr>
         }
     </tbody>
 </table>
-</div>
+            </div>
+        </div>
 
+<!-- Pagination -->
+@if (Model.TotalCount > Model.PageSize)
+{
+    <nav class="mt-4">
+        <ul class="pagination-component">
 
-<!-- Paging -->
-<nav>
-    <ul class="pagination">
-
-        @if (Model.Page > 1)
-        {
-            <li class="page-item">
-                <a class="page-link"
+            @if (Model.Page > 1)
+            {
+                <a class="pagination-button"
                    asp-action="GetSubmissions"
                    asp-route-vacancyId="@Model.VacancyId"
                    asp-route-page="@(Model.Page - 1)"
                    asp-route-pageSize="@Model.PageSize"
-                   asp-route-search="@Model.Search">Previous</a> 
-            </li>
-        }
+                   asp-route-search="@Model.Search">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            }
+            else
+            {
+                <span class="pagination-button disabled">
+                    <i class="bi bi-chevron-left"></i>
+                </span>
+            }
 
-        <li class="page-item disabled">
-            <span class="page-link">
+            <span class="pagination-button active">
                 Page @Model.Page of @(Math.Ceiling((double)Model.TotalCount / Model.PageSize))
             </span>
-        </li>
 
-        @if (Model.Page * Model.PageSize < Model.TotalCount)
-        {
-            <li class="page-item">
-                <a class="page-link"
+            @if (Model.Page * Model.PageSize < Model.TotalCount)
+            {
+                <a class="pagination-button"
                    asp-action="GetSubmissions"
                    asp-route-vacancyId="@Model.VacancyId"
                    asp-route-page="@(Model.Page + 1)"
                    asp-route-pageSize="@Model.PageSize"
-                   asp-route-search="@Model.Search">Next</a> 
-            </li>
-        }
+                   asp-route-search="@Model.Search">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            }
+            else
+            {
+                <span class="pagination-button disabled">
+                    <i class="bi bi-chevron-right"></i>
+                </span>
+            }
 
-    </ul>
-</nav>
+        </ul>
+    </nav>
+
+    <div class="text-center mt-3 text-muted small">
+        Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount applications
+    </div>
+}
 
     </div>
 </div>
