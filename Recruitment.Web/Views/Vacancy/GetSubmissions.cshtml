@@ -71,7 +71,12 @@
                         <span class="text-muted" style="font-size: 0.875rem;">@app.ApplicantEmail</span>
                     </td>
                     <td>
-                        <span class="badge-component @(app.ApplicationStatus == "Pending" ? "badge-warning" : app.ApplicationStatus == "Approved" ? "badge-success" : "badge-secondary")">
+                        @{
+                            var statusClass = app.ApplicationStatus.ToString() == "Pending" ? "badge-warning" : 
+                                            app.ApplicationStatus.ToString() == "Approved" ? "badge-success" : 
+                                            "badge-secondary";
+                        }
+                        <span class="badge-component @statusClass">
                             @app.ApplicationStatus
                         </span>
                     </td>
