@@ -4,31 +4,58 @@
     ViewData["Title"] = "Create Title";
 }
 
-<h2>Create Title</h2>
-
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label for="Name">Title Name</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+<div class="card-component" style="max-width: 700px; margin: 2rem auto;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="bi bi-plus-circle me-2"></i>
+            Create New Title
+        </h2>
+        <p class="card-description">Add a new job title to the system</p>
     </div>
 
-    <div class="form-group">
-        <label for="DepartmentIds">Departments</label>
-        <select asp-for="DepartmentIds" class="form-control select2" multiple="multiple"
-                asp-items="Model.Departments"></select>
-    </div>
+    <div class="card-content">
+        <form asp-action="Create" method="post">
+            <div class="form-field">
+                <label for="Name" class="form-label">
+                    Title Name <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Name" 
+                       class="form-input" 
+                       placeholder="Enter job title name" />
+                <span asp-validation-for="Name" class="form-error"></span>
+            </div>
 
-    <button type="submit" class="btn btn-success">Save</button>
-</form>
+            <div class="form-field">
+                <label for="DepartmentIds" class="form-label">
+                    Departments
+                </label>
+                <select asp-for="DepartmentIds" 
+                        class="form-select select2" 
+                        multiple="multiple"
+                        asp-items="Model.Departments"></select>
+                <p class="form-description">Select one or more departments for this title</p>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn-component btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Create Title
+                </button>
+                <a asp-action="Index" class="btn-component btn-secondary">
+                    <i class="bi bi-x-circle me-2"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-
 @section Scripts {
-    <!-- Include jQuery and Select2 JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
 
     <script>
         $(document).ready(function() {
@@ -38,5 +65,20 @@
                 width: '100%'
             });
         });
+
+        // Show toast notifications
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["SuccessMessage"]', 'success');
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["ErrorMessage"]', 'error');
+            </text>
+        }
     </script>
 }
