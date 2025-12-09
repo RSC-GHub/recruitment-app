@@ -1007,8 +1007,10 @@
 .table-scroll-wrapper {
     width: 100%;
     overflow-x: auto;
-    border-radius: 0.5rem;
-    border: 1px solid hsl(0, 0%, 90%);
+}
+
+.table-scroll-wrapper .table-component {
+    border: none;
 }
 
 .table-scroll-wrapper::-webkit-scrollbar {
@@ -1027,4 +1029,27 @@
 
 .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
     background: hsl(0, 0%, 70%);
+}
+
+/* Card stat boxes */
+.card-stat-box {
+    padding: 0.75rem;
+    border: 1px solid hsl(0, 0%, 90%);
+    border-radius: 0.5rem;
+    background-color: hsl(0, 0%, 98%);
+}
+
+.card-stat-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(0, 0%, 50%);
+}
+
+.card-stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: hsl(222, 47%, 45%);
 }

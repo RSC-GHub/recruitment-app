@@ -40,7 +40,7 @@
     </div>
 
     <!-- MAIN CARD -->
-    <div class="card-component" style="margin-top: 1.5rem;">
+    <div class="card-component mt-4">
         <div class="card-content">
 
             <!-- TITLE -->
@@ -51,8 +51,8 @@
             <!-- QUICK INFO -->
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
-                    <div class="p-3 border rounded" style="background-color: hsl(0, 0%, 98%); border-color: hsl(0, 0%, 90%) !important;">
-                        <strong class="text-muted d-block mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Status</strong>
+                    <div class="card-stat-box">
+                        <strong class="card-stat-label">Status</strong>
                         <span class="badge-component @(Model.Status == "Open" ? "badge-success" : "badge-secondary")" style="font-size: 0.875rem;">
                             @Model.Status
                         </span>
@@ -60,27 +60,27 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="p-3 border rounded" style="background-color: hsl(0, 0%, 98%); border-color: hsl(0, 0%, 90%) !important;">
-                        <strong class="text-muted d-block mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Positions</strong>
-                        <span class="fw-semibold" style="font-size: 1.25rem; color: hsl(222, 47%, 45%);">@Model.PositionCount</span>
+                    <div class="card-stat-box">
+                        <strong class="card-stat-label">Positions</strong>
+                        <span class="card-stat-value">@Model.PositionCount</span>
                     </div>
                 </div>
 
                 <div class="col-md-4">
-                    <div class="p-3 border rounded" style="background-color: hsl(0, 0%, 98%); border-color: hsl(0, 0%, 90%) !important;">
-                        <strong class="text-muted d-block mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Employment Type</strong>
-                        <span class="fw-semibold" style="font-size: 1rem;">@Model.EmploymentType</span>
+                    <div class="card-stat-box">
+                        <strong class="card-stat-label">Employment Type</strong>
+                        <span style="font-size: 1rem; font-weight: 600;">@Model.EmploymentType</span>
                     </div>
                 </div>
             </div>
 
             <div class="row g-3 mb-4">
                 <div class="col-md-6">
-                    <div class="p-3 border rounded" style="background-color: hsl(0, 0%, 98%); border-color: hsl(0, 0%, 90%) !important;">
-                        <strong class="text-muted d-block mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Salary Range</strong>
+                    <div class="card-stat-box">
+                        <strong class="card-stat-label">Salary Range</strong>
                         @if (Model.SalaryRangeMin.HasValue && Model.SalaryRangeMax.HasValue)
                         {
-                            <span class="fw-semibold" style="color: hsl(142, 76%, 36%); font-size: 1rem;">
+                            <span style="color: hsl(142, 76%, 36%); font-size: 1rem; font-weight: 600;">
                                 @($"{Model.SalaryRangeMin:C} - {Model.SalaryRangeMax:C}")
                             </span>
                         }
@@ -92,9 +92,9 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="p-3 border rounded" style="background-color: hsl(0, 0%, 98%); border-color: hsl(0, 0%, 90%) !important;">
-                        <strong class="text-muted d-block mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Deadline</strong>
-                        <span class="fw-semibold" style="font-size: 1rem;">
+                    <div class="card-stat-box">
+                        <strong class="card-stat-label">Deadline</strong>
+                        <span style="font-size: 1rem; font-weight: 600;">
                             @(Model.Deadline?.ToString("MMMM dd, yyyy") ?? "No deadline")
                         </span>
                     </div>
