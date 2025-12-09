@@ -1,19 +1,26 @@
-﻿@{
+@{
     ViewData["Title"] = "Setup";
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4">System Setup</h2>
+<div>
+    <div class="mb-4">
+        <h2 class="card-title d-flex align-items-center gap-2">
+            <i class="bi bi-gear-fill"></i>
+            System Setup
+        </h2>
+        <p class="card-description">Configure system settings and data</p>
+    </div>
 
     <div class="row g-4">
 
         <!-- Country -->
         <div class="col-md-4">
             <a asp-controller="Country" asp-action="Index" class="text-decoration-none">
-                <div class="card shadow-sm border-0 h-100 setup-card">
-                    <div class="card-body text-center">
+                <div class="card-component setup-card">
+                    <div class="card-content text-center">
+                        <i class="bi bi-globe2 fs-1 text-primary mb-3 d-block"></i>
                         <h5 class="card-title">Country</h5>
-                        <p class="text-muted">Manage countries</p>
+                        <p class="card-description">Manage countries and regions</p>
                     </div>
                 </div>
             </a>
@@ -22,10 +29,11 @@
         <!-- Location -->
         <div class="col-md-4">
             <a asp-controller="Location" asp-action="Index" class="text-decoration-none">
-                <div class="card shadow-sm border-0 h-100 setup-card">
-                    <div class="card-body text-center">
+                <div class="card-component setup-card">
+                    <div class="card-content text-center">
+                        <i class="bi bi-geo-alt-fill fs-1 text-primary mb-3 d-block"></i>
                         <h5 class="card-title">Location</h5>
-                        <p class="text-muted">Manage locations</p>
+                        <p class="card-description">Manage office locations</p>
                     </div>
                 </div>
             </a>
@@ -34,10 +42,11 @@
         <!-- Department -->
         <div class="col-md-4">
             <a asp-controller="Department" asp-action="Index" class="text-decoration-none">
-                <div class="card shadow-sm border-0 h-100 setup-card">
-                    <div class="card-body text-center">
+                <div class="card-component setup-card">
+                    <div class="card-content text-center">
+                        <i class="bi bi-building fs-1 text-primary mb-3 d-block"></i>
                         <h5 class="card-title">Department</h5>
-                        <p class="text-muted">Manage departments</p>
+                        <p class="card-description">Manage departments</p>
                     </div>
                 </div>
             </a>
@@ -46,10 +55,11 @@
         <!-- Title -->
         <div class="col-md-4">
             <a asp-controller="Title" asp-action="Index" class="text-decoration-none">
-                <div class="card shadow-sm border-0 h-100 setup-card">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Title</h5>
-                        <p class="text-muted">Manage titles</p>
+                <div class="card-component setup-card">
+                    <div class="card-content text-center">
+                        <i class="bi bi-card-heading fs-1 text-primary mb-3 d-block"></i>
+                        <h5 class="card-title">Job Titles</h5>
+                        <p class="card-description">Manage job titles and positions</p>
                     </div>
                 </div>
             </a>
@@ -58,10 +68,11 @@
         <!-- Project -->
         <div class="col-md-4">
             <a asp-controller="Project" asp-action="Index" class="text-decoration-none">
-                <div class="card shadow-sm border-0 h-100 setup-card">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Project</h5>
-                        <p class="text-muted">Manage projects</p>
+                <div class="card-component setup-card">
+                    <div class="card-content text-center">
+                        <i class="bi bi-folder-fill fs-1 text-primary mb-3 d-block"></i>
+                        <h5 class="card-title">Projects</h5>
+                        <p class="card-description">Manage projects and assignments</p>
                     </div>
                 </div>
             </a>
@@ -70,10 +81,24 @@
         <!-- Currency -->
         <div class="col-md-4">
             <a asp-controller="Currency" asp-action="Index" class="text-decoration-none">
-                <div class="card shadow-sm border-0 h-100 setup-card">
-                    <div class="card-body text-center">
+                <div class="card-component setup-card">
+                    <div class="card-content text-center">
+                        <i class="bi bi-cash-coin fs-1 text-primary mb-3 d-block"></i>
                         <h5 class="card-title">Currency</h5>
-                        <p class="text-muted">Manage currencies</p>
+                        <p class="card-description">Manage currencies and exchange rates</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Department Title -->
+        <div class="col-md-4">
+            <a asp-controller="DepartmentTitle" asp-action="Index" class="text-decoration-none">
+                <div class="card-component setup-card">
+                    <div class="card-content text-center">
+                        <i class="bi bi-diagram-3-fill fs-1 text-primary mb-3 d-block"></i>
+                        <h5 class="card-title">Department Titles</h5>
+                        <p class="card-description">Map titles to departments</p>
                     </div>
                 </div>
             </a>
@@ -84,13 +109,17 @@
 
 <style>
     .setup-card {
-        transition: transform .2s ease, box-shadow .2s ease;
+        transition: all 0.3s ease;
         cursor: pointer;
-        border-radius: 10px;
     }
 
-        .setup-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        }
+    .setup-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .setup-card:hover .bi {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
 </style>
