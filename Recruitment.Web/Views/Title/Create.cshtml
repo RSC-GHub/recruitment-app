@@ -70,14 +70,14 @@
         @if (TempData["SuccessMessage"] != null)
         {
             <text>
-            showToast('@TempData["SuccessMessage"]', 'success');
+            showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["SuccessMessage"])), 'success');
             </text>
         }
 
         @if (TempData["ErrorMessage"] != null)
         {
             <text>
-            showToast('@TempData["ErrorMessage"]', 'error');
+            showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ErrorMessage"])), 'error');
             </text>
         }
     </script>
