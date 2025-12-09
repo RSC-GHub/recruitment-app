@@ -682,3 +682,71 @@
 .p-4 {
     padding: 1rem;
 }
+
+/* Tooltip Component */
+.tooltip-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    font-weight: 600;
+    font-style: normal;
+    color: hsl(222, 47%, 45%);
+    background-color: hsl(0, 0%, 100%);
+    border: 1.5px solid hsl(222, 47%, 45%);
+    border-radius: 50%;
+    cursor: help;
+    position: relative;
+    transition: all 0.2s ease;
+    margin-left: 0.375rem;
+}
+
+.tooltip-trigger:hover {
+    background-color: hsl(222, 47%, 45%);
+    color: hsl(0, 0%, 100%);
+    transform: scale(1.1);
+}
+
+.tooltip-content {
+    position: absolute;
+    z-index: 9999;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: hsl(0, 0%, 100%);
+    background-color: hsl(222, 47%, 20%);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 150px;
+}
+
+.tooltip-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: hsl(222, 47%, 20%);
+}
+
+.tooltip-trigger:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* For multiline tooltips */
+.tooltip-content.multiline {
+    white-space: normal;
+    max-width: 250px;
+}

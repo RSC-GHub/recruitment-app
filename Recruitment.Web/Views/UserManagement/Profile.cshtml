@@ -39,6 +39,10 @@
                                 <label class="form-field-label">
                                     <i class="bi bi-person me-1"></i>Full Name
                                     <span class="text-danger">*</span>
+                                    <span class="tooltip-trigger">
+                                        <i>i</i>
+                                        <span class="tooltip-content">Enter user's complete first and last name</span>
+                                    </span>
                                 </label>
                                 <input asp-for="FullName" class="form-field-input" required />
                                 <span class="form-field-description">Enter the user's complete name</span>
@@ -51,6 +55,10 @@
                                 <label class="form-field-label">
                                     <i class="bi bi-envelope me-1"></i>Email
                                     <span class="text-danger">*</span>
+                                    <span class="tooltip-trigger">
+                                        <i>i</i>
+                                        <span class="tooltip-content">User's primary email for login and notifications</span>
+                                    </span>
                                 </label>
                                 <input asp-for="Email" class="form-field-input" type="email" required />
                                 <span class="form-field-description">User's email address</span>
@@ -63,6 +71,10 @@
                                 <label class="form-field-label">
                                     <i class="bi bi-building me-1"></i>Department
                                     <span class="text-danger">*</span>
+                                    <span class="tooltip-trigger">
+                                        <i>i</i>
+                                        <span class="tooltip-content">Select the department this user belongs to</span>
+                                    </span>
                                 </label>
                                 <select asp-for="DepartmentId" class="form-field-select" asp-items="Model.Departments" required>
                                     <option value="">-- Select Department --</option>
@@ -76,6 +88,10 @@
                             <div class="form-field">
                                 <label class="form-field-label">
                                     <i class="bi bi-toggle-on me-1"></i>Account Status
+                                    <span class="tooltip-trigger">
+                                        <i>i</i>
+                                        <span class="tooltip-content">Enable or disable user's system access</span>
+                                    </span>
                                 </label>
                                 <div class="d-flex align-items-center gap-2 mt-2">
                                     <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveCheck" style="width: 20px; height: 20px; cursor: pointer;" />
