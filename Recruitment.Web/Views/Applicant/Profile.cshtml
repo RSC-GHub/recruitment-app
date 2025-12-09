@@ -5,24 +5,25 @@
     ViewData["Title"] = "Applicant Profile";
 }
 
-<div class="container mt-4">
+<div class="card-component">
     @Html.AntiForgeryToken()
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">@Model.FullName</h2>
+    <div class="card-header flex-between">
+        <h2 class="card-title"><i class="bi bi-person-circle me-2"></i>@Model.FullName</h2>
 
         <!-- Action Buttons on Right -->
         <div class="d-flex gap-2">
-            <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
-            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-success">Edit</a>
-            <a href="@Url.Action("History", new { id = Model.Id })" class="btn btn-info">History</a>
-            <a asp-action="AssignApplicant" asp-route-id="@Model.Id" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#assignVacancyModal">
+            <a href="@Url.Action("Index")" class="button-secondary"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+            <a href="@Url.Action("Edit", new { id = Model.Id })" class="button-primary"><i class="bi bi-pencil me-1"></i>Edit</a>
+            <a href="@Url.Action("History", new { id = Model.Id })" class="button-outline"><i class="bi bi-clock-history me-1"></i>History</a>
+            <a asp-action="AssignApplicant" asp-route-id="@Model.Id" class="button-outline" data-bs-toggle="modal" data-bs-target="#assignVacancyModal">
                 <i class="bi bi-person-plus"></i> Assign Vacancy
             </a>            
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+            <button type="button" class="button-destructive" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash me-1"></i>Delete</button>
         </div>
     </div>  
 
+    <div class="card-content">
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -32,14 +33,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to delete <strong>@Model.FullName</strong>?
+                    <div class="alert-component alert-destructive">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>
+                            <div class="alert-title">Are you sure you want to delete?</div>
+                            <div class="alert-description">
+                                This will permanently delete <strong>@Model.FullName</strong>. This action cannot be undone.
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="button-secondary" data-bs-dismiss="modal">Cancel</button>
 
                     <form asp-action="Delete" method="post" class="d-inline">
                         <input type="hidden" name="id" value="@Model.Id" />
-                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        <button type="submit" class="button-destructive">Yes, Delete</button>
                     </form>
                 </div>
             </div>
@@ -47,9 +56,9 @@
     </div>
 
     <!-- Top Summary Card -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <h4 class="card-title text-primary">@Model.CurrentJob</h4>
+    <div class="card-component mb-4">
+        <div class="card-content">
+            <h4 class="card-title text-primary mb-2">@Model.CurrentJob</h4>
             <p class="text-muted mb-1">
                 <strong>@Model.City</strong>, @Model.CountryName |
                 <strong>Nationality:</strong> @Model.Nationality
@@ -66,9 +75,9 @@
         <div class="col-md-6">
 
             <!-- Contact Info -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white fw-bold">Contact Details</div>
-                <div class="card-body">
+            <div class="card-component mb-4">
+                <div class="card-header bg-primary text-white">Contact Details</div>
+                <div class="card-content">
                     <p><strong>Email:</strong> @Model.Email</p>
                     <p><strong>Phone:</strong> @Model.PhoneNumber</p>
                     <p><strong>Address:</strong> @(string.IsNullOrEmpty(Model.Address) ? "N/A" : Model.Address)</p>
@@ -76,9 +85,9 @@
             </div>
 
             <!-- Job Info -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white fw-bold">Professional Information</div>
-                <div class="card-body">
+            <div class="card-component mb-4">
+                <div class="card-header bg-primary text-white">Professional Information</div>
+                <div class="card-content">
                     <p><strong>Current Job:</strong> @Model.CurrentJob</p>
                     <p><strong>Current Employer:</strong> @Model.CurrentEmployer</p>
                     <p><strong>Current Salary:</strong> @Model.CurrentSalary @Model.CurrencyName</p>
@@ -93,9 +102,9 @@
         <div class="col-md-6">
 
             <!-- Education -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white fw-bold">Education</div>
-                <div class="card-body">
+            <div class="card-component mb-4">
+                <div class="card-header bg-primary text-white">Education</div>
+                <div class="card-content">
                     <p><strong>Degree:</strong> @Model.EducationDegree</p>
                     <p><strong>Major:</strong> @(string.IsNullOrEmpty(Model.Major) ? "N/A" : Model.Major)</p>
                     <p><strong>Graduation Year:</strong> @(Model.GraduationYear ?? 0)</p>
@@ -103,9 +112,9 @@
             </div>
 
             <!-- Personal Info -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white fw-bold">Personal Information</div>
-                <div class="card-body">
+            <div class="card-component mb-4">
+                <div class="card-header bg-primary text-white">Personal Information</div>
+                <div class="card-content">
                     <p><strong>Gender:</strong> @Model.Gender</p>
 
                     @if (Model.Gender != Gender.Female)
@@ -118,12 +127,12 @@
             </div>
 
             <!-- CV -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white fw-bold">CV</div>
-                <div class="card-body">
+            <div class="card-component mb-4">
+                <div class="card-header bg-primary text-white">CV</div>
+                <div class="card-content">
                     @if (!string.IsNullOrWhiteSpace(Model.CVFilePath))
                     {
-                        <a class="btn btn-success" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">Download CV</a>
+                        <a class="button-primary" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath"><i class="bi bi-download me-1"></i>Download CV</a>
                     }
                     else
                     {
@@ -136,9 +145,9 @@
     </div>
 
     <!-- Audit Info -->
-    <div class="card shadow-sm mt-4 mb-4">
-        <div class="card-header bg-dark text-white fw-bold">Audit Information</div>
-        <div class="card-body">
+    <div class="card-component mt-4 mb-4">
+        <div class="card-header bg-dark text-white">Audit Information</div>
+        <div class="card-content">
             <p><strong>Created By:</strong> @Model.CreatedBy</p>
             <p><strong>Created On:</strong> @Model.CreatedOn</p>
 
@@ -154,6 +163,7 @@
         </div>
     </div>
 
+    </div>
 </div>
 <!-- Assign Vacancy Modal -->
 <div class="modal fade" id="assignVacancyModal" tabindex="-1" aria-labelledby="assignVacancyModalLabel" aria-hidden="true">
@@ -169,15 +179,15 @@
                     <input type="hidden" id="AppliantId" name="AppliantId" value="@Model.Id" />
 
                     <div class="mb-3">
-                        <label for="SelectedVacancyId" class="form-label">Select Vacancy</label><span class="text-danger"> *</span>
-                        <select id="SelectedVacancyId" name="SelectedVacancyId" class="form-select">
+                        <label for="SelectedVacancyId" class="form-field-label">Select Vacancy<span class="text-danger"> *</span></label>
+                        <select id="SelectedVacancyId" name="SelectedVacancyId" class="form-field-select">
                             <option value="">-- Select Vacancy --</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label for="Note" class="form-label">Note</label>
-                        <textarea id="Note" name="Note" class="form-control" rows="3"></textarea>
+                        <label for="Note" class="form-field-label">Note</label>
+                        <textarea id="Note" name="Note" class="form-field-textarea" rows="3"></textarea>
                     </div>
 
                     <div id="assignVacancyError" class="text-danger"></div>
@@ -185,8 +195,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Assign</button>
+                    <button type="button" class="button-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="button-primary">Assign</button>
                 </div>
             </form>
         </div>
