@@ -20,3 +20,23 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.sidebar-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    height: 70px;
+}
+
+.sidebar-logo img {
+    height: 40px;
+}
+
+.sidebar-collapse-btn {
+    position: absolute;
+    right: 12px; 
+    background: none;
+    border: none;
+    cursor: pointer;
+}

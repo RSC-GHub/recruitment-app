@@ -2,14 +2,14 @@
 
 /* Sidebar Component Styles */
 :root {
-    --sidebar-background: hsl(197, 78.9%, 14.9%);
+    --sidebar-background: hsl(204 80.2% 15.9%);
     --sidebar-foreground: hsl(0, 0%, 98%);
-    --sidebar-primary: hsl(197, 78.9%, 20%);
+    --sidebar-primary: hsl(204, 78.9%, 20%);
     --sidebar-primary-foreground: hsl(0, 0%, 98%);
-    --sidebar-accent: hsl(197, 78.9%, 18%);
+    --sidebar-accent: hsl(204, 78.9%, 18%);
     --sidebar-accent-foreground: hsl(0, 0%, 98%);
-    --sidebar-border: hsl(197, 78.9%, 12%);
-    --sidebar-ring: hsl(197, 78.9%, 40%);
+    --sidebar-border: hsl(204, 78.9%, 12%);
+    --sidebar-ring: hsl(204, 78.9%, 40%);
     --sidebar-width: 16rem;
 }
 
