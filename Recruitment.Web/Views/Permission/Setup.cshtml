@@ -31,12 +31,15 @@
     }
 </style>
 
-<h2>Setup Permissions</h2>
-
-<form asp-action="GeneratePermissions" method="post" id="permissionsForm" novalidate>
+<div class="card-component">
+    <div class="card-header">
+        <h2 class="card-title"><i class="bi bi-shield-lock me-2"></i>Setup Permissions</h2>
+    </div>
+    <div class="card-content">
+        <form asp-action="GeneratePermissions" method="post" id="permissionsForm" novalidate>
     <div class="form-group mb-3">
         <label for="resourceSelect">Select Resource</label><span class="text-danger"> *</span>
-        <select id="resourceSelect" class="form-control" required>
+        <select id="resourceSelect" class="form-field-input" required>
             <option value="">-- Select Resource --</option>
             @foreach (var resource in Model.Resources)
             {
@@ -48,7 +51,7 @@
 
     <div class="form-group mb-3">
         <label for="actionSelect">Select Action</label><span class="text-danger"> *</span>
-        <select id="actionSelect" class="form-control" required>
+        <select id="actionSelect" class="form-field-input" required>
             <option value="">-- Select Action --</option>
             @foreach (var action in Model.Actions)
             {
@@ -58,8 +61,8 @@
         <span class="validation-message" id="actionError" style="display:none;"></span>
     </div>
 
-    <button type="button" id="addPermissionBtn" class="btn btn-secondary mb-3" disabled>
-        Add Permission
+    <button type="button" id="addPermissionBtn" class="button-secondary mb-3" disabled>
+        <i class="bi bi-plus-circle me-1"></i>Add Permission
     </button>
 
     <div class="mb-3">
@@ -82,10 +85,12 @@
 
     <input type="hidden" id="SelectedPermissions" name="SelectedPermissions" />
 
-    <button type="submit" id="submitBtn" class="btn btn-primary" disabled>
-        Generate Permissions
+    <button type="submit" id="submitBtn" class="button-primary" disabled>
+        <i class="bi bi-check-circle me-1"></i>Generate Permissions
     </button>
 </form>
+    </div>
+</div>
 
 @section Scripts {
     <script>

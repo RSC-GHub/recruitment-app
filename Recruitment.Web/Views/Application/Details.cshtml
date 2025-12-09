@@ -6,28 +6,32 @@
     ViewData["Title"] = "Application Details";
 }
 
-<div class="container py-4">
-    <h2 class="mb-4">Application Details</h2>
+<div class="card-component">
+    <div class="card-header flex-between">
+        <h2 class="card-title"><i class="bi bi-file-earmark-person me-2"></i>Application Details</h2>
+        <div>
+            <!-- Action Button -->
+            <a href="#" class="button-warning" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                <i class="bi bi-check-circle me-1"></i>Action
+            </a>
 
-    <!-- Action Button -->
-    <a href="#" class="btn btn-warning mb-4" data-bs-toggle="modal" data-bs-target="#reviewModal">
-        Action
-    </a>
+            @* Show Schedule Interview only if allowed *@
+            @if (ViewBag.CanAddInterview)
+            {
+                <a href="#" class="button-primary ms-2" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
+                    <i class="bi bi-calendar-plus me-1"></i>Schedule Interview
+                </a>
+            }
+        </div>
+    </div>
+    <div class="card-content">
 
-    @* Show Schedule Interview only if allowed *@
-    @if (ViewBag.CanAddInterview)
-    {
-        <a href="#" class="btn btn-primary mb-4 ms-2" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
-            Schedule Interview
-        </a>
-    }
-
-    <div class="row g-3">
-        <!-- Applicant Info -->
-        <div class="col-md-6">
-            <div class="card shadow-sm mb-3">
-                <div class="card-header bg-primary text-white">Applicant Information</div>
-                <div class="card-body">
+        <div class="row g-3">
+            <!-- Applicant Info -->
+            <div class="col-md-6">
+                <div class="card-component mb-3">
+                    <div class="card-header bg-primary text-white">Applicant Information</div>
+                    <div class="card-content">
                     <p><strong>Name:</strong> @Model.ApplicantName</p>
                     <p><strong>Email:</strong> @Model.ApplicantEmail</p>
                     <p><strong>Phone:</strong> @Model.PhoneNumber</p>
@@ -39,9 +43,9 @@
 
         <!-- Vacancy Info -->
         <div class="col-md-6">
-            <div class="card shadow-sm mb-3">
+            <div class="card-component mb-3">
                 <div class="card-header bg-success text-white">Vacancy Information</div>
-                <div class="card-body">
+                <div class="card-content">
                     <p><strong>Title:</strong> @Model.VacancyTitle</p>
                     <p><strong>Description:</strong> @(Model.VacancyDescription ?? "-")</p>
                 </div>
@@ -50,9 +54,9 @@
     </div>
 
     <!-- Application Info -->
-    <div class="card shadow-sm mb-3">
+    <div class="card-component mb-3">
         <div class="card-header bg-info text-white">Application Details</div>
-        <div class="card-body">
+        <div class="card-content">
             <p><strong>Status:</strong> @Model.ApplicationStatus</p>
             <p><strong>Applied On:</strong> @Model.ApplicationDate.ToString("yyyy-MM-dd HH:mm")</p>
             <p><strong>Reviewed By:</strong> @(Model.ReviewedByUserName ?? "-")</p>
@@ -77,8 +81,8 @@
                     <input type="hidden" name="ApplicationId" value="@Model.Id" />
 
                     <div class="mb-3">
-                        <label class="form-label">Decision</label>
-                        <select name="ApplicationStatus" class="form-select" required>
+                        <label class="form-field-label">Decision</label>
+                        <select name="ApplicationStatus" class="form-field-select" required>
                             <option value="">-- Select Decision --</option>
 
                             @* Generate options dynamically based on workflow *@
@@ -93,8 +97,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Note</label>
-                        <textarea name="Note" class="form-control" rows="3" maxlength="1000"></textarea>
+                        <label class="form-field-label">Note</label>
+                        <textarea name="Note" class="form-field-input" rows="3" maxlength="1000"></textarea>
                     </div>
 
                     <div id="reviewError" class="text-danger"></div>
@@ -102,8 +106,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                    <button type="button" class="button-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="button-primary">Submit Review</button>
                 </div>
             </form>
         </div>
@@ -126,26 +130,26 @@
                     <input type="hidden" id="ApplicationId" name="ApplicationId" value="@Model.Id" />
 
                     <div class="mb-3">
-                        <label for="Interviewer" class="form-label">Interviewer</label><span class="text-danger">*</span>
-                        <input type="text" id="Interviewer" name="Interviewer" class="form-control" required />
+                        <label for="Interviewer" class="form-field-label">Interviewer</label><span class="text-danger">*</span>
+                        <input type="text" id="Interviewer" name="Interviewer" class="form-field-input" required />
                     </div>
 
                     <div class="mb-3">
-                        <label for="ScheduledDate" class="form-label">Scheduled Date</label><span class="text-danger">*</span>
-                        <input type="datetime-local" id="ScheduledDate" name="ScheduledDate" class="form-control" required />
+                        <label for="ScheduledDate" class="form-field-label">Scheduled Date</label><span class="text-danger">*</span>
+                        <input type="datetime-local" id="ScheduledDate" name="ScheduledDate" class="form-field-input" required />
                     </div>
 
                     <div class="mb-3">
-                        <label for="InterviewType" class="form-label">Interview Type</label>
-                        <select id="InterviewType" name="InterviewType" class="form-select">
+                        <label for="InterviewType" class="form-field-label">Interview Type</label>
+                        <select id="InterviewType" name="InterviewType" class="form-field-select">
                             <option value="FaceToFace">Face To Face</option>
                             <option value="OnlineZoom">Online Zoom</option>
                             <option value="Teams">Teams</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="InterviewCategory" class="form-label">Interview Type</label>
-                        <select id="InterviewCategory" name="InterviewCategory" class="form-select">
+                        <label for="InterviewCategory" class="form-field-label">Interview Type</label>
+                        <select id="InterviewCategory" name="InterviewCategory" class="form-field-select">
                             <option value="Technical">Technical</option>
                             <option value="HR">HR</option>
                             <option value="Managerial">Managerial</option>
@@ -153,13 +157,13 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="DurationMinutes" class="form-label">Duration (minutes)</label>
-                        <input type="number" id="DurationMinutes" name="DurationMinutes" class="form-control" value="60" min="1" />
+                        <label for="DurationMinutes" class="form-field-label">Duration (minutes)</label>
+                        <input type="number" id="DurationMinutes" name="DurationMinutes" class="form-field-input" value="60" min="1" />
                     </div>
 
                     <div class="mb-3">
-                        <label for="Note" class="form-label">Note</label>
-                        <input type="text" id="Note" name="Note" class="form-control" />
+                        <label for="Note" class="form-field-label">Note</label>
+                        <input type="text" id="Note" name="Note" class="form-field-input" />
                     </div>
 
                     <div id="addInterviewError" class="text-danger"></div>
@@ -167,11 +171,14 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add Interview</button>
+                    <button type="button" class="button-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="button-primary">Add Interview</button>
                 </div>
             </form>
         </div>
+    </div>
+</div>
+
     </div>
 </div>
 
