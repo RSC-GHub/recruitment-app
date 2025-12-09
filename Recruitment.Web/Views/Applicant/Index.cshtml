@@ -1,59 +1,130 @@
-﻿@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantIndexVM
+@model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantIndexVM
 
 @{
     ViewData["Title"] = "Applicants";
 }
 
-<div class="container mt-4">
+<!-- Page Header -->
+<div class="flex-between mb-4">
+    <div>
+        <h2 class="card-title d-flex align-items-center gap-2">
+            <i class="bi bi-person-badge-fill"></i>
+            Applicants
+        </h2>
+        <p class="card-description">Manage applicant profiles and information</p>
+    </div>
+    <a asp-action="Create" class="btn-component btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>
+        Add Applicant
+    </a>
+</div>
 
-    <h2 class="mb-4">Applicants</h2>
-    <a asp-action="Create" class="btn btn-success mb-3">Add Applicant</a>
+<!-- Search Card -->
+<div class="card-component mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="bi bi-search me-2"></i>
+            Search Applicants
+        </h3>
+    </div>
+    <div class="card-content">
+        <form asp-action="Index" method="get" class="row g-3">
+            <div class="col-md-8">
+                <div class="form-field">
+                    <label class="form-label" for="search">Search</label>
+                    <input type="text" 
+                           id="search"
+                           name="search" 
+                           value="@Model.Search" 
+                           class="form-input" 
+                           placeholder="Search by name, email, city, nationality, phone..." />
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <div class="form-field w-100">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                        <button class="btn-component btn-primary flex-grow-1" type="submit">
+                            <i class="bi bi-search me-2"></i>
+                            Search
+                        </button>
+                        @if (!string.IsNullOrEmpty(Model.Search))
+                        {
+                            <a href="@Url.Action("Index")" class="btn-component btn-outline">
+                                <i class="bi bi-x-circle"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <!-- Search Form -->
-    <form asp-action="Index" method="get" class="row g-3 mb-4">
-        <div class="col-md-4">
-            <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Search by name, email, City, Nationality, Phone..." />
-        </div>
-        <div class="col-md-2">
-            <button class="btn btn-primary w-100" type="submit">Search</button>
-        </div>
-    </form>
-
-    <!-- Applicants Table -->
-    <table class="table table-bordered table-striped table-hover">
-        <thead class="table-light">
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Country</th>
-                <th>Degree</th>
-                <th>Graduation Year</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Applicants != null && Model.Applicants.Any())
-            {
-                foreach (var a in Model.Applicants)
-                {
-                    <tr style="cursor:pointer;" onclick="location.href='@Url.Action("Profile", "Applicant", new { id = a.Id })'">
-                        <td>@a.FullName</td>
-                        <td>@a.Email</td>
-                        <td>@a.PhoneNumber</td>
-                        <td>@a.CountryName</td>
-                        <td>@a.EducationDegree</td>
-                        <td>@a.GraduationYear</td>
+<!-- Applicants Table -->
+<div class="card-component">
+    <div class="card-content">
+        <div class="table-component">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Country</th>
+                        <th>Degree</th>
+                        <th>Graduation Year</th>
+                        <th style="width: 100px;" class="text-end">Actions</th>
                     </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="6" class="text-center text-muted">No applicants found.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                </thead>
+                <tbody>
+                    @if (Model.Applicants != null && Model.Applicants.Any())
+                    {
+                        foreach (var a in Model.Applicants)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-person-circle fs-5 text-primary"></i>
+                                        <span class="fw-semibold">@a.FullName</span>
+                                    </div>
+                                </td>
+                                <td>@a.Email</td>
+                                <td>@a.PhoneNumber</td>
+                                <td>
+                                    <span class="badge-component badge-secondary">@a.CountryName</span>
+                                </td>
+                                <td>@a.EducationDegree</td>
+                                <td>
+                                    <span class="badge-component badge-outline">@a.GraduationYear</span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="@Url.Action("Profile", "Applicant", new { id = a.Id })" 
+                                       class="btn-component btn-sm btn-outline"
+                                       title="View Profile">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                                <div class="text-muted">No applicants found</div>
+                                @if (!string.IsNullOrEmpty(Model.Search))
+                                {
+                                    <a href="@Url.Action("Index")" class="btn-component btn-outline mt-3">Clear Search</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <!-- Pagination -->
     @{
@@ -62,37 +133,93 @@
 
     @if (totalPages > 1)
     {
-        <nav>
-            <ul class="pagination justify-content-center">
+        <div class="card-footer">
+            <nav class="pagination-component" aria-label="Pagination">
+                <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
+                   asp-action="Index"
+                   asp-route-page="@(Model.Page - 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
 
-                <!-- Prev -->
-                <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index"
-                       asp-route-page="@(Model.Page - 1)"
-                       asp-route-pageSize="@Model.PageSize"
-                       asp-route-search="@Model.Search">Previous</a>
-                </li>
-
-                <!-- Page Numbers -->
-                @for (int i = 1; i <= totalPages; i++)
-                {
-                    <li class="page-item @(i == Model.Page ? "active" : "")">
-                        <a class="page-link" asp-action="Index"
-                           asp-route-page="@i"
-                           asp-route-pageSize="@Model.PageSize"
-                           asp-route-search="@Model.Search">@i</a>
-                    </li>
+                @{
+                    int startPage = Math.Max(1, Model.Page - 2);
+                    int endPage = Math.Min(totalPages, Model.Page + 2);
                 }
 
-                <!-- Next -->
-                <li class="page-item @(Model.Page == totalPages ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index"
-                       asp-route-page="@(Model.Page + 1)"
+                @if (startPage > 1)
+                {
+                    <a class="pagination-button"
+                       asp-action="Index"
+                       asp-route-page="1"
                        asp-route-pageSize="@Model.PageSize"
-                       asp-route-search="@Model.Search">Next</a>
-                </li>
+                       asp-route-search="@Model.Search">
+                        1
+                    </a>
+                    @if (startPage > 2)
+                    {
+                        <span class="pagination-button disabled">...</span>
+                    }
+                }
 
-            </ul>
-        </nav>
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        @i
+                    </a>
+                }
+
+                @if (endPage < totalPages)
+                {
+                    @if (endPage < totalPages - 1)
+                    {
+                        <span class="pagination-button disabled">...</span>
+                    }
+                    <a class="pagination-button"
+                       asp-action="Index"
+                       asp-route-page="@totalPages"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        @totalPages
+                    </a>
+                }
+
+                <a class="pagination-button @(Model.Page == totalPages ? "disabled" : "")"
+                   asp-action="Index"
+                   asp-route-page="@(Model.Page + 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+
+            <div class="text-center mt-3 text-muted small">
+                Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount results
+            </div>
+        </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        // Show toast notifications
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["SuccessMessage"]', 'success');
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["ErrorMessage"]', 'error');
+            </text>
+        }
+    </script>
+}
