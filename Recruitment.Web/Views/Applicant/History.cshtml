@@ -4,83 +4,166 @@
     ViewData["Title"] = "Applicant History";
 }
 
-<div class="container py-4">
-    <h2 class="mb-4">History for @Model.FullName</h2>
-
-    <div class="mb-3">
-        <p><strong>Email:</strong> @Model.Email</p>
-        <p><strong>Phone:</strong> @Model.PhoneNumber</p>
-        <p><strong>Country:</strong> @(Model.CountryName ?? "-")</p>
-        <p><strong>City:</strong> @(Model.CityName ?? "-")</p>
+<div class="card-component" style="max-width: 1200px; margin: 2rem auto;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="bi bi-clock-history me-2"></i>
+            History for @Model.FullName
+        </h2>
+        <p class="card-description">Complete application and interview history</p>
     </div>
 
-    <div class="accordion" id="applicationsAccordion">
-        @if (Model.Applications.Any())
-        {
-            int appIndex = 0;
-            foreach (var app in Model.Applications)
-            {
-                string appHeaderId = $"heading{appIndex}";
-                string appCollapseId = $"collapse{appIndex}";
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="@appHeaderId">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@appCollapseId" aria-expanded="false" aria-controls="@appCollapseId">
-                            Application: @app.VacancyTitle (@app.ApplicationStatus)
-                        </button>
-                    </h2>
-                    <div id="@appCollapseId" class="accordion-collapse collapse" aria-labelledby="@appHeaderId" data-bs-parent="#applicationsAccordion">
-                        <div class="accordion-body">
-                            <p><strong>Applied On:</strong> @app.ApplicationDate.ToString("yyyy-MM-dd HH:mm")</p>
-                            <p><strong>Reviewed By:</strong> @app.ReviewedByUserName</p>
-                            <p><strong>Note:</strong> @(app.Note ?? "-")</p>
+    <div class="card-content">
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label class="form-label text-muted">Email</label>
+                <div>@Model.Email</div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted">Phone</label>
+                <div>@Model.PhoneNumber</div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted">Country</label>
+                <div>@(Model.CountryName ?? "-")</div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted">City</label>
+                <div>@(Model.CityName ?? "-")</div>
+            </div>
+        </div>
 
-                            @if (app.Interviews.Any())
-                            {
-                                <h5 class="mt-3">Interviews</h5>
-                                <table class="table table-bordered table-striped">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Interviewer</th>
-                                            <th>Scheduled Date</th>
-                                            <th>Type</th>
-                                            <th>Category</th>
-                                            <th>Status</th>
-                                            <th>Result</th>
-                                            <th>Feedback</th>
-                                            <th>Note</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var interview in app.Interviews)
-                                        {
-                                            <tr>
-                                                <td>@interview.InterViewer</td>
-                                                <td>@interview.ScheduledDate.ToString("yyyy-MM-dd HH:mm")</td>
-                                                <td>@interview.InterviewType</td>
-                                                <td>@interview.InterviewCategory</td>
-                                                <td>@interview.InterviewStatus</td>
-                                                <td>@interview.InterviewResult</td>
-                                                <td>@interview.Feedback</td>
-                                                <td>@interview.InterViewNote</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            }
-                            else
-                            {
-                                <p>No interviews for this application.</p>
-                            }
+        <hr class="my-4" />
+
+        <h5 class="mb-3">
+            <i class="bi bi-folder2-open me-2"></i>
+            Applications
+        </h5>
+
+        <div class="accordion" id="applicationsAccordion">
+            @if (Model.Applications.Any())
+            {
+                int appIndex = 0;
+                foreach (var app in Model.Applications)
+                {
+                    string appHeaderId = $"heading{appIndex}";
+                    string appCollapseId = $"collapse{appIndex}";
+                    var statusClass = app.ApplicationStatus == "Approved" ? "badge-success" : 
+                                     app.ApplicationStatus == "Pending" ? "badge-warning" :
+                                     app.ApplicationStatus == "Rejected" ? "badge-destructive" :
+                                     "badge-default";
+                    <div class="accordion-item border rounded mb-2">
+                        <h2 class="accordion-header" id="@appHeaderId">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@appCollapseId" aria-expanded="false" aria-controls="@appCollapseId">
+                                <div class="d-flex align-items-center gap-2 w-100">
+                                    <i class="bi bi-briefcase text-primary"></i>
+                                    <span class="fw-semibold">@app.VacancyTitle</span>
+                                    <span class="badge-component @statusClass ms-auto me-3">@app.ApplicationStatus</span>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="@appCollapseId" class="accordion-collapse collapse" aria-labelledby="@appHeaderId" data-bs-parent="#applicationsAccordion">
+                            <div class="accordion-body">
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-4">
+                                        <label class="form-label text-muted">Applied On</label>
+                                        <div>@app.ApplicationDate.ToString("yyyy-MM-dd HH:mm")</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-muted">Reviewed By</label>
+                                        <div>@app.ReviewedByUserName</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-muted">Note</label>
+                                        <div>@(app.Note ?? "-")</div>
+                                    </div>
+                                </div>
+
+                                @if (app.Interviews.Any())
+                                {
+                                    <h6 class="mb-3 mt-4">
+                                        <i class="bi bi-calendar-event me-2"></i>
+                                        Interviews
+                                    </h6>
+                                    <div class="table-component">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Interviewer</th>
+                                                    <th>Scheduled Date</th>
+                                                    <th>Type</th>
+                                                    <th>Category</th>
+                                                    <th>Status</th>
+                                                    <th>Result</th>
+                                                    <th>Feedback</th>
+                                                    <th>Note</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var interview in app.Interviews)
+                                                {
+                                                    <tr>
+                                                        <td>@interview.InterViewer</td>
+                                                        <td>@interview.ScheduledDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                                        <td>
+                                                            <span class="badge-component badge-default">@interview.InterviewType</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge-component badge-secondary">@interview.InterviewCategory</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge-component badge-warning">@interview.InterviewStatus</span>
+                                                        </td>
+                                                        <td>
+                                                            @if (interview.InterviewResult != null)
+                                                            {
+                                                                var resultClass = interview.InterviewResult.ToString() == "Passed" ? "badge-success" : "badge-destructive";
+                                                                <span class="badge-component @resultClass">@interview.InterviewResult</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="text-muted">-</span>
+                                                            }
+                                                        </td>
+                                                        <td>@(interview.Feedback ?? "-")</td>
+                                                        <td>@(interview.InterViewNote ?? "-")</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert-component alert-default">
+                                        <i class="bi bi-info-circle alert-icon"></i>
+                                        <div>
+                                            <div class="alert-description">No interviews scheduled for this application.</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-                appIndex++;
+                    appIndex++;
+                }
             }
-        }
-        else
-        {
-            <p>No applications found for this applicant.</p>
-        }
+            else
+            {
+                <div class="alert-component alert-default">
+                    <i class="bi bi-info-circle alert-icon"></i>
+                    <div>
+                        <div class="alert-description">No applications found for this applicant.</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <a asp-action="Index" class="btn-component btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to List
+        </a>
     </div>
 </div>
-
