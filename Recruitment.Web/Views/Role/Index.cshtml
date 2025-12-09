@@ -147,18 +147,4 @@
         }
     </script>
 }
-            var button = event.relatedTarget; // Button that triggered the modal
-            var roleId = button.getAttribute('data-id');
-            var roleName = button.getAttribute('data-name');
-
-            // Update modal content
-            var modalRoleName = deleteModal.querySelector('#roleName');
-            modalRoleName.textContent = roleName;
-
-            // Update hidden input in the form
-            var deleteRoleIdInput = deleteModal.querySelector('#deleteRoleId');
-            deleteRoleIdInput.value = roleId;
-        });
-    </script>
-}
 
