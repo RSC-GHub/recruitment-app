@@ -4,23 +4,55 @@
     ViewData["Title"] = "Edit Department Title";
 }
 
-<h2>Edit Department Title</h2>
-
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
-
-    <div class="form-group">
-        <label asp-for="DepartmentId"></label>
-        <input asp-for="DepartmentId" class="form-control" />
-        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+<div class="card-component" style="max-width: 700px; margin: 2rem auto;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="bi bi-pencil me-2"></i>
+            Edit Department Title Mapping
+        </h2>
+        <p class="card-description">Update the department-title mapping</p>
     </div>
 
-    <div class="form-group">
-        <label asp-for="TitleId"></label>
-        <input asp-for="TitleId" class="form-control" />
-        <span asp-validation-for="TitleId" class="text-danger"></span>
-    </div>
+    <div class="card-content">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</form>
+            <div class="form-field">
+                <label asp-for="DepartmentId" class="form-label">
+                    Department ID <span class="text-danger">*</span>
+                </label>
+                <input asp-for="DepartmentId" 
+                       class="form-input" 
+                       type="number"
+                       placeholder="Enter department ID" />
+                <span asp-validation-for="DepartmentId" class="form-error"></span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="TitleId" class="form-label">
+                    Title ID <span class="text-danger">*</span>
+                </label>
+                <input asp-for="TitleId" 
+                       class="form-input" 
+                       type="number"
+                       placeholder="Enter title ID" />
+                <span asp-validation-for="TitleId" class="form-error"></span>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn-component btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Save Changes
+                </button>
+                <a asp-action="Index" class="btn-component btn-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Back to List
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -4,17 +4,42 @@
     ViewData["Title"] = "Department Title Details";
 }
 
-<h2>Department Title Details</h2>
+<div class="card-component" style="max-width: 700px; margin: 2rem auto;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="bi bi-diagram-3-fill me-2"></i>
+            Department Title Details
+        </h2>
+        <p class="card-description">View department-title mapping information</p>
+    </div>
 
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Department ID</dt>
-        <dd class="col-sm-10">@Model.DepartmentId</dd>
+    <div class="card-content">
+        <dl class="row">
+            <dt class="col-sm-4">Department ID:</dt>
+            <dd class="col-sm-8">
+                <span class="badge-component badge-secondary">@Model.DepartmentId</span>
+            </dd>
 
-        <dt class="col-sm-2">Title ID</dt>
-        <dd class="col-sm-10">@Model.TitleId</dd>
-    </dl>
+            <dt class="col-sm-4">Title ID:</dt>
+            <dd class="col-sm-8">
+                <span class="badge-component badge-default">@Model.TitleId</span>
+            </dd>
+        </dl>
+    </div>
+
+    <div class="card-footer">
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" 
+               asp-route-id="@Model.Id" 
+               class="btn-component btn-primary">
+                <i class="bi bi-pencil me-2"></i>
+                Edit
+            </a>
+            <a asp-action="Index" 
+               class="btn-component btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to List
+            </a>
+        </div>
+    </div>
 </div>
-
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-<a asp-action="Index" class="btn btn-secondary">Back to List</a>
