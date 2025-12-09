@@ -19,7 +19,7 @@
     </div>
 
     <div class="card-content">
-        <div class="table-component">
+        <div class="table-component" style="overflow-x: auto;">
             <table>
                 <thead>
                     <tr>
@@ -66,11 +66,6 @@
                                            class="btn-component btn-sm btn-outline"
                                            title="View Profile">
                                             <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a href="@Url.Action("Edit", "UserManagement", new { id = user.Id })" 
-                                           class="btn-component btn-sm btn-primary"
-                                           title="Edit User">
-                                            <i class="bi bi-pencil"></i>
                                         </a>
                                         <button type="button" 
                                                 class="btn-component btn-sm btn-destructive"
