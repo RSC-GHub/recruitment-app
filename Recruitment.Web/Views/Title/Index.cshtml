@@ -1,88 +1,159 @@
-﻿@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Title.TitleListViewModel>
+@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Title.TitleListViewModel>
 
 @{
     ViewData["Title"] = "Titles";
 }
 
-<h2>Titles</h2>
+<div class="card-component mb-4">
+    <div class="card-header">
+        <div class="flex-between">
+            <div>
+                <h2 class="card-title">Job Titles</h2>
+                <p class="card-description">Manage job titles and positions</p>
+            </div>
+            <a asp-action="Create" class="btn-component btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>
+                Create Title
+            </a>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+    <div class="card-content">
+        <div class="table-component">
+            <table id="titlesTable">
+                <thead>
+                    <tr>
+                        <th>Title Name</th>
+                        <th style="width: 150px;" class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var title in Model)
+                        {
+                            <tr data-title-id="@title.Id" class="title-row" style="cursor: pointer;">
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-card-heading text-primary"></i>
+                                        <span class="fw-semibold">@title.Name</span>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a asp-action="Edit" asp-route-id="@title.Id" 
+                                           class="btn-component btn-sm btn-primary"
+                                           onclick="event.stopPropagation()"
+                                           title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@title.Id" 
+                                           class="btn-component btn-sm btn-destructive"
+                                           onclick="event.stopPropagation(); return confirm('Delete this title?')"
+                                           title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="2" class="text-center py-5">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                                <span class="text-muted">No titles found</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-<!-- Titles Table -->
-<table id="titlesTable" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Title Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var title in Model)
-        {
-            <tr data-title-id="@title.Id" class="title-row">
-                <td>@title.Name</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@title.Id" class="btn btn-sm btn-warning">Edit</a>
-                    @* <a asp-action="Details" asp-route-id="@title.Id" class="btn btn-sm btn-info">Details</a> *@
-                    <a asp-action="Delete" asp-route-id="@title.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Departments Table -->
-<h4>Departments for Selected Title</h4>
-<table id="departmentsTable" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Department Name</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<!-- Departments for Selected Title -->
+<div class="card-component">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="bi bi-building me-2"></i>
+            Departments for Selected Title
+        </h3>
+        <p class="card-description">Click a title above to see its departments</p>
+    </div>
+    <div class="card-content">
+        <div class="table-component">
+            <table id="departmentsTable">
+                <thead>
+                    <tr>
+                        <th>Department Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center text-muted py-4">Select a title to view departments</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
-    /* يمكنك تعديل اللون حسب ذوقك */
     .highlight-row {
-        background-color: #d1ecf1 !important;
+        background-color: hsl(222, 47%, 95%) !important;
         transition: background-color 0.3s ease;
     }
 </style>
 
-<script>
-    $(document).ready(function () {
-        $('.title-row').click(function () {
-            var titleId = $(this).data('title-id');
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.title-row').click(function () {
+                var titleId = $(this).data('title-id');
 
-            $('.title-row').removeClass('highlight-row');
+                $('.title-row').removeClass('highlight-row');
+                $(this).addClass('highlight-row');
 
-            $(this).addClass('highlight-row');
-
-            $.ajax({
-                url: '@Url.Action("GetDepartmentsByTitle", "Title")',
-                type: 'GET',
-                data: { titleId: titleId },
-                success: function (data) {
-                    var tbody = $('#departmentsTable tbody');
-                    tbody.empty();
-                    if (data.length === 0) {
-                        tbody.append('<tr><td class="text-muted">No departments assigned.</td></tr>');
-                    } else {
-                        $.each(data, function (i, dept) {
-                            tbody.append('<tr><td>' + dept.name + '</td></tr>');
-                        });
+                $.ajax({
+                    url: '@Url.Action("GetDepartmentsByTitle", "Title")',
+                    type: 'GET',
+                    data: { titleId: titleId },
+                    success: function (data) {
+                        var tbody = $('#departmentsTable tbody');
+                        tbody.empty();
+                        if (data.length === 0) {
+                            tbody.append('<tr><td class="text-center text-muted py-4">No departments assigned to this title</td></tr>');
+                        } else {
+                            $.each(data, function (i, dept) {
+                                tbody.append('<tr><td><div class="d-flex align-items-center gap-2"><i class="bi bi-building text-primary"></i><span>' + dept.name + '</span></div></td></tr>');
+                            });
+                        }
+                    },
+                    error: function () {
+                        showToast('Error loading departments', 'error');
                     }
-                },
-                error: function () {
-                    alert('Error loading departments.');
-                }
+                });
             });
         });
-    });
-</script>
+
+        // Show toast notifications
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["SuccessMessage"]', 'success');
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["ErrorMessage"]', 'error');
+            </text>
+        }
+    </script>
+}

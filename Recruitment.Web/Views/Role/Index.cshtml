@@ -1,43 +1,73 @@
-﻿@model IEnumerable<Recruitment.Web.ViewModels.UserManagement.RoleListViewModel>
+@model IEnumerable<Recruitment.Web.ViewModels.UserManagement.RoleListViewModel>
 
 @{
     ViewData["Title"] = "Roles";
 }
 
-<h2>Roles</h2>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary mb-3">Create New Role</a>
-</p>
+<div class="flex-between mb-4">
+    <div>
+        <h2 class="card-title">Roles</h2>
+        <p class="card-description">Manage user roles and permissions</p>
+    </div>
+    <a asp-action="Create" class="btn-component btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>
+        Create Role
+    </a>
+</div>
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var role in Model)
+    @if (Model != null && Model.Any())
     {
-        <div class="col">
-            <div class="card h-100 shadow-sm" style="cursor:pointer;"
-                 onclick="location.href='@Url.Action("Edit", "Role", new { id = role.Id })'">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        @role.RoleName
-                        @if (role.IsActive)
-                        {
-                            <span class="badge bg-success ms-2">Active</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary ms-2">Inactive</span>
-                        }
-                    </h5>
-                    <p class="card-text">@role.Description</p>
+        @foreach (var role in Model)
+        {
+            <div class="col">
+                <div class="card-component h-100">
+                    <div class="card-content">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-award-fill text-primary fs-4"></i>
+                                <h5 class="card-title mb-0">@role.RoleName</h5>
+                            </div>
+                            @if (role.IsActive)
+                            {
+                                <span class="badge-component badge-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge-component badge-secondary">Inactive</span>
+                            }
+                        </div>
+                        <p class="card-description">@role.Description</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="@Url.Action("Edit", "Role", new { id = role.Id })" 
+                               class="btn-component btn-sm btn-primary">
+                                <i class="bi bi-pencil me-1"></i>
+                                Edit
+                            </a>
+                            <button type="button" 
+                                    class="btn-component btn-sm btn-destructive delete-btn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                    data-id="@role.Id"
+                                    data-name="@role.RoleName">
+                                <i class="bi bi-trash me-1"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-footer text-end">
-                    <button type="button" class="btn btn-sm btn-danger delete-btn"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteModal"
-                            data-id="@role.Id"
-                            data-name="@role.RoleName">
-                        Delete
-                    </button>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="card-component">
+                <div class="card-content text-center py-5">
+                    <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                    <span class="text-muted">No roles found</span>
                 </div>
             </div>
         </div>
@@ -45,21 +75,36 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header" style="background-color: hsl(0, 84%, 60%); color: white;">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete role <strong id="roleName"></strong>?
+                <div class="alert-component alert-destructive mb-0">
+                    <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
+                    <div>
+                        <div class="alert-title">Are you sure?</div>
+                        <div class="alert-description">
+                            You are about to delete role <strong id="roleName"></strong>.
+                            This action cannot be undone.
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="deleteForm" method="post" asp-action="Delete">
                     <input type="hidden" name="id" id="deleteRoleId" value="" />
-                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <button type="submit" class="btn-component btn-destructive">
+                        <i class="bi bi-trash me-2"></i>
+                        Delete Role
+                    </button>
                 </form>
             </div>
         </div>
@@ -68,16 +113,40 @@
 
 @section Scripts {
     <script>
-        // منع الكليك على زر Delete من الوصول للcard
+        // Prevent click on Delete button from reaching the card
         var deleteButtons = document.querySelectorAll('.delete-btn');
         deleteButtons.forEach(function(btn) {
             btn.addEventListener('click', function(e) {
-                e.stopPropagation(); // مهم جدًا
+                e.stopPropagation();
             });
         });
 
         var deleteModal = document.getElementById('deleteModal');
         deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var roleId = button.getAttribute('data-id');
+            var roleName = button.getAttribute('data-name');
+            
+            document.getElementById('deleteRoleId').value = roleId;
+            document.getElementById('roleName').textContent = roleName;
+        });
+
+        // Show toast notifications
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["SuccessMessage"]', 'success');
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+            showToast('@TempData["ErrorMessage"]', 'error');
+            </text>
+        }
+    </script>
+}
             var button = event.relatedTarget; // Button that triggered the modal
             var roleId = button.getAttribute('data-id');
             var roleName = button.getAttribute('data-name');
