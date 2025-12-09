@@ -191,5 +191,11 @@ namespace Recruitment.Application.Services.CoreBusiness
                 ProjectNames = v.ProjectVacancies?.Select(pv => pv.Project?.ProjectName ?? "").ToList() ?? new List<string>()
             }).ToList();
         }
+
+        public async Task<int> CountOpenedVacanciesAsync()
+        {
+            var vacancies = await _unitOfWork.VacancyRepository.GetAllOpenedVacancies();
+            return vacancies.Count;
+        }
     }
 }

@@ -1,8 +1,347 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model Recruitment.Web.ViewModels.Dashboard.HomeDashboardVM
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .stat-card {
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+        }
+
+        .stat-card.primary {
+            border-left-color: #0d6efd;
+        }
+
+        .stat-card.secondary {
+            border-left-color: #6c757d;
+        }
+
+        .stat-card.warning {
+            border-left-color: #ffc107;
+        }
+
+        .stat-card.success {
+            border-left-color: #198754;
+        }
+
+    .stat-icon {
+        font-size: 3rem;
+        opacity: 0.15;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+        margin: 0.5rem 0;
+    }
+
+    .alert-card {
+        background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+        border-left: 4px solid #dc3545;
+        transition: all 0.3s ease;
+    }
+
+        .alert-card:hover {
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.15);
+        }
+
+    .activity-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border-left: 4px solid #0d6efd;
+    }
+
+    .quick-action-card {
+        background: linear-gradient(135deg, #e7f3ff 0%, #ffffff 100%);
+        border-left: 4px solid #0d6efd;
+    }
+
+    .action-btn {
+        transition: all 0.3s ease;
+        border: 2px solid;
+        font-weight: 500;
+        padding: 0.75rem 1.25rem;
+    }
+
+        .action-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+    .activity-item {
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+        padding-left: 1rem !important;
+    }
+
+        .activity-item:hover {
+            background-color: #f8f9fa;
+            border-left-color: #0d6efd;
+        }
+
+    .badge-custom {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 20px;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .section-title i {
+            font-size: 1.5rem;
+        }
+
+   
+
+    .animate-in {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 1rem 1.5rem;
+    }
+</style>
+
+<div class="container-fluid mt-4">
+
+    <!-- ===================== -->
+    <!-- DASHBOARD OVERVIEW -->
+    <!-- ===================== -->
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-3 animate-in" style="animation-delay: 0.1s">
+            <div class="card stat-card primary shadow-sm border-0 h-100">
+                <div class="card-body position-relative">
+                    <i class="bi bi-briefcase stat-icon text-primary"></i>
+                    <div style="position: relative; z-index: 1;">
+                        <small class="text-muted text-uppercase fw-semibold d-block mb-2">Open Vacancies</small>
+                        <div class="stat-number text-primary">
+                            @Model.OpenVacanciesCount
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-arrow-up text-success"></i> Active positions
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 animate-in" style="animation-delay: 0.2s">
+            <div class="card stat-card secondary shadow-sm border-0 h-100">
+                <div class="card-body position-relative">
+                    <i class="bi bi-people stat-icon text-secondary"></i>
+                    <div style="position: relative; z-index: 1;">
+                        <small class="text-muted text-uppercase fw-semibold d-block mb-2">Total Applications</small>
+                        <div class="stat-number text-secondary">
+                            @Model.TotalApplicationsCount
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-graph-up text-info"></i> All candidates
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 animate-in" style="animation-delay: 0.3s">
+            <div class="card stat-card warning shadow-sm border-0 h-100">
+                <div class="card-body position-relative">
+                    <i class="bi bi-hourglass-split stat-icon text-warning"></i>
+                    <div style="position: relative; z-index: 1;">
+                        <small class="text-muted text-uppercase fw-semibold d-block mb-2">Under Review</small>
+                        <div class="stat-number text-warning">
+                            @Model.UnderReviewApplicationsCount
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-clock text-warning"></i> Pending review
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 animate-in" style="animation-delay: 0.4s">
+            <div class="card stat-card success shadow-sm border-0 h-100">
+                <div class="card-body position-relative">
+                    <i class="bi bi-calendar-event stat-icon text-success"></i>
+                    <div style="position: relative; z-index: 1;">
+                        <small class="text-muted text-uppercase fw-semibold d-block mb-2">Interviews Today</small>
+                        <div class="stat-number text-success">
+                            @Model.TodaysInterviewsCount
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-calendar-check text-success"></i> Scheduled today
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===================== -->
+    <!-- ALERTS + QUICK ACTION -->
+    <!-- ===================== -->
+
+    <div class="row g-4">
+
+        <!-- Alerts & Activity -->
+        <div class="col-lg-8">
+
+            <!-- Alerts -->
+            <div class="card alert-card border-0 shadow-sm mb-4 animate-in" style="animation-delay: 0.5s">
+                <div class="card-body p-4">
+                    <div class="section-title">
+                        <i class="bi bi-exclamation-triangle text-danger"></i>
+                        <span>Action Required</span>
+                    </div>
+
+                    @if (Model.OnHoldApplications > 0 || Model.PendingInterviewResults > 0)
+                    {
+                        <div class="list-group list-group-flush">
+                            @if (Model.OnHoldApplications > 0)
+                            {
+                                <div class="list-group-item border-0 d-flex justify-content-between align-items-center px-0 py-3">
+                                    <div>
+                                        <i class="bi bi-pause-circle text-warning me-2"></i>
+                                        <span class="fw-semibold">Applications on hold for more than 3 days</span>
+                                        <br>
+                                        <small class="text-muted ms-4">Review and update application status</small>
+                                    </div>
+                                    <span class="badge badge-custom bg-warning text-dark">
+                                        @Model.OnHoldApplications
+                                    </span>
+                                </div>
+                            }
+
+                            @if (Model.PendingInterviewResults > 0)
+                            {
+                                <div class="list-group-item border-0 d-flex justify-content-between align-items-center px-0 py-3">
+                                    <div>
+                                        <i class="bi bi-clipboard-check text-danger me-2"></i>
+                                        <span class="fw-semibold">Interviews awaiting decision</span>
+                                        <br>
+                                        <small class="text-muted ms-4">Submit feedback and final decision</small>
+                                    </div>
+                                    <span class="badge badge-custom bg-danger">
+                                        @Model.PendingInterviewResults
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success mb-0 d-flex align-items-center" role="alert">
+                            <i class="bi bi-check-circle-fill me-3 fs-4"></i>
+                            <div>
+                                <strong>All caught up!</strong>
+                                <p class="mb-0 small">No pending actions. Keep up the great work!</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recently Updated / Audit Logs -->
+            <div class="card activity-card border-0 shadow-sm animate-in" style="animation-delay: 0.6s">
+                <div class="card-body p-4">
+                    <div class="section-title">
+                        <i class="bi bi-clock-history text-primary"></i>
+                        <span>Recent Activity</span>
+                    </div>
+
+                    @if (Model.RecentActivities.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var activity in Model.RecentActivities)
+                            {
+                                <div class="list-group-item activity-item border-0 d-flex justify-content-between align-items-start px-0 py-3">
+                                    <div class="flex-grow-1">
+                                        <i class="@activity.Icon me-2 text-primary"></i>
+                                        <span>@activity.Message</span>
+                                    </div>
+                                    <small class="text-muted ms-3" style="white-space: nowrap;">
+                                        <i class="bi bi-clock me-1"></i>
+                                        @activity.Date.ToString("dd MMM HH:mm")
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-3 mb-0">No recent activities to display.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-lg-4">
+            <div class="card quick-action-card border-0 shadow-sm h-50 animate-in" style="animation-delay: 0.7s">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="section-title">
+                        <i class="bi bi-lightning-charge text-primary"></i>
+                        <span>Quick Actions</span>
+                    </div>
+
+                    <div class="d-grid gap-3 mt-auto">
+                        <a asp-controller="Vacancy"
+                           asp-action="Create"
+                           class="btn action-btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Create New Vacancy
+                        </a>
+
+                        <a asp-controller="Application"
+                           asp-action="Index"
+                           class="btn action-btn btn-outline-primary">
+                            <i class="bi bi-folder2-open me-2"></i>
+                            View Applications
+                        </a>
+
+                        <a asp-controller="Interview"
+                           asp-action="Index"
+                           class="btn action-btn btn-outline-success">
+                            <i class="bi bi-calendar-check me-2"></i>
+                            View Interviews
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>

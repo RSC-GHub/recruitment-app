@@ -2,17 +2,21 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Recruitment.Application.Interfaces.Persistence;
+using Recruitment.Application.Interfaces.Persistence.Audit;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
+using Recruitment.Application.Interfaces.Services.Audit;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.UserManagement;
+using Recruitment.Application.Services.Audit;
 using Recruitment.Application.Services.CoreBusiness;
 using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Application.Services.UserManagement;
 using Recruitment.Infrastructure.Data;
 using Recruitment.Infrastructure.Repositories;
+using Recruitment.Infrastructure.Repositories.Audit;
 using Recruitment.Infrastructure.Repositories.CoreBusiness;
 using Recruitment.Infrastructure.Repositories.RecruitmentProcess;
 using Recruitment.Infrastructure.Repositories.UserManagement;
@@ -39,6 +43,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IApplicantRepository, ApplicantRepository>();
             services.AddScoped<IApplicantApplicationRepository, ApplicantApplicationRepository>();
             services.AddScoped<IInterviewRepository, InterviewRepository>();
+            services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -57,6 +62,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IApplicantService, ApplicantService>();
             services.AddScoped<IApplicantApplicationService, ApplicantApplicationService>();
             services.AddScoped<IInterviewService, InterviewService>();
+            services.AddScoped<IAuditService, AuditService>();
 
             return services;
         }

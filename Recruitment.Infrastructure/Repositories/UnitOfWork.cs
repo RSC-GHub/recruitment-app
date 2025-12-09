@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Recruitment.Application.Interfaces.Persistence;
+using Recruitment.Application.Interfaces.Persistence.Audit;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
+using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure.Data;
+using Recruitment.Infrastructure.Repositories.Audit;
 using Recruitment.Infrastructure.Repositories.CoreBusiness;
 using Recruitment.Infrastructure.Repositories.RecruitmentProcess;
 using Recruitment.Infrastructure.Repositories.UserManagement;
@@ -17,6 +20,8 @@ namespace Recruitment.Infrastructure.Repositories
         private readonly ApplicationDbContext _context;
 
         // Core Business Repositories
+
+        public IGenericRepository<AuditLog> AuditLog { get; set; } 
         public IGenericRepository<Country> Countries { get; }
         public IGenericRepository<Location> Locations { get; }
         public IGenericRepository<Project> Projects { get; }
@@ -38,12 +43,14 @@ namespace Recruitment.Infrastructure.Repositories
         public IApplicantRepository ApplicantRepository { get; }
         public IApplicantApplicationRepository ApplicationRepository { get; }
         public IInterviewRepository InterviewRepository { get; set; } 
+        public IAuditLogRepository AuditLogRepository { get; set; } 
 
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
 
+            AuditLog = new GenericRepository<AuditLog>(_context, httpContextAccessor);
             Countries = new GenericRepository<Country>(_context, httpContextAccessor);
             Locations = new GenericRepository<Location>(_context, httpContextAccessor);
             Projects = new GenericRepository<Project>(_context, httpContextAccessor);
@@ -65,6 +72,7 @@ namespace Recruitment.Infrastructure.Repositories
             ApplicantRepository = new ApplicantRepository(context, httpContextAccessor);
             ApplicationRepository = new ApplicantApplicationRepository(context, httpContextAccessor);
             InterviewRepository = new InterviewRepository(context, httpContextAccessor);
+            AuditLogRepository = new AuditLogRepository(context, httpContextAccessor);
         }
 
         public async Task<int> CompleteAsync()

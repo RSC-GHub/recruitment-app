@@ -31,5 +31,10 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
                                                 InterviewStatus interviewStatus,
                                                 InterviewType interviewType,
                                                 int durationMinutes, string? interviewNote);
+
+        Task<int> CountTodaysInterviewsAsync();
+        Task<int> CountPendingInterviewResultsAsync();
+
+        Task<Interview?> GetByIdWithApplicantAsync(int id);
     }
 }

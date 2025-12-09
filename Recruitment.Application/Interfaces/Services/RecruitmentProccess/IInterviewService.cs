@@ -39,6 +39,9 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
             string? feedback,
             string? note);
         Task<bool> UpdateInterviewAsync(UpdateInterviewDTO dto);
+
+        Task<int> CountTodaysInterviewsAsync();
+        Task<int> GetPendingInterviewResultsAlertAsync();
     }
 
 }

@@ -16,9 +16,13 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
         Task<PagedResult<ApplicantApplication>> GetPendingReviewAsync(int page, int pageSize);
 
         Task<int> CountByVacancyAsync(int vacancyId);
+        Task<int> CountByStatusAsync(ApplicationStatus? status = null);
         Task AssignApplicantAsync(int applicantId, int vacancyId, string Note);
         Task ReviewApplicationAsync(int applicationId, int reviewedByUserId, ApplicationStatus status, string? note = null);
         Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus);
-      
+        Task<int> CountOnHoldOlderThanAsync(int days);
+        Task<ApplicantApplication?> GetByIdWithApplicantAsync(int id);
+
+
     }
 }

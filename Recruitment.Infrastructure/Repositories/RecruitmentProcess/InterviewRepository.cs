@@ -220,5 +220,31 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             return true;
         }
 
+        public async Task<int> CountTodaysInterviewsAsync()
+        {
+            return await _context.Interviews
+                .CountAsync(i => i.ScheduledDate.Date == DateTime.UtcNow.Date);
+        }
+
+        public async Task<int> CountPendingInterviewResultsAsync()
+        {
+            return await _context.Interviews
+                .CountAsync(i =>
+                    i.ScheduledDate < DateTime.UtcNow &&
+                    i.InterviewResult == InterviewResult.Pending);
+        }
+
+        public async Task<Interview?> GetByIdWithApplicantAsync(int id)
+        {
+            return await _context.Interviews
+                .Include(i => i.Application)
+                    .ThenInclude(a => a.Applicant)
+                .Include(i => i.Application)
+                    .ThenInclude(a => a.Vacancy)
+                        .ThenInclude(v => v.Title)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(i => i.Id == id);
+        }
+
     }
 }

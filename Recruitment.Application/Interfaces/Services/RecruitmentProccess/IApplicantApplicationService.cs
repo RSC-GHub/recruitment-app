@@ -39,6 +39,11 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
 
         Task<bool> CanMoveToSecondInterviewAsync(int applicationId);
         Task<bool> CanAddInterviewAsync(int applicationId);
+
+        Task<int> CountApplicationsAsync(ApplicationStatus? status = null);
+
+        Task<int> GetOnHoldApplicationsAlertAsync(int days = 3);
+
     }
 
 }

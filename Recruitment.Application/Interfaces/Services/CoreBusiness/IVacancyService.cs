@@ -18,5 +18,7 @@ namespace Recruitment.Application.Interfaces.Services.CoreBusiness
                 string? search, int? titleId, int? projectId, VacancyStatus? status,
                 int page, int pageSize);
         Task<List<VacancyListDTO>> FilterVacanciesAsync(int? titleId, int? projectId, VacancyStatus? status);
+
+        Task<int> CountOpenedVacanciesAsync();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.Interfaces.Persistence;
@@ -330,6 +331,17 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
             return !interviews.Any(i =>
                 i.InterviewStatus == InterviewStatus.Scheduled);
+        }
+
+        public async Task<int> CountApplicationsAsync(ApplicationStatus? status = null)
+        {
+            return await _unitOfWork.ApplicationRepository.CountByStatusAsync(status);
+        }
+
+        public async Task<int> GetOnHoldApplicationsAlertAsync(int days = 3)
+        {
+            return await _unitOfWork.ApplicationRepository
+                .CountOnHoldOlderThanAsync(days);
         }
     }
 }

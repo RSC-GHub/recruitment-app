@@ -5,33 +5,230 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Recruitment.Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/tailwind.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Recruitment.Web.styles.css" asp-append-version="true" />
-
-    <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        /* Enhanced Navigation Styles */
+        .navbar {
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .navbar-brand {
+            transition: transform 0.3s ease;
+        }
+
+            .navbar-brand:hover {
+                transform: scale(1.05);
+            }
+
+            .navbar-brand img {
+                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            }
+
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            transition: all 0.3s ease;
+            color: #495057 !important;
+        }
+
+            .nav-link::before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+                transform: translateX(-50%);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: #0d6efd !important;
+            }
+
+                .nav-link:hover::before {
+                    width: 80%;
+                }
+
+        .dropdown-toggle::after {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-toggle[aria-expanded="true"]::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            animation: dropdownFade 0.3s ease;
+        }
+
+        
+
+        .dropdown-item {
+            padding: 0.6rem 1.5rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: #495057;
+        }
+
+            .dropdown-item:hover {
+                background: linear-gradient(90deg, #e7f3ff, #f0f9ff);
+                color: #0d6efd;
+                padding-left: 2rem;
+            }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+            .navbar-toggler:hover {
+                background: rgba(13, 110, 253, 0.1);
+                border-radius: 6px;
+            }
+
+            .navbar-toggler:focus {
+                box-shadow: none;
+            }
+
+        /* User greeting */
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #e7f3ff 0%, #f0f9ff 100%);
+            border-radius: 20px;
+            margin-right: 0.5rem;
+            font-weight: 600;
+            color: #0d6efd !important;
+        }
+
+        /* Logout button */
+        .btn-logout {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white !important;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+            .btn-logout:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+                background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+            }
+
+        /* Auth buttons */
+        .btn-auth {
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0 0.25rem;
+        }
+
+        .btn-login {
+            background: white;
+            color: #0d6efd !important;
+            border: 2px solid #0d6efd;
+        }
+
+            .btn-login:hover {
+                background: #0d6efd;
+                color: white !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+            }
+
+        .btn-register {
+            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+            color: white !important;
+            border: none;
+            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+        }
+
+            .btn-register:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
+            }
+
+        /* Badge for tracking items */
+        .nav-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+            border-radius: 10px;
+            margin-left: 0.5rem;
+        }
+
+        
+
+        /* Footer enhancement */
+        .footer {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 2rem 0;
+            margin-top: 3rem;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+        }
+
+            .footer a {
+                color: #0d6efd;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+                .footer a:hover {
+                    color: #0dcaf0;
+                    text-decoration: underline;
+                }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"> <img src="~/logo/logo.png" style="height:40px" /> </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/logo/logo.png" style="height:40px" alt="Recruitment Logo" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <!-- Left side nav -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <!-- User Management Dropdown -->
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="userMgmtDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="userMgmtDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
                                     User Management
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="userMgmtDropdown">
@@ -43,20 +240,24 @@
 
                             <!-- Setup -->
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="AppSetup" asp-action="Index">Setup</a>
+                                <a class="nav-link" asp-controller="AppSetup" asp-action="Index">Setup</a>
                             </li>
 
-                            <!-- Tracking Dropdown -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="trackingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    System tracking
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="trackingDropdown">
-                                    <li><a class="dropdown-item" asp-controller="Vacancy" asp-action="Index">Vacancies</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Applicant" asp-action="Index">Applicants</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Application" asp-action="Index">Applications</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Interview" asp-action="Index">Interviews</a></li>
-                                </ul>
+                            <!-- Recruitment Tracking -->
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Vacancy" asp-action="Index">Vacancies</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Applicant" asp-action="Index">Applicants</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Application" asp-action="Index">Applications</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Interview" asp-action="Index">Interviews</a>
                             </li>
                         }
                     </ul>
@@ -66,21 +267,21 @@
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-dark">Hello, @User.Identity.Name</span>
+                                <span class="user-greeting">@User.Identity.Name</span>
                             </li>
                             <li class="nav-item">
                                 <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
+                                    <button type="submit" class="btn btn-logout">Logout</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="btn btn-auth btn-login" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="btn btn-auth btn-register" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                         }
                     </ul>
@@ -96,21 +297,14 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Recruitment.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container text-center">
+            &copy; 2025 Recruitment System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
         </div>
     </footer>
 
-    <!-- jQuery must be loaded first -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
-    <!-- Bootstrap JS - load only once -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <!-- Site JS -->
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)

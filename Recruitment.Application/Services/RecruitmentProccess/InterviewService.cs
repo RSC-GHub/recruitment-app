@@ -249,5 +249,18 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
             return result;
         }
+
+        public Task<int> CountTodaysInterviewsAsync()
+        {
+            var count = _unitOfWork.InterviewRepository.CountTodaysInterviewsAsync();
+            return count;
+        }
+
+        public async Task<int> GetPendingInterviewResultsAlertAsync()
+        {
+            return await _unitOfWork.InterviewRepository
+                .CountPendingInterviewResultsAsync();
+        }
+
     }
 }

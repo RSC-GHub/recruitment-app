@@ -7,6 +7,7 @@ using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Domain.Enums;
 using Recruitment.Infrastructure.Data;
+using System.Data.SqlTypes;
 
 namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 {
@@ -157,6 +158,13 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 .CountAsync(a => a.VacancyId == vacancyId);
         }
 
+        public async Task<int> CountByStatusAsync(ApplicationStatus? status = null)
+        {
+            return status.HasValue
+                ? await _context.Applications.CountAsync(a => a.ApplicationStatus == status.Value)
+                : await _context.Applications.CountAsync();
+        }
+
         public async Task AssignApplicantAsync(int applicantId, int vacancyId, string Note)
         {
             var exists = await GetByApplicantAndVacancyAsync(applicantId, vacancyId);
@@ -200,6 +208,33 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             await _context.SaveChangesAsync();
         }
 
+        public async Task<int> CountOnHoldOlderThanAsync(int days = 3)
+        {
+            var cutoffDate = DateTime.UtcNow.AddDays(-days);
+            return await _context.Applications
+        .CountAsync(a =>
+            a.ApplicationStatus == ApplicationStatus.OnHold &&
+            a.ModifiedOn <= cutoffDate);
+        }
+
+        public async Task<ApplicantApplication?> GetByIdWithApplicantAsync(int id)
+        {
+            var application = await _context.Applications
+                .Include(a => a.Applicant)
+                .Include(a => a.Vacancy)
+                    .ThenInclude(v => v.Title)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (application?.ReviewedBy != null)
+            {
+                application.Reviewer = await _context.Users
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(u => u.Id == application.ReviewedBy);
+            }
+
+            return application;
+        }
 
     }
 }

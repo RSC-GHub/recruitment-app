@@ -69,7 +69,7 @@ namespace Recruitment.Infrastructure.Data
 
 
         public override async Task<int> SaveChangesAsync(
-    CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             var auditEntries = new List<AuditLog>();
 

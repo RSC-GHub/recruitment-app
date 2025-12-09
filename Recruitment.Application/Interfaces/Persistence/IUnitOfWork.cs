@@ -1,6 +1,8 @@
-﻿using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
+﻿using Recruitment.Application.Interfaces.Persistence.Audit;
+using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
+using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.UserManagement;
 
@@ -8,6 +10,7 @@ namespace Recruitment.Application.Interfaces.Persistence
 {
     public interface IUnitOfWork : IDisposable
     {
+        IGenericRepository<AuditLog> AuditLog { get; }
         IGenericRepository<Country> Countries { get; }
         IGenericRepository<Location> Locations { get; }
         IGenericRepository<Project> Projects { get; }
@@ -29,6 +32,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IApplicantRepository ApplicantRepository { get; }
         IApplicantApplicationRepository ApplicationRepository { get; }
         IInterviewRepository InterviewRepository { get; }
+        IAuditLogRepository AuditLogRepository { get; }
         Task<int> CompleteAsync();
     }
 }
