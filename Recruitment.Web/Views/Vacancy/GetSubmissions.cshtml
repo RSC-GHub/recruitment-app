@@ -4,20 +4,26 @@
     ViewData["Title"] = "Applications for Vacancy";
 }
 
-<h2>Applications</h2>
+<div class="card-component">
+    <div class="card-header flex-between">
+        <h2 class="card-title"><i class="bi bi-file-earmark-text me-2"></i>Applications</h2>
+        <a asp-action="Details" asp-route-id="@Model.VacancyId" class="button-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Vacancy Details
+        </a>
+    </div>
+    <div class="card-content">
 
-<a asp-action="Details" asp-route-id="@Model.VacancyId" class="btn btn-secondary mb-3">
-    ← Back to Vacancy Details
-</a>
+        <!-- Search Form -->
+        <form method="get" class="mb-3">
+            <div class="d-flex gap-2">
+                <input type="text" name="search" value="@Model.Search" placeholder="Search by applicant, email or note..." class="form-field-input flex-grow-1" />
+                <input type="hidden" name="vacancyId" value="@Model.VacancyId" />
+                <button type="submit" class="button-primary"><i class="bi bi-search me-1"></i>Search</button>
+            </div>
+        </form>
 
-<!-- Search Form -->
-<form method="get" class="mb-3">
-    <input type="text" name="search" value="@Model.Search" placeholder="Search by applicant, email or note..." class="form-control" />
-    <input type="hidden" name="vacancyId" value="@Model.VacancyId" />
-    <button type="submit" class="btn btn-primary mt-2">Search</button>
-</form>
-
-<table class="table table-bordered">
+        <div class="table-component">
+            <table>
     <thead>
         <tr>
             <th>Applicant Name</th>
@@ -43,6 +49,7 @@
         }
     </tbody>
 </table>
+</div>
 
 
 <!-- Paging -->
@@ -81,3 +88,6 @@
 
     </ul>
 </nav>
+
+    </div>
+</div>
