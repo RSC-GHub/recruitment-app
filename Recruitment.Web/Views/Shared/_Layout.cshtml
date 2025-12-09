@@ -6,306 +6,244 @@
     <title>@ViewData["Title"] - Recruitment.Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/tailwind.css" />
+    <link rel="stylesheet" href="~/css/shadcn-components.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Recruitment.Web.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
 
     <style>
-        /* Enhanced Navigation Styles */
-        .navbar {
-            padding: 0.75rem 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .navbar-brand {
-            transition: transform 0.3s ease;
-        }
-
-            .navbar-brand:hover {
-                transform: scale(1.05);
-            }
-
-            .navbar-brand img {
-                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-            }
-
-        .nav-link {
-            position: relative;
-            font-weight: 500;
-            padding: 0.5rem 1rem !important;
-            transition: all 0.3s ease;
-            color: #495057 !important;
-        }
-
-            .nav-link::before {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 50%;
-                width: 0;
-                height: 2px;
-                background: linear-gradient(90deg, #0d6efd, #0dcaf0);
-                transform: translateX(-50%);
-                transition: width 0.3s ease;
-            }
-
-            .nav-link:hover {
-                color: #0d6efd !important;
-            }
-
-                .nav-link:hover::before {
-                    width: 80%;
-                }
-
-        .dropdown-toggle::after {
-            transition: transform 0.3s ease;
-        }
-
-        .dropdown-toggle[aria-expanded="true"]::after {
-            transform: rotate(180deg);
-        }
-
-        .dropdown-menu {
-            border: none;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            border-radius: 8px;
-            padding: 0.5rem 0;
-            margin-top: 0.5rem;
-            animation: dropdownFade 0.3s ease;
-        }
-
-        
-
-        .dropdown-item {
-            padding: 0.6rem 1.5rem;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            color: #495057;
-        }
-
-            .dropdown-item:hover {
-                background: linear-gradient(90deg, #e7f3ff, #f0f9ff);
-                color: #0d6efd;
-                padding-left: 2rem;
-            }
-
-        .navbar-toggler {
-            border: none;
-            padding: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-            .navbar-toggler:hover {
-                background: rgba(13, 110, 253, 0.1);
-                border-radius: 6px;
-            }
-
-            .navbar-toggler:focus {
-                box-shadow: none;
-            }
-
-        /* User greeting */
-        .user-greeting {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background: linear-gradient(135deg, #e7f3ff 0%, #f0f9ff 100%);
-            border-radius: 20px;
-            margin-right: 0.5rem;
-            font-weight: 600;
-            color: #0d6efd !important;
-        }
-
-        /* Logout button */
-        .btn-logout {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            color: white !important;
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-        }
-
-            .btn-logout:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
-                background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
-            }
-
-        /* Auth buttons */
-        .btn-auth {
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin: 0 0.25rem;
-        }
-
-        .btn-login {
-            background: white;
-            color: #0d6efd !important;
-            border: 2px solid #0d6efd;
-        }
-
-            .btn-login:hover {
-                background: #0d6efd;
-                color: white !important;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
-            }
-
-        .btn-register {
-            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
-            color: white !important;
-            border: none;
-            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
-        }
-
-            .btn-register:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
-            }
-
-        /* Badge for tracking items */
-        .nav-badge {
-            display: inline-block;
-            padding: 0.25rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            line-height: 1;
-            color: #fff;
-            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
-            border-radius: 10px;
-            margin-left: 0.5rem;
-        }
-
-        
-
-        /* Footer enhancement */
-        .footer {
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            padding: 2rem 0;
-            margin-top: 3rem;
-            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
-        }
-
-            .footer a {
-                color: #0d6efd;
-                text-decoration: none;
-                transition: all 0.3s ease;
-            }
-
-                .footer a:hover {
-                    color: #0dcaf0;
-                    text-decoration: underline;
-                }
+        /* Remove unused navbar styles - now using sidebar */
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <!-- Sidebar for authenticated users -->
+        <aside class="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <a asp-controller="Home" asp-action="Index" style="text-decoration: none;">
                     <img src="~/logo/logo.png" style="height:40px" alt="Recruitment Logo" />
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- Left side nav -->
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+            </div>
 
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <!-- User Management Dropdown -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="userMgmtDropdown" role="button"
-                                   data-bs-toggle="dropdown" aria-expanded="false">
-                                    User Management
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="userMgmtDropdown">
-                                    <li><a class="dropdown-item" asp-controller="UserManagement" asp-action="Index">Users</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Permission" asp-action="Index">Permissions</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Role" asp-action="Index">Roles</a></li>
-                                </ul>
-                            </li>
+            <!-- Sidebar Content -->
+            <div class="sidebar-content">
+                <ul class="sidebar-menu">
+                    <!-- Home -->
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Home" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-house-fill"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
 
-                            <!-- Setup -->
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="AppSetup" asp-action="Index">Setup</a>
-                            </li>
+                <!-- User Management Section -->
+                <div class="sidebar-group-label">User Management</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="UserManagement" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-people-fill"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Permission" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            <span>Permissions</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Role" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-award-fill"></i>
+                            <span>Roles</span>
+                        </a>
+                    </li>
+                </ul>
 
-                            <!-- Recruitment Tracking -->
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Vacancy" asp-action="Index">Vacancies</a>
-                            </li>
+                <!-- Recruitment Section -->
+                <div class="sidebar-group-label">Recruitment</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Vacancy" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-briefcase-fill"></i>
+                            <span>Vacancies</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Applicant" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-person-badge-fill"></i>
+                            <span>Applicants</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Application" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-file-earmark-text-fill"></i>
+                            <span>Applications</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Interview" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-calendar-event-fill"></i>
+                            <span>Interviews</span>
+                        </a>
+                    </li>
+                </ul>
 
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Applicant" asp-action="Index">Applicants</a>
-                            </li>
+                <!-- Setup Section -->
+                <div class="sidebar-group-label">Configuration</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="AppSetup" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-gear-fill"></i>
+                            <span>Setup</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Application" asp-action="Index">Applications</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Interview" asp-action="Index">Interviews</a>
-                            </li>
-                        }
-                    </ul>
-
-                    <!-- Right side nav -->
-                    <ul class="navbar-nav ms-auto">
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <span class="user-greeting">@User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-logout">Logout</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="btn btn-auth btn-login" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-auth btn-register" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
-                        }
-                    </ul>
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="d-flex flex-column gap-2">
+                    <div class="text-sm" style="color: var(--sidebar-foreground); opacity: 0.9;">
+                        <i class="bi bi-person-circle"></i>
+                        <span class="ms-2">@User.Identity.Name</span>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        <button type="submit" class="btn-component btn-destructive w-100">
+                            <i class="bi bi-box-arrow-right me-2"></i>
+                            Logout
+                        </button>
+                    </form>
                 </div>
             </div>
-        </nav>
-    </header>
+        </aside>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        <!-- Main Content with Sidebar -->
+        <div class="main-content-with-sidebar">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb-container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index", "Home")" class="breadcrumb-link">
+                                <i class="bi bi-house-fill"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-separator">/</li>
+                        @if (ViewContext.RouteData.Values["controller"]?.ToString() != "Home")
+                        {
+                            <li class="breadcrumb-item">
+                                <span class="breadcrumb-page">@ViewContext.RouteData.Values["controller"]</span>
+                            </li>
+                        }
+                        @if (ViewContext.RouteData.Values["action"]?.ToString() != "Index")
+                        {
+                            <li class="breadcrumb-separator">/</li>
+                            <li class="breadcrumb-item">
+                                <span class="breadcrumb-page">@ViewContext.RouteData.Values["action"]</span>
+                            </li>
+                        }
+                    </ol>
+                </nav>
+            </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container text-center">
-            &copy; 2025 Recruitment System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+            <!-- Main Content -->
+            <div class="container-fluid p-4">
+                <main role="main">
+                    @RenderBody()
+                </main>
+            </div>
+
+            <!-- Footer -->
+            <footer class="border-top p-4 text-center text-muted">
+                &copy; 2025 Recruitment System - <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+            </footer>
         </div>
-    </footer>
+    }
+    else
+    {
+        <!-- Layout for unauthenticated users (no sidebar) -->
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light" style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                        <img src="~/logo/logo.png" style="height:40px" alt="Recruitment Logo" />
+                    </a>
+                    <div class="ms-auto d-flex gap-2">
+                        <a class="btn-component btn-outline" asp-controller="Account" asp-action="Login">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Login
+                        </a>
+                        <a class="btn-component btn-primary" asp-controller="Account" asp-action="Register">
+                            <i class="bi bi-person-plus me-2"></i>
+                            Register
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div class="container">
+            <main role="main" class="pb-3 pt-4">
+                @RenderBody()
+            </main>
+        </div>
+
+        <footer class="border-top p-4 text-center text-muted">
+            &copy; 2025 Recruitment System - <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+        </footer>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sonner@1.3.1/dist/index.umd.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Initialize Sonner toast
+        const { toast } = window.sonner || {};
+
+        // Helper functions for toast notifications
+        window.showToast = function(message, type = 'default') {
+            if (!toast) return;
+            
+            switch(type) {
+                case 'success':
+                    toast.success(message);
+                    break;
+                case 'error':
+                    toast.error(message);
+                    break;
+                case 'warning':
+                    toast.warning(message);
+                    break;
+                case 'info':
+                    toast.info(message);
+                    break;
+                default:
+                    toast(message);
+            }
+        };
+
+        // Highlight active sidebar menu item
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const menuButtons = document.querySelectorAll('.sidebar-menu-button');
+            
+            menuButtons.forEach(button => {
+                if (button.getAttribute('href') === currentPath) {
+                    button.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+    <!-- Toast Container -->
+    <div id="sonner-toaster"></div>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
