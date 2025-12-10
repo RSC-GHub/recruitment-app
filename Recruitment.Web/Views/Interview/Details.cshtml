@@ -135,9 +135,10 @@
                             <span class="text-muted small">Status</span>
                             <p class="mb-0">
                                 @{
-                                    var statusClass = Model.InterviewStatus.ToString() == "Completed" ? "badge-success" :
-                                                     Model.InterviewStatus.ToString() == "Scheduled" ? "badge-warning" :
-                                                     Model.InterviewStatus.ToString() == "Cancelled" ? "badge-destructive" :
+                                    var statusStr = Model.InterviewStatus.ToString();
+                                    var statusClass = statusStr == "Completed" ? "badge-success" :
+                                                     statusStr == "Scheduled" ? "badge-warning" :
+                                                     statusStr == "Cancelled" ? "badge-destructive" :
                                                      "badge-default";
                                 }
                                 <span class="badge-component @statusClass">@Model.InterviewStatus</span>
@@ -148,8 +149,9 @@
                             <p class="mb-0">
                                 @if (Model.InterviewResult != null)
                                 {
-                                    var resultClass = Model.InterviewResult.ToString() == "Passed" ? "badge-success" :
-                                                     Model.InterviewResult.ToString() == "Failed" ? "badge-destructive" :
+                                    var resultStr = Model.InterviewResult.ToString();
+                                    var resultClass = resultStr == "Passed" ? "badge-success" :
+                                                     resultStr == "Failed" ? "badge-destructive" :
                                                      "badge-warning";
                                     <span class="badge-component @resultClass">@Model.InterviewResult</span>
                                 }

@@ -101,9 +101,10 @@
                             <span class="text-muted small">Status</span>
                             <p class="mb-0">
                                 @{
-                                    var statusClass = Model.ApplicationStatus.ToString() == "Accepted" ? "badge-success" :
-                                                     Model.ApplicationStatus.ToString() == "Rejected" ? "badge-destructive" :
-                                                     Model.ApplicationStatus.ToString() == "Under Review" ? "badge-warning" :
+                                    var statusStr = Model.ApplicationStatus.ToString();
+                                    var statusClass = statusStr == "Accepted" ? "badge-success" :
+                                                     statusStr == "Rejected" ? "badge-destructive" :
+                                                     statusStr == "Under Review" ? "badge-warning" :
                                                      "badge-default";
                                 }
                                 <span class="badge-component @statusClass">@Model.ApplicationStatus</span>
