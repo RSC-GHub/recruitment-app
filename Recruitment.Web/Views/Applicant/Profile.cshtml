@@ -88,23 +88,59 @@
 
             <!-- Contact Info -->
             <div class="card-component mb-4">
-                <div class="card-header bg-primary text-white">Contact Details</div>
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-telephone-fill me-2"></i>Contact Details
+                    </h4>
+                </div>
                 <div class="card-content">
-                    <p><strong>Email:</strong> @Model.Email</p>
-                    <p><strong>Phone:</strong> @Model.PhoneNumber</p>
-                    <p><strong>Address:</strong> @(string.IsNullOrEmpty(Model.Address) ? "N/A" : Model.Address)</p>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-muted small">Email</span>
+                            <p class="mb-0 fw-semibold">@Model.Email</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Phone</span>
+                            <p class="mb-0 fw-semibold">@Model.PhoneNumber</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Address</span>
+                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.Address) ? "N/A" : Model.Address)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Job Info -->
             <div class="card-component mb-4">
-                <div class="card-header bg-primary text-white">Professional Information</div>
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-briefcase-fill me-2"></i>Professional Information
+                    </h4>
+                </div>
                 <div class="card-content">
-                    <p><strong>Current Job:</strong> @Model.CurrentJob</p>
-                    <p><strong>Current Employer:</strong> @Model.CurrentEmployer</p>
-                    <p><strong>Current Salary:</strong> @Model.CurrentSalary @Model.CurrencyName</p>
-                    <p><strong>Notice Period:</strong> @(string.IsNullOrEmpty(Model.NoticePeriod) ? "N/A" : Model.NoticePeriod) days</p>
-                    <p><strong>Extra Certifications:</strong> @(string.IsNullOrEmpty(Model.ExtraCertificate) ? "N/A" : Model.ExtraCertificate)</p>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-muted small">Current Job</span>
+                            <p class="mb-0 fw-semibold">@Model.CurrentJob</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Current Employer</span>
+                            <p class="mb-0 fw-semibold">@Model.CurrentEmployer</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Current Salary</span>
+                            <p class="mb-0 fw-semibold">@Model.CurrentSalary @Model.CurrencyName</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Notice Period</span>
+                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.NoticePeriod) ? "N/A" : Model.NoticePeriod + " days")</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Extra Certifications</span>
+                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.ExtraCertificate) ? "N/A" : Model.ExtraCertificate)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -115,42 +151,81 @@
 
             <!-- Education -->
             <div class="card-component mb-4">
-                <div class="card-header bg-primary text-white">Education</div>
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-mortarboard-fill me-2"></i>Education
+                    </h4>
+                </div>
                 <div class="card-content">
-                    <p><strong>Degree:</strong> @Model.EducationDegree</p>
-                    <p><strong>Major:</strong> @(string.IsNullOrEmpty(Model.Major) ? "N/A" : Model.Major)</p>
-                    <p><strong>Graduation Year:</strong> @(Model.GraduationYear ?? 0)</p>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-muted small">Degree</span>
+                            <p class="mb-0 fw-semibold">@Model.EducationDegree</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Major</span>
+                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.Major) ? "N/A" : Model.Major)</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Graduation Year</span>
+                            <p class="mb-0 fw-semibold">@(Model.GraduationYear ?? 0)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Personal Info -->
             <div class="card-component mb-4">
-                <div class="card-header bg-primary text-white">Personal Information</div>
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-person-fill me-2"></i>Personal Information
+                    </h4>
+                </div>
                 <div class="card-content">
-                    <p><strong>Gender:</strong> @Model.Gender</p>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-muted small">Gender</span>
+                            <p class="mb-0 fw-semibold">@Model.Gender</p>
+                        </div>
 
-                    @if (Model.Gender != Gender.Female)
-                    {
-                        <p><strong>Military Status:</strong> @Model.MilitaryStatus</p>
-                    }
+                        @if (Model.Gender != Gender.Female)
+                        {
+                            <div>
+                                <span class="text-muted small">Military Status</span>
+                                <p class="mb-0 fw-semibold">@Model.MilitaryStatus</p>
+                            </div>
+                        }
 
-                    <p><strong>Marital Status:</strong>  @Model.MaritalStatus</p>
+                        <div>
+                            <span class="text-muted small">Marital Status</span>
+                            <p class="mb-0 fw-semibold">@Model.MaritalStatus</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- CV -->
             <div class="card-component mb-4">
-                <div class="card-header bg-primary text-white">CV</div>
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-file-earmark-pdf-fill me-2"></i>CV
+                    </h4>
+                </div>
                 <div class="card-content">
                     @if (!string.IsNullOrWhiteSpace(Model.CVFilePath))
                     {
-                        <a class="btn-component btn-primary" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">
-                            <i class="bi bi-download me-1"></i>Download CV
+                        <a class="btn-component btn-primary w-100" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">
+                            <i class="bi bi-download me-2"></i>Download CV
                         </a>
                     }
                     else
                     {
-                        <p class="text-danger">No CV uploaded.</p>
+                        <div class="alert-component alert-destructive">
+                            <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
+                            <div>
+                                <div class="alert-description">No CV uploaded.</div>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
@@ -160,20 +235,48 @@
 
     <!-- Audit Info -->
     <div class="card-component mt-4 mb-4">
-        <div class="card-header bg-dark text-white">Audit Information</div>
+        <div class="card-header">
+            <h4 class="card-title mb-0">
+                <i class="bi bi-clock-history me-2"></i>Audit Information
+            </h4>
+        </div>
         <div class="card-content">
-            <p><strong>Created By:</strong> @Model.CreatedBy</p>
-            <p><strong>Created On:</strong> @Model.CreatedOn</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-muted small">Created By</span>
+                            <p class="mb-0 fw-semibold">@Model.CreatedBy</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Created On</span>
+                            <p class="mb-0 fw-semibold">@Model.CreatedOn</p>
+                        </div>
+                    </div>
+                </div>
 
-            @if (Model.ModifiedOn.HasValue)
-            {
-                <p><strong>Modified By:</strong> @Model.ModifiedBy</p>
-                <p><strong>Modified On:</strong> @Model.ModifiedOn</p>
-            }
-            else
-            {
-                <p class="text-muted">Never modified.</p>
-            }
+                @if (Model.ModifiedOn.HasValue)
+                {
+                    <div class="col-md-6">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Modified By</span>
+                                <p class="mb-0 fw-semibold">@Model.ModifiedBy</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Modified On</span>
+                                <p class="mb-0 fw-semibold">@Model.ModifiedOn</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-6">
+                        <p class="text-muted mb-0">Never modified.</p>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 
