@@ -4,214 +4,193 @@
     ViewData["Title"] = "Create Vacancy";
 }
 
-<style>
-    .info-icon {
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        background-color: white;
-        border: 1px solid black;
-        color: black;
-        border-radius: 50%;
-        text-align: center;
-        line-height: 18px;
-        font-size: 12px;
-        font-weight: bold;
-        cursor: help;
-        margin-left: 5px;
-        position: relative;
-    }
-
-    .info-tooltip {
-        visibility: hidden;
-        width: 250px;
-        background-color: #333;
-        color: #fff;
-        text-align: left;
-        border-radius: 6px;
-        padding: 10px;
-        position: absolute;
-        z-index: 1000;
-        bottom: 125%;
-        left: 50%;
-        margin-left: -125px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        font-size: 13px;
-        font-weight: normal;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-        .info-tooltip::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #333 transparent transparent transparent;
-        }
-
-    .info-icon:hover .info-tooltip {
-        visibility: visible;
-        opacity: 1;
-    }
-</style>
-
 <div class="card-component">
     <div class="card-header flex-between">
         <h2 class="card-title"><i class="bi bi-briefcase-fill me-2"></i>Create Vacancy</h2>
-        <a asp-action="Index" class="button-secondary"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
+        <a asp-action="Index" class="btn-component btn-secondary"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
     </div>
     <div class="card-content">
         <form asp-action="Create" method="post">
-    <!-- Title -->
-    <div class="mb-3">
-        <label asp-for="TitleId" class="form-field-label">
-            Title <span class="text-danger">*</span>
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Select the job title for this vacancy. This helps categorize the position and makes it easier for candidates to find.</span>
-            </span>
-        </label>
-        <select asp-for="TitleId" class="form-field-select select2-dropdown" asp-items="Model.TitlesDropdown">
-            <option value="">-- Select Title --</option>
-        </select>
-        <span asp-validation-for="TitleId" class="text-danger validation-message" style="display:none;">The Title field is required.</span>
-    </div>
+            <div class="field-group">
+                <!-- Title -->
+                <div class="field">
+                    <label class="field-label" for="TitleId">
+                        Title <span class="text-danger">*</span>
+                        <span class="tooltip-trigger">
+                            <i>i</i>
+                            <span class="tooltip-content multiline">Select the job title for this vacancy. This helps categorize the position and makes it easier for candidates to find.</span>
+                        </span>
+                    </label>
+                    <select asp-for="TitleId" id="TitleId" class="form-field-select select2-dropdown" asp-items="Model.TitlesDropdown">
+                        <option value="">-- Select Title --</option>
+                    </select>
+                    <span class="field-description">Choose from available job titles</span>
+                    <span asp-validation-for="TitleId" class="field-error" style="display:none;">The Title field is required.</span>
+                </div>
 
-    <!-- Job Description -->
-    <div class="mb-3">
-        <label asp-for="JobDescription" class="form-field-label">
-            Job Description <span class="text-danger">*</span>
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Provide a comprehensive overview of the role, including what the position entails and what the candidate will be doing day-to-day.</span>
-            </span>
-        </label>
-        <textarea asp-for="JobDescription" class="form-field-input" rows="4"></textarea>
-        <span asp-validation-for="JobDescription" class="text-danger validation-message" style="display:none;">The Job Description field is required.</span>
-    </div>
+                <!-- Job Description -->
+                <div class="field">
+                    <label class="field-label" for="JobDescription">
+                        Job Description <span class="text-danger">*</span>
+                        <span class="tooltip-trigger">
+                            <i>i</i>
+                            <span class="tooltip-content multiline">Provide a comprehensive overview of the role, including what the position entails and what the candidate will be doing day-to-day.</span>
+                        </span>
+                    </label>
+                    <textarea asp-for="JobDescription" id="JobDescription" class="form-field-textarea" rows="4"></textarea>
+                    <span class="field-description">Describe the primary purpose and goals of this position</span>
+                    <span asp-validation-for="JobDescription" class="field-error" style="display:none;">The Job Description field is required.</span>
+                </div>
 
-    <!-- Requirements -->
-    <div class="mb-3">
-        <label asp-for="Requirements" class="form-field-label">
-            Requirements  <span class="text-danger">*</span>
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">List the qualifications, skills, education, and experience required for this position. Include both must-have and nice-to-have requirements.</span>
-            </span>
-        </label>
-        <textarea asp-for="Requirements" class="form-field-input" rows="4"></textarea>
-        <span asp-validation-for="Requirements" class="text-danger validation-message" style="display:none;">The Requirements field is required.</span>
-    </div>
+                <!-- Requirements -->
+                <div class="field">
+                    <label class="field-label" for="Requirements">
+                        Requirements  <span class="text-danger">*</span>
+                        <span class="tooltip-trigger">
+                            <i>i</i>
+                            <span class="tooltip-content multiline">List the qualifications, skills, education, and experience required for this position. Include both must-have and nice-to-have requirements.</span>
+                        </span>
+                    </label>
+                    <textarea asp-for="Requirements" id="Requirements" class="form-field-textarea" rows="4"></textarea>
+                    <span class="field-description">List essential qualifications and skills</span>
+                    <span asp-validation-for="Requirements" class="field-error" style="display:none;">The Requirements field is required.</span>
+                </div>
 
-    <!-- Responsibilities -->
-    <div class="mb-3">
-        <label asp-for="Responsibilities" class="form-field-label">
-            @Html.DisplayNameFor(m => m.Responsibilities) <span class="text-danger">*</span>
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Outline the key duties and responsibilities the candidate will be expected to perform in this role.</span>
-            </span>
-        </label>
-        <textarea asp-for="Responsibilities" class="form-field-input" rows="4"></textarea>
-        <span asp-validation-for="Responsibilities" class="text-danger validation-message" style="display:none;">The Responsibilities field is required.</span>
-    </div>
+                <!-- Responsibilities -->
+                <div class="field">
+                    <label class="field-label" for="Responsibilities">
+                        @Html.DisplayNameFor(m => m.Responsibilities) <span class="text-danger">*</span>
+                        <span class="tooltip-trigger">
+                            <i>i</i>
+                            <span class="tooltip-content multiline">Outline the key duties and responsibilities the candidate will be expected to perform in this role.</span>
+                        </span>
+                    </label>
+                    <textarea asp-for="Responsibilities" id="Responsibilities" class="form-field-textarea" rows="4"></textarea>
+                    <span class="field-description">Define the main duties and tasks</span>
+                    <span asp-validation-for="Responsibilities" class="field-error" style="display:none;">The Responsibilities field is required.</span>
+                </div>
 
-    <!-- Benefits -->
-    <div class="mb-3">
-        <label asp-for="Benefits" class="form-field-label">
-            Benefits
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Describe the benefits package offered with this position, such as health insurance, retirement plans, paid time off, etc.</span>
-            </span>
-        </label>
-        <textarea asp-for="Benefits" class="form-field-input" rows="3"></textarea>
-    </div>
+                <!-- Benefits -->
+                <div class="field">
+                    <label class="field-label" for="Benefits">
+                        Benefits
+                        <span class="tooltip-trigger">
+                            <i>i</i>
+                            <span class="tooltip-content multiline">Describe the benefits package offered with this position, such as health insurance, retirement plans, paid time off, etc.</span>
+                        </span>
+                    </label>
+                    <textarea asp-for="Benefits" id="Benefits" class="form-field-textarea" rows="3"></textarea>
+                    <span class="field-description">Optional: Highlight perks and benefits offered</span>
+                </div>
 
-    <!-- Position Count -->
-    <div class="mb-3">
-        <label asp-for="PositionCount" class="form-field-label">
-            Position Count <span class="text-danger">*</span>
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Enter the number of open positions available for this vacancy. If hiring multiple candidates for the same role, specify the count here.</span>
-            </span>
-        </label>
-        <input asp-for="PositionCount" class="form-field-input" type="number" min="1" />
-        <span asp-validation-for="PositionCount" class="text-danger validation-message" style="display:none;"></span>
-    </div>
+                <div class="field-separator"></div>
 
-    <!-- Employment Type -->
-    <div class="mb-3">
-        <label asp-for="EmploymentType" class="form-field-label">
-            Employment Type <span class="text-danger">*</span>
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Select the type of employment: Full-time, Part-time, Contract, Temporary, or Internship.</span>
-            </span>
-        </label>
-        <select asp-for="EmploymentType" class="form-field-select select2-dropdown">
-            @foreach (var type in Enum.GetValues(typeof(Recruitment.Domain.Enums.EmploymentType)))
-            {
-                <option value="@type" selected="@(type.ToString() == Model.EmploymentType.ToString())">@type</option>
-            }
-        </select>
-        <span asp-validation-for="EmploymentType" class="text-danger validation-message" style="display:none;"></span>
-    </div>
+                <div class="row g-4">
+                    <!-- Position Count -->
+                    <div class="col-md-6">
+                        <div class="field">
+                            <label class="field-label" for="PositionCount">
+                                Position Count <span class="text-danger">*</span>
+                                <span class="tooltip-trigger">
+                                    <i>i</i>
+                                    <span class="tooltip-content multiline">Enter the number of open positions available for this vacancy. If hiring multiple candidates for the same role, specify the count here.</span>
+                                </span>
+                            </label>
+                            <input asp-for="PositionCount" id="PositionCount" class="form-field-input" type="number" min="1" />
+                            <span class="field-description">Number of openings for this role</span>
+                            <span asp-validation-for="PositionCount" class="field-error" style="display:none;"></span>
+                        </div>
+                    </div>
 
-    <!-- Salary Range -->
-    <div class="mb-3">
-        <label asp-for="SalaryRangeMin" class="form-field-label">
-            Salary Range Minimum
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Enter the minimum salary offered for this position. This helps set candidate expectations and attracts qualified applicants.</span>
-            </span>
-        </label>
-        <input asp-for="SalaryRangeMin" class="form-field-input" type="number" step="0.01" />
-    </div>
+                    <!-- Employment Type -->
+                    <div class="col-md-6">
+                        <div class="field">
+                            <label class="field-label" for="EmploymentType">
+                                Employment Type <span class="text-danger">*</span>
+                                <span class="tooltip-trigger">
+                                    <i>i</i>
+                                    <span class="tooltip-content multiline">Select the type of employment: Full-time, Part-time, Contract, Temporary, or Internship.</span>
+                                </span>
+                            </label>
+                            <select asp-for="EmploymentType" id="EmploymentType" class="form-field-select select2-dropdown">
+                                @foreach (var type in Enum.GetValues(typeof(Recruitment.Domain.Enums.EmploymentType)))
+                                {
+                                    <option value="@type" selected="@(type.ToString() == Model.EmploymentType.ToString())">@type</option>
+                                }
+                            </select>
+                            <span class="field-description">Type of employment arrangement</span>
+                            <span asp-validation-for="EmploymentType" class="field-error" style="display:none;"></span>
+                        </div>
+                    </div>
 
-    <div class="mb-3">
-        <label asp-for="SalaryRangeMax" class="form-field-label">
-            Salary Range Maximum
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Enter the maximum salary offered for this position. Leave blank if there's no upper limit or if you prefer not to disclose.</span>
-            </span>
-        </label>
-        <input asp-for="SalaryRangeMax" class="form-field-input" type="number" step="0.01" />
-    </div>
+                    <!-- Salary Range Min -->
+                    <div class="col-md-6">
+                        <div class="field">
+                            <label class="field-label" for="SalaryRangeMin">
+                                Salary Range Minimum
+                                <span class="tooltip-trigger">
+                                    <i>i</i>
+                                    <span class="tooltip-content multiline">Enter the minimum salary offered for this position. This helps set candidate expectations and attracts qualified applicants.</span>
+                                </span>
+                            </label>
+                            <input asp-for="SalaryRangeMin" id="SalaryRangeMin" class="form-field-input" type="number" step="0.01" />
+                            <span class="field-description">Optional: Minimum salary amount</span>
+                        </div>
+                    </div>
 
-    <!-- Deadline -->
-    <div class="mb-3">
-        <label asp-for="Deadline" class="form-field-label">
-            @Html.DisplayNameFor(m => m.Deadline)
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Set the application deadline. After this date, the vacancy will no longer accept new applications.</span>
-            </span>
-        </label>
-        <input asp-for="Deadline" class="form-field-input" type="date" />
-    </div>
+                    <!-- Salary Range Max -->
+                    <div class="col-md-6">
+                        <div class="field">
+                            <label class="field-label" for="SalaryRangeMax">
+                                Salary Range Maximum
+                                <span class="tooltip-trigger">
+                                    <i>i</i>
+                                    <span class="tooltip-content multiline">Enter the maximum salary offered for this position. Leave blank if there's no upper limit or if you prefer not to disclose.</span>
+                                </span>
+                            </label>
+                            <input asp-for="SalaryRangeMax" id="SalaryRangeMax" class="form-field-input" type="number" step="0.01" />
+                            <span class="field-description">Optional: Maximum salary amount</span>
+                        </div>
+                    </div>
 
-    <!-- Projects Multi-Select -->
-    <div class="mb-3">
-        <label asp-for="ProjectIds" class="form-field-label">
-            @Html.DisplayNameFor(m => m.ProjectIds)
-            <span class="info-icon">
-                i
-                <span class="info-tooltip">Associate this vacancy with one or more projects. Selected candidates will be assigned to work on these projects.</span>
-            </span>
-        </label>
-        <select asp-for="ProjectIds" class="form-field-select select2-dropdown" asp-items="Model.ProjectsDropdown" multiple="multiple"></select>
-    </div>
+                    <!-- Deadline -->
+                    <div class="col-md-6">
+                        <div class="field">
+                            <label class="field-label" for="Deadline">
+                                @Html.DisplayNameFor(m => m.Deadline)
+                                <span class="tooltip-trigger">
+                                    <i>i</i>
+                                    <span class="tooltip-content multiline">Set the application deadline. After this date, the vacancy will no longer accept new applications.</span>
+                                </span>
+                            </label>
+                            <input asp-for="Deadline" id="Deadline" class="form-field-input" type="date" />
+                            <span class="field-description">Optional: Last date to accept applications</span>
+                        </div>
+                    </div>
 
-    <button type="submit" class="button-primary"><i class="bi bi-check-circle me-1"></i>Create Vacancy</button>
-</form>
+                    <!-- Projects Multi-Select -->
+                    <div class="col-md-6">
+                        <div class="field">
+                            <label class="field-label" for="ProjectIds">
+                                @Html.DisplayNameFor(m => m.ProjectIds)
+                                <span class="tooltip-trigger">
+                                    <i>i</i>
+                                    <span class="tooltip-content multiline">Associate this vacancy with one or more projects. Selected candidates will be assigned to work on these projects.</span>
+                                </span>
+                            </label>
+                            <select asp-for="ProjectIds" id="ProjectIds" class="form-field-select select2-dropdown" asp-items="Model.ProjectsDropdown" multiple="multiple"></select>
+                            <span class="field-description">Optional: Select related projects</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field-separator"></div>
+
+            <button type="submit" class="btn-component btn-primary">
+                <i class="bi bi-check-circle me-1"></i>Create Vacancy
+            </button>
+        </form>
     </div>
 </div>
 
@@ -233,7 +212,7 @@
             });
 
             // Hide all validation messages on page load
-            $('.validation-message').hide();
+            $('.field-error').hide();
 
             // Track which fields have been touched
             var touchedFields = new Set();
@@ -243,7 +222,6 @@
                 var $field = $(this);
                 var fieldName = $field.attr('name');
                 touchedFields.add(fieldName);
-
                 validateField($field);
             });
 
@@ -252,38 +230,39 @@
                 var $field = $(this);
                 var fieldName = $field.attr('name');
                 touchedFields.add(fieldName);
-
                 validateField($field);
             });
 
             // Function to validate individual field
             function validateField($field) {
-                var $validationSpan = $field.siblings('.validation-message').first();
-
-                // If no validation span found, try to find it after Select2 container
-                if ($validationSpan.length === 0) {
-                    $validationSpan = $field.next('.select2-container').next('.validation-message');
-                }
-
+                var $fieldContainer = $field.closest('.field');
+                var $fieldError = $fieldContainer.find('.field-error').first();
                 var value = $field.val();
-                var isRequired = $field.closest('.mb-3').find('label .text-danger').length > 0;
+                var isRequired = $fieldContainer.find('label .text-danger').length > 0;
 
                 // Projects field is optional (no red asterisk in label)
                 var fieldName = $field.attr('name');
                 if (fieldName === 'ProjectIds') {
-                    return; // Skip validation for ProjectIds
+                    return true; // Skip validation for ProjectIds
                 }
 
                 // Check if field is empty and required
                 if (isRequired && (!value || value === '' || (Array.isArray(value) && value.length === 0))) {
-                    $validationSpan.show();
+                    if ($fieldError.length) {
+                        $fieldError.show();
+                    }
                     $field.addClass('is-invalid');
+                    $fieldContainer.attr('data-invalid', 'true');
+                    return false;
                 } else {
-                    $validationSpan.hide();
+                    if ($fieldError.length) {
+                        $fieldError.hide();
+                    }
                     $field.removeClass('is-invalid');
+                    $fieldContainer.removeAttr('data-invalid');
+                    return true;
                 }
             }
-
 
             // Validate all touched fields on form submit
             $('form').on('submit', function(e) {
@@ -295,20 +274,20 @@
                     var fieldName = $field.attr('name');
                     touchedFields.add(fieldName);
 
-                    validateField($field);
-
-                    var $validationSpan = $field.siblings('.validation-message').first();
-                    if ($validationSpan.length === 0) {
-                        $validationSpan = $field.next('.select2-container').next('.validation-message');
-                    }
-
-                    if ($validationSpan.is(':visible')) {
+                    if (!validateField($field)) {
                         isValid = false;
                     }
                 });
 
                 if (!isValid) {
                     e.preventDefault();
+                    // Scroll to first error
+                    var $firstError = $('[data-invalid="true"]').first();
+                    if ($firstError.length) {
+                        $('html, body').animate({
+                            scrollTop: $firstError.offset().top - 100
+                        }, 300);
+                    }
                     return false;
                 }
             });

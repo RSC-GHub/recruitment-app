@@ -13,13 +13,21 @@
 
         <!-- Action Buttons on Right -->
         <div class="d-flex gap-2">
-            <a href="@Url.Action("Index")" class="button-secondary"><i class="bi bi-arrow-left me-1"></i>Back to List</a>
-            <a href="@Url.Action("Edit", new { id = Model.Id })" class="button-primary"><i class="bi bi-pencil me-1"></i>Edit</a>
-            <a href="@Url.Action("History", new { id = Model.Id })" class="button-outline"><i class="bi bi-clock-history me-1"></i>History</a>
-            <a asp-action="AssignApplicant" asp-route-id="@Model.Id" class="button-outline" data-bs-toggle="modal" data-bs-target="#assignVacancyModal">
-                <i class="bi bi-person-plus"></i> Assign Vacancy
-            </a>            
-            <button type="button" class="button-destructive" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash me-1"></i>Delete</button>
+            <a href="@Url.Action("Index")" class="btn-component btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to List
+            </a>
+            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn-component btn-primary">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+            <a href="@Url.Action("History", new { id = Model.Id })" class="btn-component btn-outline">
+                <i class="bi bi-clock-history me-1"></i>History
+            </a>
+            <button type="button" class="btn-component btn-outline" data-bs-toggle="modal" data-bs-target="#assignVacancyModal">
+                <i class="bi bi-person-plus me-1"></i>Assign Vacancy
+            </button>            
+            <button type="button" class="btn-component btn-destructive" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="bi bi-trash me-1"></i>Delete
+            </button>
         </div>
     </div>  
 
@@ -28,15 +36,17 @@
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <div class="modal-header" style="background-color: hsl(0, 84%, 97%); border-bottom-color: hsl(0, 84%, 85%);">
+                    <h5 class="modal-title" id="deleteModalLabel" style="color: hsl(0, 84%, 40%);">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert-component alert-destructive">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
                         <div>
-                            <div class="alert-title">Are you sure you want to delete?</div>
+                            <div class="alert-title">Are you absolutely sure?</div>
                             <div class="alert-description">
                                 This will permanently delete <strong>@Model.FullName</strong>. This action cannot be undone.
                             </div>
@@ -44,11 +54,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="button-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
 
                     <form asp-action="Delete" method="post" class="d-inline">
                         <input type="hidden" name="id" value="@Model.Id" />
-                        <button type="submit" class="button-destructive">Yes, Delete</button>
+                        <button type="submit" class="btn-component btn-destructive">
+                            <i class="bi bi-trash me-1"></i>Yes, Delete
+                        </button>
                     </form>
                 </div>
             </div>
@@ -132,7 +144,9 @@
                 <div class="card-content">
                     @if (!string.IsNullOrWhiteSpace(Model.CVFilePath))
                     {
-                        <a class="button-primary" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath"><i class="bi bi-download me-1"></i>Download CV</a>
+                        <a class="btn-component btn-primary" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">
+                            <i class="bi bi-download me-1"></i>Download CV
+                        </a>
                     }
                     else
                     {
@@ -171,32 +185,43 @@
         <div class="modal-content">
             <form id="assignVacancyForm">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="assignVacancyModalLabel">Assign Vacancy</h5>
+                    <h5 class="modal-title" id="assignVacancyModalLabel">
+                        <i class="bi bi-person-plus me-2"></i>Assign Vacancy
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
                     <input type="hidden" id="AppliantId" name="AppliantId" value="@Model.Id" />
 
-                    <div class="mb-3">
-                        <label for="SelectedVacancyId" class="form-field-label">Select Vacancy<span class="text-danger"> *</span></label>
-                        <select id="SelectedVacancyId" name="SelectedVacancyId" class="form-field-select">
-                            <option value="">-- Select Vacancy --</option>
-                        </select>
+                    <div class="field-group">
+                        <div class="field">
+                            <label class="field-label" for="SelectedVacancyId">
+                                Select Vacancy
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select id="SelectedVacancyId" name="SelectedVacancyId" class="form-field-select">
+                                <option value="">-- Select Vacancy --</option>
+                            </select>
+                            <span class="field-description">Choose a vacancy to assign this applicant to</span>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="Note">Note</label>
+                            <textarea id="Note" name="Note" class="form-field-textarea" rows="3" placeholder="Add any notes or comments..."></textarea>
+                            <span class="field-description">Optional notes about this assignment</span>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="Note" class="form-field-label">Note</label>
-                        <textarea id="Note" name="Note" class="form-field-textarea" rows="3"></textarea>
-                    </div>
-
-                    <div id="assignVacancyError" class="text-danger"></div>
-                    <div id="assignVacancySuccess" class="text-success"></div>
+                    <div id="assignVacancyError" class="field-error mt-3" style="display:none;"></div>
+                    <div id="assignVacancySuccess" class="alert-component alert-success mt-3" style="display:none;"></div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="button-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="button-primary">Assign</button>
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn-component btn-primary">
+                        <i class="bi bi-check-circle me-1"></i>Assign
+                    </button>
                 </div>
             </form>
         </div>
@@ -239,9 +264,13 @@
             var applicantId = document.getElementById('AppliantId').value;
             var selectedVacancyId = document.getElementById('SelectedVacancyId').value;
             var note = document.getElementById('Note').value;
+            var errorDiv = document.getElementById('assignVacancyError');
+            var successDiv = document.getElementById('assignVacancySuccess');
 
             if (!selectedVacancyId) {
-                document.getElementById('assignVacancyError').innerText = 'Please select a vacancy';
+                errorDiv.textContent = 'Please select a vacancy';
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
                 return;
             }
 
@@ -257,16 +286,20 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('assignVacancySuccess').innerText = data.message;
-                    document.getElementById('assignVacancyError').innerText = '';
+                    successDiv.textContent = data.message;
+                    successDiv.style.display = 'block';
+                    errorDiv.style.display = 'none';
                     setTimeout(() => location.reload(), 1000);
                 } else {
-                    document.getElementById('assignVacancyError').innerText = data.message;
-                    document.getElementById('assignVacancySuccess').innerText = '';
+                    errorDiv.textContent = data.message;
+                    errorDiv.style.display = 'block';
+                    successDiv.style.display = 'none';
                 }
             })
             .catch(err => {
-                document.getElementById('assignVacancyError').innerText = 'An error occurred';
+                errorDiv.textContent = 'An error occurred';
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
             });
         });
     </script>

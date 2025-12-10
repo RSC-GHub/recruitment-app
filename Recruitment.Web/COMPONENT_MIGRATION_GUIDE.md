@@ -27,6 +27,32 @@ All component styles are in `/wwwroot/css/shadcn-components.css`. The layout inc
 </div>
 ```
 
+### Scrollable Tables
+For tables that may overflow on smaller screens:
+```html
+<div class="table-scroll-wrapper">
+    <div class="table-component">
+        <table>
+            <thead>
+                <tr>
+                    <th style="min-width: 150px;">Column 1</th>
+                    <th style="min-width: 120px;">Column 2</th>
+                </tr>
+            </thead>
+            <tbody>...</tbody>
+        </table>
+    </div>
+</div>
+```
+
+### Stat/Info Boxes
+```html
+<div class="card-stat-box">
+    <strong class="card-stat-label">Label</strong>
+    <span class="card-stat-value">Value</span>
+</div>
+```
+
 ### Tables
 ```html
 <div class="table-component">
@@ -77,7 +103,7 @@ All component styles are in `/wwwroot/css/shadcn-components.css`. The layout inc
 <span class="badge-component badge-secondary">Inactive</span>
 ```
 
-### Form Fields
+### Form Fields (Legacy)
 ```html
 <div class="form-field">
     <label for="name" class="form-label">
@@ -92,6 +118,83 @@ All component styles are in `/wwwroot/css/shadcn-components.css`. The layout inc
     <p class="form-description">Helper text</p>
     <p class="form-error">Error message</p>
 </div>
+```
+
+### Field Components (Recommended for New Forms)
+The Field component system provides a more accessible and consistent form structure:
+
+#### Basic Field
+```html
+<div class="field">
+    <label class="field-label" for="name">
+        Name <span class="text-danger">*</span>
+        <span class="tooltip-trigger">
+            <i>i</i>
+            <span class="tooltip-content multiline">Enter the full name</span>
+        </span>
+    </label>
+    <input type="text" 
+           id="name"
+           class="form-field-input" 
+           required />
+    <span class="field-description">This will be displayed in the system</span>
+    <span class="field-error" style="display:none;">Name is required</span>
+</div>
+```
+
+#### Field with Textarea
+```html
+<div class="field">
+    <label class="field-label" for="description">Description</label>
+    <textarea id="description" 
+              class="form-field-textarea" 
+              rows="4"></textarea>
+    <span class="field-description">Optional description</span>
+</div>
+```
+
+#### Field with Select
+```html
+<div class="field">
+    <label class="field-label" for="category">Category</label>
+    <select id="category" class="form-field-select">
+        <option value="">Select category</option>
+        <option value="1">Category 1</option>
+    </select>
+    <span class="field-description">Choose a category</span>
+</div>
+```
+
+#### Horizontal Field (for checkboxes/switches)
+```html
+<div class="field orientation-horizontal">
+    <input type="checkbox" id="active" class="form-check-input" />
+    <div class="field-content">
+        <label class="field-label mb-0" for="active">Active</label>
+        <span class="field-description">Enable or disable</span>
+    </div>
+</div>
+```
+
+#### Field Group
+```html
+<div class="field-group">
+    <div class="field">...</div>
+    <div class="field">...</div>
+    <div class="field-separator"></div>
+    <div class="field">...</div>
+</div>
+```
+
+#### Field Set
+```html
+<fieldset class="field-set">
+    <legend class="field-legend">Personal Information</legend>
+    <div class="field-group">
+        <div class="field">...</div>
+        <div class="field">...</div>
+    </div>
+</fieldset>
 ```
 
 ### Textarea
@@ -375,11 +478,18 @@ Use Bootstrap Icons for visual indicators:
 ✅ Completed:
 - Views/Shared/_Layout.cshtml
 - Views/UserManagement/Index.cshtml
-- Views/Vacancy/Index.cshtml
+- Views/UserManagement/Profile.cshtml (with Field components)
+- Views/Permission/Index.cshtml (enhanced styling)
+- Views/Permission/Setup.cshtml (with Field components)
+- Views/Vacancy/Index.cshtml (with scrollable table)
+- Views/Vacancy/Details.cshtml (enhanced with stat boxes and delete dialog)
+- Views/Vacancy/GetSubmissions.cshtml (with scrollable table and improved styling)
+- Views/Vacancy/Create.cshtml (with Field components and tooltips)
+- Views/Vacancy/Edit.cshtml (with Field components and tooltips)
 - Views/AppSetup/Index.cshtml
 - Views/Application/Index.cshtml
 - Views/Department/Index.cshtml
-- wwwroot/css/shadcn-components.css
+- wwwroot/css/shadcn-components.css (with Field components)
 
 ⏳ Remaining (Apply patterns above):
 - Views/Country/Index.cshtml (Pattern 1)
@@ -388,11 +498,10 @@ Use Bootstrap Icons for visual indicators:
 - Views/Title/Index.cshtml (Pattern 1)
 - Views/Project/Index.cshtml (Pattern 1)
 - Views/DepartmentTitle/Index.cshtml (Pattern 1)
-- Views/Permission/Index.cshtml (Pattern 1)
 - Views/Role/Index.cshtml (Pattern 1)
 - Views/Applicant/Index.cshtml (Pattern 2)
 - Views/Interview/Index.cshtml (Pattern 2)
-- Various Create/Edit/Details views (Pattern 4)
+- Various other Create/Edit/Details views (Pattern 4 - consider using Field components)
 
 ## Testing
 
