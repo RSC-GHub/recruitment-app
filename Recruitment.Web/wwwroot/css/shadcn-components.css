@@ -1007,10 +1007,25 @@
 .table-scroll-wrapper {
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .table-scroll-wrapper .table-component {
     border: none;
+    width: auto;
+    min-width: 100%;
+}
+
+.table-scroll-wrapper .table-component table {
+    width: auto;
+    min-width: 100%;
+    table-layout: auto;
+    white-space: nowrap;
+}
+
+.table-scroll-wrapper .table-component td,
+.table-scroll-wrapper .table-component th {
+    white-space: normal;
 }
 
 .table-scroll-wrapper::-webkit-scrollbar {
