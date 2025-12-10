@@ -5,8 +5,38 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, hsl(222, 47%, 11%) 0%, hsl(197, 78.9%, 14.9%) 100%);">
-    <div class="card-component" style="max-width: 450px; width: 100%; margin: 2rem;">
+<style>
+    body {
+        background-color: hsl(204 80.2% 15.9%);
+    }
+
+    .card-component {
+        max-width: 450px;
+        width: 100%;
+        margin: 2rem;
+    }
+
+    .position-relative i {
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: hsl(0, 0%, 60%);
+    }
+
+    .form-input {
+        padding-left: 40px;
+    }
+
+    .btn-component {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<div class="min-vh-100 d-flex align-items-center justify-content-center">
+
+    <div class="card-component card">
         <div class="card-header text-center">
             <h2 class="card-title mb-2">
                 <i class="bi bi-shield-lock-fill me-2"></i>
@@ -22,10 +52,9 @@
                         Email Address <span class="text-danger">*</span>
                     </label>
                     <div class="position-relative">
-                        <i class="bi bi-envelope position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: hsl(0, 0%, 60%);"></i>
-                        <input asp-for="Email" 
-                               class="form-input" 
-                               style="padding-left: 40px;"
+                        <i class="bi bi-envelope position-absolute"></i>
+                        <input asp-for="Email"
+                               class="form-input form-control"
                                placeholder="Enter your email"
                                autofocus />
                     </div>
@@ -37,36 +66,35 @@
                         Password <span class="text-danger">*</span>
                     </label>
                     <div class="position-relative">
-                        <i class="bi bi-lock position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: hsl(0, 0%, 60%);"></i>
-                        <input asp-for="Password" 
-                               type="password" 
-                               class="form-input" 
-                               style="padding-left: 40px;"
+                        <i class="bi bi-lock position-absolute"></i>
+                        <input asp-for="Password"
+                               type="password"
+                               class="form-input form-control"
                                placeholder="Enter your password" />
                     </div>
                     <span asp-validation-for="Password" class="form-error"></span>
                 </div>
 
                 <div class="form-check mb-4">
-                    <input asp-for="RememberMe" 
-                           class="form-check-input" 
-                           type="checkbox" 
+                    <input asp-for="RememberMe"
+                           class="form-check-input"
+                           type="checkbox"
                            id="rememberMe" />
-                    <label asp-for="RememberMe" 
-                           class="form-check-label" 
+                    <label asp-for="RememberMe"
+                           class="form-check-label"
                            for="rememberMe">
                         Remember me for 30 days
                     </label>
                 </div>
 
-                <button type="submit" class="btn-component btn-primary w-100 mb-3">
+                <button type="submit" class="btn-component btn btn-primary w-100 mb-3">
                     <i class="bi bi-box-arrow-in-right me-2"></i>
                     Sign In
                 </button>
 
                 <div class="text-center">
                     <p class="text-muted small mb-0">
-                        Don't have an account? 
+                        Don't have an account?
                         <a asp-action="Register" class="text-primary fw-semibold">Register here</a>
                     </p>
                 </div>
@@ -77,21 +105,21 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    
+
     <script>
         // Show any login errors as toast
         @if (TempData["ErrorMessage"] != null)
         {
-            <text>
-            showToast('@TempData["ErrorMessage"]', 'error');
-            </text>
+                <text>
+                showToast('@TempData["ErrorMessage"]', 'error');
+                </text>
         }
 
         @if (TempData["SuccessMessage"] != null)
         {
-            <text>
-            showToast('@TempData["SuccessMessage"]', 'success');
-            </text>
+                <text>
+                showToast('@TempData["SuccessMessage"]', 'success');
+                </text>
         }
     </script>
 }

@@ -5,8 +5,37 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="min-vh-100 d-flex align-items-center justify-content-center py-5" style="background: linear-gradient(135deg, hsl(222, 47%, 11%) 0%, hsl(197, 78.9%, 14.9%) 100%);">
-    <div class="card-component" style="max-width: 600px; width: 100%; margin: 2rem;">
+<style>
+    body {
+        background-color: hsl(204 80.2% 15.9%);
+    }
+
+    .card-component {
+        max-width: 600px;
+        width: 100%;
+        margin: 2rem;
+    }
+
+    .position-relative i {
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: hsl(0, 0%, 60%);
+    }
+
+    .form-input {
+        padding-left: 40px;
+    }
+
+    .btn-component {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="card-component card">
         <div class="card-header text-center">
             <h2 class="card-title mb-2">
                 <i class="bi bi-person-plus-fill me-2"></i>
@@ -24,10 +53,9 @@
                                 Full Name <span class="text-danger">*</span>
                             </label>
                             <div class="position-relative">
-                                <i class="bi bi-person position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: hsl(0, 0%, 60%);"></i>
-                                <input asp-for="FullName" 
-                                       class="form-input" 
-                                       style="padding-left: 40px;"
+                                <i class="bi bi-person position-absolute"></i>
+                                <input asp-for="FullName"
+                                       class="form-input form-control"
                                        placeholder="Enter your full name"
                                        autofocus />
                             </div>
@@ -41,10 +69,9 @@
                                 Email Address <span class="text-danger">*</span>
                             </label>
                             <div class="position-relative">
-                                <i class="bi bi-envelope position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: hsl(0, 0%, 60%);"></i>
-                                <input asp-for="Email" 
-                                       class="form-input" 
-                                       style="padding-left: 40px;"
+                                <i class="bi bi-envelope position-absolute"></i>
+                                <input asp-for="Email"
+                                       class="form-input form-control"
                                        placeholder="your.email@example.com" />
                             </div>
                             <span asp-validation-for="Email" class="form-error"></span>
@@ -57,11 +84,10 @@
                                 Password <span class="text-danger">*</span>
                             </label>
                             <div class="position-relative">
-                                <i class="bi bi-lock position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: hsl(0, 0%, 60%);"></i>
-                                <input asp-for="Password" 
-                                       type="password" 
-                                       class="form-input" 
-                                       style="padding-left: 40px;"
+                                <i class="bi bi-lock position-absolute"></i>
+                                <input asp-for="Password"
+                                       type="password"
+                                       class="form-input form-control"
                                        placeholder="Create a password" />
                             </div>
                             <span asp-validation-for="Password" class="form-error"></span>
@@ -74,11 +100,10 @@
                                 Confirm Password <span class="text-danger">*</span>
                             </label>
                             <div class="position-relative">
-                                <i class="bi bi-lock-fill position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: hsl(0, 0%, 60%);"></i>
-                                <input asp-for="ConfirmPassword" 
-                                       type="password" 
-                                       class="form-input" 
-                                       style="padding-left: 40px;"
+                                <i class="bi bi-lock-fill position-absolute"></i>
+                                <input asp-for="ConfirmPassword"
+                                       type="password"
+                                       class="form-input form-control"
                                        placeholder="Confirm your password" />
                             </div>
                             <span asp-validation-for="ConfirmPassword" class="form-error"></span>
@@ -90,8 +115,8 @@
                             <label asp-for="DepartmentId" class="form-label">
                                 Department <span class="text-danger">*</span>
                             </label>
-                            <select asp-for="DepartmentId" 
-                                    asp-items="Model.Departments" 
+                            <select asp-for="DepartmentId"
+                                    asp-items="Model.Departments"
                                     class="form-select">
                                 <option value="">-- Select Department --</option>
                             </select>
@@ -100,14 +125,14 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-component btn-primary w-100 mt-4 mb-3">
+                <button type="submit" class="btn-component btn btn-primary w-100 mt-4 mb-3">
                     <i class="bi bi-check-circle me-2"></i>
                     Create Account
                 </button>
 
                 <div class="text-center">
                     <p class="text-muted small mb-0">
-                        Already have an account? 
+                        Already have an account?
                         <a asp-action="Login" class="text-primary fw-semibold">Sign in here</a>
                     </p>
                 </div>
@@ -118,21 +143,21 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    
+
     <script>
         // Show any registration messages as toast
         @if (TempData["ErrorMessage"] != null)
         {
-            <text>
-            showToast('@TempData["ErrorMessage"]', 'error');
-            </text>
+                    <text>
+                    showToast('@TempData["ErrorMessage"]', 'error');
+                    </text>
         }
 
         @if (TempData["SuccessMessage"] != null)
         {
-            <text>
-            showToast('@TempData["SuccessMessage"]', 'success');
-            </text>
+                    <text>
+                    showToast('@TempData["SuccessMessage"]', 'success');
+                    </text>
         }
     </script>
 }

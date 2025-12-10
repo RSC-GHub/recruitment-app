@@ -169,32 +169,44 @@
                                     <td>@interview.InterViewer</td>
                                     <td>@interview.ScheduledDate.ToString("MMM dd, yyyy HH:mm")</td>
                                     <td>
-                                        <span class="badge-component badge-default">@interview.InterviewType</span>
+                                        <span class="badge-component badge-info">@interview.InterviewType</span>
                                     </td>
                                     <td>
-                                        <span class="badge-component badge-secondary">@interview.InterviewCategory</span>
+                                        <strong></strong><span class="badge-component badge-dark">@interview.InterviewCategory</span>
                                     </td>
                                     <td>
                                         @{
-                                            var statusClass = interview.InterviewStatus.ToString() == "Completed" ? "badge-success" :
+                                            var statusClass =
+                                            interview.InterviewStatus.ToString() == "Completed" ? "badge-success" :
                                             interview.InterviewStatus.ToString() == "Scheduled" ? "badge-warning" :
                                             interview.InterviewStatus.ToString() == "Cancelled" ? "badge-destructive" :
-                                                             "badge-default";
+                                            interview.InterviewStatus.ToString() == "Postponed" ? "badge-secondary" :
+                                            "badge-default";
                                         }
-                                        <span class="badge-component @statusClass">@interview.InterviewStatus</span>
+
+                                        <span class="badge-component @statusClass">
+                                            @interview.InterviewStatus
+                                        </span>
+
                                     </td>
                                     <td>
                                         @if (interview.InterviewResult != null)
                                         {
-                                            var resultClass = interview.InterviewResult.ToString() == "Passed" ? "badge-success" : 
-                                                             interview.InterviewResult.ToString() == "Failed" ? "badge-destructive" :
-                                                             "badge-warning";
-                                            <span class="badge-component @resultClass">@interview.InterviewResult</span>
+                                            var resultClass =
+                                            interview.InterviewResult.ToString() == "Accepted" ? "badge-success" :
+                                            interview.InterviewResult.ToString() == "Rejected" ? "badge-destructive" :
+                                            interview.InterviewResult.ToString() == "SecondChoice" ? "badge-secondary" :
+                                            "badge-warning";
+
+                                            <span class="badge-component @resultClass">
+                                                @interview.InterviewResult
+                                            </span>
                                         }
                                         else
                                         {
                                             <span class="text-muted">—</span>
                                         }
+
                                     </td>
                                     <td>
                                         @if (!string.IsNullOrWhiteSpace(interview.InterViewNote))
