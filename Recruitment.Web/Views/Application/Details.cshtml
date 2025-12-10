@@ -9,18 +9,18 @@
 <div class="card-component">
     <div class="card-header flex-between">
         <h2 class="card-title"><i class="bi bi-file-earmark-person me-2"></i>Application Details</h2>
-        <div>
+        <div class="d-flex gap-2">
             <!-- Action Button -->
-            <a href="#" class="button-warning" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                <i class="bi bi-check-circle me-1"></i>Action
-            </a>
+            <button class="btn-component btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                <i class="bi bi-check-circle me-2"></i>Review Application
+            </button>
 
             @* Show Schedule Interview only if allowed *@
             @if (ViewBag.CanAddInterview)
             {
-                <a href="#" class="button-primary ms-2" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
-                    <i class="bi bi-calendar-plus me-1"></i>Schedule Interview
-                </a>
+                <button class="btn-component btn-outline" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
+                    <i class="bi bi-calendar-plus me-2"></i>Schedule Interview
+                </button>
             }
         </div>
     </div>
@@ -30,24 +30,57 @@
             <!-- Applicant Info -->
             <div class="col-md-6">
                 <div class="card-component mb-3">
-                    <div class="card-header bg-primary text-white">Applicant Information</div>
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-person-circle me-2"></i>Applicant Information
+                        </h4>
+                    </div>
                     <div class="card-content">
-                    <p><strong>Name:</strong> @Model.ApplicantName</p>
-                    <p><strong>Email:</strong> @Model.ApplicantEmail</p>
-                    <p><strong>Phone:</strong> @Model.PhoneNumber</p>
-                    <p><strong>Current Job:</strong> @(Model.CurrentJob ?? "-")</p>
-                    <p><strong>Current Employer:</strong> @(Model.CurrentEmployer ?? "-")</p>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Name</span>
+                                <p class="mb-0 fw-semibold">@Model.ApplicantName</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Email</span>
+                                <p class="mb-0 fw-semibold">@Model.ApplicantEmail</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Phone</span>
+                                <p class="mb-0 fw-semibold">@Model.PhoneNumber</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Current Job</span>
+                                <p class="mb-0 fw-semibold">@(Model.CurrentJob ?? "-")</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Current Employer</span>
+                                <p class="mb-0 fw-semibold">@(Model.CurrentEmployer ?? "-")</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <!-- Vacancy Info -->
         <div class="col-md-6">
             <div class="card-component mb-3">
-                <div class="card-header bg-success text-white">Vacancy Information</div>
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-briefcase-fill me-2"></i>Vacancy Information
+                    </h4>
+                </div>
                 <div class="card-content">
-                    <p><strong>Title:</strong> @Model.VacancyTitle</p>
-                    <p><strong>Description:</strong> @(Model.VacancyDescription ?? "-")</p>
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-muted small">Title</span>
+                            <p class="mb-0 fw-semibold">@Model.VacancyTitle</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Description</span>
+                            <p class="mb-0 fw-semibold">@(Model.VacancyDescription ?? "-")</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -55,13 +88,54 @@
 
     <!-- Application Info -->
     <div class="card-component mb-3">
-        <div class="card-header bg-info text-white">Application Details</div>
+        <div class="card-header">
+            <h4 class="card-title mb-0">
+                <i class="bi bi-clipboard-check me-2"></i>Application Details
+            </h4>
+        </div>
         <div class="card-content">
-            <p><strong>Status:</strong> @Model.ApplicationStatus</p>
-            <p><strong>Applied On:</strong> @Model.ApplicationDate.ToString("yyyy-MM-dd HH:mm")</p>
-            <p><strong>Reviewed By:</strong> @(Model.ReviewedByUserName ?? "-")</p>
-            <p><strong>Review Date:</strong> @(Model.ReviewDate?.ToString("yyyy-MM-dd HH:mm") ?? "-")</p>
-            <p><strong>Note:</strong> @(Model.Note ?? "-")</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-muted small">Status</span>
+                            <p class="mb-0">
+                                @{
+                                    var statusStr = Model.ApplicationStatus.ToString();
+                                    var statusClass = statusStr == "Accepted" ? "badge-success" :
+                                                     statusStr == "Rejected" ? "badge-destructive" :
+                                                     statusStr == "Under Review" ? "badge-warning" :
+                                                     "badge-default";
+                                }
+                                <span class="badge-component @statusClass">@Model.ApplicationStatus</span>
+                            </p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Applied On</span>
+                            <p class="mb-0 fw-semibold">@Model.ApplicationDate.ToString("MMM dd, yyyy HH:mm")</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="space-y-3">
+                        <div>
+                            <span class="text-muted small">Reviewed By</span>
+                            <p class="mb-0 fw-semibold">@(Model.ReviewedByUserName ?? "-")</p>
+                        </div>
+                        <div>
+                            <span class="text-muted small">Review Date</span>
+                            <p class="mb-0 fw-semibold">@(Model.ReviewDate?.ToString("MMM dd, yyyy HH:mm") ?? "-")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Note))
+            {
+                <div class="mt-3">
+                    <span class="text-muted small">Note</span>
+                    <p class="mb-0 fw-semibold">@Model.Note</p>
+                </div>
+            }
         </div>
     </div>
 </div>
