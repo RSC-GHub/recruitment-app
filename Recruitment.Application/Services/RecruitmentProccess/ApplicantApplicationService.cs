@@ -271,6 +271,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 PhoneNumber = entity.Applicant?.PhoneNumber ?? "",
                 CurrentJob = entity.Applicant?.CurrentJob,
                 CurrentEmployer = entity.Applicant?.CurrentEmployer,
+                CV = entity.Applicant?.CVFilePath ?? "",
 
                 VacancyId = entity.VacancyId,
                 VacancyTitle = entity.Vacancy?.Title!.Name ?? "",

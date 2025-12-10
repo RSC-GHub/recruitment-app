@@ -13,7 +13,8 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
         public string PhoneNumber { get; set; } = null!;
         public string? CurrentJob { get; set; }
         public string? CurrentEmployer { get; set; }
-
+        public string CV { get; set; } = null!;
+         
         // Vacancy details
         public int VacancyId { get; set; }
         public string VacancyTitle { get; set; } = null!;

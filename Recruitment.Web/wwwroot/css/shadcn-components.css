@@ -1068,7 +1068,7 @@
 
         .table-scroll-wrapper th:nth-child(6),
         .table-scroll-wrapper td:nth-child(6) {
-            min-width: 120px;
+            min-width: 130px;
         }
 
         .table-scroll-wrapper th:nth-child(7),

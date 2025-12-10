@@ -79,6 +79,7 @@ namespace Recruitment.Web.Controllers
                 ReviewedByUserName = application.ReviewedByUserName,
                 ReviewDate = application.ReviewDate,
                 Note = application.Note,
+                CVFilePath = application.CV,
                 HasFirstInterview = await _applicationService.CanMoveToSecondInterviewAsync(application.Id)
             };
 

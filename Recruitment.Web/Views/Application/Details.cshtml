@@ -57,203 +57,221 @@
                                 <span class="text-muted small">Current Employer</span>
                                 <p class="mb-0 fw-semibold">@(Model.CurrentEmployer ?? "-")</p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        <!-- Vacancy Info -->
-        <div class="col-md-6">
-            <div class="card-component mb-3">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="bi bi-briefcase-fill me-2"></i>Vacancy Information
-                    </h4>
-                </div>
-                <div class="card-content">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Title</span>
-                            <p class="mb-0 fw-semibold">@Model.VacancyTitle</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Description</span>
-                            <p class="mb-0 fw-semibold">@(Model.VacancyDescription ?? "-")</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Application Info -->
-    <div class="card-component mb-3">
-        <div class="card-header">
-            <h4 class="card-title mb-0">
-                <i class="bi bi-clipboard-check me-2"></i>Application Details
-            </h4>
-        </div>
-        <div class="card-content">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Status</span>
-                            <p class="mb-0">
-                                @{
-                                    var statusStr = Model.ApplicationStatus.ToString();
-                                    var statusClass = statusStr == "Accepted" ? "badge-success" :
-                                                     statusStr == "Rejected" ? "badge-destructive" :
-                                                     statusStr == "Under Review" ? "badge-warning" :
-                                                     "badge-default";
-                                }
-                                <span class="badge-component @statusClass">@Model.ApplicationStatus</span>
-                            </p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Applied On</span>
-                            <p class="mb-0 fw-semibold">@Model.ApplicationDate.ToString("MMM dd, yyyy HH:mm")</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Reviewed By</span>
-                            <p class="mb-0 fw-semibold">@(Model.ReviewedByUserName ?? "-")</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Review Date</span>
-                            <p class="mb-0 fw-semibold">@(Model.ReviewDate?.ToString("MMM dd, yyyy HH:mm") ?? "-")</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @if (!string.IsNullOrEmpty(Model.Note))
-            {
-                <div class="mt-3">
-                    <span class="text-muted small">Note</span>
-                    <p class="mb-0 fw-semibold">@Model.Note</p>
-                </div>
-            }
-        </div>
-    </div>
-</div>
-
-<!-- Review Modal -->
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="reviewForm">
-                @Html.AntiForgeryToken()
-                <div class="modal-header">
-                    <h5 class="modal-title" id="reviewModalLabel">Review Application</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <input type="hidden" name="ApplicationId" value="@Model.Id" />
-
-                    <div class="mb-3">
-                        <label class="form-field-label">Decision</label>
-                        <select name="ApplicationStatus" class="form-field-select" required>
-                            <option value="">-- Select Decision --</option>
-
-                            @* Generate options dynamically based on workflow *@
-                            @{
-                                @foreach (var status in ApplicationWorkflow.GetAllowedTransitions(Model.ApplicationStatus))
+                            <div>
+                                <span class="text-muted small">CV</span><br />
+                                @if (!string.IsNullOrWhiteSpace(Model.CVFilePath))
                                 {
-                                    <option value="@((int)status)">@status</option>
+                                    <a class="mb-0 btn-component btn-primary w-50" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">
+                                        <i class="bi bi-download me-2"></i>Download CV
+                                    </a>
                                 }
-
-                            }
-                        </select>
+                                else
+                                {
+                                    <div class="alert-component alert-destructive">
+                                        <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
+                                        <div>
+                                            <div class="alert-description">No CV uploaded.</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="mb-3">
-                        <label class="form-field-label">Note</label>
-                        <textarea name="Note" class="form-field-input" rows="3" maxlength="1000"></textarea>
+            <!-- Vacancy Info -->
+            <div class="col-md-6">
+                <div class="card-component mb-3">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-briefcase-fill me-2"></i>Vacancy Information
+                        </h4>
                     </div>
-
-                    <div id="reviewError" class="text-danger"></div>
-                    <div id="reviewSuccess" class="text-success"></div>
+                    <div class="card-content">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Title</span>
+                                <p class="mb-0 fw-semibold">@Model.VacancyTitle</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Description</span>
+                                <p class="mb-0 fw-semibold">@(Model.VacancyDescription ?? "-")</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="button-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="button-primary">Submit Review</button>
+        <!-- Application Info -->
+        <div class="card-component mb-3">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-clipboard-check me-2"></i>Application Details
+                </h4>
+            </div>
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Status</span>
+                                <p class="mb-0">
+                                    @{
+                                        var statusStr = Model.ApplicationStatus.ToString();
+                                        var statusClass = statusStr == "Accepted" ? "badge-success" :
+                                        statusStr == "Rejected" ? "badge-destructive" :
+                                        statusStr == "Under Review" ? "badge-warning" :
+                                        "badge-default";
+                                    }
+                                    <span class="badge-component @statusClass">@Model.ApplicationStatus</span>
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Applied On</span>
+                                <p class="mb-0 fw-semibold">@Model.ApplicationDate.ToString("MMM dd, yyyy HH:mm")</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Reviewed By</span>
+                                <p class="mb-0 fw-semibold">@(Model.ReviewedByUserName ?? "-")</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Review Date</span>
+                                <p class="mb-0 fw-semibold">@(Model.ReviewDate?.ToString("MMM dd, yyyy HH:mm") ?? "-")</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
+                @if (!string.IsNullOrEmpty(Model.Note))
+                {
+                    <div class="mt-3">
+                        <span class="text-muted small">Note</span>
+                        <p class="mb-0 fw-semibold">@Model.Note</p>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Add Interview Modal -->
-<div class="modal fade" id="addInterviewModal" tabindex="-1" aria-labelledby="addInterviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="addInterviewForm">
-                @Html.AntiForgeryToken()
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addInterviewModalLabel">Schedule Interview</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <input type="hidden" id="ApplicationId" name="ApplicationId" value="@Model.Id" />
-
-                    <div class="mb-3">
-                        <label for="Interviewer" class="form-field-label">Interviewer</label><span class="text-danger">*</span>
-                        <input type="text" id="Interviewer" name="Interviewer" class="form-field-input" required />
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="reviewForm">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reviewModalLabel">Review Application</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="ScheduledDate" class="form-field-label">Scheduled Date</label><span class="text-danger">*</span>
-                        <input type="datetime-local" id="ScheduledDate" name="ScheduledDate" class="form-field-input" required />
+                    <div class="modal-body">
+                        <input type="hidden" name="ApplicationId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-field-label">Decision</label>
+                            <select name="ApplicationStatus" class="form-field-select" required>
+                                <option value="">-- Select Decision --</option>
+
+                                @* Generate options dynamically based on workflow *@
+                                @{
+                                    @foreach (var status in ApplicationWorkflow.GetAllowedTransitions(Model.ApplicationStatus))
+                                    {
+                                        <option value="@((int)status)">@status</option>
+                                    }
+
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-field-label">Note</label>
+                            <textarea name="Note" class="form-field-input" rows="3" maxlength="1000"></textarea>
+                        </div>
+
+                        <div id="reviewError" class="text-danger"></div>
+                        <div id="reviewSuccess" class="text-success"></div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="InterviewType" class="form-field-label">Interview Type</label>
-                        <select id="InterviewType" name="InterviewType" class="form-field-select">
-                            <option value="FaceToFace">Face To Face</option>
-                            <option value="OnlineZoom">Online Zoom</option>
-                            <option value="Teams">Teams</option>
-                        </select>
+                    <div class="modal-footer">
+                        <button type="button" class="button-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="button-primary">Submit Review</button>
                     </div>
-                    <div class="mb-3">
-                        <label for="InterviewCategory" class="form-field-label">Interview Type</label>
-                        <select id="InterviewCategory" name="InterviewCategory" class="form-field-select">
-                            <option value="Technical">Technical</option>
-                            <option value="HR">HR</option>
-                            <option value="Managerial">Managerial</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="DurationMinutes" class="form-field-label">Duration (minutes)</label>
-                        <input type="number" id="DurationMinutes" name="DurationMinutes" class="form-field-input" value="60" min="1" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="Note" class="form-field-label">Note</label>
-                        <input type="text" id="Note" name="Note" class="form-field-input" />
-                    </div>
-
-                    <div id="addInterviewError" class="text-danger"></div>
-                    <div id="addInterviewSuccess" class="text-success"></div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="button-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="button-primary">Add Interview</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
+    <!-- Add Interview Modal -->
+    <div class="modal fade" id="addInterviewModal" tabindex="-1" aria-labelledby="addInterviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="addInterviewForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addInterviewModalLabel">Schedule Interview</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" id="ApplicationId" name="ApplicationId" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label for="Interviewer" class="form-field-label">Interviewer</label><span class="text-danger">*</span>
+                            <input type="text" id="Interviewer" name="Interviewer" class="form-field-input" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ScheduledDate" class="form-field-label">Scheduled Date</label><span class="text-danger">*</span>
+                            <input type="datetime-local" id="ScheduledDate" name="ScheduledDate" class="form-field-input" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="InterviewType" class="form-field-label">Interview Type</label>
+                            <select id="InterviewType" name="InterviewType" class="form-field-select">
+                                <option value="FaceToFace">Face To Face</option>
+                                <option value="OnlineZoom">Online Zoom</option>
+                                <option value="Teams">Teams</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="InterviewCategory" class="form-field-label">Interview Type</label>
+                            <select id="InterviewCategory" name="InterviewCategory" class="form-field-select">
+                                <option value="Technical">Technical</option>
+                                <option value="HR">HR</option>
+                                <option value="Managerial">Managerial</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="DurationMinutes" class="form-field-label">Duration (minutes)</label>
+                            <input type="number" id="DurationMinutes" name="DurationMinutes" class="form-field-input" value="60" min="1" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Note" class="form-field-label">Note</label>
+                            <input type="text" id="Note" name="Note" class="form-field-input" />
+                        </div>
+
+                        <div id="addInterviewError" class="text-danger"></div>
+                        <div id="addInterviewSuccess" class="text-success"></div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="button-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="button-primary">Add Interview</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+
+</div>
 </div>
 
 @section Scripts {

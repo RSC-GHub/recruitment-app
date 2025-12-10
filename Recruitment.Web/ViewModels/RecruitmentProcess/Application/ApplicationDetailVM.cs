@@ -25,7 +25,7 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
         public DateTime? ReviewDate { get; set; }
         public string? Note { get; set; }
         public bool HasFirstInterview { get; set; }
+        public string CVFilePath { get; set; } = null!;
 
     }
-
 }
