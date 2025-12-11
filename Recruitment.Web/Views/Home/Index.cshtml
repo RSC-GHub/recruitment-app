@@ -5,6 +5,17 @@
 }
 
 <style>
+    .custom-outline {
+        border-color: hsl(202 80.3% 23.9%);
+        color: hsl(202 80.3% 23.9%);
+    }
+
+        .custom-outline:hover {
+            border-color: hsl(201 90% 27.5%);
+            color: hsl(201 90% 27.5%);
+            background-color: transparent;
+        }
+
     .stat-card {
         transition: all 0.3s ease;
         border-left: 4px solid transparent;
@@ -112,7 +123,7 @@
             font-size: 1.5rem;
         }
 
-   
+
 
     .animate-in {
         animation: fadeInUp 0.6s ease-out forwards;
@@ -308,7 +319,7 @@
 
         <!-- Quick Actions -->
         <div class="col-lg-4">
-            <div class="card quick-action-card border-0 shadow-sm h-50 animate-in" style="animation-delay: 0.7s">
+            <div class="card quick-action-card border-0 shadow-sm h-70 animate-in" style="animation-delay: 0.7s">
                 <div class="card-body p-4 d-flex flex-column">
                     <div class="section-title">
                         <i class="bi bi-lightning-charge text-primary"></i>
@@ -323,12 +334,15 @@
                             Create New Vacancy
                         </a>
 
+
                         <a asp-controller="Application"
                            asp-action="Index"
-                           class="btn action-btn btn-outline-primary">
+                           class="btn action-btn custom-outline">
                             <i class="bi bi-folder2-open me-2"></i>
                             View Applications
                         </a>
+
+
 
                         <a asp-controller="Interview"
                            asp-action="Index"
@@ -336,12 +350,10 @@
                             <i class="bi bi-calendar-check me-2"></i>
                             View Interviews
                         </a>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>

@@ -310,14 +310,14 @@
 }
 
 .btn-primary {
-    background-color: hsl(222, 47%, 45%);
+    background-color: hsl(202 80.3% 23.9%);
     color: white;
 }
 
-.btn-primary:hover {
-    background-color: hsl(222, 47%, 40%);
-    color: white;
-}
+    .btn-primary:hover {
+        background-color: hsl(201 90% 27.5%);
+        color: white;
+    }
 
 .btn-secondary {
     background-color: hsl(0, 0%, 95%);

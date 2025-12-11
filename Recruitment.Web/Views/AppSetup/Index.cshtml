@@ -18,8 +18,8 @@
             <a asp-controller="Country" asp-action="Index" class="text-decoration-none">
                 <div class="card-component setup-card">
                     <div class="card-content text-center">
-                        <i class="bi bi-globe2 fs-1 text-primary mb-3 d-block"></i>
-                        <h5 class="card-title">Country</h5>
+                        <i class="bi bi-globe2 setup-color fs-1 text-primary mb-3 d-block"></i>
+                        <h5 class="card-title setup-color">Country</h5>
                         <p class="card-description">Manage countries and regions</p>
                     </div>
                 </div>
@@ -31,8 +31,8 @@
             <a asp-controller="Location" asp-action="Index" class="text-decoration-none">
                 <div class="card-component setup-card">
                     <div class="card-content text-center">
-                        <i class="bi bi-geo-alt-fill fs-1 text-primary mb-3 d-block"></i>
-                        <h5 class="card-title">Location</h5>
+                        <i class="bi bi-geo-alt-fill fs-1 setup-color text-primary mb-3 d-block"></i>
+                        <h5 class="card-title setup-color">Location</h5>
                         <p class="card-description">Manage office locations</p>
                     </div>
                 </div>
@@ -44,8 +44,8 @@
             <a asp-controller="Department" asp-action="Index" class="text-decoration-none">
                 <div class="card-component setup-card">
                     <div class="card-content text-center">
-                        <i class="bi bi-building fs-1 text-primary mb-3 d-block"></i>
-                        <h5 class="card-title">Department</h5>
+                        <i class="bi bi-building fs-1 setup-color text-primary mb-3 d-block"></i>
+                        <h5 class="card-title setup-color">Department</h5>
                         <p class="card-description">Manage departments</p>
                     </div>
                 </div>
@@ -57,8 +57,8 @@
             <a asp-controller="Title" asp-action="Index" class="text-decoration-none">
                 <div class="card-component setup-card">
                     <div class="card-content text-center">
-                        <i class="bi bi-card-heading fs-1 text-primary mb-3 d-block"></i>
-                        <h5 class="card-title">Job Titles</h5>
+                        <i class="bi bi-card-heading fs-1 setup-color text-primary mb-3 d-block"></i>
+                        <h5 class="card-title setup-color">Job Titles</h5>
                         <p class="card-description">Manage job titles and positions</p>
                     </div>
                 </div>
@@ -70,8 +70,8 @@
             <a asp-controller="Project" asp-action="Index" class="text-decoration-none">
                 <div class="card-component setup-card">
                     <div class="card-content text-center">
-                        <i class="bi bi-folder-fill fs-1 text-primary mb-3 d-block"></i>
-                        <h5 class="card-title">Projects</h5>
+                        <i class="bi bi-folder-fill fs-1 setup-color text-primary mb-3 d-block"></i>
+                        <h5 class="card-title setup-color">Projects</h5>
                         <p class="card-description">Manage projects and assignments</p>
                     </div>
                 </div>
@@ -83,8 +83,8 @@
             <a asp-controller="Currency" asp-action="Index" class="text-decoration-none">
                 <div class="card-component setup-card">
                     <div class="card-content text-center">
-                        <i class="bi bi-cash-coin fs-1 text-primary mb-3 d-block"></i>
-                        <h5 class="card-title">Currency</h5>
+                        <i class="bi bi-cash-coin fs-1 setup-color text-primary mb-3 d-block"></i>
+                        <h5 class="card-title setup-color">Currency</h5>
                         <p class="card-description">Manage currencies and exchange rates</p>
                     </div>
                 </div>
@@ -109,4 +109,9 @@
         transform: scale(1.1);
         transition: transform 0.3s ease;
     }
+
+    .setup-color {
+        color: hsl(202 80.3% 23.9%) !important;
+    }
+
 </style>
