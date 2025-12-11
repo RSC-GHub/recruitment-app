@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment.Application.Interfaces.Services.Audit;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 
 namespace Recruitment.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

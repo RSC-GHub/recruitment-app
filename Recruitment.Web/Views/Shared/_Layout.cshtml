@@ -48,28 +48,31 @@
                     </li>
                 </ul>
 
-                <!-- User Management Section -->
-                <div class="sidebar-group-label">User Management</div>
-                <ul class="sidebar-menu">
-                    <li class="sidebar-menu-item">
-                        <a asp-controller="UserManagement" asp-action="Index" class="sidebar-menu-button">
-                            <i class="bi bi-people-fill"></i>
-                            <span>Users</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-menu-item">
-                        <a asp-controller="Permission" asp-action="Index" class="sidebar-menu-button">
-                            <i class="bi bi-shield-lock-fill"></i>
-                            <span>Permissions</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-menu-item">
-                        <a asp-controller="Role" asp-action="Index" class="sidebar-menu-button">
-                            <i class="bi bi-award-fill"></i>
-                            <span>Roles</span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- User Management Section (Admin Only) -->
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="sidebar-group-label">User Management</div>
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item">
+                            <a asp-controller="UserManagement" asp-action="Index" class="sidebar-menu-button">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Users</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a asp-controller="Permission" asp-action="Index" class="sidebar-menu-button">
+                                <i class="bi bi-shield-lock-fill"></i>
+                                <span>Permissions</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a asp-controller="Role" asp-action="Index" class="sidebar-menu-button">
+                                <i class="bi bi-award-fill"></i>
+                                <span>Roles</span>
+                            </a>
+                        </li>
+                    </ul>
+                }
 
                 <!-- Recruitment Section -->
                 <div class="sidebar-group-label">Recruitment</div>
