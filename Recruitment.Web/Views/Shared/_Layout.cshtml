@@ -210,12 +210,14 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        // Initialize Sonner toast
-        const { toast } = window.sonner || {};
-
         // Helper functions for toast notifications
         window.showToast = function(message, type = 'default') {
-            if (!toast) return;
+            if (!window.sonner || !window.sonner.toast) {
+                console.error('Toast library not loaded');
+                return;
+            }
+            
+            const toast = window.sonner.toast;
             
             switch(type) {
                 case 'success':
@@ -288,9 +290,6 @@
             }
         });
     </script>
-
-    <!-- Toast Container -->
-    <div id="sonner-toaster"></div>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
