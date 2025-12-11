@@ -79,30 +79,49 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         `;
 
-        toast.innerHTML = `
-            <div style="flex-shrink: 0;">${icon}</div>
-            <div style="flex: 1; word-break: break-word;">${message}</div>
-            <button onclick="window.sonner._removeToast('${toastId}')" style="
-                background: transparent;
-                border: none;
-                color: ${color.text};
-                cursor: pointer;
-                padding: 0;
-                margin: 0;
-                width: 20px;
-                height: 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                opacity: 0.7;
-                transition: opacity 0.2s;
-            " onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
+        // Create icon container
+        const iconContainer = document.createElement('div');
+        iconContainer.style.cssText = 'flex-shrink: 0;';
+        iconContainer.innerHTML = icon;
+
+        // Create message container (use textContent to prevent XSS)
+        const messageContainer = document.createElement('div');
+        messageContainer.style.cssText = 'flex: 1; word-break: break-word;';
+        messageContainer.textContent = message;
+
+        // Create close button (use addEventListener to prevent XSS)
+        const closeButton = document.createElement('button');
+        closeButton.style.cssText = `
+            background: transparent;
+            border: none;
+            color: ${color.text};
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            transition: opacity 0.2s;
         `;
+        closeButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        `;
+        
+        // Add event listeners instead of inline handlers
+        closeButton.addEventListener('click', () => removeToast(toastId));
+        closeButton.addEventListener('mouseover', () => closeButton.style.opacity = '1');
+        closeButton.addEventListener('mouseout', () => closeButton.style.opacity = '0.7');
+
+        // Assemble toast
+        toast.appendChild(iconContainer);
+        toast.appendChild(messageContainer);
+        toast.appendChild(closeButton);
 
         return toast;
     }
@@ -167,8 +186,7 @@
 
     // Expose to window
     window.sonner = {
-        toast: toast,
-        _removeToast: removeToast
+        toast: toast
     };
 
     // Initialize container on load
