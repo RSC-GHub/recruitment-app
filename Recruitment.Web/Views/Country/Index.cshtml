@@ -245,19 +245,15 @@
             document.getElementById('deleteCountryName').textContent = button.getAttribute('data-name');
         });
 
-        // Show toast notifications
+        // Show toast notifications - FIXED VERSION
         @if (TempData["SuccessMessage"] != null)
         {
-            <text>
-            showToast('@TempData["SuccessMessage"]', 'success');
-            </text>
+                @:showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["SuccessMessage"].ToString())), 'success');
         }
 
         @if (TempData["ErrorMessage"] != null)
         {
-            <text>
-            showToast('@TempData["ErrorMessage"]', 'error');
-            </text>
+                @:showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ErrorMessage"].ToString())), 'error');
         }
     </script>
 }

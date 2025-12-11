@@ -30,20 +30,20 @@ namespace Recruitment.Web.Controllers
             var vm = new PermissionSetupViewModel
             {
                 Resources = new List<string> {
+                    "Applicant",
+                    "Application History",
+                    "Application",
                     "Country",
                     "Department",
+                    "Interview",
                     "Location",
                     "Permission",
                     "Project",
-                    "Vacancy",
+                    "Role",
                     "Title",
                     "User",
-                    "Role",
-                    "Application",
-                    "Interview",
-                    "Interview History",
-                    "Job Offer",
-                    "Applicant"},
+                    "Vacancy",
+                    },
                 Actions = new List<string> { "View", "Manage" }
             };
             return View(vm);
