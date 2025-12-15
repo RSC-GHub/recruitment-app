@@ -34,7 +34,10 @@ namespace Recruitment.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var recentActivities = await _auditService.GetRecentActivitiesAsync(5); 
+            var recentActivities = await _auditService.GetRecentActivitiesAsync(5);
+
+            var calendarInterviews = await _interviewService.GetInterviewsForCalendarAsync(
+                DateTime.UtcNow.Month, DateTime.UtcNow.Year);
 
             var vm = new HomeDashboardVM
             {
@@ -56,7 +59,10 @@ namespace Recruitment.Web.Controllers
                 PendingInterviewResults =
                     await _interviewService.GetPendingInterviewResultsAlertAsync(),
 
-                RecentActivities = recentActivities
+                RecentActivities = recentActivities,
+
+                CalendarInterviews = calendarInterviews
+
             };
 
             return View(vm);

@@ -1,4 +1,5 @@
 ﻿using Recruitment.Application.DTOs.Audit;
+using Recruitment.Application.DTOs.RecruitmentProccess.Interview;
 
 namespace Recruitment.Web.ViewModels.Dashboard
 {
@@ -14,6 +15,9 @@ namespace Recruitment.Web.ViewModels.Dashboard
 
         public List<RecentActivityDto> RecentActivities { get; set; }
         = new();
+
+        public List<InterviewCalendarDto> CalendarInterviews { get; set; } = new();
+
     }
 
 }

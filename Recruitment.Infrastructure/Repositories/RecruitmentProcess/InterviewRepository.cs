@@ -243,5 +243,24 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
 
+        public async Task<List<Interview>> GetAllForCalendarAsync(int? month = null, int? year = null)
+        {
+            var query = _context.Interviews
+                .Include(i => i.Application)
+                    .ThenInclude(a => a.Applicant)
+                .Include(i => i.Application)
+                    .ThenInclude(a => a.Vacancy)
+                        .ThenInclude(v => v.Title)
+                .AsQueryable();
+
+            if (month.HasValue)
+                query = query.Where(i => i.ScheduledDate.Month == month.Value);
+
+            if (year.HasValue)
+                query = query.Where(i => i.ScheduledDate.Year == year.Value);
+
+            return await query.ToListAsync();
+        }
+
     }
 }

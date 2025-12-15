@@ -42,6 +42,9 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
 
         Task<int> CountTodaysInterviewsAsync();
         Task<int> GetPendingInterviewResultsAlertAsync();
+
+        Task<List<InterviewCalendarDto>> GetInterviewsForCalendarAsync(int? month = null, int? year = null);
+
     }
 
 }

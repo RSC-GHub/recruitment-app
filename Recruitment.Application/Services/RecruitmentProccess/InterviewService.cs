@@ -262,5 +262,19 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 .CountPendingInterviewResultsAsync();
         }
 
+        public async Task<List<InterviewCalendarDto>> GetInterviewsForCalendarAsync(int? month = null, int? year = null)
+        {
+            var interviews = await _unitOfWork.InterviewRepository.GetAllForCalendarAsync(month, year);
+
+            var dtos = interviews.Select(i => new InterviewCalendarDto
+            {
+                Id = i.Id,
+                ScheduledDate = i.ScheduledDate,
+                ApplicantName = i.Application?.Applicant?.FullName ?? "N/A",
+                VacancyTitle = i.Application?.Vacancy?.Title?.Name ?? "N/A"
+            }).ToList();
+
+            return dtos;
+        }
     }
 }
