@@ -5,9 +5,11 @@
         Submitted = 1,        
         UnderReview = 2,      
         Interviewing = 3,     
-        Offered = 4,          
+        AcceptedInterview = 4,          
         Hired = 5,            
-        Rejected = 6,         
-        OnHold = 7            
+        Rejected = 6,
+        Offered = 7,
+        OnHold = 8            
     }
 }
+  

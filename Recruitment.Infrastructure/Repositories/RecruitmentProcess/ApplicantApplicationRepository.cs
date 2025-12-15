@@ -235,6 +235,5 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
             return application;
         }
-
     }
 }

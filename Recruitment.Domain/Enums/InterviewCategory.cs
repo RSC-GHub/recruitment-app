@@ -3,7 +3,6 @@
     public enum InterviewCategory
     {
         HR = 1,          
-        Technical = 2,  
-        Managerial = 3
+        Technical = 2 
     }
 }

@@ -1,20 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
+using Recruitment.Application.Interfaces.Common;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
-using System;
 
 namespace Recruitment.Web.Controllers
 {
     public class ApplicationController : Controller
     {
         private readonly IApplicantApplicationService _applicationService;
+        private readonly IExcelExportService _exportService;
 
-        public ApplicationController(IApplicantApplicationService applicationService)
+        public ApplicationController(IApplicantApplicationService applicationService, IExcelExportService exportService)
         {
             _applicationService = applicationService;
+            _exportService = exportService;
         }
 
         public async Task<IActionResult> Index(
@@ -129,6 +131,21 @@ namespace Recruitment.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> ExportApplicants(
+            ApplicationStatus? status,
+            string? search)
+        {
+            var data = await _applicationService
+                .ExportApplicantsAsync(status, search);
+
+            var file = _exportService.ExportApplicants(data);
+
+            return File(
+                file,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Applicants.xlsx"
+            );
+        }
 
     }
 }

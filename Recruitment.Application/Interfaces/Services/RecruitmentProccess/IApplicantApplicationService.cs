@@ -1,5 +1,6 @@
 ﻿using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
+using Recruitment.Application.DTOs.UserManagement.Applicant;
 using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
@@ -43,6 +44,9 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
         Task<int> CountApplicationsAsync(ApplicationStatus? status = null);
 
         Task<int> GetOnHoldApplicationsAlertAsync(int days = 3);
+        Task<List<ApplicantExportDto>> ExportApplicantsAsync(
+            ApplicationStatus? status,
+            string? search);
 
     }
 

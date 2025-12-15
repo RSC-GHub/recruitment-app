@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Recruitment.Application.Interfaces.Services.File;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure;
@@ -8,6 +9,7 @@ using Recruitment.Web.Authorization;
 using Recruitment.Web.Middleware.AuditTrailMiddleware;
 using Recruitment.Web.Middleware.ExceptionMiddleware;
 using Recruitment.Web.Services;
+using System.Data;
 
 namespace Recruitment.Web
 {
@@ -16,6 +18,12 @@ namespace Recruitment.Web
         public static async Task Main(string[] args) 
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddScoped<IDbConnection>(sp =>
+            new SqlConnection(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            ));
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

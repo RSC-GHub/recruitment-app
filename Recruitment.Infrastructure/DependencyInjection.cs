@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Recruitment.Application.Interfaces.Common;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Persistence.Audit;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
@@ -11,6 +12,7 @@ using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Application.Services.Audit;
+using Recruitment.Application.Services.Common;
 using Recruitment.Application.Services.CoreBusiness;
 using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Application.Services.UserManagement;
@@ -63,6 +65,8 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IApplicantApplicationService, ApplicantApplicationService>();
             services.AddScoped<IInterviewService, InterviewService>();
             services.AddScoped<IAuditService, AuditService>();
+            services.AddScoped<IExcelExportService, ExcelExportService>();
+
 
             return services;
         }

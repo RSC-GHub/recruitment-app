@@ -1,30 +1,35 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
+using Recruitment.Application.DTOs.UserManagement.Applicant;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Domain.Enums;
 using Recruitment.Domain.Workflows;
-using System;
+using System.Data;
+using Dapper;
 
 namespace Recruitment.Application.Services.RecruitmentProccess
 {
     public class ApplicantApplicationService : IApplicantApplicationService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IDbConnection _connection;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
 
-        public ApplicantApplicationService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public ApplicantApplicationService(IUnitOfWork unitOfWork, 
+            IHttpContextAccessor httpContextAccessor, 
+            UserManager<User> userManager, IDbConnection connection)
         {
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
+            _connection = connection;
         }
 
         private async Task<int?> GetCurrentUserIdAsync()
@@ -103,7 +108,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
             ApplicationStatus nextStatus = result switch
             {
-                InterviewResult.Accepted => ApplicationStatus.Offered,
+                InterviewResult.Accepted => ApplicationStatus.AcceptedInterview,
                 InterviewResult.SecondChoice => ApplicationStatus.OnHold,
                 InterviewResult.Rejected => ApplicationStatus.Rejected,
                 _ => throw new InvalidOperationException("Invalid interview result")
@@ -343,6 +348,23 @@ namespace Recruitment.Application.Services.RecruitmentProccess
         {
             return await _unitOfWork.ApplicationRepository
                 .CountOnHoldOlderThanAsync(days);
+        }
+
+        public async Task<List<ApplicantExportDto>> ExportApplicantsAsync(
+            ApplicationStatus? status,
+            string? search)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Status", status);
+            parameters.Add("@Search", search);
+
+            var result = await _connection.QueryAsync<ApplicantExportDto>(
+                "dbo.ExportApplicantsReport",
+                parameters,
+                commandType: CommandType.StoredProcedure
+            );
+
+            return result.ToList();
         }
     }
 }

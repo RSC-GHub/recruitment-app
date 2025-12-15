@@ -65,6 +65,18 @@
     </div>
 </div>
 
+<!-- Excel button -->
+<div>
+    <a asp-action="ExportApplicants"
+       asp-route-status="@Model.Status"
+       asp-route-search="@Model.Search"
+       class="btn-component btn-outline">
+        <i class="bi bi-file-earmark-excel-fill me-2"></i>
+        Export Excel
+    </a>
+
+</div>
+
 <!-- Applications Table Card -->
 <div class="card-component">
     <div class="card-content p-0">

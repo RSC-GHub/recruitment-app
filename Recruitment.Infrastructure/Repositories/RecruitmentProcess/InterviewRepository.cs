@@ -127,15 +127,13 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             var totalCount = await query.CountAsync();
 
             var items = await query
-                .OrderByDescending(i => i.ScheduledDate)
+                .OrderByDescending(i => i.CreatedOn)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
             return new PagedResult<Interview>(items, totalCount, page, pageSize);
         }
-
-
 
         public async Task<Interview?> GetWithApplicationAsync(int id)
         {
@@ -157,7 +155,6 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                             .ThenInclude(pv => pv.Project)
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
-
 
         public async Task<bool> UpdateInterviewResultAsync(int id, InterviewResult result, string? feedback, string? Note)
         {

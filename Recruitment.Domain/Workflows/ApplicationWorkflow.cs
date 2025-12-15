@@ -22,6 +22,7 @@ namespace Recruitment.Domain.Workflows
 
                 [ApplicationStatus.Interviewing] = new[]
                 {
+                    ApplicationStatus.AcceptedInterview,
                     ApplicationStatus.Offered,
                     ApplicationStatus.OnHold,
                     ApplicationStatus.Rejected
@@ -30,7 +31,9 @@ namespace Recruitment.Domain.Workflows
                 [ApplicationStatus.OnHold] = new[]
                 {
                     ApplicationStatus.Interviewing,
-                    ApplicationStatus.Rejected
+                    ApplicationStatus.Rejected,
+                    ApplicationStatus.Offered,
+
                 },
 
                 [ApplicationStatus.Offered] = new[]
@@ -42,6 +45,14 @@ namespace Recruitment.Domain.Workflows
                 [ApplicationStatus.Rejected] = new[]
                 {
                     ApplicationStatus.UnderReview
+                },
+
+                [ApplicationStatus.AcceptedInterview] = new[]
+                {
+                    ApplicationStatus.Interviewing,
+                    ApplicationStatus.Offered,
+                    ApplicationStatus.OnHold,
+                    ApplicationStatus.Rejected
                 },
             };
 

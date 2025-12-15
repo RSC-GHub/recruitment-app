@@ -2,7 +2,6 @@
 using Recruitment.Application.DTOs.CoreBusiness.Currency;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Web.ViewModels.CoreBusiness.Currency;
-using System;
 
 namespace Recruitment.Web.Controllers
 {

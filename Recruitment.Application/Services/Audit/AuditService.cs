@@ -23,83 +23,99 @@ namespace Recruitment.Application.Services.Audit
                 if (log.ActionType != "Modified")
                     continue;
 
-                Dictionary<string, JsonElement> newValues = string.IsNullOrEmpty(log.NewValues)
+                var newValues = string.IsNullOrEmpty(log.NewValues)
                     ? new Dictionary<string, JsonElement>()
                     : JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(log.NewValues)!;
 
-                Dictionary<string, JsonElement> oldValues = string.IsNullOrEmpty(log.OldValues)
+                var oldValues = string.IsNullOrEmpty(log.OldValues)
                     ? new Dictionary<string, JsonElement>()
                     : JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(log.OldValues)!;
+
+                var keyValues = string.IsNullOrEmpty(log.KeyValues)
+                    ? new Dictionary<string, int>()
+                    : JsonSerializer.Deserialize<Dictionary<string, int>>(log.KeyValues)!;
 
                 // ==========================
                 // Application status changed
                 // ==========================
                 if (log.TableName == "ApplicantApplication" &&
-                    newValues.ContainsKey("ApplicationStatus") &&
-                    oldValues.ContainsKey("ApplicationStatus") &&
-                    newValues["ApplicationStatus"].GetInt32() != oldValues["ApplicationStatus"].GetInt32())
+                    newValues.TryGetValue("ApplicationStatus", out var newAppStatusElem) &&
+                    oldValues.TryGetValue("ApplicationStatus", out var oldAppStatusElem))
                 {
-                    int appId = JsonSerializer.Deserialize<Dictionary<string, int>>(log.KeyValues!)["Id"];
-                    var app = await _unitOfWork.ApplicationRepository.GetByIdWithApplicantAsync(appId);
+                    int newStatusInt = newAppStatusElem.GetInt32();
+                    int oldStatusInt = oldAppStatusElem.GetInt32();
 
-                    var oldStatus = (ApplicationStatus)oldValues["ApplicationStatus"].GetInt32();
-                    var newStatus = (ApplicationStatus)newValues["ApplicationStatus"].GetInt32();
-
-                    activities.Add(new RecentActivityDto
+                    if (newStatusInt != oldStatusInt && keyValues.TryGetValue("Id", out int appId))
                     {
-                        Icon = "bi-arrow-repeat text-primary",
-                        Message = $"Application for {app.Applicant.FullName} changed status from {oldStatus} to {newStatus}",
-                        Date = log.ChangedOn
-                    });
+                        var app = await _unitOfWork.ApplicationRepository.GetByIdWithApplicantAsync(appId);
+
+                        activities.Add(new RecentActivityDto
+                        {
+                            Icon = "bi-arrow-repeat text-primary",
+                            Message = $"Application for {app?.Applicant?.FullName ?? "Unknown Applicant"} changed status from {(ApplicationStatus)oldStatusInt} to {(ApplicationStatus)newStatusInt}",
+                            Date = log.ChangedOn
+                        });
+                    }
                 }
 
                 // ==========================
                 // Interview status changed
                 // ==========================
                 if (log.TableName == "Interview" &&
-                    newValues.ContainsKey("InterviewStatus") &&
-                    oldValues.ContainsKey("InterviewStatus") &&
-                    newValues["InterviewStatus"].GetInt32() != oldValues["InterviewStatus"].GetInt32())
+                    newValues.TryGetValue("InterviewStatus", out var newInterviewStatusElem) &&
+                    oldValues.TryGetValue("InterviewStatus", out var oldInterviewStatusElem))
                 {
-                    int interviewId = JsonSerializer.Deserialize<Dictionary<string, int>>(log.KeyValues!)["Id"];
-                    var interview = await _unitOfWork.InterviewRepository.GetByIdWithApplicantAsync(interviewId);
+                    int newStatusInt = newInterviewStatusElem.GetInt32();
+                    int oldStatusInt = oldInterviewStatusElem.GetInt32();
 
-                    var oldStatus = (InterviewStatus)oldValues["InterviewStatus"].GetInt32();
-                    var newStatus = (InterviewStatus)newValues["InterviewStatus"].GetInt32();
-
-                    activities.Add(new RecentActivityDto
+                    if (newStatusInt != oldStatusInt && keyValues.TryGetValue("Id", out int interviewId))
                     {
-                        Icon = "bi-hourglass-split text-warning",
-                        Message = $"Interview for {interview.Application.Applicant.FullName} scheduled on {interview.ScheduledDate:dd MMM yyyy} changed status from {oldStatus} to {newStatus}",
-                        Date = log.ChangedOn
-                    });
+                        var interview = await _unitOfWork.InterviewRepository.GetByIdWithApplicantAsync(interviewId);
+
+                        var scheduledDate = interview != null
+                            ? interview.ScheduledDate.ToString("dd MMM yyyy")
+                                : "N/A";
+
+
+                        activities.Add(new RecentActivityDto
+                        {
+                            Icon = "bi-hourglass-split text-warning",
+                            Message = $"Interview for {interview?.Application?.Applicant?.FullName ?? "Unknown Applicant"} scheduled on {scheduledDate} changed status from {(InterviewStatus)oldStatusInt} to {(InterviewStatus)newStatusInt}",
+                            Date = log.ChangedOn
+                        });
+                    }
                 }
 
                 // ==========================
                 // Interview result updated
                 // ==========================
                 if (log.TableName == "Interview" &&
-                    newValues.ContainsKey("InterviewResult") &&
-                    oldValues.ContainsKey("InterviewResult") &&
-                    newValues["InterviewResult"].GetInt32() != oldValues["InterviewResult"].GetInt32())
+                    newValues.TryGetValue("InterviewResult", out var newInterviewResultElem) &&
+                    oldValues.TryGetValue("InterviewResult", out var oldInterviewResultElem))
                 {
-                    int interviewId = JsonSerializer.Deserialize<Dictionary<string, int>>(log.KeyValues!)["Id"];
-                    var interview = await _unitOfWork.InterviewRepository.GetByIdWithApplicantAsync(interviewId);
+                    int newResultInt = newInterviewResultElem.GetInt32();
 
-                    var newResult = (InterviewResult)newValues["InterviewResult"].GetInt32();
-
-                    activities.Add(new RecentActivityDto
+                    if (keyValues.TryGetValue("Id", out int interviewId))
                     {
-                        Icon = "bi-check-circle-fill text-success",
-                        Message = $"Interview for {interview.Application.Applicant.FullName} result updated: {newResult}",
-                        Date = log.ChangedOn
-                    });
+                        var interview = await _unitOfWork.InterviewRepository.GetByIdWithApplicantAsync(interviewId);
+
+                        activities.Add(new RecentActivityDto
+                        {
+                            Icon = "bi-check-circle-fill text-success",
+                            Message = $"Interview for {interview?.Application?.Applicant?.FullName ?? "Unknown Applicant"} result updated: {(InterviewResult)newResultInt}",
+                            Date = log.ChangedOn
+                        });
+                    }
                 }
             }
 
-            // ترتيب من الأحدث للأقدم وأخذ عدد الـ take المطلوب
-            return activities.OrderByDescending(a => a.Date).Take(take).ToList();
+            // Return most recent activities, safely taking only 'take' items
+            return activities
+                .OrderByDescending(a => a.Date)
+                .Take(take)
+                .ToList();
         }
+
 
 
 

@@ -10,6 +10,7 @@
     <div class="card-header flex-between">
         <h2 class="card-title"><i class="bi bi-calendar-event me-2"></i>Interview Details</h2>
         <div class="d-flex gap-2">
+
             @if (Model.InterviewStatus != InterviewStatus.Completed && Model.InterviewStatus != InterviewStatus.Postponed && Model.InterviewStatus != InterviewStatus.Cancelled)
             {
                 <button type="button" class="btn-component btn-outline" data-bs-toggle="modal" data-bs-target="#editInterviewModal">
