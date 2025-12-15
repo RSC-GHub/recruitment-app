@@ -19,7 +19,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Title
-        [HasPermission("Title", "View")]
+        //[HasPermission("Title", "View")]
         public async Task<IActionResult> Index()
         {
             var titles = await _titleService.GetAllAsync();
@@ -32,7 +32,7 @@ namespace Recruitment.Web.Controllers
         }
 
         [HttpGet]
-        [HasPermission("Title", "View")]
+        //[HasPermission("Title", "View")]
         public async Task<IActionResult> GetDepartmentsByTitle(int titleId)
         {
             var departments = await _titleService.GetDepartmentsByTitleIdAsync(titleId);
@@ -40,7 +40,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Title/Details/5
-        [HasPermission("Title", "View")]
+        //[HasPermission("Title", "View")]
         public async Task<IActionResult> Details(int id)
         {
             var dto = await _titleService.GetByIdAsync(id);
@@ -57,7 +57,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Title/Create
-        [HasPermission("Title", "Create")]
+        //[HasPermission("Title", "Create")]
         public async Task<IActionResult> Create()
         {
             var departments = await _departmentService.GetAllAsync();
@@ -74,7 +74,7 @@ namespace Recruitment.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("Title", "Create")]
+        //[HasPermission("Title", "Create")]
         public async Task<IActionResult> Create(TitleCreateViewModel model)
         {
             if (!ModelState.IsValid)
@@ -99,7 +99,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Title/Edit/5
-        [HasPermission("Title", "Edit")]
+        //[HasPermission("Title", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var dto = await _titleService.GetByIdWithDepartmentsAsync(id);
@@ -126,7 +126,7 @@ namespace Recruitment.Web.Controllers
         // POST: Title/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("Title", "Edit")]
+        //[HasPermission("Title", "Edit")]
         public async Task<IActionResult> Edit(TitleEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -152,7 +152,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Title/Delete/5
-        [HasPermission("Title", "Delete")]
+        //[HasPermission("Title", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var dto = await _titleService.GetByIdAsync(id);
@@ -171,7 +171,7 @@ namespace Recruitment.Web.Controllers
         // POST: Title/DeleteConfirmed
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [HasPermission("Title", "Delete")]
+        //[HasPermission("Title", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _titleService.DeleteAsync(id);

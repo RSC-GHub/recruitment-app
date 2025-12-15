@@ -25,7 +25,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Users
-        [HasPermission("User", "View")]
+        //[HasPermission("User", "View")]
         public IActionResult Index()
         {
             var users = _userManager.Users
@@ -45,7 +45,7 @@ namespace Recruitment.Web.Controllers
 
         // GET: User Profile
         [HttpGet]
-        [HasPermission("User", "Edit")]
+        //[HasPermission("User", "Edit")]
         public async Task<IActionResult> Profile(int id)
         {
             var user = await _userManager.Users
@@ -97,7 +97,7 @@ namespace Recruitment.Web.Controllers
         // POST: Edit user info
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("User", "Edit")]
+        //[HasPermission("User", "Edit")]
         public async Task<IActionResult> EditUser(UserProfileViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.Id.ToString());
@@ -122,7 +122,7 @@ namespace Recruitment.Web.Controllers
         // POST: Update roles
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("Role", "Edit")]
+        //[HasPermission("Role", "Edit")]
         public async Task<IActionResult> UpdateRoles(UserProfileViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.Id.ToString());
@@ -172,7 +172,7 @@ namespace Recruitment.Web.Controllers
         // POST: Remove role
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("User", "Edit")]
+        //[HasPermission("User", "Edit")]
         public async Task<IActionResult> RemoveRole(int userId, string roleName)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());

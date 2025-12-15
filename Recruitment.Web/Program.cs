@@ -60,7 +60,7 @@ namespace Recruitment.Web
             var app = builder.Build();
 
             // Custom Middleware
-            //app.UseGlobalExceptionHandling();
+            app.UseGlobalExceptionHandling();
             app.UseAuditTrail();
 
             // Configure the HTTP request pipeline.

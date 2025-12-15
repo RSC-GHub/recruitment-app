@@ -16,7 +16,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: DepartmentTitle
-        [HasPermission("Department", "View")]
+        //[HasPermission("Department", "View")]
         public async Task<IActionResult> Index()
         {
             var dtos = await _departmentTitleService.GetAllAsync();
@@ -30,7 +30,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: DepartmentTitle/Details/5
-        [HasPermission("Department", "View")]
+        //[HasPermission("Department", "View")]
         public async Task<IActionResult> Details(int id)
         {
             var dto = await _departmentTitleService.GetByIdAsync(id);
@@ -48,7 +48,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: DepartmentTitle/Create
-        [HasPermission("Department", "Create")]
+        //[HasPermission("Department", "Create")]
         public IActionResult Create()
         {
             return View();
@@ -57,7 +57,7 @@ namespace Recruitment.Web.Controllers
         // POST: DepartmentTitle/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("Department", "Create")]
+        //[HasPermission("Department", "Create")]
         public async Task<IActionResult> Create(DepartmentTitleCreateViewModel model)
         {
             if (!ModelState.IsValid)
@@ -74,7 +74,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: DepartmentTitle/Edit/5
-        [HasPermission("Department", "Edit")]
+        //[HasPermission("Department", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var dto = await _departmentTitleService.GetByIdAsync(id);
@@ -94,7 +94,7 @@ namespace Recruitment.Web.Controllers
         // POST: DepartmentTitle/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("Department", "Edit")]
+        //[HasPermission("Department", "Edit")]
         public async Task<IActionResult> Edit(DepartmentTitleEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -112,7 +112,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: DepartmentTitle/Delete/5
-        [HasPermission("Department", "Delete")]
+        //[HasPermission("Department", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var dto = await _departmentTitleService.GetByIdAsync(id);
@@ -132,7 +132,7 @@ namespace Recruitment.Web.Controllers
         // POST: DepartmentTitle/DeleteConfirmed
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [HasPermission("Department", "Delete")]
+        //[HasPermission("Department", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _departmentTitleService.DeleteAsync(id);

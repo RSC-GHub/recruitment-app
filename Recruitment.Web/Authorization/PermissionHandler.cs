@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Recruitment.Domain.Entities.UserManagement;
+using System.Security.Claims;
 
 namespace Recruitment.Web.Authorization
 {
@@ -26,7 +27,14 @@ namespace Recruitment.Web.Authorization
                 return;
             }
 
-            var userIdClaim = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            // Admin bypass
+            if (context.User.IsInRole("Admin"))
+            {
+                context.Succeed(requirement);
+                return;
+            }
+
+            var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userIdClaim == null)
             {
                 context.Fail();

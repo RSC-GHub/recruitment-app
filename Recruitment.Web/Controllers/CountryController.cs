@@ -16,7 +16,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Country
-        [HasPermission("Country", "View")]
+        //[HasPermission("Country", "View")]
         public async Task<IActionResult> Index()
         {
             var dtos = await _countryService.GetAllAsync();
@@ -31,7 +31,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Country/Create
-        [HasPermission("Country", "Create")]
+        //[HasPermission("Country", "Create")]
         public IActionResult Create()
         {
             return View(new CreateCountryViewModel());
@@ -40,7 +40,7 @@ namespace Recruitment.Web.Controllers
         // POST: Country/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("Country", "Create")]
+        //[HasPermission("Country", "Create")]
         public async Task<IActionResult> Create(CreateCountryViewModel vm)
         {
             if (!ModelState.IsValid)
@@ -57,7 +57,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Country/Edit/5
-        [HasPermission("Country", "Edit")]
+        //[HasPermission("Country", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var dto = await _countryService.GetByIdAsync(id);
@@ -76,7 +76,7 @@ namespace Recruitment.Web.Controllers
         // POST: Country/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [HasPermission("Country", "Edit")]
+        //[HasPermission("Country", "Edit")]
         public async Task<IActionResult> Edit(CountryViewModel vm)
         {
             if (!ModelState.IsValid)
@@ -94,7 +94,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Country/Delete/5
-        [HasPermission("Country", "Delete")]
+        //[HasPermission("Country", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var dto = await _countryService.GetByIdAsync(id);
@@ -113,7 +113,7 @@ namespace Recruitment.Web.Controllers
         // POST: Country/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [HasPermission("Country", "Delete")]
+        //[HasPermission("Country", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _countryService.DeleteAsync(id);
@@ -121,7 +121,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Country/Details/5
-        [HasPermission("Country", "View")]
+        //[HasPermission("Country", "View")]
         public async Task<IActionResult> Details(int id)
         {
             var dto = await _countryService.GetByIdAsync(id);
