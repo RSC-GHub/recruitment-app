@@ -50,10 +50,17 @@ namespace Recruitment.Domain.Workflows
                 [ApplicationStatus.AcceptedInterview] = new[]
                 {
                     ApplicationStatus.Interviewing,
+                    ApplicationStatus.Pending,
                     ApplicationStatus.Offered,
                     ApplicationStatus.OnHold,
                     ApplicationStatus.Rejected
                 },
+
+                [ApplicationStatus.Pending] = new[]
+                {
+                    ApplicationStatus.Offered,
+                    ApplicationStatus.Rejected
+                }
             };
 
         public static void ValidateTransition(ApplicationStatus current, ApplicationStatus next)

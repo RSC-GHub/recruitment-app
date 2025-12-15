@@ -24,336 +24,337 @@
     </div>
     <div class="card-content">
 
-    <!-- Applicant & Vacancy Info -->
-    <div class="row g-3">
-        <div class="col-md-6">
-            <div class="card-component mb-3">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="bi bi-person-circle me-2"></i>Applicant Information
-                    </h4>
-                </div>
-                <div class="card-content">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Name</span>
-                            <p class="mb-0 fw-semibold">
-                                <a asp-action="Profile" asp-controller="Applicant" asp-route-id="@Model.ApplicantId">@Model.ApplicantName</a>
-                            </p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Email</span>
-                            <p class="mb-0 fw-semibold">@Model.ApplicantEmail</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Phone</span>
-                            <p class="mb-0 fw-semibold">@Model.PhoneNumber</p>
+        <!-- Applicant & Vacancy Info -->
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card-component mb-3">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-person-circle me-2"></i>Applicant Information
+                        </h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Name</span>
+                                <p class="mb-0 fw-semibold">
+                                    <a asp-action="Profile" asp-controller="Applicant" asp-route-id="@Model.ApplicantId">@Model.ApplicantName</a>
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Email</span>
+                                <p class="mb-0 fw-semibold">@Model.ApplicantEmail</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Phone</span>
+                                <p class="mb-0 fw-semibold">@Model.PhoneNumber</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6">
-            <div class="card-component mb-3">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="bi bi-briefcase-fill me-2"></i>Vacancy Information
-                    </h4>
-                </div>
-                <div class="card-content">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Title</span>
-                            <p class="mb-0 fw-semibold">@Model.VacancyTitle</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Employment Type</span>
-                            <p class="mb-0 fw-semibold">@Model.EmploymentType</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Projects</span>
-                            @if (Model.VacancyProjects != null && Model.VacancyProjects.Any())
-                            {
-                                <div class="d-flex gap-1 flex-wrap">
-                                    @foreach (var project in Model.VacancyProjects)
-                                    {
-                                        <span class="badge-component badge-secondary">@project</span>
-                                    }
-                                </div>
-                            }
-                            else
-                            {
-                                <p class="mb-0 text-muted">-</p>
-                            }
-                        </div>
+            <div class="col-md-6">
+                <div class="card-component mb-3">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-briefcase-fill me-2"></i>Vacancy Information
+                        </h4>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Interview Info -->
-    <div class="card-component mb-3">
-        <div class="card-header">
-            <h4 class="card-title mb-0">
-                <i class="bi bi-calendar-check me-2"></i>Interview Information
-            </h4>
-        </div>
-        <div class="card-content">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Interviewer</span>
-                            <p class="mb-0 fw-semibold">@(Model.InterViewer ?? "-")</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Scheduled Date</span>
-                            <p class="mb-0 fw-semibold">@Model.ScheduledDate.ToString("MMM dd, yyyy HH:mm")</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Duration</span>
-                            <p class="mb-0 fw-semibold">@Model.DurationMinutes minutes</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Type</span>
-                            <p class="mb-0">
-                                <span class="badge-component">@Model.InterviewType</span>
-                            </p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Category</span>
-                            <p class="mb-0">
-                                <span class="badge-component">@Model.InterviewCategory</span>
-                            </p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Status</span>
-                            <p class="mb-0">
-                                @{
-                                    var statusStr = Model.InterviewStatus.ToString();
-                                    var statusClass = statusStr == "Completed" ? "badge-success" :
-                                                     statusStr == "Scheduled" ? "badge-warning" :
-                                                     statusStr == "Cancelled" ? "badge-destructive" :
-                                                     "badge-default";
-                                }
-                                <span class="badge-component @statusClass">@Model.InterviewStatus</span>
-                            </p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Result</span>
-                            <p class="mb-0">
-                                @if (Model.InterviewResult != null)
+                    <div class="card-content">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Title</span>
+                                <p class="mb-0 fw-semibold">@Model.VacancyTitle</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Employment Type</span>
+                                <p class="mb-0 fw-semibold">@Model.EmploymentType</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Projects</span>
+                                @if (Model.VacancyProjects != null && Model.VacancyProjects.Any())
                                 {
-                                    var resultStr = Model.InterviewResult.ToString();
-                                    var resultClass = resultStr == "Passed" ? "badge-success" :
-                                                     resultStr == "Failed" ? "badge-destructive" :
-                                                     "badge-warning";
-                                    <span class="badge-component @resultClass">@Model.InterviewResult</span>
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        @foreach (var project in Model.VacancyProjects)
+                                        {
+                                            <span class="badge-component badge-secondary">@project</span>
+                                        }
+                                    </div>
                                 }
                                 else
                                 {
-                                    <span class="text-muted">-</span>
+                                    <p class="mb-0 text-muted">-</p>
                                 }
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @if (!string.IsNullOrEmpty(Model.InterViewNote))
-            {
-                <div class="mt-3">
-                    <span class="text-muted small">Note</span>
-                    <p class="mb-0 fw-semibold">@Model.InterViewNote</p>
-                </div>
-            }
-            @if (!string.IsNullOrEmpty(Model.Feedback))
-            {
-                <div class="mt-3">
-                    <span class="text-muted small">Feedback</span>
-                    <p class="mb-0 fw-semibold">@Model.Feedback</p>
-                </div>
-            }
-        </div>
-    </div>
-
-    <!-- Audit Info -->
-    <div class="card-component mb-3">
-        <div class="card-header">
-            <h4 class="card-title mb-0">
-                <i class="bi bi-clock-history me-2"></i>Audit Information
-            </h4>
-        </div>
-        <div class="card-content">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Created By</span>
-                            <p class="mb-0 fw-semibold">@(Model.CreatedBy ?? "-")</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Created On</span>
-                            <p class="mb-0 fw-semibold">@Model.CreatedOn.ToString("MMM dd, yyyy HH:mm")</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Modified By</span>
-                            <p class="mb-0 fw-semibold">@(Model.ModifiedBy ?? "-")</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Modified On</span>
-                            <p class="mb-0 fw-semibold">@(Model.ModifiedOn?.ToString("MMM dd, yyyy HH:mm") ?? "-")</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="mt-3">
-        <a href="@Url.Action("Index", "Interview")" class="btn-component btn-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Back to List
-        </a>
-    </div>
-</div>
-
-<!-- Edit Interview Modal -->
-<div class="modal fade" id="editInterviewModal" tabindex="-1" aria-labelledby="editInterviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="editInterviewForm">
-                @Html.AntiForgeryToken()
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editInterviewModalLabel">
-                        <i class="bi bi-pencil me-2"></i>Edit Interview
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Interview Info -->
+        <div class="card-component mb-3">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-calendar-check me-2"></i>Interview Information
+                </h4>
+            </div>
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Interviewer</span>
+                                <p class="mb-0 fw-semibold">@(Model.InterViewer ?? "-")</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Scheduled Date</span>
+                                <p class="mb-0 fw-semibold">@Model.ScheduledDate.ToString("MMM dd, yyyy HH:mm")</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Duration</span>
+                                <p class="mb-0 fw-semibold">@Model.DurationMinutes minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Type</span>
+                                <p class="mb-0">
+                                    <span class="badge-component">@Model.InterviewType</span>
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Category</span>
+                                <p class="mb-0">
+                                    <span class="badge-component">@Model.InterviewCategory</span>
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Status</span>
+                                <p class="mb-0">
+                                    @{
+                                        var statusStr = Model.InterviewStatus.ToString();
+                                        var statusClass = statusStr == "Completed" ? "badge-success" :
+                                        statusStr == "Scheduled" ? "badge-warning" :
+                                        statusStr == "Cancelled" ? "badge-destructive" :
+                                        "badge-default";
+                                    }
+                                    <span class="badge-component @statusClass">@Model.InterviewStatus</span>
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Result</span>
+                                <p class="mb-0">
+                                    @if (Model.InterviewResult != null)
+                                    {
+                                        var resultStr = Model.InterviewResult.ToString();
+                                        var resultClass = resultStr == "Accepted" ? "badge-success" :
+                                        resultStr == "Rejected" ? "badge-destructive" :
+                                        resultStr == "SecondChoice" ? "badge-secondary" :
+                                        "badge-warning";
+                                        <span class="badge-component @resultClass">@Model.InterviewResult</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <input type="hidden" id="InterviewId" name="Id" value="@Model.Id" />
-
-                    <div class="form-field">
-                        <label class="form-label" for="InterViewer">Interviewer</label>
-                        <input type="text" class="form-input" id="InterViewer" name="InterViewer" value="@Model.InterViewer" />
+                @if (!string.IsNullOrEmpty(Model.InterViewNote))
+                {
+                    <div class="mt-3">
+                        <span class="text-muted small">Note</span>
+                        <p class="mb-0 fw-semibold">@Model.InterViewNote</p>
                     </div>
-
-                    <div class="form-field">
-                        <label class="form-label" for="InterviewType">Interview Type</label>
-                        <select class="form-select" id="InterviewType" name="InterviewType">
-                            @foreach (var type in Enum.GetValues(typeof(InterviewType)).Cast<InterviewType>())
-                            {
-                                <option value="@type" selected="@(Model.InterviewType == type)">
-                                    @type
-                                </option>
-                            }
-                        </select>
+                }
+                @if (!string.IsNullOrEmpty(Model.Feedback))
+                {
+                    <div class="mt-3">
+                        <span class="text-muted small">Feedback</span>
+                        <p class="mb-0 fw-semibold">@Model.Feedback</p>
                     </div>
+                }
+            </div>
+        </div>
 
-                    <div class="form-field">
-                        <label class="form-label" for="InterviewStatus">Interview Status</label>
-                        <select class="form-select" id="InterviewStatus" name="InterviewStatus">
-                            @foreach (var status in Enum.GetValues(typeof(InterviewStatus)).Cast<InterviewStatus>())
-                            {
-                                <option value="@status" selected="@(Model.InterviewStatus == status)">
-                                    @status
-                                </option>
-                            }
-                        </select>
+        <!-- Audit Info -->
+        <div class="card-component mb-3">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-clock-history me-2"></i>Audit Information
+                </h4>
+            </div>
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Created By</span>
+                                <p class="mb-0 fw-semibold">@(Model.CreatedBy ?? "-")</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Created On</span>
+                                <p class="mb-0 fw-semibold">@Model.CreatedOn.ToString("MMM dd, yyyy HH:mm")</p>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="form-field">
-                        <label class="form-label" for="DurationMinutes">Duration (minutes)</label>
-                        <input type="number" class="form-input" id="DurationMinutes" name="DurationMinutes" value="@Model.DurationMinutes" min="1" />
+                    <div class="col-md-6">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Modified By</span>
+                                <p class="mb-0 fw-semibold">@(Model.ModifiedBy ?? "-")</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Modified On</span>
+                                <p class="mb-0 fw-semibold">@(Model.ModifiedOn?.ToString("MMM dd, yyyy HH:mm") ?? "-")</p>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="form-field">
-                        <label class="form-label" for="InterviewNote">Note</label>
-                        <textarea class="form-input" id="InterviewNote" name="InterviewNote" rows="3">@Model.InterViewNote</textarea>
-                    </div>
-
-                    <div id="editInterviewError" class="form-error" style="display:none;"></div>
-                    <div id="editInterviewSuccess" class="alert-component alert-success" style="display:none;"></div>
                 </div>
+            </div>
+        </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg me-2"></i>Cancel
-                    </button>
-                    <button type="submit" class="btn-component btn-primary">
-                        <i class="bi bi-check-lg me-2"></i>Save Changes
-                    </button>
-                </div>
-            </form>
+        <div class="mt-3">
+            <a href="@Url.Action("Index", "Interview")" class="btn-component btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
         </div>
     </div>
-</div>
 
-<!-- Mark As Complete Modal -->
-<div class="modal fade" id="completeInterviewModal" tabindex="-1" aria-labelledby="completeInterviewLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="completeInterviewForm">
-                @Html.AntiForgeryToken()
+    <!-- Edit Interview Modal -->
+    <div class="modal fade" id="editInterviewModal" tabindex="-1" aria-labelledby="editInterviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editInterviewForm">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editInterviewModalLabel">
+                            <i class="bi bi-pencil me-2"></i>Edit Interview
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="InterviewId" name="Id" value="@Model.Id" />
 
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-check-circle me-2"></i>Mark Interview as Complete
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                        <div class="form-field">
+                            <label class="form-label" for="InterViewer">Interviewer</label>
+                            <input type="text" class="form-input" id="InterViewer" name="InterViewer" value="@Model.InterViewer" />
+                        </div>
 
-                <div class="modal-body">
-                    <input type="hidden" name="Id" value="@Model.Id" />
+                        <div class="form-field">
+                            <label class="form-label" for="InterviewType">Interview Type</label>
+                            <select class="form-select" id="InterviewType" name="InterviewType">
+                                @foreach (var type in Enum.GetValues(typeof(InterviewType)).Cast<InterviewType>())
+                                {
+                                    <option value="@type" selected="@(Model.InterviewType == type)">
+                                        @type
+                                    </option>
+                                }
+                            </select>
+                        </div>
 
-                    <div class="form-field">
-                        <label class="form-label" for="InterviewResult">Result <span class="text-danger">*</span></label>
-                        <select class="form-select" name="InterviewResult" id="InterviewResult" required>
-                            <option value="">-- Select Result --</option>
-                            @foreach (var result in Enum.GetValues(typeof(InterviewResult)).Cast<InterviewResult>())
-                            {
-                                <option value="@result">@result</option>
-                            }
-                        </select>
+                        <div class="form-field">
+                            <label class="form-label" for="InterviewStatus">Interview Status</label>
+                            <select class="form-select" id="InterviewStatus" name="InterviewStatus">
+                                @foreach (var status in Enum.GetValues(typeof(InterviewStatus)).Cast<InterviewStatus>())
+                                {
+                                    <option value="@status" selected="@(Model.InterviewStatus == status)">
+                                        @status
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="DurationMinutes">Duration (minutes)</label>
+                            <input type="number" class="form-input" id="DurationMinutes" name="DurationMinutes" value="@Model.DurationMinutes" min="1" />
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="InterviewNote">Note</label>
+                            <textarea class="form-input" id="InterviewNote" name="InterviewNote" rows="3">@Model.InterViewNote</textarea>
+                        </div>
+
+                        <div id="editInterviewError" class="form-error" style="display:none;"></div>
+                        <div id="editInterviewSuccess" class="alert-component alert-success" style="display:none;"></div>
                     </div>
 
-                    <div class="form-field">
-                        <label class="form-label" for="Feedback">Feedback</label>
-                        <textarea class="form-input" name="Feedback" id="Feedback" rows="4" placeholder="Enter interview feedback..."></textarea>
-                        <span class="form-description">Provide detailed feedback about the interview</span>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn-component btn-primary">
+                            <i class="bi bi-check-lg me-2"></i>Save Changes
+                        </button>
                     </div>
-
-                    <div class="form-field">
-                        <label class="form-label" for="Note">Note</label>
-                        <textarea class="form-input" name="Note" id="Note" rows="2" placeholder="Add any additional notes..."></textarea>
-                    </div>
-
-                    <div id="completeInterviewError" class="form-error" style="display:none;"></div>
-                    <div id="completeInterviewSuccess" class="alert-component alert-success" style="display:none;"></div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg me-2"></i>Cancel
-                    </button>
-                    <button type="submit" class="btn-component btn-primary">
-                        <i class="bi bi-check-lg me-2"></i>Complete Interview
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
+    <!-- Mark As Complete Modal -->
+    <div class="modal fade" id="completeInterviewModal" tabindex="-1" aria-labelledby="completeInterviewLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="completeInterviewForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="bi bi-check-circle me-2"></i>Mark Interview as Complete
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+
+                        <div class="form-field">
+                            <label class="form-label" for="InterviewResult">Result <span class="text-danger">*</span></label>
+                            <select class="form-select" name="InterviewResult" id="InterviewResult" required>
+                                <option value="">-- Select Result --</option>
+                                @foreach (var result in Enum.GetValues(typeof(InterviewResult)).Cast<InterviewResult>())
+                                {
+                                    <option value="@result">@result</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="Feedback">Feedback</label>
+                            <textarea class="form-input" name="Feedback" id="Feedback" rows="4" placeholder="Enter interview feedback..."></textarea>
+                            <span class="form-description">Provide detailed feedback about the interview</span>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="Note">Note</label>
+                            <textarea class="form-input" name="Note" id="Note" rows="2" placeholder="Add any additional notes..."></textarea>
+                        </div>
+
+                        <div id="completeInterviewError" class="form-error" style="display:none;"></div>
+                        <div id="completeInterviewSuccess" class="alert-component alert-success" style="display:none;"></div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn-component btn-primary">
+                            <i class="bi bi-check-lg me-2"></i>Complete Interview
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+
+</div>
 </div>
 
 @section Scripts {

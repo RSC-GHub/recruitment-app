@@ -9,7 +9,7 @@
         Hired = 5,            
         Rejected = 6,
         Offered = 7,
-        OnHold = 8            
+        Pending = 8,
+        OnHold = 9            
     }
 }
-  

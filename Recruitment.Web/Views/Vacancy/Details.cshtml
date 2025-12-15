@@ -108,28 +108,28 @@
                 <h5 class="fw-bold mb-2" style="color: hsl(222, 47%, 45%); font-size: 1.125rem;">
                     <i class="bi bi-file-text me-2"></i>Job Description
                 </h5>
-                <p class="text-secondary" style="line-height: 1.6;">@Model.JobDescription</p>
+                <p class="text-secondary" style="line-height: 1.6;">@Html.Raw(@Model.JobDescription)</p>
             </div>
 
             <div class="mb-4">
                 <h5 class="fw-bold mb-2" style="color: hsl(222, 47%, 45%); font-size: 1.125rem;">
                     <i class="bi bi-list-check me-2"></i>Requirements
                 </h5>
-                <p class="text-secondary" style="line-height: 1.6;">@Model.Requirements</p>
+                <p class="text-secondary" style="line-height: 1.6;">@Html.Raw(@Model.Requirements)</p>
             </div>
 
             <div class="mb-4">
                 <h5 class="fw-bold mb-2" style="color: hsl(222, 47%, 45%); font-size: 1.125rem;">
                     <i class="bi bi-clipboard-check me-2"></i>Responsibilities
                 </h5>
-                <p class="text-secondary" style="line-height: 1.6;">@Model.Responsibilities</p>
+                <p class="text-secondary" style="line-height: 1.6;">@Html.Raw(@Model.Responsibilities)</p>
             </div>
 
             <div class="mb-4">
                 <h5 class="fw-bold mb-2" style="color: hsl(222, 47%, 45%); font-size: 1.125rem;">
                     <i class="bi bi-gift me-2"></i>Benefits
                 </h5>
-                <p class="text-secondary" style="line-height: 1.6;">@Model.Benefits</p>
+                <p class="text-secondary" style="line-height: 1.6;">@Html.Raw(@Model.Benefits)</p>
             </div>
 
             <!-- PROJECTS -->

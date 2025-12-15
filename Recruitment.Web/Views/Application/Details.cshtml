@@ -96,7 +96,7 @@
                             </div>
                             <div>
                                 <span class="text-muted small">Description</span>
-                                <p class="mb-0 fw-semibold">@(Model.VacancyDescription ?? "-")</p>
+                                <p class="mb-0 fw-semibold">@Html.Raw((Model.VacancyDescription ?? "-"))</p>
                             </div>
                         </div>
                     </div>
