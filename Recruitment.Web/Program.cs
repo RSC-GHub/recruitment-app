@@ -61,12 +61,10 @@ namespace Recruitment.Web
 
             // Custom Middleware
             app.UseGlobalExceptionHandling();
-            app.UseAuditTrail();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
@@ -77,6 +75,8 @@ namespace Recruitment.Web
 
             app.UseAuthentication(); 
             app.UseAuthorization();
+
+            app.UseAuditTrail();
 
             app.MapControllerRoute(
                 name: "default",

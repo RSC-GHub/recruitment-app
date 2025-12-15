@@ -71,7 +71,16 @@ namespace Recruitment.Web.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var exception = HttpContext.Items["Exception"] as Exception;
+
+            var model = new ErrorViewModel
+            {
+                Message = "Something went wrong. Please contact support.",
+                Details = exception?.Message,
+                TraceId = HttpContext.TraceIdentifier
+            };
+
+            return View(model);
         }
     }
 }
