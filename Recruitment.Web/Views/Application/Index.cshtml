@@ -120,6 +120,7 @@
                                             var statusClass = app.ApplicationStatus.ToString() == "Accepted" ? "badge-success" :
                                             app.ApplicationStatus.ToString() == "Rejected" ? "badge-destructive" :
                                             app.ApplicationStatus.ToString() == "UnderReview" ? "badge-warning" :
+                                            app.ApplicationStatus.ToString() == "AcceptedInterview" ? "badge-success" :
                                                              "badge-default";
                                         }
                                         <span class="badge-component @statusClass">
