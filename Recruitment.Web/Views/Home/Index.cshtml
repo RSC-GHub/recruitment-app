@@ -135,6 +135,25 @@
         border: none;
         padding: 1rem 1.5rem;
     }
+
+    /* calender */
+    .fc-daygrid-day {
+        height: 100px !important;
+    }
+
+    .fc-event {
+        font-size: 0.85rem !important;
+    }
+
+    .fc-event-main {
+        padding: 1px 2px !important;
+    }
+
+    /* Make the entire calendar fit better */
+    #interviewCalendar {
+        width: 100%;
+        min-width: 900px; 
+    }
 </style>
 
 <div class="container-fluid mt-4">
@@ -219,14 +238,14 @@
     <!-- ALERTS + QUICK ACTION -->
     <!-- ===================== -->
 
-    <div class="row g-4">
+    <div class="row g-4 align-items-stretch">
 
         <!-- Alerts & Activity -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 ">
 
             <!-- Alerts -->
-            <div class="card alert-card border-0 shadow-sm mb-4 animate-in" style="animation-delay: 0.5s">
-                <div class="card-body p-4">
+            <div class="card alert-card border-0 shadow-sm animate-in h-100 w-100">
+                <div class="card-body p-4 d-flex flex-column">
                     <div class="section-title">
                         <i class="bi bi-exclamation-triangle text-danger"></i>
                         <span>Action Required</span>
@@ -268,18 +287,249 @@
                     }
                     else
                     {
-                        <div class="alert alert-success mb-0 d-flex align-items-center" role="alert">
-                            <i class="bi bi-check-circle-fill me-3 fs-4"></i>
-                            <div>
-                                <strong>All caught up!</strong>
-                                <p class="mb-0 small">No pending actions. Keep up the great work!</p>
+                        <div class="flex-grow-1 d-flex align-items-center">
+                            <div class="alert alert-success mb-0 d-flex align-items-center w-100" role="alert">
+                                <i class="bi bi-check-circle-fill me-3 fs-4"></i>
+                                <div>
+                                    <strong>All caught up!</strong>
+                                    <p class="mb-0 small">No pending actions. Keep up the great work!</p>
+                                </div>
                             </div>
                         </div>
                     }
+
                 </div>
             </div>
+        </div> 
 
-            <!-- Recently Updated / Audit Logs -->
+        <!-- Quick Actions -->
+        <div class="col-lg-4">
+            <div class="card quick-action-card border-0 shadow-sm animate-in" style="animation-delay: 0.7s">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="section-title">
+                        <i class="bi bi-lightning-charge text-primary"></i>
+                        <span>Quick Actions</span>
+                    </div>
+
+                    <div class="d-grid gap-3 mt-auto">
+                        <a asp-controller="Vacancy"
+                           asp-action="Create"
+                           class="btn action-btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Create New Vacancy
+                        </a>
+
+                        <a asp-controller="Application"
+                           asp-action="Index"
+                           class="btn action-btn custom-outline">
+                            <i class="bi bi-folder2-open me-2"></i>
+                            View Applications
+                        </a>
+
+                        <a asp-controller="Interview"
+                           asp-action="Index"
+                           class="btn action-btn btn-outline-success">
+                            <i class="bi bi-calendar-check me-2"></i>
+                            View Interviews
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ===================== -->
+<!-- Calendar -->
+<!-- ===================== -->
+<div class="card activity-card border-0 shadow-sm animate-in mt-4" style="animation-delay: 0.8s">
+    <div class="card-body p-4">
+        <div class="section-title">
+            <i class="bi bi-calendar-event text-success"></i>
+            <span>Interview Calendar</span>
+        </div>
+
+        <div id="interviewCalendar"></div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/lib/fullcalendar/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('interviewCalendar');
+
+            // Build events with extra data
+            var events = [
+                @Html.Raw(string.Join(",",
+                    Model.CalendarInterviews.Select(interview =>
+                                    "{" +
+                                                    $"title: '{interview.VacancyTitle}'," +
+                                                    $"start: '{interview.ScheduledDate:yyyy-MM-ddTHH:mm:ss}'," +
+                                                    "color: '#198754'," +
+                                                    "extendedProps: {" +
+                                                                    $"applicantName: '{interview.ApplicantName}'" +
+                                                    "}" +
+                                    "}"
+                    )
+                                        ))
+        ];
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: window.innerWidth < 768 ? 'timeGridDay' : 'dayGridMonth',
+            height: 'auto',
+            contentHeight: 'auto',
+            aspectRatio: 1.8,
+
+            // Header toolbar configuration
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+
+            // View-specific settings
+            views: {
+                dayGridMonth: {
+                    titleFormat: { year: 'numeric', month: 'long' }
+                },
+                timeGridWeek: {
+                    titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+                },
+                timeGridDay: {
+                    titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
+                }
+            },
+
+            // Events configuration
+            events: events,
+
+            // Display settings
+            displayEventTime: true,
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                meridiem: 'short'
+            },
+
+            // Event styling
+            eventClassNames: 'fw-semibold',
+            eventDisplay: 'block',
+
+            // Day limits
+            dayMaxEvents: 3,
+            moreLinkClick: 'popover',
+
+            // Current time indicator
+            nowIndicator: true,
+
+            // Business hours highlighting
+            businessHours: {
+                daysOfWeek: [1, 2, 3, 4, 5], // Monday - Friday
+                startTime: '09:00',
+                endTime: '17:00'
+            },
+
+            // Time slots
+            slotMinTime: '08:00',
+            slotMaxTime: '19:00',
+            slotDuration: '00:30:00',
+
+            // Loading state
+            loading: function(isLoading) {
+                if (isLoading) {
+                    calendarEl.style.opacity = '0.5';
+                } else {
+                    calendarEl.style.opacity = '1';
+                }
+            },
+
+            // Enhanced tooltip
+            eventDidMount: function (info) {
+                var start = new Date(info.event.start);
+                var tooltipContent =
+                    '<div class="text-start p-1">' +
+                    '<strong class="d-block mb-2 text-success">' + info.event.title + '</strong>' +
+                    '<small class="d-block text-white mb-1">' +
+                    '<i class="bi bi-person-fill me-1"></i>' + info.event.extendedProps.applicantName +
+                    '</small>' +
+                    '<small class="d-block text-muted">' +
+                    '<i class="bi bi-clock-fill me-1"></i>' +
+                    start.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric'
+                    }) + ' at ' +
+                    start.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) +
+                    '</small>' +
+                    '</div>';
+
+                new bootstrap.Tooltip(info.el, {
+                    title: tooltipContent,
+                    html: true,
+                    placement: 'top',
+                    container: 'body',
+                    trigger: 'hover',
+                    boundary: 'viewport'
+                });
+            },
+
+            // Click interaction for detailed view
+            eventClick: function(info) {
+                // Prevent browser navigation
+                info.jsEvent.preventDefault();
+
+                // You can add modal popup here
+                var start = new Date(info.event.start);
+                var details =
+                    'Interview Details:\n\n' +
+                    'Position: ' + info.event.title + '\n' +
+                    'Applicant: ' + info.event.extendedProps.applicantName + '\n' +
+                    'Date & Time: ' + start.toLocaleString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                // Simple alert (replace with Bootstrap modal for better UX)
+                alert(details);
+
+                // Optional: Highlight clicked event
+                info.el.style.borderColor = '#0d6efd';
+                info.el.style.borderWidth = '2px';
+            },
+
+            // Responsive behavior
+            windowResize: function() {
+                if (window.innerWidth < 768) {
+                    calendar.changeView('timeGridDay');
+                } else if (window.innerWidth < 992) {
+                    calendar.changeView('timeGridWeek');
+                }
+            },
+
+            // Date click for navigation
+            dateClick: function(info) {
+                calendar.changeView('timeGridDay', info.dateStr);
+            }
+        });
+
+        calendar.render();
+    });
+</script>
+}
+
+
+@*     <!-- Recently Updated / Audit Logs -->
             <div class="card activity-card border-0 shadow-sm animate-in" style="animation-delay: 0.6s">
                 <div class="card-body p-4">
                     <div class="section-title">
@@ -313,102 +563,4 @@
                         </div>
                     }
                 </div>
-            </div>
-
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="col-lg-4">
-            <div class="card quick-action-card border-0 shadow-sm h-70 animate-in" style="animation-delay: 0.7s">
-                <div class="card-body p-4 d-flex flex-column">
-                    <div class="section-title">
-                        <i class="bi bi-lightning-charge text-primary"></i>
-                        <span>Quick Actions</span>
-                    </div>
-
-                    <div class="d-grid gap-3 mt-auto">
-                        <a asp-controller="Vacancy"
-                           asp-action="Create"
-                           class="btn action-btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>
-                            Create New Vacancy
-                        </a>
-
-
-                        <a asp-controller="Application"
-                           asp-action="Index"
-                           class="btn action-btn custom-outline">
-                            <i class="bi bi-folder2-open me-2"></i>
-                            View Applications
-                        </a>
-
-
-
-                        <a asp-controller="Interview"
-                           asp-action="Index"
-                           class="btn action-btn btn-outline-success">
-                            <i class="bi bi-calendar-check me-2"></i>
-                            View Interviews
-                        </a>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- ===================== -->
-<!-- Calendar -->
-<!-- ===================== -->
-<div class="card activity-card border-0 shadow-sm animate-in mt-4" style="animation-delay: 0.8s">
-    <div class="card-body p-4">
-        <div class="section-title">
-            <i class="bi bi-calendar-event text-success"></i>
-            <span>Interview Calendar</span>
-        </div>
-
-        <div id="interviewCalendar"></div>
-    </div>
-</div>
-
-
-@section Scripts {
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js"></script>
-
-    <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                var calendarEl = document.getElementById('interviewCalendar');
-
-                var events = [
-                    @Html.Raw(
-                        string.Join(",",
-                                        Model.CalendarInterviews.Select(interview =>
-                                                        "{" +
-                                                        $"title: '{interview.ApplicantName}'," +
-                                                        $"start: '{interview.ScheduledDate.ToString("yyyy-MM-ddTHH:mm:ssZ")}'," +
-                                                        "color: '#198754'" +
-                                                        "}"
-                                        )
-                        )
-                                                )
-        ];
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            height: 500,
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            events: events
-        });
-
-        calendar.render();
-    });
-</script>
-}
-
+            </div>*@

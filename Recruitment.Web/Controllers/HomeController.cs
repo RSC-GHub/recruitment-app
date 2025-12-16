@@ -17,25 +17,23 @@ namespace Recruitment.Web.Controllers
         private readonly IVacancyService _vacancyService;
         private readonly IApplicantApplicationService _applicationService;
         private readonly IInterviewService _interviewService;
-        private readonly IAuditService _auditService;
+        //private readonly IAuditService _auditService;
 
         public HomeController(ILogger<HomeController> logger, 
             IVacancyService vacancyService, 
             IApplicantApplicationService applicationService,
-            IInterviewService interviewService,
-            IAuditService auditService)
+            IInterviewService interviewService
+            )
         {
             _logger = logger;
             _vacancyService = vacancyService;
             _applicationService = applicationService;
             _interviewService = interviewService;
-            _auditService = auditService;
+            //_auditService = auditService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var recentActivities = await _auditService.GetRecentActivitiesAsync(5);
-
             var calendarInterviews = await _interviewService.GetInterviewsForCalendarAsync(
                 DateTime.UtcNow.Month, DateTime.UtcNow.Year);
 
@@ -59,7 +57,6 @@ namespace Recruitment.Web.Controllers
                 PendingInterviewResults =
                     await _interviewService.GetPendingInterviewResultsAlertAsync(),
 
-                RecentActivities = recentActivities,
 
                 CalendarInterviews = calendarInterviews
 
@@ -90,3 +87,4 @@ namespace Recruitment.Web.Controllers
         }
     }
 }
+//var recentActivities = await _auditService.GetRecentActivitiesAsync(5);

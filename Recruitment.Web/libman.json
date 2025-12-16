@@ -17,6 +17,10 @@
     {
       "library": "fullcalendar-scheduler@4.2.0",
       "destination": "wwwroot/fullcalendar-scheduler/"
+    },
+    {
+      "library": "fullcalendar@6.1.7",
+      "destination": "wwwroot/lib/fullcalendar/"
     }
   ]
 }

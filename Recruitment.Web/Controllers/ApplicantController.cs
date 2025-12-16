@@ -108,8 +108,8 @@ namespace Recruitment.Web.Controllers
             {
                 Id = dto.Id,
                 FullName = dto.FullName,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
+                Email = dto.Email!,
+                PhoneNumber = dto.PhoneNumber!,
                 CountryName = dto.CountryName,
                 CityName = dto.CityName,
 
@@ -124,7 +124,7 @@ namespace Recruitment.Web.Controllers
                     Interviews = app.Interviews.Select(i => new InterviewHistoryVM
                     {
                         Id = i.Id,
-                        InterViewer = i.InterViewer,
+                        InterViewer = i.InterViewer!,
                         ScheduledDate = i.ScheduledDate,
                         InterviewType = i.InterviewType,
                         InterviewCategory = i.InterviewCategory,
@@ -217,7 +217,7 @@ namespace Recruitment.Web.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "An error occurred while creating the applicant. Please try again.");
+                ModelState.AddModelError(ex.Message, "An error occurred while creating the applicant. Please try again.");
                 await LoadDropdowns(vm);
                 return View(vm);
             }
