@@ -259,6 +259,10 @@
                 icon.classList.remove('bi-chevron-right');
                 icon.classList.add('bi-chevron-left');
             }
+
+            if (window.updateCalendarAfterSidebar) {
+                window.updateCalendarAfterSidebar();
+            }
         }
         
         // Highlight active sidebar menu item

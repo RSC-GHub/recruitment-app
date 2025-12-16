@@ -340,6 +340,80 @@
     </div>
 </div>
 
+<!-- Interview Details Modal -->
+<div class="modal fade" id="interviewModal" tabindex="-1" aria-labelledby="interviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="interviewModalLabel">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    Interview Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+
+                <!-- Status -->
+                <div class="form-field mb-3">
+                    <span class="badge bg-warning">
+                        <i class="bi bi-clock-fill me-1"></i>
+                        Scheduled
+                    </span>
+                </div>
+
+                <!-- Position -->
+                <div class="form-field">
+                    <label class="form-label">
+                        <i class="bi bi-briefcase-fill me-1"></i>
+                        Position
+                    </label>
+                    <div class="form-input" id="modalPosition">
+                        Senior Software Engineer
+                    </div>
+                </div>
+
+                <!-- Applicant -->
+                <div class="form-field">
+                    <label class="form-label">
+                        <i class="bi bi-person-fill me-1"></i>
+                        Applicant
+                    </label>
+                    <div class="form-input" id="modalApplicant">
+                        John Doe
+                    </div>
+                </div>
+
+                <!-- Date & Time -->
+                <div class="form-field">
+                    <label class="form-label">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        Date & Time
+                    </label>
+                    <div class="form-input" id="modalDateTime">
+                        Monday, December 16, 2024 at 02:30 PM
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn-component btn-primary" id="viewDetailsBtn">
+                    <i class="bi bi-arrow-right me-2"></i>
+                    View Full Details
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <!-- ===================== -->
 <!-- Calendar -->
@@ -347,14 +421,13 @@
 <div class="card activity-card border-0 shadow-sm animate-in mt-4" style="animation-delay: 0.8s">
     <div class="card-body p-4">
         <div class="section-title">
-            <i class="bi bi-calendar-event text-success"></i>
+            <i class="bi bi-calendar-event text-secondary"></i>
             <span>Interview Calendar</span>
         </div>
 
         <div id="interviewCalendar"></div>
     </div>
 </div>
-
 
 @section Scripts {
     <script src="~/lib/fullcalendar/index.global.min.js"></script>
@@ -366,107 +439,69 @@
             var events = [
                 @Html.Raw(string.Join(",",
                     Model.CalendarInterviews.Select(interview =>
-                                    "{" +
-                                                    $"title: '{interview.VacancyTitle}'," +
-                                                    $"start: '{interview.ScheduledDate:yyyy-MM-ddTHH:mm:ss}'," +
-                                                    "color: '#198754'," +
-                                                    "extendedProps: {" +
-                                                                    $"applicantName: '{interview.ApplicantName}'" +
-                                                    "}" +
-                                    "}"
+                            "{" +
+                                    $"title: '{interview.ApplicantName}'," +
+                                    $"start: '{interview.ScheduledDate:yyyy-MM-ddTHH:mm:ss}'," +
+                                    "color: '#082F49'," +
+                                    "extendedProps: {" +
+                                            $"vacancyTitle: '{interview.VacancyTitle}'," +
+                                            $"interviewId: '{interview.Id}'" +
+                                    "}" +
+                            "}"
                     )
-                                        ))
+                        ))
         ];
 
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+        // Initialize FullCalendar and store globally
+        window.calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: window.innerWidth < 768 ? 'timeGridDay' : 'dayGridMonth',
             height: 'auto',
             contentHeight: 'auto',
             aspectRatio: 1.8,
 
-            // Header toolbar configuration
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
 
-            // View-specific settings
             views: {
-                dayGridMonth: {
-                    titleFormat: { year: 'numeric', month: 'long' }
-                },
-                timeGridWeek: {
-                    titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
-                },
-                timeGridDay: {
-                    titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
-                }
+                dayGridMonth: { titleFormat: { year: 'numeric', month: 'long' } },
+                timeGridWeek: { titleFormat: { year: 'numeric', month: 'short', day: 'numeric' } },
+                timeGridDay: { titleFormat: { year: 'numeric', month: 'long', day: 'numeric' } }
             },
 
-            // Events configuration
             events: events,
-
-            // Display settings
             displayEventTime: true,
-            eventTimeFormat: {
-                hour: '2-digit',
-                minute: '2-digit',
-                meridiem: 'short'
-            },
-
-            // Event styling
+            eventTimeFormat: { hour: '2-digit', minute: '2-digit', meridiem: 'short' },
             eventClassNames: 'fw-semibold',
             eventDisplay: 'block',
-
-            // Day limits
             dayMaxEvents: 3,
             moreLinkClick: 'popover',
-
-            // Current time indicator
             nowIndicator: true,
 
-            // Business hours highlighting
-            businessHours: {
-                daysOfWeek: [1, 2, 3, 4, 5], // Monday - Friday
-                startTime: '09:00',
-                endTime: '17:00'
-            },
+            businessHours: { daysOfWeek: [1,2,3,4,5], startTime: '09:00', endTime: '17:00' },
+            slotMinTime: '08:00', slotMaxTime: '19:00', slotDuration: '00:30:00',
 
-            // Time slots
-            slotMinTime: '08:00',
-            slotMaxTime: '19:00',
-            slotDuration: '00:30:00',
-
-            // Loading state
             loading: function(isLoading) {
-                if (isLoading) {
-                    calendarEl.style.opacity = '0.5';
-                } else {
-                    calendarEl.style.opacity = '1';
-                }
+                calendarEl.style.opacity = isLoading ? '0.5' : '1';
             },
 
-            // Enhanced tooltip
             eventDidMount: function (info) {
                 var start = new Date(info.event.start);
                 var tooltipContent =
                     '<div class="text-start p-1">' +
-                    '<strong class="d-block mb-2 text-success">' + info.event.title + '</strong>' +
+                    '<strong class="d-block mb-2 text-success">' +
+                    '<i class="bi bi-person-fill me-1"></i>' + info.event.title +
+                    '</strong>' +
                     '<small class="d-block text-white mb-1">' +
-                    '<i class="bi bi-person-fill me-1"></i>' + info.event.extendedProps.applicantName +
+                    '<i class="bi bi-briefcase-fill me-1"></i>' + info.event.extendedProps.vacancyTitle +
                     '</small>' +
                     '<small class="d-block text-muted">' +
                     '<i class="bi bi-clock-fill me-1"></i>' +
-                    start.toLocaleDateString('en-US', {
-                        weekday: 'short',
-                        month: 'short',
-                        day: 'numeric'
-                    }) + ' at ' +
-                    start.toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }) +
+                    start.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) +
+                    ' at ' +
+                    start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) +
                     '</small>' +
                     '</div>';
 
@@ -480,53 +515,60 @@
                 });
             },
 
-            // Click interaction for detailed view
             eventClick: function(info) {
-                // Prevent browser navigation
                 info.jsEvent.preventDefault();
-
-                // You can add modal popup here
                 var start = new Date(info.event.start);
-                var details =
-                    'Interview Details:\n\n' +
-                    'Position: ' + info.event.title + '\n' +
-                    'Applicant: ' + info.event.extendedProps.applicantName + '\n' +
-                    'Date & Time: ' + start.toLocaleString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
+                var formattedDateTime = start.toLocaleString('en-US', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
 
-                // Simple alert (replace with Bootstrap modal for better UX)
-                alert(details);
+                document.getElementById('modalPosition').textContent = info.event.extendedProps.vacancyTitle;
+                document.getElementById('modalApplicant').textContent = info.event.title;
+                document.getElementById('modalDateTime').textContent = formattedDateTime;
+                document.getElementById('viewDetailsBtn').setAttribute('data-interview-id', info.event.extendedProps.interviewId);
 
-                // Optional: Highlight clicked event
-                info.el.style.borderColor = '#0d6efd';
-                info.el.style.borderWidth = '2px';
+                var interviewModal = new bootstrap.Modal(document.getElementById('interviewModal'));
+                interviewModal.show();
+
+                // Highlight clicked event
+                document.querySelectorAll('.fc-event').forEach(el => { el.style.border = ''; });
+                info.el.style.border = '3px solid #0d6efd';
             },
 
-            // Responsive behavior
             windowResize: function() {
-                if (window.innerWidth < 768) {
-                    calendar.changeView('timeGridDay');
-                } else if (window.innerWidth < 992) {
-                    calendar.changeView('timeGridWeek');
-                }
+                if (window.innerWidth < 768) calendar.changeView('timeGridDay');
+                else if (window.innerWidth < 992) calendar.changeView('timeGridWeek');
+                // Recalculate size after resize
+                setTimeout(() => window.calendar.updateSize(), 200);
             },
 
-            // Date click for navigation
             dateClick: function(info) {
                 calendar.changeView('timeGridDay', info.dateStr);
             }
         });
 
         calendar.render();
+
+        // Handle "View Full Details" button
+        document.getElementById('viewDetailsBtn').addEventListener('click', function() {
+            var interviewId = this.getAttribute('data-interview-id');
+            if (interviewId) window.location.href = '@Url.Action("Details", "Interview")/' + interviewId;
+        });
+
+        // Reset highlights when modal closes
+        document.getElementById('interviewModal').addEventListener('hidden.bs.modal', function () {
+            document.querySelectorAll('.fc-event').forEach(el => el.style.border = '');
+        });
+
+        // **Function to update calendar after sidebar toggle**
+        window.updateCalendarAfterSidebar = function() {
+            setTimeout(() => window.calendar.updateSize(), 250);
+        };
     });
 </script>
 }
+
 
 
 @*     <!-- Recently Updated / Audit Logs -->

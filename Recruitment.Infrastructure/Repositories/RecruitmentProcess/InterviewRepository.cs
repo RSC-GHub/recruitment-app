@@ -253,6 +253,8 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                         .ThenInclude(v => v.Title)
                 .AsQueryable();
 
+            query = query.Where(i => i.InterviewStatus == InterviewStatus.Scheduled);
+
             if (month.HasValue)
                 query = query.Where(i => i.ScheduledDate.Month == month.Value);
 

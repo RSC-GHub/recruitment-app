@@ -34,8 +34,7 @@ namespace Recruitment.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var calendarInterviews = await _interviewService.GetInterviewsForCalendarAsync(
-                DateTime.UtcNow.Month, DateTime.UtcNow.Year);
+            var calendarInterviews = await _interviewService.GetInterviewsForCalendarAsync();
 
             var vm = new HomeDashboardVM
             {
