@@ -563,7 +563,9 @@
 
         // **Function to update calendar after sidebar toggle**
         window.updateCalendarAfterSidebar = function() {
-            setTimeout(() => window.calendar.updateSize(), 250);
+            if (window.calendar) {
+                setTimeout(() => window.calendar.updateSize(), 250);
+            }
         };
     });
 </script>
