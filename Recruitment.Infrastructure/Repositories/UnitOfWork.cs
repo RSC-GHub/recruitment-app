@@ -48,6 +48,7 @@ namespace Recruitment.Infrastructure.Repositories
         public IAuditLogRepository AuditLogRepository { get; set; } 
         public IRejectionReasonRepository RejectionReasonRepository { get; set; }
 
+        public ILocationRepository LocationRepository { get; set; }
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
@@ -78,6 +79,7 @@ namespace Recruitment.Infrastructure.Repositories
             InterviewRepository = new InterviewRepository(context, httpContextAccessor);
             AuditLogRepository = new AuditLogRepository(context, httpContextAccessor);
             RejectionReasonRepository = new RejectionReasonRepository(context, httpContextAccessor);
+            LocationRepository = new LocationRepository(context, httpContextAccessor);
         }
 
         public async Task<int> CompleteAsync()

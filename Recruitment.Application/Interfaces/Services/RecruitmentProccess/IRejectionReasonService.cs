@@ -9,7 +9,6 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
             int page,
             int pageSize,
             string? search = null);
-        //Task<IEnumerable<ReasonDto>> GetAllAsync();
         Task<ReasonDto?> GetByIdAsync(int id);
         Task AddAsync(CreateReasonDto dto);
         Task UpdateAsync(ReasonDto dto);

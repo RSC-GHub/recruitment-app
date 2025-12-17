@@ -9,14 +9,16 @@
     <link rel="stylesheet" href="~/css/shadcn-components.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Recruitment.Web.styles.css" asp-append-version="true" />
+    
     <link href="~/lib/select2/css/select2.css" rel="stylesheet" />
     <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
 
+    <link href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.css" rel="stylesheet" />
+    <link href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <style>
-        /* Remove unused navbar styles - now using sidebar */
-    </style>
+  
 </head>
 <body>
     @if (User.Identity != null && User.Identity.IsAuthenticated)

@@ -1,4 +1,6 @@
-﻿using Recruitment.Application.DTOs.CoreBusiness.Location;
+﻿using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Location;
+using Recruitment.Application.DTOs.RecruitmentProccess.RejectionReason;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
@@ -13,6 +15,32 @@ namespace Recruitment.Application.Services.CoreBusiness
         {
             _unitOfWork = unitOfWork;
         }
+
+        public async Task<PagedResult<LocationDto>> GetPagedAsync(
+            int page,
+            int pageSize,
+            string? search = null,
+            int? countryId = null)
+        {
+            var pagedResult = await _unitOfWork.LocationRepository
+                                                .GetPagedAsync(page, pageSize, search, countryId);
+
+            var dtoItems = pagedResult.Items.Select(r => new LocationDto
+            {
+                Id = r.Id,
+                Name = r.Name,
+                CountryId = r.CountryId,
+                CountryName = r.Country?.Name
+            }).ToList();
+
+            return new PagedResult<LocationDto>(
+                dtoItems,
+                pagedResult.TotalCount,
+                page,
+                pageSize
+            );
+        }
+
 
         public async Task<IEnumerable<LocationDto>> GetAllAsync()
         {

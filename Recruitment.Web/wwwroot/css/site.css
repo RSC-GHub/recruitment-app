@@ -40,3 +40,6 @@ body {
     border: none;
     cursor: pointer;
 }
+.icon-color {
+    color: hsl(202 80.3% 23.9%) !important;
+}

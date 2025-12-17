@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Recruitment.Application.Common;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Infrastructure.Data;
 
 namespace Recruitment.Infrastructure.Repositories.CoreBusiness
@@ -10,6 +12,68 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
     {
         public ProjectRepository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
             : base(context, httpContextAccessor) { }
+
+
+        private async Task<PagedResult<Project>> ToPagedResultAsync(
+            IQueryable<Project> query,
+            int page,
+            int pageSize)
+        {
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Project>(
+                items,
+                totalCount,
+                page,
+                pageSize
+            );
+        }
+
+        public async Task<PagedResult<Project>> GetPagedAsync(
+            int page,
+            int pageSize,
+            string? search = null,
+            int? countryId = null)
+        {
+            var query = _context.Projects
+                .Include(p => p.Location)
+                .ThenInclude(l => l.Country)
+                .AsQueryable();
+
+            // Search
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p => p.ProjectName.Contains(search));
+            }
+
+            // Country Filter (THE FIX)
+            if (countryId.HasValue)
+            {
+                query = query.Where(p =>
+                    p.Location != null &&
+                    p.Location.CountryId == countryId.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var projects = await query
+                .OrderBy(p => p.CreatedOn)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Project>(
+                projects,
+                totalCount,
+                page,
+                pageSize
+            );
+        }
 
         public async Task<Project?> GetProjectWithVacanciesAsync(int projectId)
         {

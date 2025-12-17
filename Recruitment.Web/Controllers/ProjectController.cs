@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.CoreBusiness.Project;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
-using Recruitment.Web.ViewModels.CoreBusiness.Project;
+using Recruitment.Application.Services.CoreBusiness;
 using Recruitment.Web.Authorization;
+using Recruitment.Web.ViewModels.CoreBusiness.Project;
 
 namespace Recruitment.Web.Controllers
 {
@@ -11,33 +12,67 @@ namespace Recruitment.Web.Controllers
     {
         private readonly IProjectService _projectService;
         private readonly ILocationService _locationService;
+        private readonly ICountryService _countryService;
 
-        public ProjectController(IProjectService projectService, ILocationService locationService)
+        public ProjectController(IProjectService projectService, ILocationService locationService, ICountryService countryService)
         {
             _projectService = projectService;
             _locationService = locationService;
+            _countryService = countryService;
         }
 
         // GET: Project
         //[HasPermission("Project", "View")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            int page = 1,
+            int pageSize = 10,
+            string? search = null,
+            int? countryId = null)
         {
-            // Load all projects
-            var projectsDto = await _projectService.GetAllProjectWithLocationAsync();
-            var model = projectsDto.Select(p => new ProjectViewModel
+            // Projects
+            var pagedResult = await _projectService
+                .GetPagedAsync(page, pageSize, search, countryId);
+
+            var viewModel = new ProjectsPagedVM
             {
-                Id = p.Id,
-                ProjectName = p.ProjectName,
-                Status = p.Status,
-                LocationId = p.LocationId,
-                LocationName = p.LocationName
+                Items = pagedResult.Items.Select(p => new ProjectViewModel
+                {
+                    Id = p.Id,
+                    ProjectName = p.ProjectName,
+                    Status = p.Status,
+                    LocationId = p.LocationId,
+                    LocationName = p.LocationName
+                }).ToList(),
+
+                Page = pagedResult.Page,
+                PageSize = pagedResult.PageSize,
+                TotalCount = pagedResult.TotalCount,
+                Search = search,
+                CountryId = countryId
+            };
+
+            var countries = await _countryService.GetAllAsync();
+            ViewBag.Countries = countries.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name,
+                Selected = countryId.HasValue && c.Id == countryId.Value
             }).ToList();
 
             var locations = await _locationService.GetAllAsync();
-            ViewBag.Locations = locations.Select(l => new SelectListItem(l.Name, l.Id.ToString()));
 
-            return View(model);
+            ViewBag.Locations = locations.Select(l => new SelectListItem
+            {
+                Value = l.Id.ToString(),
+                Text = $"{l.Name} - {l.CountryName}"
+            }).ToList();
+
+
+            return View(viewModel);
         }
+
+
+
 
         // POST: Project/Create
         [HttpPost]

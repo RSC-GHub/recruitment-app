@@ -1,4 +1,6 @@
-﻿using Recruitment.Application.DTOs.CoreBusiness.Location;
+﻿using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Location;
+using Recruitment.Application.DTOs.RecruitmentProccess.RejectionReason;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,11 @@ namespace Recruitment.Application.Interfaces.Services.CoreBusiness
 {
     public interface ILocationService
     {
+        Task<PagedResult<LocationDto>> GetPagedAsync(
+            int page,
+            int pageSize,
+            string? search = null,
+            int? countryId = null);
         Task<IEnumerable<LocationDto>> GetAllAsync();
         Task<LocationDto?> GetByIdAsync(int id);
         Task AddAsync(CreateLocationDto dto);

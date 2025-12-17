@@ -49,7 +49,6 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                     r.Reason.Contains(search));
             }
 
-            // Sorting from smallest to largest (oldest first)
             query = query.OrderBy(r => r.CreatedOn);
 
             return await ToPagedResultAsync(query, page, pageSize);

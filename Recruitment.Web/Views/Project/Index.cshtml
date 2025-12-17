@@ -1,306 +1,422 @@
-﻿@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Project.ProjectViewModel>
+﻿@model Recruitment.Web.ViewModels.CoreBusiness.Project.ProjectsPagedVM
 
 @{
     ViewData["Title"] = "Projects";
 }
 
-<div class="card-component">
+<!-- Header -->
+<div class="flex-between mb-4">
+    <div>
+        <h2 class="card-title d-flex align-items-center gap-2">
+            <i class="bi bi-folder-fill"></i>
+            Projects
+        </h2>
+        <p class="card-description">Manage projects and assignments</p>
+    </div>
+    <button type="button"
+            class="btn-component btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createModal">
+        <i class="bi bi-plus-lg me-2"></i>
+        Add Project
+    </button>
+</div>
+
+<!-- Search & Filter -->
+<div class="card-component mb-4">
     <div class="card-header">
-        <div class="flex-between">
-            <div>
-                <h2 class="card-title">Projects</h2>
-                <p class="card-description">Manage projects and assignments</p>
-            </div>
-            <button type="button" 
-                    class="btn-component btn-primary"
-                    data-bs-toggle="modal" 
-                    data-bs-target="#createModal">
-                <i class="bi bi-plus-circle me-2"></i>
-                Add Project
-            </button>
-        </div>
+        <h3 class="card-title">
+            <i class="bi bi-funnel me-2"></i>
+            Search & Filter
+        </h3>
     </div>
 
     <div class="card-content">
-        <div class="table-component">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Project Name</th>
-                        <th>Status</th>
-                        <th>Location</th>
-                        <th style="width: 150px;" class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        @foreach (var project in Model)
+        <form asp-action="Index" method="get" class="row g-3">
+
+            <!-- Search -->
+            <div class="col-md-6">
+                <div class="form-field">
+                    <label class="form-label">Search</label>
+                    <input type="text"
+                           name="search"
+                           value="@Model.Search"
+                           class="form-input"
+                           placeholder="Search by project..." />
+                </div>
+            </div>
+
+            <!-- Country Filter -->
+            <div class="col-md-4">
+                <div class="form-field">
+                    <label class="form-label">Country</label>
+                    <select name="countryId" class="form-select">
+                        <option value="">-- All Countries --</option>
+                        @foreach (var c in ViewBag.Countries as IEnumerable<SelectListItem>)
                         {
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-folder-fill text-primary"></i>
-                                        <span class="fw-semibold">@project.ProjectName</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    @{
-                                        var statusClass = project.Status.ToString() == "Active" ? "badge-success" :
-                                        project.Status.ToString() == "Completed" ? "badge-secondary" :
-                                        "badge-warning";
-                                    }
-                                    <span class="badge-component @statusClass">@project.Status</span>
-                                </td>
-                                <td>
-                                    <span class="badge-component badge-outline">@project.LocationName</span>
-                                </td>
-                                <td class="text-end">
-                                    <div class="d-flex gap-2 justify-content-end">
-                                        <button type="button" 
-                                                class="btn-component btn-sm btn-primary edit-btn"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#editModal"
-                                                data-id="@project.Id"
-                                                data-name="@project.ProjectName"
-                                                data-status="@project.Status"
-                                                data-location-id="@project.LocationId"
-                                                title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" 
-                                                class="btn-component btn-sm btn-destructive delete-btn"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#deleteModal"
-                                                data-id="@project.Id"
-                                                data-name="@project.ProjectName"
-                                                title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <option value="@c.Value" selected="@c.Selected">@c.Text</option>
                         }
-                    }
-                    else
+                    </select>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="col-md-2 d-flex align-items-end">
+                <div class="form-field w-100">
+                    <button type="submit" class="btn-component btn-primary w-100">
+                        <i class="bi bi-search me-2"></i>
+                        Filter
+                    </button>
+
+                    @if (!string.IsNullOrEmpty(Model.Search) || Model.CountryId.HasValue)
                     {
-                        <tr>
-                            <td colspan="4" class="text-center py-5">
-                                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
-                                <span class="text-muted">No projects found</span>
-                            </td>
-                        </tr>
+                        <a asp-action="Index" class="btn-component btn-outline w-100 mt-2">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Clear
+                        </a>
                     }
-                </tbody>
-            </table>
-        </div>
+                </div>
+            </div>
+
+        </form>
     </div>
 </div>
 
+<!-- Projects Table -->
+<div class="card-content">
+    <div class="table-component">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:80px;">#</th>
+                    <th>Project Name</th>
+                    <th>Status</th>
+                    <th>Location</th>
+                    <th class="text-end" style="width:150px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items.Any())
+                {
+                    foreach (var p in Model.Items)
+                    {
+                        var badgeClass = "badge-component";
+                        var statusStr = p.Status.ToString();
+
+                        if (statusStr == "Active")
+                        {
+                            badgeClass = "badge-success";
+                        }
+                        else if (statusStr == "OnHold")
+                        {
+                            badgeClass = "badge-warning";
+                        }
+                        else if (statusStr == "Closed")
+                        {
+                            badgeClass = "badge-destructive";
+                        }
+
+                        <tr>
+                            <td class="text-muted">@p.Id</td>
+                            <td class="fw-semibold">@p.ProjectName</td>
+                            <td>
+                                <span class="badge-component @badgeClass">@p.Status</span>
+                            </td>
+                            <td>@p.LocationName</td>
+                            <td class="text-end">
+                                <button class="btn-component btn-sm btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editModal"
+                                        data-id="@p.Id"
+                                        data-name="@p.ProjectName"
+                                        data-status="@p.Status"
+                                        data-location-id="@p.LocationId">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            No projects found
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (Model.TotalPages > 1)
+{
+    <div class="card-footer">
+        <nav class="pagination-component">
+
+            <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
+               asp-action="Index"
+               asp-route-page="@(Model.Page - 1)"
+               asp-route-pageSize="@Model.PageSize"
+               asp-route-search="@Model.Search"
+               asp-route-countryId="@Model.CountryId">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search"
+                   asp-route-countryId="@Model.CountryId">
+                    @i
+                </a>
+            }
+
+            <a class="pagination-button @(Model.Page == Model.TotalPages ? "disabled" : "")"
+               asp-action="Index"
+               asp-route-page="@(Model.Page + 1)"
+               asp-route-pageSize="@Model.PageSize"
+               asp-route-search="@Model.Search"
+               asp-route-countryId="@Model.CountryId">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+        </nav>
+    </div>
+}
+
 <!-- Create Modal -->
-<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="createModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <form asp-action="Create" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-plus-circle me-2"></i>
-                        Add New Project
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <form asp-action="Create" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Project</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- Project Name -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        Project Name <span class="text-danger">*</span>
+                    </label>
+                    <input name="ProjectName"
+                           class="form-input"
+                           placeholder="Project Name"
+                           required />
                 </div>
-                <div class="modal-body">
-                    <div class="form-field">
-                        <label for="createName" class="form-label">
-                            Project Name <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" 
-                               class="form-input" 
-                               id="createName" 
-                               name="ProjectName" 
-                               placeholder="Enter project name"
-                               required />
-                    </div>
-                    <div class="form-field">
-                        <label for="createStatus" class="form-label">
-                            Status <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select" id="createStatus" name="Status" required>
-                            @foreach (var status in Enum.GetValues(typeof(Recruitment.Domain.Enums.ProjectStatus)))
-                            {
-                                <option value="@status">@status</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-field">
-                        <label for="createLocation" class="form-label">
-                            Location <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select" id="createLocation" name="LocationId" required>
-                            <option value="">-- Select Location --</option>
-                            @foreach (var loc in ViewBag.Locations as IEnumerable<SelectListItem>)
-                            {
-                                <option value="@loc.Value">@loc.Text</option>
-                            }
-                        </select>
-                    </div>
+
+                <!-- Status -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        Status <span class="text-danger">*</span>
+                    </label>
+                    <select name="Status" id="createStatus" class="form-select" required>
+                        @foreach (var s in Enum.GetValues(typeof(Recruitment.Domain.Enums.ProjectStatus)))
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn-component btn-primary">
-                        <i class="bi bi-check-circle me-2"></i>
-                        Save Project
-                    </button>
+
+                <!-- Location -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        Location <span class="text-danger">*</span>
+                    </label>
+
+                    <select name="LocationId" id="createLocation" class="form-select" required>
+                        <option value="">-- Select Location --</option>
+
+                        @foreach (var l in ViewBag.Locations as IEnumerable<SelectListItem>)
+                        {
+                            <option value="@l.Value">@l.Text</option>
+                        }
+                    </select>
                 </div>
-            </form>
-        </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button type="submit" class="btn-component btn-primary">
+                    Save
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
 <!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <form asp-action="Edit" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-pencil me-2"></i>
-                        Edit Project
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="editId" name="Id" />
-                    <div class="form-field">
-                        <label for="editName" class="form-label">
-                            Project Name <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" 
-                               class="form-input" 
-                               id="editName" 
-                               name="ProjectName" 
-                               required />
-                    </div>
-                    <div class="form-field">
-                        <label for="editStatus" class="form-label">
-                            Status <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select" id="editStatus" name="Status" required>
-                            @foreach (var status in Enum.GetValues(typeof(Recruitment.Domain.Enums.ProjectStatus)))
-                            {
-                                <option value="@status">@status</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-field">
-                        <label for="editLocation" class="form-label">
-                            Location <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select" id="editLocation" name="LocationId" required>
-                            <option value="">-- Select Location --</option>
-                            @foreach (var loc in ViewBag.Locations as IEnumerable<SelectListItem>)
-                            {
-                                <option value="@loc.Value">@loc.Text</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn-component btn-primary">
-                        <i class="bi bi-check-circle me-2"></i>
-                        Update Project
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+        <form asp-action="Edit" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Project</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form asp-action="Delete" method="post">
-                <div class="modal-header" style="background-color: hsl(0, 84%, 60%); color: white;">
-                    <h5 class="modal-title">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        Confirm Delete
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-body">
+
+                <input type="hidden" name="Id" id="editId" />
+
+                <!-- Project Name -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        Project Name <span class="text-danger">*</span>
+                    </label>
+                    <input name="ProjectName"
+                           id="editName"
+                           class="form-input"
+                           required />
                 </div>
-                <div class="modal-body">
-                    <div class="alert-component alert-destructive mb-0">
-                        <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
-                        <div>
-                            <div class="alert-title">Are you sure?</div>
-                            <div class="alert-description">
-                                You are about to delete project <strong id="deleteProjectName"></strong>.
-                                This action cannot be undone.
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="deleteProjectId" name="Id" />
+
+                <!-- Status -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        Status <span class="text-danger">*</span>
+                    </label>
+                    <select name="Status" id="editStatus" class="form-select" required>
+                        @foreach (var s in Enum.GetValues(typeof(Recruitment.Domain.Enums.ProjectStatus)))
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    </select>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn-component btn-destructive">
-                        <i class="bi bi-trash me-2"></i>
-                        Delete Project
-                    </button>
+
+                <!-- Location -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        Location <span class="text-danger">*</span>
+                    </label>
+
+                    <select name="LocationId"
+                            id="editLocation"
+                            class="form-select"
+                            required>
+                        <option value="">-- Select Location --</option>
+
+                        @foreach (var l in ViewBag.Locations as IEnumerable<SelectListItem>)
+                        {
+                            <option value="@l.Value">@l.Text</option>
+                        }
+                    </select>
                 </div>
-            </form>
-        </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button type="submit" class="btn-component btn-primary">
+                    Update
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
     <script>
+        // ============================
+        // Initialize Select2
+        // ============================
+        $(document).ready(function () {
+            // Initialize Select2 for Create Modal
+            $('#createLocation').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#createModal'),
+                placeholder: '-- Select Location --',
+                allowClear: true,
+                width: '100%'
+            });
+
+            // Initialize Select2 for Edit Modal
+            $('#editLocation').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#editModal'),
+                placeholder: '-- Select Location --',
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#editStatus').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#editModal'),
+                placeholder: '-- Select Status --',
+                minimumResultsForSearch: Infinity, // Disable search for status
+                width: '100%'
+            });
+        });
+
+        // ============================
+        // Reset Select2 on Modal Close
+        // ============================
+        $('#createModal').on('hidden.bs.modal', function () {
+            $('#createLocation').val('').trigger('change');
+            $('#createStatus').val('').trigger('change');
+        });
+
+        // ============================
         // Fill Edit Modal
+        // ============================
         var editModal = document.getElementById('editModal');
-        editModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var id = button.getAttribute('data-id');
-            var name = button.getAttribute('data-name');
-            var status = button.getAttribute('data-status');
-            var locationId = button.getAttribute('data-location-id');
+        if (editModal) {
+            editModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                if (!button) return;
 
-            document.getElementById('editId').value = id;
-            document.getElementById('editName').value = name;
-            document.getElementById('editStatus').value = status;
-            document.getElementById('editLocation').value = locationId;
-        });
+                document.getElementById('editId').value =
+                    button.getAttribute('data-id');
 
-        // Fill Delete Modal
-        var deleteModal = document.getElementById('deleteModal');
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var id = button.getAttribute('data-id');
-            var name = button.getAttribute('data-name');
+                document.getElementById('editName').value =
+                    button.getAttribute('data-name');
 
-            document.getElementById('deleteProjectId').value = id;
-            document.getElementById('deleteProjectName').textContent = name;
-        });
-
-        // Show toast notifications
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <text>
-            showToast('@TempData["SuccessMessage"]', 'success');
-            </text>
+                // Set Select2 values
+                $('#editStatus').val(button.getAttribute('data-status')).trigger('change');
+                $('#editLocation').val(button.getAttribute('data-location-id')).trigger('change');
+            });
         }
 
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <text>
-            showToast('@TempData["ErrorMessage"]', 'error');
-            </text>
+        // ============================
+        // Fill Delete Modal
+        // ============================
+        var deleteModal = document.getElementById('deleteModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                if (!button) return;
+
+                document.getElementById('deleteProjectId').value =
+                    button.getAttribute('data-id');
+
+                document.getElementById('deleteProjectName').textContent =
+                    button.getAttribute('data-name');
+            });
         }
     </script>
+
+    @* Toast Notifications *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            showToast('@TempData["SuccessMessage"]', 'success');
+        </script>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            showToast('@TempData["ErrorMessage"]', 'error');
+        </script>
+    }
 }

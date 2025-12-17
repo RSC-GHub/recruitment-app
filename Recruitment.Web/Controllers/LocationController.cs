@@ -22,27 +22,43 @@ namespace Recruitment.Web.Controllers
 
         // GET: Location
         //[HasPermission("Location", "View")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            int page = 1,
+            int pageSize = 10,
+            string? search = null,
+            int? countryId = null) 
         {
-            var locations = await _locationService.GetAllAsync();
-            var viewModel = locations.Select(l => new LocationListViewModel
-            {
-                Id = l.Id,
-                Name = l.Name,
-                CountryId = l.CountryId,
-                CountryName = l.CountryName
-            }).ToList();
+            var pagedResult = await _locationService.GetPagedAsync(page, pageSize, search, countryId);
 
-            // Load countries for Create/Edit modals
+            var viewModel = new LocationsPagedVM
+            {
+                Items = pagedResult.Items.Select(l => new LocationListViewModel
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    CountryId = l.CountryId,
+                    CountryName = l.CountryName
+                }).ToList(),
+                Page = pagedResult.Page,
+                PageSize = pagedResult.PageSize,
+                TotalCount = pagedResult.TotalCount,
+                Search = search
+            };
+
             var countries = await _countryService.GetAllAsync();
             ViewBag.Countries = countries.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
-                Text = c.Name
+                Text = c.Name,
+                Selected = countryId.HasValue && countryId.Value == c.Id
             }).ToList();
+
+            ViewBag.SelectedCountryId = countryId;
 
             return View(viewModel);
         }
+
+
 
         // GET: Location/Details/5
         //[HasPermission("Location", "View")]

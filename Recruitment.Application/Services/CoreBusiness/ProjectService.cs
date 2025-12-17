@@ -1,4 +1,5 @@
-﻿using Recruitment.Application.DTOs.CoreBusiness.Project;
+﻿using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Project;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
@@ -26,6 +27,36 @@ namespace Recruitment.Application.Services.CoreBusiness
                 LocationName = project.Location?.Name
             };
         }
+
+        public async Task<PagedResult<ProjectDto>> GetPagedAsync(
+            int page,
+            int pageSize,
+            string? search = null,
+            int? countryId = null)
+        {
+            var pagedProjects = await _unitOfWork.ProjectRepository
+                                                 .GetPagedAsync(page, pageSize, search, countryId);
+
+            var dtoItems = pagedProjects.Items.Select(p => new ProjectDto
+            {
+                Id = p.Id,
+                ProjectName = p.ProjectName,
+                Status = p.Status,
+                LocationId = p.LocationId,
+                LocationName = p.Location != null
+                        ? $"{p.Location.Name} - {p.Location.Country!.Name}"
+                        : null
+
+            }).ToList();
+
+            return new PagedResult<ProjectDto>(
+                dtoItems,
+                pagedProjects.TotalCount,
+                page,
+                pageSize
+            );
+        }
+
 
         public async Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
         {
