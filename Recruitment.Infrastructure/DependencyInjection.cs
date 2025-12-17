@@ -66,7 +66,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IInterviewService, InterviewService>();
             services.AddScoped<IAuditService, AuditService>();
             services.AddScoped<IExcelExportService, ExcelExportService>();
-
+            services.AddScoped<IRejectionReasonService, RejectionReasonService>();
 
             return services;
         }

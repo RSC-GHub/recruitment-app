@@ -1,0 +1,318 @@
+﻿@model Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason.ReasonsPagedVM
+
+@{
+    ViewData["Title"] = "Rejection Reasons";
+}
+
+<!-- Page Header -->
+<div class="flex-between mb-4">
+    <div>
+        <h2 class="card-title d-flex align-items-center gap-2">
+            <i class="bi bi-x-octagon"></i>
+            Rejection Reasons
+        </h2>
+        <p class="card-description">Manage application rejection reasons</p>
+    </div>
+    <button type="button"
+            class="btn-component btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createModal">
+        <i class="bi bi-plus-circle me-2"></i>
+        Add Reason
+    </button>
+</div>
+
+<!-- Search Card -->
+<div class="card-component mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="bi bi-search me-2"></i>
+            Search Rejection Reasons
+        </h3>
+    </div>
+    <div class="card-content">
+        <form asp-action="Index" method="get" class="row g-3">
+            <div class="col-md-8">
+                <div class="form-field">
+                    <label class="form-label" for="search">Search</label>
+                    <input type="text"
+                           id="search"
+                           name="search"
+                           value="@Model.Search"
+                           class="form-input"
+                           placeholder="Search by reason..." />
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <div class="form-field w-100">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                        <button class="btn-component btn-primary flex-grow-1">
+                            <i class="bi bi-search me-2"></i>
+                            Search
+                        </button>
+                        @if (!string.IsNullOrEmpty(Model.Search))
+                        {
+                            <a href="@Url.Action("Index")" class="btn-component btn-outline">
+                                <i class="bi bi-x-circle"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Rejection Reasons Table -->
+<div class="card-component">
+    <div class="card-content p-0">
+        <div class="table-scroll-wrapper">
+            <div class="table-component">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:60px;">#</th>
+                            <th>Reason</th>
+                            <th style="width:150px" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Items != null && Model.Items.Any())
+                        {
+                            foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-x-octagon text-primary"></i>
+                                            <span class="fw-semibold">@item.Reason</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            <!-- Edit Button -->
+                                            <button type="button"
+                                                    class="btn-component btn-sm btn-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editModal"
+                                                    data-id="@item.Id"
+                                                    data-reason="@item.Reason">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+
+                                            <!-- Delete Button -->
+                                            <button type="button"
+                                                    class="btn-component btn-sm btn-destructive"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    data-id="@item.Id"
+                                                    data-reason="@item.Reason">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center py-5">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                                    <span class="text-muted">No rejection reasons found</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer">
+            <nav class="pagination-component" aria-label="Pagination">
+                <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
+                   asp-action="Index"
+                   asp-route-page="@(Model.Page - 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+
+                @{
+                    int startPage = Math.Max(1, Model.Page - 2);
+                    int endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+                }
+
+                @if (startPage > 1)
+                {
+                    <a class="pagination-button"
+                       asp-action="Index"
+                       asp-route-page="1"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        1
+                    </a>
+                    @if (startPage > 2)
+                    {
+                        <span class="pagination-button disabled">...</span>
+                    }
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        @i
+                    </a>
+                }
+
+                @if (endPage < Model.TotalPages)
+                {
+                    @if (endPage < Model.TotalPages - 1)
+                    {
+                        <span class="pagination-button disabled">...</span>
+                    }
+                    <a class="pagination-button"
+                       asp-action="Index"
+                       asp-route-page="@Model.TotalPages"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        @Model.TotalPages
+                    </a>
+                }
+
+                <a class="pagination-button @(Model.Page == Model.TotalPages ? "disabled" : "")"
+                   asp-action="Index"
+                   asp-route-page="@(Model.Page + 1)"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+
+            <div class="text-center mt-3 text-muted small">
+                Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount results
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modals -->
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Add Rejection Reason</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-field">
+                        <label class="form-label">Reason <span class="text-danger">*</span></label>
+                        <input type="text" class="form-input" name="Reason" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-component btn-primary"><i class="bi bi-check-circle me-2"></i>Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Reason</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editId" name="Id" />
+                    <div class="form-field">
+                        <label class="form-label">Reason <span class="text-danger">*</span></label>
+                        <input type="text" id="editReason" name="Reason" class="form-input" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-component btn-primary"><i class="bi bi-check-circle me-2"></i>Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert-component alert-destructive mb-0">
+                        You are about to delete <strong id="deleteReasonName"></strong>
+                    </div>
+                    <input type="hidden" id="deleteId" name="Id" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-component btn-destructive"><i class="bi bi-trash me-2"></i>Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Populate Edit Modal
+        const editModal = document.getElementById('editModal');
+        if (editModal) {
+            editModal.addEventListener('show.bs.modal', function (e) {
+                const btn = e.relatedTarget;
+                document.getElementById('editId').value = btn.getAttribute('data-id');
+                document.getElementById('editReason').value = btn.getAttribute('data-reason');
+            });
+        }
+
+        // Populate Delete Modal
+        const deleteModal = document.getElementById('deleteModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function (e) {
+                const btn = e.relatedTarget;
+                document.getElementById('deleteId').value = btn.getAttribute('data-id');
+                document.getElementById('deleteReasonName').textContent = btn.getAttribute('data-reason');
+            });
+        }
+
+        // Toast notifications
+        @if (TempData["Success"] != null)
+        {
+                <text>showToast('@TempData["Success"]','success');</text>
+        }
+        @if (TempData["Error"] != null)
+        {
+                <text>showToast('@TempData["Error"]','error');</text>
+        }
+    </script>
+}

@@ -4,6 +4,7 @@ using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Entities.UserManagement;
 
 namespace Recruitment.Application.Interfaces.Persistence
@@ -25,6 +26,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IGenericRepository<Permission> Permissions { get; } 
         IGenericRepository<RolePermission> RolePermissions { get; }
         IGenericRepository<Currency> Currencies { get; }
+        IGenericRepository<RejectionReason> RejectionReasons { get; }
 
         IProjectRepository ProjectRepository { get; }
         ITitleRepository TitleRepository { get; }
@@ -33,6 +35,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IApplicantApplicationRepository ApplicationRepository { get; }
         IInterviewRepository InterviewRepository { get; }
         IAuditLogRepository AuditLogRepository { get; }
+        IRejectionReasonRepository RejectionReasonRepository { get; }
         Task<int> CompleteAsync();
     }
 }

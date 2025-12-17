@@ -6,6 +6,7 @@ using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
+using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure.Data;
 using Recruitment.Infrastructure.Repositories.Audit;
@@ -35,6 +36,7 @@ namespace Recruitment.Infrastructure.Repositories
         public IGenericRepository<Permission> Permissions  { get; }
         public IGenericRepository<RolePermission> RolePermissions { get; set; }
         public IGenericRepository<Currency> Currencies { get; }
+        public IGenericRepository<RejectionReason> RejectionReasons { get; }
 
         public IRoleRepository Roles { get; }
         public IVacancyRepository VacancyRepository { get; }
@@ -44,6 +46,7 @@ namespace Recruitment.Infrastructure.Repositories
         public IApplicantApplicationRepository ApplicationRepository { get; }
         public IInterviewRepository InterviewRepository { get; set; } 
         public IAuditLogRepository AuditLogRepository { get; set; } 
+        public IRejectionReasonRepository RejectionReasonRepository { get; set; }
 
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
@@ -59,6 +62,7 @@ namespace Recruitment.Infrastructure.Repositories
             Titles = new GenericRepository<Title>(_context, httpContextAccessor);
             Departments = new GenericRepository<Department>(_context, httpContextAccessor);
             DepartmentTitles = new GenericRepository<DepartmentTitle>(_context, httpContextAccessor);
+            RejectionReasons = new GenericRepository<RejectionReason>(_context, httpContextAccessor);
 
             Roles = new RoleRepository(_context);
             
@@ -73,6 +77,7 @@ namespace Recruitment.Infrastructure.Repositories
             ApplicationRepository = new ApplicantApplicationRepository(context, httpContextAccessor);
             InterviewRepository = new InterviewRepository(context, httpContextAccessor);
             AuditLogRepository = new AuditLogRepository(context, httpContextAccessor);
+            RejectionReasonRepository = new RejectionReasonRepository(context, httpContextAccessor);
         }
 
         public async Task<int> CompleteAsync()

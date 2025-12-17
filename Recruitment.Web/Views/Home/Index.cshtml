@@ -28,7 +28,7 @@
         }
 
         .stat-card.primary {
-            border-left-color: #0d6efd;
+            border-left-color: #082F49;
         }
 
         .stat-card.secondary {
@@ -71,12 +71,12 @@
 
     .activity-card {
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        border-left: 4px solid #0d6efd;
+        border-left: 4px solid #082F49;
     }
 
     .quick-action-card {
         background: linear-gradient(135deg, #e7f3ff 0%, #ffffff 100%);
-        border-left: 4px solid #0d6efd;
+        border-left: 4px solid #082F49;
     }
 
     .action-btn {
@@ -99,7 +99,7 @@
 
         .activity-item:hover {
             background-color: #f8f9fa;
-            border-left-color: #0d6efd;
+            border-left-color: #082F49;
         }
 
     .badge-custom {
@@ -154,6 +154,50 @@
         width: 100%;
         min-width: 900px; 
     }
+
+    /* Day names (Sun, Mon, Tue...) */
+    .fc-col-header-cell-cushion {
+        color: #082F49 !important;
+        font-weight: 600;
+    }
+
+    /* Day numbers (1, 2, 3...) in month view */
+    .fc-daygrid-day-number {
+        color: #082F49 !important;
+        font-weight: 600;
+    }
+
+    /* Today date highlight (optional – keeps same color) */
+    .fc-day-today .fc-daygrid-day-number {
+        color: #082F49 !important;
+    }
+
+    /* Week / Day view column headers */
+    .fc-timegrid-axis-cushion,
+    .fc-timegrid-slot-label,
+    .fc-timegrid-col-header-cell-cushion {
+        color: #082F49 !important;
+        font-weight: 600;
+    }
+
+    /* Remove underline from day names (Sun, Mon, ...) */
+    .fc-col-header-cell-cushion {
+        text-decoration: none !important;
+    }
+
+    /* Remove underline from day numbers (1, 2, 3, ...) */
+    .fc-daygrid-day-number {
+        text-decoration: none !important;
+    }
+
+        /* Safety: remove underline on hover & focus */
+        .fc-col-header-cell-cushion:hover,
+        .fc-daygrid-day-number:hover,
+        .fc-col-header-cell-cushion:focus,
+        .fc-daygrid-day-number:focus {
+            text-decoration: none !important;
+        }
+
 </style>
 
 <div class="container-fluid mt-4">
@@ -533,7 +577,7 @@
 
                 // Highlight clicked event
                 document.querySelectorAll('.fc-event').forEach(el => { el.style.border = ''; });
-                info.el.style.border = '3px solid #0d6efd';
+                info.el.style.border = '3px solid #082F49';
             },
 
             windowResize: function() {

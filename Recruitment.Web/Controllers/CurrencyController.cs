@@ -25,28 +25,35 @@ namespace Recruitment.Web.Controllers
             return View(vmList);
         }
 
-        // GET: Currency/Create
-        public IActionResult Create()
-        {
-            return View(new CreateCurrencyVM());
-        }
-
         // POST: Currency/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCurrencyVM vm)
         {
             if (!ModelState.IsValid)
-                return View(vm);
-
-            var dto = new CreateCurrencyDto
             {
-                Name = vm.Name
-            };
+                TempData["Error"] = "Please enter a valid currency name.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            await _currencyService.AddAsync(dto);
+            try
+            {
+                var dto = new CreateCurrencyDto
+                {
+                    Name = vm.Name
+                };
+
+                await _currencyService.AddAsync(dto);
+                TempData["Success"] = "Currency added successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error adding currency: {ex.Message}";
+            }
+
             return RedirectToAction(nameof(Index));
         }
+
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -66,17 +73,30 @@ namespace Recruitment.Web.Controllers
         public async Task<IActionResult> Edit(int id, CreateCurrencyVM vm)
         {
             if (!ModelState.IsValid)
-                return View(vm);
-
-            var dto = new CurrencyDto
             {
-                Id = id,
-                Name = vm.Name
-            };
+                TempData["Error"] = "Invalid currency data.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            await _currencyService.UpdateAsync(dto);
+            try
+            {
+                var dto = new CurrencyDto
+                {
+                    Id = id,
+                    Name = vm.Name
+                };
+
+                await _currencyService.UpdateAsync(dto);
+                TempData["Success"] = "Currency updated successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error updating currency: {ex.Message}";
+            }
+
             return RedirectToAction(nameof(Index));
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

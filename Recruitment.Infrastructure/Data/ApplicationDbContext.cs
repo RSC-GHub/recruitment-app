@@ -43,6 +43,7 @@ namespace Recruitment.Infrastructure.Data
         // Recruitment Process
         public DbSet<ApplicantApplication> Applications { get; set; }
         public DbSet<Interview> Interviews { get; set; }
+        public DbSet<RejectionReason> RejectionReasons { get; set; } = null!;
 
         private string GetCurrentUsername()
         {

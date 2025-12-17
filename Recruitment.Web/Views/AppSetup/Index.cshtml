@@ -91,6 +91,20 @@
             </a>
         </div>
 
+        <!-- Rejection Reasons -->
+        <div class="col-md-4">
+            <a asp-controller="RejectionReasons" asp-action="Index" class="text-decoration-none">
+                <div class="card-component setup-card">
+                    <div class="card-content text-center">
+                        <i class="bi bi-x-octagon-fill fs-1 setup-color text-primary mb-3 d-block"></i>
+                        <h5 class="card-title setup-color">Rejection Reasons</h5>
+                        <p class="card-description">Manage application rejection reasons</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+
     </div>
 </div>
 
@@ -100,15 +114,15 @@
         cursor: pointer;
     }
 
-    .setup-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
+        .setup-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
 
-    .setup-card:hover .bi {
-        transform: scale(1.1);
-        transition: transform 0.3s ease;
-    }
+            .setup-card:hover .bi {
+                transform: scale(1.1);
+                transition: transform 0.3s ease;
+            }
 
     .setup-color {
         color: hsl(202 80.3% 23.9%) !important;
