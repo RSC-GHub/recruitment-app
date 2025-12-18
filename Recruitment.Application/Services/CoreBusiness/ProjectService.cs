@@ -159,5 +159,11 @@ namespace Recruitment.Application.Services.CoreBusiness
             var projects = await _unitOfWork.ProjectRepository.GetProjectsByLocationAsync(locationId);
             return projects.Select(MapToDto);
         }
+
+        public async Task<IEnumerable<ProjectDto>> GetAllActiveProjectsAsync()
+        {
+            var projects = await _unitOfWork.ProjectRepository.GetAllActiveProjectsAsync();
+            return projects.Select(MapToDto);
+        }
     }
 }

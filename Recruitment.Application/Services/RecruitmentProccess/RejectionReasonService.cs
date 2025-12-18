@@ -42,9 +42,9 @@ namespace Recruitment.Application.Services.RecruitmentProccess
         //}
 
         public async Task<PagedResult<ReasonDto>> GetPagedAsync(
-    int page,
-    int pageSize,
-    string? search = null)
+            int page,
+            int pageSize,
+            string? search = null)
         {
             var pagedResult =
                 await _unitOfWork.RejectionReasonRepository

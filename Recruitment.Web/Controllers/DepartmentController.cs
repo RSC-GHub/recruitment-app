@@ -17,16 +17,30 @@ namespace Recruitment.Web.Controllers
 
         // GET: Department
         //[HasPermission("Department", "View")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            int page = 1,
+            int pageSize = 10,
+            string? search = null)
         {
-            var departments = await _departmentService.GetAllAsync();
-            var viewModel = departments.Select(d => new DepartmentViewModel
+            var pagedDto = await _departmentService.GetPagedAsync(page, pageSize, search);
+
+            var vm = new DepartmentsPagedVM
             {
-                Id = d.Id,
-                Name = d.Name
-            });
-            return View(viewModel);
+                Items = pagedDto.Items.Select(d => new DepartmentViewModel
+                {
+                    Id = d.Id,
+                    Name = d.Name
+                }).ToList(),
+
+                Page = pagedDto.Page,
+                PageSize = pagedDto.PageSize,
+                TotalCount = pagedDto.TotalCount,
+                Search = search
+            };
+
+            return View(vm);
         }
+
 
         // GET: Department/Details/5
         //[HasPermission("Department", "View")]

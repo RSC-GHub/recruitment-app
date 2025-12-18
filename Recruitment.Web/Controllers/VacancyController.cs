@@ -34,7 +34,7 @@ namespace Recruitment.Web.Controllers
                                 .Select(t => new SelectListItem(t.Name, t.Id.ToString()))
                                 .ToList();
 
-            vm.ProjectsDropdown = (await _projectService.GetAllProjectsAsync())
+            vm.ProjectsDropdown = (await _projectService.GetAllActiveProjectsAsync())
                                   .Select(p => new SelectListItem(p.ProjectName, p.Id.ToString()))
                                   .ToList();
         }

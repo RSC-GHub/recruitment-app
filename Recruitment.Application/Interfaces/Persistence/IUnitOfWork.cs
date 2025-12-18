@@ -36,6 +36,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IInterviewRepository InterviewRepository { get; }
         IAuditLogRepository AuditLogRepository { get; }
         IRejectionReasonRepository RejectionReasonRepository { get; }
+        IDepartmentRepository DepartmentRepository { get; }
 
         ILocationRepository LocationRepository { get; }
         Task<int> CompleteAsync();

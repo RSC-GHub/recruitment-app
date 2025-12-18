@@ -16,5 +16,8 @@ namespace Recruitment.Application.Interfaces.Persistence.CoreBusiness
         Task<IEnumerable<Project>> GetProjectsByLocationAsync(int locationId);
         Task<IEnumerable<Project>> GetAllProjectWithLocationAsync();
 
+        Task<IEnumerable<Project>> GetAllActiveProjectsAsync();
+
     }
-}
+} 
+ 

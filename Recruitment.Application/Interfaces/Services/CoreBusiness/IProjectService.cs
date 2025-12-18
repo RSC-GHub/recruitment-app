@@ -19,5 +19,6 @@ namespace Recruitment.Application.Interfaces.Services.CoreBusiness
         Task<IEnumerable<ProjectDto>> GetAllProjectWithLocationAsync();
         Task<ProjectDto?> GetProjectWithVacanciesAsync(int projectId);
         Task<IEnumerable<ProjectDto>> GetProjectsByLocationAsync(int locationId);
+        Task<IEnumerable<ProjectDto>> GetAllActiveProjectsAsync();
     }
 }

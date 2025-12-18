@@ -33,7 +33,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 pageSize
             );
         }
-
+      
         public async Task<PagedResult<RejectionReason>> GetPagedAsync(
             int page,
             int pageSize,

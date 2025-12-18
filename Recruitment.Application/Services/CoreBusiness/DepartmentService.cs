@@ -1,17 +1,40 @@
-﻿using Recruitment.Application.DTOs.CoreBusiness.Department;
+﻿using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Department;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
 
 namespace Recruitment.Application.Services.CoreBusiness
 {
-    public class DepartmentService : IDepartmentService
+    public class DepartmentService :  IDepartmentService
     {
         private readonly IUnitOfWork _unitOfWork;
 
         public DepartmentService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<PagedResult<DepartmentDto>> GetPagedAsync(
+        int page,
+        int pageSize,
+        string? search = null)
+        {
+            var pagedResult =
+                await _unitOfWork.DepartmentRepository.GetPagedAsync(page, pageSize, search);
+
+            var dtoItems = pagedResult.Items.Select(d => new DepartmentDto
+            {
+                Id = d.Id,
+                Name = d.Name
+            }).ToList();
+
+            return new PagedResult<DepartmentDto>(
+                dtoItems,
+                pagedResult.TotalCount,
+                page,
+                pageSize
+            );
         }
 
         public async Task<IEnumerable<DepartmentDto>> GetAllAsync()

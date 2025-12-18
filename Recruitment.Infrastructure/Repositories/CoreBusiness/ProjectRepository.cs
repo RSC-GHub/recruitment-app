@@ -4,6 +4,7 @@ using Recruitment.Application.Common;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.RecruitmentProccess;
+using Recruitment.Domain.Enums;
 using Recruitment.Infrastructure.Data;
 
 namespace Recruitment.Infrastructure.Repositories.CoreBusiness
@@ -51,7 +52,6 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
                 query = query.Where(p => p.ProjectName.Contains(search));
             }
 
-            // Country Filter (THE FIX)
             if (countryId.HasValue)
             {
                 query = query.Where(p =>
@@ -67,12 +67,13 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
                 .Take(pageSize)
                 .ToListAsync();
 
-            return new PagedResult<Project>(
-                projects,
-                totalCount,
-                page,
-                pageSize
-            );
+            //return new PagedResult<Project>(
+            //    projects,
+            //    totalCount,
+            //    page,
+            //    pageSize
+            //);
+            return await ToPagedResultAsync(query, page, pageSize);
         }
 
         public async Task<Project?> GetProjectWithVacanciesAsync(int projectId)
@@ -124,6 +125,15 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
             }
 
             return projects;
+        }
+
+        public async Task<IEnumerable<Project>> GetAllActiveProjectsAsync()
+        {
+            var openProjects = await _context.Projects
+                                             .Where(p => p.Status == ProjectStatus.Active)
+                                             .AsNoTracking()
+                                             .ToListAsync();
+            return openProjects;
         }
     }
 }
