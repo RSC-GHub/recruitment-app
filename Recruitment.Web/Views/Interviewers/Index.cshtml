@@ -1,0 +1,310 @@
+﻿@model Recruitment.Web.ViewModels.RecruitmentProcess.Interviewer.InterviewersPagedVM
+
+@{
+    ViewData["Title"] = "Interviewers";
+}
+
+
+<!-- Page Header -->
+<div class="flex-between mb-4">
+    <div>
+        <h2 class="card-title d-flex align-items-center gap-2">
+            <i class="bi bi-people-fill"></i>
+            Interviewers
+        </h2>
+        <p class="card-description">Manage interviewers and their departments</p>
+    </div>
+    <button type="button"
+            class="btn-component btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#createModal">
+        <i class="bi bi-plus-circle me-2"></i>
+        Add Interviewer
+    </button>
+</div>
+
+<!-- Search Card -->
+<div class="card-component mb-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="bi bi-search me-2"></i>
+            Search Interviewers
+        </h3>
+    </div>
+    <div class="card-content">
+        <form asp-action="Index" method="get" class="row g-3">
+            <div class="col-md-8">
+                <div class="form-field">
+                    <label class="form-label">Search</label>
+                    <input type="text"
+                           name="search"
+                           value="@Model.Search"
+                           class="form-input"
+                           placeholder="Search by interviewer name..." />
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <div class="form-field w-100">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                        <button class="btn-component btn-primary flex-grow-1">
+                            <i class="bi bi-search me-2"></i>
+                            Search
+                        </button>
+                        @if (!string.IsNullOrEmpty(Model.Search))
+                        {
+                            <a asp-action="Index" class="btn-component btn-outline">
+                                <i class="bi bi-x-circle"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Interviewers Table -->
+<div class="card-component">
+    <div class="card-content p-0">
+        <div class="table-scroll-wrapper">
+            <div class="table-component">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:60px;">#</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th style="width:150px" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Items.Any())
+                        {
+                            foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td class="fw-semibold">@item.Name</td>
+                                    <td>@item.DepartmentName</td>
+                                    <td class="text-end">
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            <button type="button"
+                                                    class="btn-component btn-sm btn-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editModal"
+                                                    data-id="@item.Id"
+                                                    data-name="@item.Name"
+                                                    data-department="@item.DepartmentName">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+
+                                            <button type="button"
+                                                    class="btn-component btn-sm btn-destructive"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    data-id="@item.Id"
+                                                    data-name="@item.Name">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                                    <span class="text-muted">No interviewers found</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer">
+            <nav class="pagination-component">
+                <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
+                   asp-route-page="@(Model.Page - 1)"
+                   asp-route-search="@Model.Search">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                       asp-route-page="@i"
+                       asp-route-search="@Model.Search">
+                        @i
+                    </a>
+                }
+
+                <a class="pagination-button @(Model.Page == Model.TotalPages ? "disabled" : "")"
+                   asp-route-page="@(Model.Page + 1)"
+                   asp-route-search="@Model.Search">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </nav>
+        </div>
+    }
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Add Interviewer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-field mb-3">
+                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <input type="text" name="Name" class="form-input" required />
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Department <span class="text-danger">*</span></label>
+                        <select id="createDepartmentId" name="DepartmentId" class="form-field-select" asp-items="ViewBag.Departments" required>
+                            <option value="">-- Select Department --</option>
+                        </select>
+                        <span class="field-description">Choose the department for this interviewer</span>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn-component btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Interviewer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-field mb-3">
+                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <input type="text" id="editName" name="Name" class="form-input" required />
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Department <span class="text-danger">*</span></label>
+                        <select id="editDepartmentId" name="DepartmentId" class="form-field-select" asp-items="ViewBag.Departments" required>
+                        </select>
+                        <span class="field-description">Choose the department for this interviewer</span>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn-component btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="deleteId" name="Id" />
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    You are about to delete <strong id="deleteName"></strong>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-component btn-destructive">Delete</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize Select2 for create modal
+        $('#createModal').on('shown.bs.modal', function () {
+            $('#createDepartmentId').select2({
+                placeholder: "-- Select Department --",
+                dropdownParent: $('#createModal'),
+                width: '100%'
+            });
+        });
+
+        // Edit Modal
+        $('#editModal').on('shown.bs.modal', function (e) {
+            const btn = e.relatedTarget;
+            $('#editId').val(btn.dataset.id);
+            $('#editName').val(btn.dataset.name);
+
+            $('#editDepartmentId').val(btn.dataset.department).trigger('change');
+
+            $('#editDepartmentId').select2({
+                placeholder: "-- Select Department --",
+                dropdownParent: $('#editModal'),
+                width: '100%'
+            });
+        });
+
+        // Initialize Select2 for edit modal
+        $(document).ready(function () {
+            $('#editDepartmentId').select2({
+                placeholder: "-- Select Department --",
+                dropdownParent: $('#editModal')
+            });
+        });
+
+        // Delete Modal
+        document.getElementById('deleteModal')
+            ?.addEventListener('show.bs.modal', e => {
+                const btn = e.relatedTarget;
+                document.getElementById('deleteId').value = btn.dataset.id;
+                document.getElementById('deleteName').textContent = btn.dataset.name;
+            });
+
+        @if (TempData["Success"] != null)
+        {
+                        <text>showToast('@TempData["Success"]','success');</text>
+        }
+        @if (TempData["Error"] != null)
+        {
+                        <text>showToast('@TempData["Error"]','error');</text>
+        }
+    </script>
+}

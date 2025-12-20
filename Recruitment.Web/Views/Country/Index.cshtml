@@ -11,9 +11,9 @@
                 <h2 class="card-title">Countries</h2>
                 <p class="card-description">Manage countries and regions</p>
             </div>
-            <button type="button" 
+            <button type="button"
                     class="btn-component btn-primary"
-                    data-bs-toggle="modal" 
+                    data-bs-toggle="modal"
                     data-bs-target="#createModal">
                 <i class="bi bi-plus-circle me-2"></i>
                 Add Country
@@ -48,9 +48,9 @@
                                 </td>
                                 <td class="text-end">
                                     <div class="d-flex gap-2 justify-content-end">
-                                        <button type="button" 
+                                        <button type="button"
                                                 class="btn-component btn-sm btn-primary edit-btn"
-                                                data-bs-toggle="modal" 
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#editModal"
                                                 data-id="@item.Id"
                                                 data-name="@item.Name"
@@ -58,9 +58,9 @@
                                                 title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button type="button" 
+                                        <button type="button"
                                                 class="btn-component btn-sm btn-destructive delete-btn"
-                                                data-bs-toggle="modal" 
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#deleteModal"
                                                 data-id="@item.Id"
                                                 data-name="@item.Name"
@@ -92,6 +92,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="bi bi-plus-circle me-2"></i>
@@ -104,10 +105,10 @@
                         <label for="createName" class="form-label">
                             Country Name <span class="text-danger">*</span>
                         </label>
-                        <input type="text" 
-                               class="form-input" 
-                               id="createName" 
-                               name="Name" 
+                        <input type="text"
+                               class="form-input"
+                               id="createName"
+                               name="Name"
                                placeholder="Enter country name"
                                required />
                     </div>
@@ -115,10 +116,10 @@
                         <label for="createCode" class="form-label">
                             Country Code <span class="text-danger">*</span>
                         </label>
-                        <input type="text" 
-                               class="form-input" 
-                               id="createCode" 
-                               name="Code" 
+                        <input type="text"
+                               class="form-input"
+                               id="createCode"
+                               name="Code"
                                placeholder="e.g., US, UK, CA"
                                required />
                         <p class="form-description">ISO country code (2-3 letters)</p>
@@ -143,6 +144,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <i class="bi bi-pencil me-2"></i>
@@ -156,20 +158,20 @@
                         <label for="editName" class="form-label">
                             Country Name <span class="text-danger">*</span>
                         </label>
-                        <input type="text" 
-                               class="form-input" 
-                               id="editName" 
-                               name="Name" 
+                        <input type="text"
+                               class="form-input"
+                               id="editName"
+                               name="Name"
                                required />
                     </div>
                     <div class="form-field">
                         <label for="editCode" class="form-label">
                             Country Code <span class="text-danger">*</span>
                         </label>
-                        <input type="text" 
-                               class="form-input" 
-                               id="editCode" 
-                               name="Code" 
+                        <input type="text"
+                               class="form-input"
+                               id="editCode"
+                               name="Code"
                                required />
                     </div>
                 </div>
@@ -192,6 +194,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
                 <div class="modal-header" style="background-color: hsl(0, 84%, 60%); color: white;">
                     <h5 class="modal-title">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -229,8 +232,7 @@
 @section Scripts {
     <script>
         // Fill Edit modal
-        var editModal = document.getElementById('editModal');
-        editModal.addEventListener('show.bs.modal', function (event) {
+        document.getElementById('editModal').addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             document.getElementById('editId').value = button.getAttribute('data-id');
             document.getElementById('editName').value = button.getAttribute('data-name');
@@ -238,22 +240,20 @@
         });
 
         // Fill Delete modal
-        var deleteModal = document.getElementById('deleteModal');
-        deleteModal.addEventListener('show.bs.modal', function (event) {
+        document.getElementById('deleteModal').addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             document.getElementById('deleteCountryId').value = button.getAttribute('data-id');
             document.getElementById('deleteCountryName').textContent = button.getAttribute('data-name');
         });
 
-        // Show toast notifications - FIXED VERSION
+        // Toast notifications
         @if (TempData["SuccessMessage"] != null)
         {
-                @:showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["SuccessMessage"].ToString())), 'success');
+                <text>showToast('@Html.Raw(TempData["SuccessMessage"])', 'success');</text>
         }
-
         @if (TempData["ErrorMessage"] != null)
         {
-                @:showToast(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ErrorMessage"].ToString())), 'error');
+                <text>showToast('@Html.Raw(TempData["ErrorMessage"])', 'error');</text>
         }
     </script>
 }

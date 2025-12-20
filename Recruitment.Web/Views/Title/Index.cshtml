@@ -1,159 +1,366 @@
-@model IEnumerable<Recruitment.Web.ViewModels.CoreBusiness.Title.TitleListViewModel>
+@model Recruitment.Web.ViewModels.CoreBusiness.Title.TitlesPagedVM
 
 @{
     ViewData["Title"] = "Titles";
 }
 
+<!-- Header -->
+<div class="flex-between mb-4">
+    <div>
+        <h2 class="card-title d-flex align-items-center gap-2">
+            <i class="bi bi-briefcase-fill"></i>
+            Job Titles
+        </h2>
+        <p class="card-description">Manage job titles and positions</p>
+    </div>
+    <button type="button" class="btn-component btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
+        <i class="bi bi-plus-lg me-2"></i>
+        Add Title
+    </button>
+</div>
+
+<!-- Search & Filter Card -->
 <div class="card-component mb-4">
     <div class="card-header">
-        <div class="flex-between">
-            <div>
-                <h2 class="card-title">Job Titles</h2>
-                <p class="card-description">Manage job titles and positions</p>
-            </div>
-            <a asp-action="Create" class="btn-component btn-primary">
-                <i class="bi bi-plus-circle me-2"></i>
-                Create Title
-            </a>
-        </div>
+        <h3 class="card-title">
+            <i class="bi bi-funnel me-2"></i>
+            Search & Filter
+        </h3>
     </div>
-
     <div class="card-content">
-        <div class="table-component">
-            <table id="titlesTable">
-                <thead>
-                    <tr>
-                        <th>Title Name</th>
-                        <th style="width: 150px;" class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        @foreach (var title in Model)
+        <form asp-action="Index" method="get" class="row g-3">
+            <div class="col-md-6">
+                <div class="form-field">
+                    <label class="form-label" for="search">Search</label>
+                    <input type="text"
+                           id="search"
+                           name="search"
+                           value="@Model.Search"
+                           class="form-input"
+                           placeholder="Search by title..." />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-field">
+                    <label class="form-label" for="departmentId">Department</label>
+                    <select id="departmentId" name="departmentId" class="form-select">
+                        <option value="">-- All Departments --</option>
+                        @foreach (var dept in ViewBag.Departments as IEnumerable<SelectListItem>)
                         {
-                            <tr data-title-id="@title.Id" class="title-row" style="cursor: pointer;">
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-card-heading icon-color text-primary"></i>
-                                        <span class="fw-semibold">@title.Name</span>
-                                    </div>
-                                </td>
-                                <td class="text-end">
-                                    <div class="d-flex gap-2 justify-content-end">
-                                        <a asp-action="Edit" asp-route-id="@title.Id" 
-                                           class="btn-component btn-sm btn-primary"
-                                           onclick="event.stopPropagation()"
-                                           title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@title.Id" 
-                                           class="btn-component btn-sm btn-destructive"
-                                           onclick="event.stopPropagation(); return confirm('Delete this title?')"
-                                           title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                            <option value="@dept.Value" selected="@dept.Selected">@dept.Text</option>
                         }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <div class="form-field w-100">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn-component btn-primary w-100">
+                        <i class="bi bi-search me-2"></i>
+                        Filter
+                    </button>
+                    @if (!string.IsNullOrEmpty(Model.Search) || Model.SelectedDepartmentId.HasValue)
+                    {
+                        <a href="@Url.Action("Index")" class="btn-component btn-outline w-100 mt-2">
+                            <i class="bi bi-x-circle me-2"></i>
+                            Clear
+                        </a>
                     }
-                    else
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Titles Table -->
+<div class="card-content">
+    <div class="table-component">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:80px">#</th>
+                    <th>Title Name</th>
+                    <th>Departments</th>
+                    <th style="width:150px;" class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    foreach (var item in Model.Items)
                     {
                         <tr>
-                            <td colspan="2" class="text-center py-5">
-                                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
-                                <span class="text-muted">No titles found</span>
+                            <td class="text-muted fw-semibold">@item.Id</td>
+                            <td class="fw-semibold">@item.Name</td>
+                            <td>
+                                @if (item.Departments != null && item.Departments.Any())
+                                {
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach (var dept in item.Departments)
+                                        {
+                                            <span class="badge-component badge-outline-primary">
+                                                <i class="bi bi-building me-1"></i>
+                                                @dept.Name
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">No departments</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button type="button"
+                                            class="btn-component btn-sm btn-primary edit-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
+                                            data-id="@item.Id"
+                                            data-name="@item.Name"
+                                            data-departments="@string.Join(",", item.Departments.Select(d => d.Id))"
+                                            title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button type="button"
+                                            class="btn-component btn-sm btn-destructive delete-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
+                                            data-id="@item.Id"
+                                            data-name="@item.Name"
+                                            title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-5">
+                            <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                            <span class="text-muted">No titles found</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (Model.TotalPages > 1)
+{
+    <div class="card-footer">
+        <nav class="pagination-component" aria-label="Pagination">
+            <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
+               asp-action="Index"
+               asp-route-page="@(Model.Page - 1)"
+               asp-route-pageSize="@Model.PageSize"
+               asp-route-search="@Model.Search"
+               asp-route-departmentId="@Model.SelectedDepartmentId">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+
+            @{
+                int startPage = Math.Max(1, Model.Page - 2);
+                int endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+            }
+
+            @if (startPage > 1)
+            {
+                <a class="pagination-button" asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.Search" asp-route-departmentId="@Model.SelectedDepartmentId">1</a>
+                @if (startPage > 2)
+                {
+                    <span class="pagination-button disabled">...</span>
+                }
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search"
+                   asp-route-departmentId="@Model.SelectedDepartmentId">
+                    @i
+                </a>
+            }
+
+            @if (endPage < Model.TotalPages)
+            {
+                @if (endPage < Model.TotalPages - 1)
+                {
+                    <span class="pagination-button disabled">...</span>
+                }
+                <a class="pagination-button" asp-action="Index" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.Search" asp-route-departmentId="@Model.SelectedDepartmentId">@Model.TotalPages</a>
+            }
+
+            <a class="pagination-button @(Model.Page == Model.TotalPages ? "disabled" : "")"
+               asp-action="Index"
+               asp-route-page="@(Model.Page + 1)"
+               asp-route-pageSize="@Model.PageSize"
+               asp-route-search="@Model.Search"
+               asp-route-departmentId="@Model.SelectedDepartmentId">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </nav>
+
+        <div class="text-center mt-3 text-muted small">
+            Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount results
+        </div>
+    </div>
+}
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Add New Title
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-field">
+                        <label for="createName" class="form-label">Title Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-input" id="createName" name="Name" placeholder="Enter title name" required />
+                    </div>
+                    <div class="form-field">
+                        <label for="createDepartments" class="form-label">Departments <span class="text-danger">*</span></label>
+                        <select class="form-select select2" id="createDepartments" name="DepartmentIds" multiple required>
+                            @foreach (var dept in ViewBag.Departments as IEnumerable<SelectListItem>)
+                            {
+                                <option value="@dept.Value">@dept.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-component btn-primary"><i class="bi bi-check-circle me-2"></i>Save Title</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- Departments for Selected Title -->
-<div class="card-component">
-    <div class="card-header">
-        <h3 class="card-title">
-            <i class="bi bi-building me-2"></i>
-            Departments for Selected Title
-        </h3>
-        <p class="card-description">Click a title above to see its departments</p>
-    </div>
-    <div class="card-content">
-        <div class="table-component">
-            <table id="departmentsTable">
-                <thead>
-                    <tr>
-                        <th>Department Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="text-center text-muted py-4">Select a title to view departments</td>
-                    </tr>
-                </tbody>
-            </table>
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editId" name="Id" />
+                    <div class="form-field">
+                        <label for="editName" class="form-label">Title Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-input" id="editName" name="Name" required />
+                    </div>
+                    <div class="form-field">
+                        <label for="editDepartments" class="form-label">Departments <span class="text-danger">*</span></label>
+                        <select class="form-select select2" id="editDepartments" name="SelectedDepartmentIds" multiple required>
+                            @foreach (var dept in ViewBag.Departments as IEnumerable<SelectListItem>)
+                            {
+                                <option value="@dept.Value">@dept.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-component btn-primary"><i class="bi bi-check-circle me-2"></i>Update Title</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<style>
-    .highlight-row {
-        background-color: hsl(222, 47%, 95%) !important;
-        transition: background-color 0.3s ease;
-    }
-</style>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header" style="background-color: hsl(0, 84%, 60%); color: white;">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert-component alert-destructive mb-0">
+                        <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
+                        <div>
+                            <div class="alert-title">Are you sure?</div>
+                            <div class="alert-description">
+                                You are about to delete title <strong id="deleteTitleName"></strong>.
+                                This action cannot be undone.
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="deleteTitleId" name="Id" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-component btn-destructive"><i class="bi bi-trash me-2"></i>Delete Title</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $('.title-row').click(function () {
-                var titleId = $(this).data('title-id');
+        $(document).ready(function() {
+            // Initialize Select2
+            $('#createDepartments').select2({
+                width: '100%',
+                placeholder: "Select Departments",
+                dropdownParent: $('#createModal')
+            });
 
-                $('.title-row').removeClass('highlight-row');
-                $(this).addClass('highlight-row');
-
-                $.ajax({
-                    url: '@Url.Action("GetDepartmentsByTitle", "Title")',
-                    type: 'GET',
-                    data: { titleId: titleId },
-                    success: function (data) {
-                        var tbody = $('#departmentsTable tbody');
-                        tbody.empty();
-                        if (data.length === 0) {
-                            tbody.append('<tr><td class="text-center text-muted py-4">No departments assigned to this title</td></tr>');
-                        } else {
-                            $.each(data, function (i, dept) {
-                                tbody.append('<tr><td><div class="d-flex align-items-center gap-2"><i class="bi bi-building text-primary"></i><span>' + dept.name + '</span></div></td></tr>');
-                            });
-                        }
-                    },
-                    error: function () {
-                        showToast('Error loading departments', 'error');
-                    }
-                });
+            $('#editDepartments').select2({
+                width: '100%',
+                placeholder: "Select Departments",
+                dropdownParent: $('#editModal')
             });
         });
 
-        // Show toast notifications
+        // Fill Edit Modal
+        document.getElementById('editModal').addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            document.getElementById('editId').value = button.getAttribute('data-id');
+            document.getElementById('editName').value = button.getAttribute('data-name');
+
+            var selectedDepartments = button.getAttribute('data-departments')?.split(',').filter(x => x) || [];
+            $('#editDepartments').val(selectedDepartments).trigger('change');
+        });
+
+        // Fill Delete Modal
+        document.getElementById('deleteModal').addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            document.getElementById('deleteTitleId').value = button.getAttribute('data-id');
+            document.getElementById('deleteTitleName').textContent = button.getAttribute('data-name');
+        });
+
+        // Toast notifications
         @if (TempData["SuccessMessage"] != null)
         {
-            <text>
-            showToast('@TempData["SuccessMessage"]', 'success');
-            </text>
+                <text>showToast('@Html.Raw(TempData["SuccessMessage"])', 'success');</text>
         }
-
         @if (TempData["ErrorMessage"] != null)
         {
-            <text>
-            showToast('@TempData["ErrorMessage"]', 'error');
-            </text>
+                <text>showToast('@Html.Raw(TempData["ErrorMessage"])', 'error');</text>
         }
     </script>
 }

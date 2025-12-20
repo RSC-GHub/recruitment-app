@@ -274,7 +274,7 @@ namespace Recruitment.Application.Services.UserManagement
                     Interviews = app.Interviews.Select(i => new InterviewHistoryDto
                     {
                         Id = i.Id,
-                        InterViewer = i.InterViewer,
+                        InterviewerName = i.Interviewer.Name,
                         ScheduledDate = i.ScheduledDate,
                         InterviewType = i.InterviewType.ToString(),
                         InterviewCategory = i.InterviewCategory.ToString(),

@@ -35,8 +35,8 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             {
                 Id = i.Id,
                 ApplicantName = i.Application.Applicant.FullName,
-                VacancyTitle = i.Application.Vacancy.Title.Name,
-                InterViewer = i.InterViewer,
+                VacancyTitle = i.Application.Vacancy.Title!.Name,
+                InterviewerName = i.Interviewer.Name,
                 ScheduledDate = i.ScheduledDate,
                 InterviewType = i.InterviewType,
                 InterviewCategory = i.InterviewCategory,
@@ -87,7 +87,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 Id = i.Id,
                 ApplicantName = i.Application?.Applicant?.FullName ?? "-",
                 VacancyTitle = i.Application?.Vacancy?.Title?.Name ?? "-",
-                InterViewer = i.InterViewer ?? "-",
+                InterviewerName = i.Interviewer.Name,
                 ScheduledDate = i.ScheduledDate,
                 InterviewType = i.InterviewType,
                 InterviewCategory = i.InterviewCategory,
@@ -109,7 +109,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 Id = i.Id,
                 ApplicantName = i.Application?.Applicant?.FullName ?? "-",
                 VacancyTitle = i.Application?.Vacancy?.Title?.Name ?? "-",
-                InterViewer = i.InterViewer ?? "-",
+                InterviewerName = i.Interviewer.Name,
                 ScheduledDate = i.ScheduledDate,
                 InterviewType = i.InterviewType,
                 InterviewCategory = i.InterviewCategory,
@@ -146,7 +146,8 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                                     .Select(pv => pv.Project!.ProjectName)
                                     .ToList() ?? new List<string>(),
 
-                InterViewer = interview.InterViewer,
+                InterviewerId = interview.InterviewerId,
+                InterviewerName = interview.Interviewer.Name,
                 ScheduledDate = interview.ScheduledDate,
                 InterviewType = interview.InterviewType,
                 InterviewCategory = interview.InterviewCategory,
@@ -166,10 +167,16 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
         public async Task<bool> CreateAsync(InterviewCreateUpdateDTO dto)
         {
+            // Validate scheduled date
+            if (dto.ScheduledDate < DateTime.Now)
+            {
+                throw new ArgumentException("Scheduled date cannot be in the past.");
+            }
+
             var interview = new Interview
             {
                 ApplicationId = dto.ApplicationId,
-                InterViewer = dto.Interviewer,
+                InterviewerId = dto.InterviewerId,
                 ScheduledDate = dto.ScheduledDate,
                 InterviewType = dto.InterviewType,
                 InterviewCategory = dto.InterviewCategory,
@@ -184,12 +191,13 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             return await _unitOfWork.CompleteAsync() > 0;
         }
 
+
         public async Task<bool> UpdateAsync(int id, InterviewCreateUpdateDTO dto)
         {
             var interview = await _unitOfWork.InterviewRepository.GetByIdAsync(id);
             if (interview == null) return false;
 
-            interview.InterViewer = dto.Interviewer;
+            interview.InterviewerId = dto.InterviewerId;
             interview.ScheduledDate = dto.ScheduledDate;
             interview.InterviewType = dto.InterviewType;
             interview.InterviewCategory = dto.InterviewCategory;
@@ -240,7 +248,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             // Calling the repository function to update
             bool result = await _unitOfWork.InterviewRepository.UpdateInterviewAsync(
                 dto.Id,
-                dto.InterViewer,
+                dto.InterviewerId,
                 dto.InterviewStatus,
                 dto.InterviewType,
                 dto.DurationMinutes,

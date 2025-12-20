@@ -20,12 +20,6 @@ namespace Recruitment.Infrastructure.Data.Configurations.RecruitmentProcess
                    .HasForeignKey(i => i.ApplicationId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            // Properties
-            builder.Property(i => i.InterViewer)
-                   .HasMaxLength(150)
-                   .IsUnicode(false)
-                   .IsRequired(false);
-
             builder.Property(i => i.ScheduledDate)
                    .IsRequired();
 

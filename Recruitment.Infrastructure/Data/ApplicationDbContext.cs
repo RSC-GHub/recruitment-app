@@ -44,7 +44,8 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<ApplicantApplication> Applications { get; set; }
         public DbSet<Interview> Interviews { get; set; }
         public DbSet<RejectionReason> RejectionReasons { get; set; } = null!;
-
+        public DbSet<Interviewer> Interviewers { get; set; }
+         
         private string GetCurrentUsername()
         {
             return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";

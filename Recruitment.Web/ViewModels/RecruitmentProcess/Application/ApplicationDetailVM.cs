@@ -1,4 +1,5 @@
-﻿using Recruitment.Domain.Enums;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Recruitment.Domain.Enums;
 
 namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
 {
@@ -26,6 +27,7 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
         public string? Note { get; set; }
         public bool HasFirstInterview { get; set; }
         public string CVFilePath { get; set; } = null!;
+        public List<SelectListItem> Interviewers { get; set; } = new();
 
     }
 }

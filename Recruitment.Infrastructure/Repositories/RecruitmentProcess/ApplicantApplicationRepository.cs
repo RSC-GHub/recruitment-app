@@ -213,7 +213,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             var cutoffDate = DateTime.UtcNow.AddDays(-days);
             return await _context.Applications
         .CountAsync(a =>
-            a.ApplicationStatus == ApplicationStatus.OnHold &&
+            a.ApplicationStatus == ApplicationStatus.InterviewOnHold &&
             a.ModifiedOn <= cutoffDate);
         }
 

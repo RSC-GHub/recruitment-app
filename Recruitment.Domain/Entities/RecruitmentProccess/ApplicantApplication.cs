@@ -23,6 +23,6 @@ namespace Recruitment.Domain.Entities.Recruitment_Proccess
 
         public string? Note { get; set; }
 
-        public ICollection<Interview>? Interviews { get; set; }
+        public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
     }
 }

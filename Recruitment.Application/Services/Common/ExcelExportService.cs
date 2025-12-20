@@ -1,9 +1,9 @@
-﻿namespace Recruitment.Application.Services.Common
-{
-    using ClosedXML.Excel;
-    using Recruitment.Application.DTOs.UserManagement.Applicant;
-    using Recruitment.Application.Interfaces.Common;
+﻿using ClosedXML.Excel;
+using Recruitment.Application.DTOs.UserManagement.Applicant;
+using Recruitment.Application.Interfaces.Common;
 
+namespace Recruitment.Application.Services.Common
+{
     public class ExcelExportService : IExcelExportService
     {
         public byte[] ExportApplicants(List<ApplicantExportDto> data)
@@ -45,8 +45,7 @@
                 "HR Interviewer",
                 "Tech Interviewer",
                 "Offer negotiations details",
-                "Tech Interview Date",
-                "CV"
+                "Tech Interview Date"
             };
 
             for (int i = 0; i < headers.Length; i++)
@@ -107,7 +106,7 @@
                 ws.Cell(r, 31).Value = ""; // Offer negotiations details
                 ws.Cell(r, 32).Value = d.TechInterviewDate;
 
-                ws.Cell(r, 33).Value = d.CV;
+                //ws.Cell(r, 33).Value = d.CV;
             }
 
             ws.Columns().AdjustToContents();

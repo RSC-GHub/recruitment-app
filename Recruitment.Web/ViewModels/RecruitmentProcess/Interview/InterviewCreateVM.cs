@@ -8,7 +8,7 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Interview
         public class InterviewCreateVM
         {
             public int ApplicationId { get; set; }  
-            public string? Interviewer { get; set; } 
+            public int InterviewerId { get; set; } 
             public DateTime ScheduledDate { get; set; } = DateTime.Now;
             public InterviewType InterviewType { get; set; } = InterviewType.FaceToFace;
             public InterviewCategory InterviewCategory { get; set; } = InterviewCategory.Technical;

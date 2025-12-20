@@ -124,7 +124,7 @@ namespace Recruitment.Web.Controllers
                     Interviews = app.Interviews.Select(i => new InterviewHistoryVM
                     {
                         Id = i.Id,
-                        InterViewer = i.InterViewer!,
+                        InterviewerName = i.InterviewerName!,
                         ScheduledDate = i.ScheduledDate,
                         InterviewType = i.InterviewType,
                         InterviewCategory = i.InterviewCategory,

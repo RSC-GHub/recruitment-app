@@ -2,7 +2,6 @@
 using Recruitment.Application.DTOs.CoreBusiness.Country;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Web.ViewModels.CoreBusiness.Country;
-using Recruitment.Web.Authorization;
 
 namespace Recruitment.Web.Controllers
 {
@@ -16,7 +15,6 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Country
-        //[HasPermission("Country", "View")]
         public async Task<IActionResult> Index()
         {
             var dtos = await _countryService.GetAllAsync();
@@ -30,111 +28,95 @@ namespace Recruitment.Web.Controllers
             return View(vmList);
         }
 
-        // GET: Country/Create
-        //[HasPermission("Country", "Create")]
-        public IActionResult Create()
-        {
-            return View(new CreateCountryViewModel());
-        }
-
         // POST: Country/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[HasPermission("Country", "Create")]
-        public async Task<IActionResult> Create(CreateCountryViewModel vm)
+        public async Task<IActionResult> Create(string name, string code)
         {
-            if (!ModelState.IsValid)
-                return View(vm);
-
-            var dto = new CreateCountryDto
+            try
             {
-                Name = vm.Name,
-                Code = vm.Code
-            };
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    TempData["ErrorMessage"] = "Country name is required";
+                    return RedirectToAction(nameof(Index));
+                }
 
-            await _countryService.AddAsync(dto);
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    TempData["ErrorMessage"] = "Country code is required";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var dto = new CreateCountryDto
+                {
+                    Name = name,
+                    Code = code
+                };
+
+                await _countryService.AddAsync(dto);
+                TempData["SuccessMessage"] = "Country created successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating country: {ex.Message}";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Country/Edit/5
-        //[HasPermission("Country", "Edit")]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var dto = await _countryService.GetByIdAsync(id);
-            if (dto == null) return NotFound();
-
-            var vm = new CountryViewModel
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Code = dto.Code
-            };
-
-            return View(vm);
-        }
-
-        // POST: Country/Edit/5
+        // POST: Country/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[HasPermission("Country", "Edit")]
-        public async Task<IActionResult> Edit(CountryViewModel vm)
+        public async Task<IActionResult> Edit(int id, string name, string code)
         {
-            if (!ModelState.IsValid)
-                return View(vm);
-
-            var dto = new UpdateCountryDto
+            try
             {
-                Id = vm.Id,
-                Name = vm.Name,
-                Code = vm.Code
-            };
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    TempData["ErrorMessage"] = "Country name is required";
+                    return RedirectToAction(nameof(Index));
+                }
 
-            await _countryService.UpdateAsync(dto);
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    TempData["ErrorMessage"] = "Country code is required";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var dto = new UpdateCountryDto
+                {
+                    Id = id,
+                    Name = name,
+                    Code = code
+                };
+
+                await _countryService.UpdateAsync(dto);
+                TempData["SuccessMessage"] = "Country updated successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error updating country: {ex.Message}";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Country/Delete/5
-        //[HasPermission("Country", "Delete")]
+        // POST: Country/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var dto = await _countryService.GetByIdAsync(id);
-            if (dto == null) return NotFound();
-
-            var vm = new CountryViewModel
+            try
             {
-                Id = dto.Id,
-                Name = dto.Name,
-                Code = dto.Code
-            };
+                await _countryService.DeleteAsync(id);
+                TempData["SuccessMessage"] = "Country deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting country: {ex.Message}";
+            }
 
-            return View(vm);
-        }
-
-        // POST: Country/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        //[HasPermission("Country", "Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await _countryService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        // GET: Country/Details/5
-        //[HasPermission("Country", "View")]
-        public async Task<IActionResult> Details(int id)
-        {
-            var dto = await _countryService.GetByIdAsync(id);
-            if (dto == null) return NotFound();
-
-            var vm = new CountryViewModel
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Code = dto.Code
-            };
-
-            return View(vm);
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Interview;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interview;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interview.Recruitment.Web.ViewModels.RecruitmentProcess.Interview;
@@ -13,11 +14,15 @@ namespace Recruitment.Web.Controllers
     {
         private readonly IInterviewService _interviewService;
         private readonly IApplicantApplicationService _applicantApplicationService;
+        private readonly IInterviewerService _interviewerService;
 
-        public InterviewController(IInterviewService interviewService, IApplicantApplicationService applicantApplicationService)
+        public InterviewController(IInterviewService interviewService, 
+            IApplicantApplicationService applicantApplicationService,
+            IInterviewerService interviewerService)
         {
             _interviewService = interviewService;
             _applicantApplicationService = applicantApplicationService;
+            _interviewerService = interviewerService;
         }
 
         // GET: Interview
@@ -65,7 +70,7 @@ namespace Recruitment.Web.Controllers
                 var dto = new InterviewCreateUpdateDTO
                 {
                     ApplicationId = vm.ApplicationId,
-                    Interviewer = vm.Interviewer,
+                    InterviewerId = vm.InterviewerId,
                     ScheduledDate = vm.ScheduledDate,
                     InterviewType = vm.InterviewType,
                     InterviewCategory = vm.InterviewCategory,
@@ -98,6 +103,14 @@ namespace Recruitment.Web.Controllers
             if (dto == null)
                 return NotFound();
 
+            var interviewers = await _interviewerService.GetAllAsync();
+            ViewBag.Interviewers = interviewers.Select(i => new SelectListItem
+            {
+                Value = i.Id.ToString(),
+                Text = i.Name
+            }).ToList();
+
+
             // Map DTO to VM
             var vm = new InterviewDetailVM
             {
@@ -110,7 +123,8 @@ namespace Recruitment.Web.Controllers
                 VacancyTitle = dto.VacancyTitle,
                 EmploymentType = dto.EmploymentType,
                 VacancyProjects = dto.VacancyProjects,
-                InterViewer = dto.InterViewer,
+                InterviewerId = dto.InterviewerId,
+                InterviewerName = dto.InterviewerName,
                 ScheduledDate = dto.ScheduledDate,
                 InterviewType = dto.InterviewType,
                 InterviewCategory = dto.InterviewCategory,
@@ -169,8 +183,5 @@ namespace Recruitment.Web.Controllers
                 message = "Interview completed and application updated successfully."
             });
         }
-
-
-
     }
 }

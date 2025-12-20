@@ -46,6 +46,10 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IApplicantApplicationRepository, ApplicantApplicationRepository>();
             services.AddScoped<IInterviewRepository, InterviewRepository>();
             services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+            services.AddScoped<IRejectionReasonRepository, RejectionReasonRepository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IInterviewerRepository, InterviewerRepository>();
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -67,6 +71,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<IAuditService, AuditService>();
             services.AddScoped<IExcelExportService, ExcelExportService>();
             services.AddScoped<IRejectionReasonService, RejectionReasonService>();
+            services.AddScoped<IInterviewerService, InterviewerService>();
 
             return services;
         }

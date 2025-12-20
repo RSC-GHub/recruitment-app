@@ -6,7 +6,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
     public class InterviewHistoryVM
     {
         public int Id { get; set; }
-        public string InterViewer { get; set; } = "-";
+        public string InterviewerName { get; set; } = "-";
         public DateTime ScheduledDate { get; set; }
         public string InterviewType { get; set; } = "-";
         public string InterviewCategory { get; set; } = "-";

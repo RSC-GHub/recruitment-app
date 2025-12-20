@@ -1,4 +1,5 @@
-﻿using Recruitment.Domain.Entities.UserManagement;
+﻿using Recruitment.Domain.Entities.RecruitmentProccess;
+using Recruitment.Domain.Entities.UserManagement;
 
 namespace Recruitment.Domain.Entities.CoreBusiness
 {
@@ -7,5 +8,6 @@ namespace Recruitment.Domain.Entities.CoreBusiness
         public string Name { get; set; } = string.Empty;
         public ICollection<DepartmentTitle>? DepartmentTitles { get; set; }
         public ICollection<User>? Users { get; set; }
+        public ICollection<Interviewer>? Interviewers { get; set; }
     }
 }

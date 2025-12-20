@@ -8,7 +8,8 @@ namespace Recruitment.Domain.Entities.RecruitmentProccess
         public int ApplicationId { get; set; }
         public ApplicantApplication Application { get; set; } = null!;
 
-        public string? InterViewer { get; set; }
+        public int InterviewerId { get; set; }
+        public Interviewer Interviewer { get; set; } = null!;
         public DateTime ScheduledDate { get; set; } = DateTime.UtcNow;
         public InterviewType InterviewType { get; set; }
         public InterviewCategory InterviewCategory { get; set; }

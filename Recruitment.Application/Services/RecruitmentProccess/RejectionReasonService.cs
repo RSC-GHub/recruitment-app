@@ -31,16 +31,6 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             await _unitOfWork.CompleteAsync();
         }
 
-        //public async Task<IEnumerable<ReasonDto>> GetAllAsync()
-        //{
-        //    var reasons = await  _unitOfWork.RejectionReasons.GetAllAsync();
-        //    return reasons.Select(r => new ReasonDto
-        //    {
-        //        Id = r.Id,
-        //        Reason = r.Reason,
-        //    });
-        //}
-
         public async Task<PagedResult<ReasonDto>> GetPagedAsync(
             int page,
             int pageSize,

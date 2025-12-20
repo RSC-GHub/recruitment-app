@@ -553,9 +553,6 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Property<string>("InterViewNote")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InterViewer")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("InterviewCategory")
                         .HasColumnType("int");
 
@@ -566,6 +563,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("InterviewType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InterviewerId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -584,7 +584,46 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("ApplicationId");
 
+                    b.HasIndex("InterviewerId");
+
                     b.ToTable("Interviews");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interviewer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("Interviewers");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.RejectionReason", b =>
@@ -1148,7 +1187,26 @@ namespace Recruitment.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Recruitment.Domain.Entities.RecruitmentProccess.Interviewer", "Interviewer")
+                        .WithMany("Interviews")
+                        .HasForeignKey("InterviewerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Application");
+
+                    b.Navigation("Interviewer");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interviewer", b =>
+                {
+                    b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Department", "Department")
+                        .WithMany("Interviewers")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", b =>
@@ -1236,6 +1294,8 @@ namespace Recruitment.Infrastructure.Migrations
                 {
                     b.Navigation("DepartmentTitles");
 
+                    b.Navigation("Interviewers");
+
                     b.Navigation("Users");
                 });
 
@@ -1261,6 +1321,11 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Navigation("Applications");
 
                     b.Navigation("ProjectVacancies");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interviewer", b =>
+                {
+                    b.Navigation("Interviews");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", b =>

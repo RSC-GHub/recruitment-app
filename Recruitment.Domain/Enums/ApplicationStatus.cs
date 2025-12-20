@@ -2,14 +2,22 @@
 {
     public enum ApplicationStatus
     {
-        Submitted = 1,        
-        UnderReview = 2,      
-        Interviewing = 3,     
-        AcceptedInterview = 4,          
-        Hired = 5,            
-        Rejected = 6,
-        Offered = 7,
-        Pending = 8,
-        OnHold = 9            
+        Submitted,
+        UnderReview,
+        Interviewing,
+
+        InterviewOnHold,          // Interview postponed / cancelled temporarily
+        AcceptedInterview,
+
+        Pending, // Accepted but waiting for internal reason
+
+        Offered,
+        AcceptedOffer,
+        SignedOffer,
+        SignedContract,
+
+        Hired,
+        Notshow,
+        Rejected
     }
-}
+} 

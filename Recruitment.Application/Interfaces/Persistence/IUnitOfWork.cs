@@ -27,6 +27,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IGenericRepository<RolePermission> RolePermissions { get; }
         IGenericRepository<Currency> Currencies { get; }
         IGenericRepository<RejectionReason> RejectionReasons { get; }
+        IGenericRepository<Interviewer> Interviewers { get; }
 
         IProjectRepository ProjectRepository { get; }
         ITitleRepository TitleRepository { get; }
@@ -39,6 +40,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IDepartmentRepository DepartmentRepository { get; }
 
         ILocationRepository LocationRepository { get; }
+        IInterviewerRepository InterviewerRepository { get; }
         Task<int> CompleteAsync();
     }
 }

@@ -15,7 +15,8 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Interview
         public EmploymentType EmploymentType { get; set; }
         public List<string> VacancyProjects { get; set; } = new();
 
-        public string? InterViewer { get; set; }
+        public int InterviewerId { get; set; } 
+        public string? InterviewerName { get; set; }
         public DateTime ScheduledDate { get; set; }
         public InterviewType InterviewType { get; set; }
         public InterviewCategory InterviewCategory { get; set; }

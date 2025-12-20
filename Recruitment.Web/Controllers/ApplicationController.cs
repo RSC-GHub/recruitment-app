@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.Interfaces.Common;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
 
@@ -11,12 +12,16 @@ namespace Recruitment.Web.Controllers
     public class ApplicationController : Controller
     {
         private readonly IApplicantApplicationService _applicationService;
+        private readonly IInterviewerService _interviewerService;
         private readonly IExcelExportService _exportService;
 
-        public ApplicationController(IApplicantApplicationService applicationService, IExcelExportService exportService)
+        public ApplicationController(IApplicantApplicationService applicationService, 
+            IExcelExportService exportService,
+            IInterviewerService interviewerService)
         {
             _applicationService = applicationService;
             _exportService = exportService;
+            _interviewerService = interviewerService;
         }
 
         public async Task<IActionResult> Index(
@@ -62,7 +67,7 @@ namespace Recruitment.Web.Controllers
             ViewBag.CanAddInterview = await _applicationService
                 .CanAddInterviewAsync(id);
 
-
+            // First, create the VM
             var vm = new ApplicationDetailVM
             {
                 Id = application.Id,
@@ -85,40 +90,58 @@ namespace Recruitment.Web.Controllers
                 HasFirstInterview = await _applicationService.CanMoveToSecondInterviewAsync(application.Id)
             };
 
+            var interviewers = await _interviewerService.GetAllAsync();
+            vm.Interviewers = interviewers.Select(i => new SelectListItem
+            {
+                Value = i.Id.ToString(),
+                Text = i.Name
+            }).ToList();
+
             return View(vm);
         }
-        
+
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Review([FromBody] ApplicationReviewVM vm)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Get the current user ID from claims
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int reviewedBy))
             {
                 return Json(new { success = false, message = "User not authenticated" });
             }
 
-            var dto = new ApplicationReviewDto
-            {
-                ApplicationId = vm.ApplicationId,
-                ReviewedBy = reviewedBy, 
-                ApplicationStatus = vm.ApplicationStatus,
-                Note = vm.Note
-            };
-
             try
             {
+                var dto = new ApplicationReviewDto
+                {
+                    ApplicationId = vm.ApplicationId,
+                    ReviewedBy = reviewedBy,
+                    ApplicationStatus = vm.ApplicationStatus,
+                    Note = vm.Note
+                };
+
                 await _applicationService.ReviewApplicationAsync(dto);
-                return Json(new { success = true, message = "Application reviewed successfully." });
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Application reviewed successfully."
+                });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -17,12 +17,16 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
         public async Task<PagedResult<Interview>> GetPagedAsync(int page, int pageSize)
         {
-            var query = _context.Interviews.Include(i => i.Application)
-                    .ThenInclude(i => i.Applicant)
+            var query = _context.Interviews
                 .Include(i => i.Application)
-                    .ThenInclude(i => i.Vacancy.Title)
+                    .ThenInclude(a => a.Applicant)
+                .Include(i => i.Application)
+                    .ThenInclude(a => a.Vacancy)  
+                .Include(i => i.Interviewer) 
                 .AsNoTracking();
+
             var totalCount = await query.CountAsync();
+
             var items = await query
                 .OrderByDescending(i => i.ScheduledDate)
                 .Skip((page - 1) * pageSize)
@@ -31,6 +35,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
             return new PagedResult<Interview>(items, totalCount, page, pageSize);
         }
+
 
         public async Task<PagedResult<Interview>> GetByApplicationIdAsync(int applicationId, int page, int pageSize)
         {
@@ -52,6 +57,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
         {
             var interview = await _context.Interviews
                 .Include(i => i.Application)
+                .Include(i => i.Interviewer)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(i => i.Id == id);
 
@@ -84,13 +90,14 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                     .Include(i => i.Application)
                         .ThenInclude(a => a.Vacancy)
                             .ThenInclude(v => v.Title)
+                    .Include(i => i.Interviewer)
                     .AsQueryable();
 
             // Text Search
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(i =>
-                    (i.InterViewer != null && i.InterViewer.Contains(search)) ||
+                    (i.Interviewer != null && i.Interviewer.Name.Contains(search)) ||
                     i.Application.Applicant.FullName.Contains(search) ||
                     i.Application.Vacancy.Title!.Name.Contains(search)
                 );
@@ -153,6 +160,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                     .ThenInclude(a => a.Vacancy)
                         .ThenInclude(v => v.ProjectVacancies!)
                             .ThenInclude(pv => pv.Project)
+                .Include(i => i.Interviewer)
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
 
@@ -168,10 +176,10 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             switch (result)
             {
                 case InterviewResult.Accepted:
-                    interview.Application.ApplicationStatus = ApplicationStatus.Offered;
+                    interview.Application.ApplicationStatus = ApplicationStatus.AcceptedInterview;
                     break;
                 case InterviewResult.SecondChoice:
-                    interview.Application.ApplicationStatus = ApplicationStatus.OnHold;
+                    interview.Application.ApplicationStatus = ApplicationStatus.Pending;
                     break;
                 case InterviewResult.Rejected:
                     interview.Application.ApplicationStatus = ApplicationStatus.Rejected;
@@ -189,7 +197,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
         }
         public async Task<bool> UpdateInterviewAsync(
             int id,
-            string? interViewer,
+            int interviewerId,
             InterviewStatus interviewStatus,
             InterviewType interviewType,
             int durationMinutes,
@@ -200,7 +208,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             if (interview == null)
                 return false;
 
-            interview.InterViewer = interViewer;
+            interview.InterviewerId = interviewerId;
             interview.InterviewStatus = interviewStatus;
             interview.InterviewType = interviewType;
             interview.DurationMinutes = durationMinutes;
@@ -209,7 +217,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             if (interviewStatus == InterviewStatus.Cancelled || interviewStatus == InterviewStatus.Postponed)
             {
                 interview.InterviewResult = InterviewResult.Pending;
-                interview.Application.ApplicationStatus = ApplicationStatus.OnHold;
+                interview.Application.ApplicationStatus = ApplicationStatus.InterviewOnHold;
             }
 
             _context.Interviews.Update(interview);

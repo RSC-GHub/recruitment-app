@@ -72,6 +72,7 @@ namespace Recruitment.Infrastructure.Repositories.UserManagement
                         .ThenInclude(v => v.Title)
                 .Include(a => a.Applications)
                     .ThenInclude(app => app.Interviews)
+                        .ThenInclude(i => i.Interviewer)
                 .Where(a =>
                     a.Email == baseApplicant.Email ||
                     (a.FullName == baseApplicant.FullName && a.PhoneNumber == baseApplicant.PhoneNumber)

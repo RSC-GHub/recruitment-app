@@ -32,12 +32,11 @@ namespace Recruitment.Infrastructure.Repositories
         public IGenericRepository<Department> Departments { get; }
         public IGenericRepository<DepartmentTitle> DepartmentTitles { get; }
 
-        // User Management Repositories
         public IGenericRepository<Permission> Permissions  { get; }
         public IGenericRepository<RolePermission> RolePermissions { get; set; }
         public IGenericRepository<Currency> Currencies { get; }
         public IGenericRepository<RejectionReason> RejectionReasons { get; }
-
+        public IGenericRepository<Interviewer> Interviewers { get; set; } 
         public IRoleRepository Roles { get; }
         public IVacancyRepository VacancyRepository { get; }
         public IProjectRepository ProjectRepository { get; }
@@ -50,6 +49,7 @@ namespace Recruitment.Infrastructure.Repositories
         public IDepartmentRepository DepartmentRepository { get; }
 
         public ILocationRepository LocationRepository { get; set; }
+        public IInterviewerRepository InterviewerRepository { get; set; }
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
@@ -65,9 +65,9 @@ namespace Recruitment.Infrastructure.Repositories
             Departments = new GenericRepository<Department>(_context, httpContextAccessor);
             DepartmentTitles = new GenericRepository<DepartmentTitle>(_context, httpContextAccessor);
             RejectionReasons = new GenericRepository<RejectionReason>(_context, httpContextAccessor);
+            Interviewers = new GenericRepository<Interviewer>(_context, httpContextAccessor);
 
             Roles = new RoleRepository(_context);
-            
             Permissions = new GenericRepository<Permission>(_context, httpContextAccessor);
             RolePermissions = new GenericRepository<RolePermission>(_context, httpContextAccessor);
 
@@ -82,6 +82,7 @@ namespace Recruitment.Infrastructure.Repositories
             RejectionReasonRepository = new RejectionReasonRepository(context, httpContextAccessor);
             LocationRepository = new LocationRepository(context, httpContextAccessor);
             DepartmentRepository = new DepartmentRepository(context, httpContextAccessor);
+            InterviewerRepository = new InterviewerRepository(context, httpContextAccessor);
         }
 
         public async Task<int> CompleteAsync()

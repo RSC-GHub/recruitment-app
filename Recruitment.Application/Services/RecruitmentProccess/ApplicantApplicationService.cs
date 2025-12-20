@@ -109,7 +109,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             ApplicationStatus nextStatus = result switch
             {
                 InterviewResult.Accepted => ApplicationStatus.AcceptedInterview,
-                InterviewResult.SecondChoice => ApplicationStatus.OnHold,
+                InterviewResult.SecondChoice => ApplicationStatus.Pending,
                 InterviewResult.Rejected => ApplicationStatus.Rejected,
                 _ => throw new InvalidOperationException("Invalid interview result")
             };

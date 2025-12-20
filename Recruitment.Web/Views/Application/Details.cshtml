@@ -11,8 +11,13 @@
         <h2 class="card-title"><i class="bi bi-file-earmark-person me-2"></i>Application Details</h2>
         <div class="d-flex gap-2">
             <!-- Action Button -->
-            <button class="btn-component btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                <i class="bi bi-check-circle me-2"></i>Review Application
+            <button class="btn-component btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reviewModal"
+                    data-application-id="@Model.Id"
+                    data-note='@Json.Serialize(Model.Note ?? "")'>
+                <i class="bi bi-check-circle me-2"></i>
+                Review Application
             </button>
 
             @* Show Schedule Interview only if allowed *@
@@ -159,62 +164,79 @@
     </div>
 
     <!-- Review Modal -->
-    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal fade" id="reviewModal" tabindex="-1"
+         aria-labelledby="reviewModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
+
                 <form id="reviewForm">
                     @Html.AntiForgeryToken()
+
                     <div class="modal-header">
                         <h5 class="modal-title" id="reviewModalLabel">
                             <i class="bi bi-check-circle me-2"></i>
                             Review Application
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
-                        <input type="hidden" name="ApplicationId" value="@Model.Id" />
+
+                        <!-- IMPORTANT -->
+                        <input type="hidden" id="reviewApplicationId" name="ApplicationId" />
 
                         <div class="form-field">
-                            <label for="ApplicationStatus" class="form-label">
+                            <label class="form-label">
                                 Decision <span class="text-danger">*</span>
                             </label>
-                            <select name="ApplicationStatus" id="ApplicationStatus" class="form-select" required>
+
+                            <select id="reviewApplicationStatus"
+                                    name="ApplicationStatus"
+                                    class="form-select"
+                                    required>
                                 <option value="">-- Select Decision --</option>
 
-                                @* Generate options dynamically based on workflow *@
-                                @{
-                                    @foreach (var status in ApplicationWorkflow.GetAllowedTransitions(Model.ApplicationStatus))
-                                    {
-                                        <option value="@((int)status)">@status</option>
-                                    }
-
+                                @foreach (var status in ApplicationWorkflow.GetAllowedTransitions(Model.ApplicationStatus))
+                                {
+                                    <option value="@((int)status)">@status</option>
                                 }
                             </select>
                         </div>
 
                         <div class="form-field">
-                            <label for="Note" class="form-label">Note</label>
-                            <textarea name="Note" id="Note" class="form-input" rows="3" maxlength="1000"></textarea>
+                            <label class="form-label">Note</label>
+                            <textarea id="reviewNote"
+                                      name="Note"
+                                      class="form-input"
+                                      rows="3"
+                                      maxlength="1000"></textarea>
                         </div>
 
-                        <div id="reviewError" class="text-danger"></div>
-                        <div id="reviewSuccess" class="text-success"></div>
+                        <div id="reviewError" class="text-danger mt-2"></div>
+                        <div id="reviewSuccess" class="text-success mt-2"></div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">
+                        <button type="button"
+                                class="btn-component btn-secondary"
+                                data-bs-dismiss="modal">
                             Cancel
                         </button>
-                        <button type="submit" class="btn-component btn-primary">
+
+                        <button type="submit"
+                                class="btn-component btn-primary">
                             <i class="bi bi-check-circle me-2"></i>
                             Submit Review
                         </button>
                     </div>
+
                 </form>
+
             </div>
         </div>
     </div>
+
 
     <!-- Add Interview Modal -->
     <div class="modal fade" id="addInterviewModal" tabindex="-1" aria-labelledby="addInterviewModalLabel" aria-hidden="true">
@@ -235,17 +257,24 @@
                         <input type="hidden" id="ApplicationId" name="ApplicationId" value="@Model.Id" />
 
                         <div class="form-field">
-                            <label for="Interviewer" class="form-label">
+                            <label for="InterviewerId" class="form-label">
                                 Interviewer <span class="text-danger">*</span>
                             </label>
-                            <input type="text" id="Interviewer" name="Interviewer" class="form-input" placeholder="Enter interviewer name" required />
+                            <select id="InterviewerId" name="InterviewerId" class="form-select select2" required>
+                                <option value="">-- Select Interviewer --</option>
+                                @foreach (var interviewer in Model.Interviewers)
+                                {
+                                    <option value="@interviewer.Value">@interviewer.Text</option>
+                                }
+                            </select>
                         </div>
 
                         <div class="form-field">
                             <label for="ScheduledDate" class="form-label">
                                 Scheduled Date <span class="text-danger">*</span>
                             </label>
-                            <input type="datetime-local" id="ScheduledDate" name="ScheduledDate" class="form-input" required />
+                            <input type="datetime-local" id="ScheduledDate" name="ScheduledDate"
+                                   class="form-input" required min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
                         </div>
 
                         <div class="form-field">
@@ -272,7 +301,11 @@
 
                         <div class="form-field">
                             <label for="Note" class="form-label">Note</label>
-                            <input type="text" id="Note" name="Note" class="form-input" placeholder="Optional notes" />
+                            <input type="text"
+                                   id="InterViewNote"
+                                   name="InterViewNote"
+                                   class="form-input"
+                                   placeholder="Optional notes" />
                         </div>
 
                         <div id="addInterviewError" class="text-danger"></div>
@@ -298,22 +331,44 @@
 
 @section Scripts {
     <script>
-        // Review Form
-        document.getElementById('reviewForm').addEventListener('submit', function (e) {
+
+        // Load data when modal opens
+        var reviewModal = document.getElementById('reviewModal');
+
+                reviewModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+
+            var applicationId = button.getAttribute('data-application-id');
+            var noteJson = button.getAttribute('data-note');
+
+            var note = noteJson ? JSON.parse(noteJson) : '';
+
+            document.getElementById('reviewApplicationId').value = applicationId;
+            document.getElementById('reviewNote').value = note || '';
+            document.getElementById('reviewApplicationStatus').value = '';
+
+            document.getElementById('reviewError').innerText = '';
+            document.getElementById('reviewSuccess').innerText = '';
+        });
+
+        // Submit Review Form
+        document.getElementById('reviewForm')
+            .addEventListener('submit', function (e) {
+
             e.preventDefault();
-            var form = e.target;
 
             var data = {
-                ApplicationId: parseInt(form.ApplicationId.value),
-                ApplicationStatus: parseInt(form.ApplicationStatus.value),
-                Note: form.Note.value
+                ApplicationId: parseInt(document.getElementById('reviewApplicationId').value),
+                ApplicationStatus: parseInt(document.getElementById('reviewApplicationStatus').value),
+                Note: document.getElementById('reviewNote').value
             };
 
             fetch('@Url.Action("Review", "Application")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    'RequestVerificationToken':
+                        document.querySelector('input[name="__RequestVerificationToken"]').value
                 },
                 body: JSON.stringify(data)
             })
@@ -322,62 +377,56 @@
                 if (result.success) {
                     document.getElementById('reviewSuccess').innerText = result.message;
                     document.getElementById('reviewError').innerText = '';
-                    setTimeout(() => location.reload(), 1000);
+
+                    setTimeout(() => location.reload(), 800);
                 } else {
                     document.getElementById('reviewError').innerText = result.message;
                     document.getElementById('reviewSuccess').innerText = '';
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 document.getElementById('reviewError').innerText = 'An error occurred';
             });
         });
 
-        // Add Interview Form
-        document.getElementById('addInterviewForm').addEventListener('submit', function(e) {
+
+             // Submit Add Interview Form
+        document.getElementById('addInterviewForm')
+            .addEventListener('submit', function (e) {
+
             e.preventDefault();
-            var form = e.target;
 
-            if (!form.Interviewer.value) {
-                document.getElementById('addInterviewError').innerText = 'Please enter interviewer';
-                return;
-            }
-
-            if (!form.ScheduledDate.value) {
-                document.getElementById('addInterviewError').innerText = 'Please select scheduled date';
-                return;
-            }
-
-            if (parseInt(form.DurationMinutes.value) < 1) {
-                form.DurationMinutes.value = 60;
-            }
-
-            var formData = new FormData(form);
+            const form = e.target;
+            const formData = new FormData(form);
 
             fetch('@Url.Action("CreateInterview", "Interview")', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => { throw new Error(`Server returned ${response.status}: ${text}`); });
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('addInterviewSuccess').innerText = data.message;
+            .then(r => r.json())
+            .then(result => {
+                if (result.success) {
+                    document.getElementById('addInterviewSuccess').innerText = result.message;
                     document.getElementById('addInterviewError').innerText = '';
-                    setTimeout(() => location.reload(), 1000);
+
+                    setTimeout(() => location.reload(), 800);
                 } else {
-                    document.getElementById('addInterviewError').innerText = data.message;
+                    document.getElementById('addInterviewError').innerText = result.message;
                     document.getElementById('addInterviewSuccess').innerText = '';
                 }
             })
-            .catch(err => {
-                console.error(err);
-                document.getElementById('addInterviewError').innerText = err.message;
+            .catch(() => {
+                document.getElementById('addInterviewError').innerText = 'An error occurred';
             });
         });
+
+                $(document).ready(function() {
+            $('#InterviewerId').select2({
+                placeholder: "Select an interviewer",
+                dropdownParent: $('#addInterviewModal')
+            });
+        });
+
     </script>
 }
+

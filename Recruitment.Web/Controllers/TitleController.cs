@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.CoreBusiness.Title;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
-using Recruitment.Web.Authorization;
+using Recruitment.Web.ViewModels.CoreBusiness.Department;
 using Recruitment.Web.ViewModels.CoreBusiness.Title;
 
 namespace Recruitment.Web.Controllers
@@ -18,163 +18,137 @@ namespace Recruitment.Web.Controllers
             _departmentService = departmentService;
         }
 
-        // GET: Title
-        //[HasPermission("Title", "View")]
-        public async Task<IActionResult> Index()
+        // GET: Title/Index
+        public async Task<IActionResult> Index(
+            int page = 1,
+            int pageSize = 10,
+            string? search = null,
+            int? departmentId = null)
         {
-            var titles = await _titleService.GetAllAsync();
-            var viewModel = titles.Select(t => new TitleListViewModel
+            var pagedResult = await _titleService
+                .GetPagedAsync(page, pageSize, search, departmentId);
+
+            var viewModel = new TitlesPagedVM
             {
-                Id = t.Id,
-                Name = t.Name
-            });
-            return View(viewModel);
-        }
-
-        [HttpGet]
-        //[HasPermission("Title", "View")]
-        public async Task<IActionResult> GetDepartmentsByTitle(int titleId)
-        {
-            var departments = await _titleService.GetDepartmentsByTitleIdAsync(titleId);
-            return Json(departments.Select(d => new { d.Id, d.Name }));
-        }
-
-        // GET: Title/Details/5
-        //[HasPermission("Title", "View")]
-        public async Task<IActionResult> Details(int id)
-        {
-            var dto = await _titleService.GetByIdAsync(id);
-            if (dto == null)
-                return NotFound();
-
-            var viewModel = new TitleDetailsViewModel
-            {
-                Id = dto.Id,
-                Name = dto.Name
-            };
-
-            return View(viewModel);
-        }
-
-        // GET: Title/Create
-        //[HasPermission("Title", "Create")]
-        public async Task<IActionResult> Create()
-        {
-            var departments = await _departmentService.GetAllAsync();
-            var viewModel = new TitleCreateViewModel
-            {
-                Departments = departments.Select(d => new SelectListItem
+                Items = pagedResult.Items.Select(t => new TitleListViewModel
                 {
-                    Value = d.Id.ToString(),
-                    Text = d.Name
-                })
+                    Id = t.Id,
+                    Name = t.Name,
+                    Departments = t.Departments
+                        .Select(d => new DepartmentViewModel
+                        {
+                            Id = d.Id,
+                            Name = d.Name
+                        }).ToList()
+                }).ToList(),
+
+                Page = pagedResult.Page,
+                PageSize = pagedResult.PageSize,
+                TotalCount = pagedResult.TotalCount,
+                Search = search,
+                SelectedDepartmentId = departmentId
             };
+
+            // Load departments for filter dropdown
+            var departments = await _departmentService.GetAllAsync();
+            ViewBag.Departments = departments.Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = d.Name,
+                Selected = departmentId.HasValue && departmentId.Value == d.Id
+            }).ToList();
+
             return View(viewModel);
         }
 
+        // POST: Title/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[HasPermission("Title", "Create")]
-        public async Task<IActionResult> Create(TitleCreateViewModel model)
+        public async Task<IActionResult> Create(string name, List<int> departmentIds)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                var departments = await _departmentService.GetAllAsync();
-                model.Departments = departments.Select(d => new SelectListItem
+                if (string.IsNullOrWhiteSpace(name))
                 {
-                    Value = d.Id.ToString(),
-                    Text = d.Name
-                });
-                return View(model);
+                    TempData["ErrorMessage"] = "Title name is required";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (departmentIds == null || !departmentIds.Any())
+                {
+                    TempData["ErrorMessage"] = "At least one department is required";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var dto = new CreateTitleDto
+                {
+                    Name = name,
+                    DepartmentIds = departmentIds
+                };
+
+                await _titleService.AddAsync(dto);
+                TempData["SuccessMessage"] = "Title created successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating title: {ex.Message}";
             }
 
-            var dto = new CreateTitleDto
-            {
-                Name = model.Name,
-                DepartmentIds = model.DepartmentIds
-            };
-
-            await _titleService.AddAsync(dto);
             return RedirectToAction(nameof(Index));
-        }
-
-        // GET: Title/Edit/5
-        //[HasPermission("Title", "Edit")]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var dto = await _titleService.GetByIdWithDepartmentsAsync(id);
-            if (dto == null)
-                return NotFound();
-
-            var departments = await _departmentService.GetAllAsync();
-
-            var viewModel = new TitleEditViewModel
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                SelectedDepartmentIds = dto.DepartmentIds,
-                DepartmentList = departments.Select(d => new SelectListItem
-                {
-                    Value = d.Id.ToString(),
-                    Text = d.Name
-                })
-            };
-
-            return View(viewModel);
         }
 
         // POST: Title/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[HasPermission("Title", "Edit")]
-        public async Task<IActionResult> Edit(TitleEditViewModel model)
+        public async Task<IActionResult> Edit(int id, string name, List<int> selectedDepartmentIds)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                var departments = await _departmentService.GetAllAsync();
-                model.DepartmentList = departments.Select(d => new SelectListItem
+                if (string.IsNullOrWhiteSpace(name))
                 {
-                    Value = d.Id.ToString(),
-                    Text = d.Name
-                });
-                return View(model);
+                    TempData["ErrorMessage"] = "Title name is required";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (selectedDepartmentIds == null || !selectedDepartmentIds.Any())
+                {
+                    TempData["ErrorMessage"] = "At least one department is required";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var dto = new UpdateTitleDto
+                {
+                    Id = id,
+                    Name = name,
+                    DepartmentIds = selectedDepartmentIds
+                };
+
+                await _titleService.UpdateAsync(dto);
+                TempData["SuccessMessage"] = "Title updated successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error updating title: {ex.Message}";
             }
 
-            var dto = new UpdateTitleDto
-            {
-                Id = model.Id,
-                Name = model.Name,
-                DepartmentIds = model.SelectedDepartmentIds
-            };
-
-            await _titleService.UpdateAsync(dto);
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Title/Delete/5
-        //[HasPermission("Title", "Delete")]
+        // POST: Title/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var dto = await _titleService.GetByIdAsync(id);
-            if (dto == null)
-                return NotFound();
-
-            var viewModel = new TitleDeleteViewModel
+            try
             {
-                Id = dto.Id,
-                Name = dto.Name
-            };
+                await _titleService.DeleteAsync(id);
+                TempData["SuccessMessage"] = "Title deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting title: {ex.Message}";
+            }
 
-            return View(viewModel);
-        }
-
-        // POST: Title/DeleteConfirmed
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        //[HasPermission("Title", "Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            await _titleService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

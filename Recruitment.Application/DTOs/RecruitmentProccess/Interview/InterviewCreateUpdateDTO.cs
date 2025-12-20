@@ -5,7 +5,7 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Interview
     public class InterviewCreateUpdateDTO
     {
         public int ApplicationId { get; set; }
-        public string? Interviewer { get; set; }
+        public int InterviewerId { get; set; }
         public DateTime ScheduledDate { get; set; }
         public InterviewType InterviewType { get; set; }
         public InterviewCategory InterviewCategory { get; set; }

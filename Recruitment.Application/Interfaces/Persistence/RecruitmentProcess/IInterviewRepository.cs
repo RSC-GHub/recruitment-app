@@ -27,7 +27,7 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
         Task<Interview?> GetWithRelatedDataAsync(int id);
 
         Task<bool> UpdateInterviewResultAsync(int id, InterviewResult result, string? feedback, string? Note);
-        Task<bool> UpdateInterviewAsync(int id, string? interViewer,
+        Task<bool> UpdateInterviewAsync(int id, int interviewerId,
                                                 InterviewStatus interviewStatus,
                                                 InterviewType interviewType,
                                                 int durationMinutes, string? interviewNote);

@@ -1,7 +1,7 @@
-﻿using Recruitment.Application.DTOs.CoreBusiness.Department;
+﻿using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Department;
 using Recruitment.Application.DTOs.CoreBusiness.Title;
 using Recruitment.Application.Interfaces.Persistence;
-using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
 
@@ -15,6 +15,56 @@ namespace Recruitment.Application.Services.CoreBusiness
         {
             _unitOfWork = unitOfWork;
         }
+
+        public async Task<PagedResult<TitleDto>> GetPagedAsync(
+        int page,
+        int pageSize,
+        string? search = null,
+        int? departmentId = null)
+        {
+            var pagedResult = await _unitOfWork.TitleRepository
+                .GetPagedAsync(page, pageSize, search, departmentId);
+
+            var dtoItems = pagedResult.Items.Select(t => new TitleDto
+            {
+                Id = t.Id,
+                Name = t.Name,
+                Departments = t.DepartmentTitles!
+                    .Select(dt => new DepartmentDto
+                    {
+                        Id = dt.DepartmentId,
+                        Name = dt.Department!.Name
+                    }).ToList()
+            }).ToList();
+
+            return new PagedResult<TitleDto>(
+                dtoItems,
+                pagedResult.TotalCount,
+                page,
+                pageSize
+            );
+        }
+
+        public async Task<IEnumerable<TitleDto>> GetAllWithDepartmentsAsync()
+        {
+            var titles = await _unitOfWork.TitleRepository
+                .GetAllWithDepartmentsAsync();
+
+            return titles.Select(t => new TitleDto
+            {
+                Id = t.Id,
+                Name = t.Name,
+                Departments = t.DepartmentTitles!
+                    .Select(dt => new DepartmentDto
+                    {
+                        Id = dt.DepartmentId,
+                        Name = dt.Department!.Name
+                    })
+                    .ToList()
+            });
+        }
+
+
 
         public async Task<IEnumerable<TitleDto>> GetAllAsync()
         {
@@ -84,11 +134,16 @@ namespace Recruitment.Application.Services.CoreBusiness
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                DepartmentIds = entity.DepartmentTitles?
-                                      .Select(dt => dt.DepartmentId)
-                                      .ToList() ?? new List<int>()
+                Departments = entity.DepartmentTitles?
+                    .Select(dt => new DepartmentDto
+                    {
+                        Id = dt.DepartmentId,
+                        Name = dt.Department!.Name
+                    })
+                    .ToList() ?? new List<DepartmentDto>()
             };
         }
+
 
         public async Task UpdateAsync(UpdateTitleDto dto)
         {
