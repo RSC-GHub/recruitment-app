@@ -35,6 +35,9 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Interview
         public DateTime CreatedOn { get; set; }
         public string? ModifiedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
+
+        public List<int> RejectionReasonIds { get; set; } = new();
+        public List<string> RejectionReasonTexts { get; set; } = new();
     }
 
 }

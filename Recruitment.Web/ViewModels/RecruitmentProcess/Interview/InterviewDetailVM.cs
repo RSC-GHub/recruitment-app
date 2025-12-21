@@ -1,4 +1,6 @@
-﻿using Recruitment.Domain.Enums;
+﻿using Recruitment.Domain.Entities.RecruitmentProccess;
+using Recruitment.Domain.Enums;
+using Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason;
 using System.Security.Principal;
 
 namespace Recruitment.Web.ViewModels.RecruitmentProcess.Interview
@@ -31,6 +33,11 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Interview
         public DateTime CreatedOn { get; set; }
         public string? ModifiedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
+
+        public List<ReasonsListVM> AllRejectionReasons { get; set; } = new();
+        public List<string> SelectedRejectionReasons { get; set; } = new();
+
+
     }
 
 }

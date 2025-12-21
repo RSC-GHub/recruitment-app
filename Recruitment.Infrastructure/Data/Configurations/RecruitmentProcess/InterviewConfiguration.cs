@@ -49,6 +49,10 @@ namespace Recruitment.Infrastructure.Data.Configurations.RecruitmentProcess
                    .HasMaxLength(2000)
                    .IsUnicode()
                    .IsRequired(false);
+
+            builder.HasMany(i => i.RejectionReasons)
+                   .WithOne(ir => ir.Interview)
+                   .HasForeignKey(ir => ir.InterviewId);
         }
     }
 }

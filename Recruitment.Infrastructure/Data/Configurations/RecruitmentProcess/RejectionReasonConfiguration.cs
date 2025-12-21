@@ -13,6 +13,11 @@ namespace Recruitment.Infrastructure.Data.Configurations.RecruitmentProcess
             builder.Property(rr => rr.Reason)
                    .IsRequired()
                    .HasMaxLength(500);
+
+            builder
+          .HasMany(r => r.Interviews)
+          .WithOne(ir => ir.RejectionReason)
+          .HasForeignKey(ir => ir.RejectionReasonId);
         }
     }
 }

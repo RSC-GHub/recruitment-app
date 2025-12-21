@@ -188,6 +188,25 @@
                         <p class="mb-0 fw-semibold">@Model.Feedback</p>
                     </div>
                 }
+
+                @if (Model.InterviewResult == InterviewResult.Rejected
+                                && Model.SelectedRejectionReasons != null
+                                && Model.SelectedRejectionReasons.Any())
+                {
+                    <div class="mt-3">
+                        <span class="text-muted small">Rejection Reasons</span>
+
+                        <div class="d-flex gap-2 flex-wrap mt-1">
+                            @foreach (var reason in Model.SelectedRejectionReasons)
+                            {
+                                <span class="badge-component badge-secondary">
+                                    @reason
+                                </span>
+                            }
+                        </div>
+                    </div>
+                }
+
             </div>
         </div>
 
@@ -315,7 +334,7 @@
         </div>
     </div>
 
-    <!-- Mark As Complete Modal -->
+    <!-- Complete Interview Modal -->
     <div class="modal fade" id="completeInterviewModal" tabindex="-1" aria-labelledby="completeInterviewLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -332,6 +351,7 @@
                     <div class="modal-body">
                         <input type="hidden" name="Id" value="@Model.Id" />
 
+                        <!-- Result -->
                         <div class="form-field">
                             <label class="form-label" for="InterviewResult">Result <span class="text-danger">*</span></label>
                             <select class="form-select" name="InterviewResult" id="InterviewResult" required>
@@ -343,15 +363,28 @@
                             </select>
                         </div>
 
+                        <!-- Feedback -->
                         <div class="form-field">
                             <label class="form-label" for="Feedback">Feedback</label>
                             <textarea class="form-input" name="Feedback" id="Feedback" rows="4" placeholder="Enter interview feedback..."></textarea>
                             <span class="form-description">Provide detailed feedback about the interview</span>
                         </div>
 
+                        <!-- Note -->
                         <div class="form-field">
                             <label class="form-label" for="Note">Note</label>
                             <textarea class="form-input" name="Note" id="Note" rows="2" placeholder="Add any additional notes..."></textarea>
+                        </div>
+
+                        <!-- Rejection Reasons (Initially Hidden) -->
+                        <div class="form-field" id="rejectionReasonsContainer" style="display:none;">
+                            <label class="form-label" for="RejectionReasonIds">Rejection Reasons <span class="text-danger">*</span></label>
+                            <select class="form-select" name="RejectionReasonIds[]" id="RejectionReasonIds" multiple="multiple">
+                                @foreach (var reason in Model.AllRejectionReasons)
+                                {
+                                    <option value="@reason.Id">@reason.Reason</option>
+                                }
+                            </select>
                         </div>
 
                         <div id="completeInterviewError" class="form-error" style="display:none;"></div>
@@ -371,111 +404,181 @@
         </div>
     </div>
 
-</div>
 
 
 @section Scripts {
-    <script>
-        // =========================
-        // Edit Interview Form
-        // =========================
-        document.getElementById('editInterviewForm')?.addEventListener('submit', function (e) {
-            e.preventDefault();
+        <script>
+            // =========================
+            // Edit Interview Form
+            // =========================
+            document.getElementById('editInterviewForm')?.addEventListener('submit', function (e) {
+                e.preventDefault();
 
-            var formData = new FormData(e.target);
-            var errorDiv = document.getElementById('editInterviewError');
-            var successDiv = document.getElementById('editInterviewSuccess');
+                var formData = new FormData(e.target);
+                var errorDiv = document.getElementById('editInterviewError');
+                var successDiv = document.getElementById('editInterviewSuccess');
 
-            fetch('@Url.Action("UpdateInterview", "Interview")', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    successDiv.textContent = data.message;
-                    successDiv.style.display = 'block';
-                    errorDiv.style.display = 'none';
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    errorDiv.textContent = data.message;
+                fetch('@Url.Action("UpdateInterview", "Interview")', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(r => {
+                    if (!r.ok) throw new Error('Server error: ' + r.status);
+                    return r.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        successDiv.textContent = data.message;
+                        successDiv.style.display = 'block';
+                        errorDiv.style.display = 'none';
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        errorDiv.textContent = data.message;
+                        errorDiv.style.display = 'block';
+                        successDiv.style.display = 'none';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    errorDiv.textContent = 'An error occurred: ' + error.message;
                     errorDiv.style.display = 'block';
                     successDiv.style.display = 'none';
-                }
-            })
-            .catch(() => {
-                errorDiv.textContent = 'An error occurred';
-                errorDiv.style.display = 'block';
-                successDiv.style.display = 'none';
+                });
             });
-        });
 
-        // =========================
-        // Fill Complete Interview Modal
-        // =========================
-        $('#completeInterviewModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
+            // =========================
+            // Fill Complete Interview Modal
+            // =========================
+            $('#completeInterviewModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
 
-            var interviewId = button.data('id');
-            var result = button.data('result');
-            var feedback = button.data('feedback');
-            var note = button.data('note');
+                var interviewId = button.data('id');
+                var result = button.data('result');
+                var feedback = button.data('feedback');
+                var note = button.data('note');
 
-            var modal = $(this);
+                var modal = $(this);
 
-            modal.find('#CompleteInterviewId').val(interviewId);
-            modal.find('#InterviewResult').val(result);
-            modal.find('#Feedback').val(feedback ?? '');
-            modal.find('#Note').val(note ?? '');
-        });
+                modal.find('input[name="Id"]').val(interviewId);
+                modal.find('#InterviewResult').val(result);
+                modal.find('#Feedback').val(feedback ?? '');
+                modal.find('#Note').val(note ?? '');
+            });
 
-        // =========================
-        // Complete Interview Form
-        // =========================
-        document.getElementById('completeInterviewForm')?.addEventListener('submit', function (e) {
-            e.preventDefault();
+            // =========================
+            // Complete Interview Form
+            // =========================
+            document.getElementById('completeInterviewForm')?.addEventListener('submit', function (e) {
+                e.preventDefault();
 
-            var formData = new FormData(e.target);
-            var errorDiv = document.getElementById('completeInterviewError');
-            var successDiv = document.getElementById('completeInterviewSuccess');
+                var formData = new FormData(e.target);
+                var errorDiv = document.getElementById('completeInterviewError');
+                var successDiv = document.getElementById('completeInterviewSuccess');
 
-            fetch('@Url.Action("UpdateInterviewResult", "Interview")', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    successDiv.textContent = data.message;
-                    successDiv.style.display = 'block';
-                    errorDiv.style.display = 'none';
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    errorDiv.textContent = data.message;
+                // Remove the array-style entries and add them properly
+                formData.delete('RejectionReasonIds[]');
+
+                // Get selected rejection reasons and append them correctly
+                var selectedReasons = $('#RejectionReasonIds').val();
+                if (selectedReasons && selectedReasons.length > 0) {
+                    selectedReasons.forEach(function(reasonId) {
+                        formData.append('RejectionReasonIds', reasonId);
+                    });
+                }
+
+                // Debug: Log what we're sending
+                console.log('Submitting form with data:');
+                for (var pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+
+                fetch('@Url.Action("UpdateInterviewResult", "Interview")', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    // Log the response for debugging
+                    console.log('Response status:', response.status);
+
+                    // Check if response is OK
+                    if (!response.ok) {
+                        throw new Error('Server returned status: ' + response.status);
+                    }
+
+                    // Try to get the response as text first
+                    return response.text().then(text => {
+                        console.log('Response text:', text);
+
+                        // Try to parse as JSON
+                        try {
+                            return JSON.parse(text);
+                        } catch (e) {
+                            console.error('Failed to parse JSON:', text);
+                            throw new Error('Server returned invalid response. Check console for details.');
+                        }
+                    });
+                })
+                .then(data => {
+                    if (data.success) {
+                        successDiv.textContent = data.message;
+                        successDiv.style.display = 'block';
+                        errorDiv.style.display = 'none';
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        errorDiv.textContent = data.message;
+                        errorDiv.style.display = 'block';
+                        successDiv.style.display = 'none';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    errorDiv.textContent = 'An error occurred: ' + error.message;
                     errorDiv.style.display = 'block';
                     successDiv.style.display = 'none';
-                }
-            })
-            .catch(() => {
-                errorDiv.textContent = 'An error occurred.';
-                errorDiv.style.display = 'block';
-                successDiv.style.display = 'none';
-            });
-        });
-
-        // =========================
-        // Select2 Interviewer (Edit)
-        // =========================
-        $('#editInterviewModal').on('shown.bs.modal', function () {
-            $('#InterviewerId').select2({
-                placeholder: "-- Select Interviewer --",
-                dropdownParent: $('#editInterviewModal'),
-                width: '100%'
+                });
             });
 
-            var selectedVal = '@Model.InterviewerId';
-            $('#InterviewerId').val(selectedVal).trigger('change');
-        });
-    </script>
+            // =========================
+            // Select2 Interviewer (Edit)
+            // =========================
+            $('#editInterviewModal').on('shown.bs.modal', function () {
+                $('#InterviewerId').select2({
+                    placeholder: "-- Select Interviewer --",
+                    dropdownParent: $('#editInterviewModal'),
+                    width: '100%'
+                });
+
+                var selectedVal = '@Model.InterviewerId';
+                $('#InterviewerId').val(selectedVal).trigger('change');
+            });
+
+            // =========================
+            // Select2 & Show/Hide Rejection Reasons
+            // =========================
+            $(document).ready(function () {
+                // Initialize Select2 for Rejection Reasons inside modal
+                $('#RejectionReasonIds').select2({
+                    placeholder: "Select rejection reasons",
+                    width: '100%',
+                    dropdownParent: $('#completeInterviewModal')
+                });
+
+                // Show/hide dropdown based on selected result
+                $('#InterviewResult').on('change', function () {
+                    var selected = $(this).val();
+                    if (selected === 'Rejected') {
+                        $('#rejectionReasonsContainer').show();
+                        $('#RejectionReasonIds').prop('required', true);
+                    } else {
+                        $('#rejectionReasonsContainer').hide();
+                        $('#RejectionReasonIds').prop('required', false);
+                        $('#RejectionReasonIds').val(null).trigger('change');
+                    }
+                });
+
+                // Trigger change on page load to set initial state
+                $('#InterviewResult').trigger('change');
+            });
+
+        </script>
 }
-

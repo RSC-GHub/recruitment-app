@@ -18,7 +18,10 @@ namespace Recruitment.Domain.Entities.RecruitmentProccess
         public string? Feedback { get; set; }
 
         public string? InterViewNote { get; set; }
-        public int DurationMinutes { get; set; } 
+        public int DurationMinutes { get; set; }
+
+        public ICollection<InterviewRejectionReason> RejectionReasons { get; set; } = new List<InterviewRejectionReason>();
+
     }
 }
 

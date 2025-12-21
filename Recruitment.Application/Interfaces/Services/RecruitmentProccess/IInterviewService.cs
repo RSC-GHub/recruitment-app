@@ -33,18 +33,18 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
         Task<bool> CreateAsync(InterviewCreateUpdateDTO dto);
         Task<bool> UpdateAsync(int id, InterviewCreateUpdateDTO dto);
 
-        Task<int?> UpdateInterviewResultAsync(
-            int interviewId,
-            InterviewResult result,
-            string? feedback,
-            string? note);
         Task<bool> UpdateInterviewAsync(UpdateInterviewDTO dto);
 
         Task<int> CountTodaysInterviewsAsync();
         Task<int> GetPendingInterviewResultsAlertAsync();
 
         Task<List<InterviewCalendarDto>> GetInterviewsForCalendarAsync(int? month = null, int? year = null);
-
+        Task<int?> UpdateInterviewResultAsync(
+        int interviewId,
+        InterviewResult result,
+        string? feedback,
+        string? note,
+        List<int>? rejectionReasonIds = null);
     }
 
 }

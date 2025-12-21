@@ -1,7 +1,6 @@
 ﻿using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.Interview;
 using Recruitment.Application.Interfaces.Persistence;
-using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Enums;
@@ -157,6 +156,14 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 DurationMinutes = interview.DurationMinutes,
                 InterViewNote = interview.InterViewNote,
 
+                RejectionReasonIds = interview.RejectionReasons
+                                    .Select(r => r.RejectionReasonId)
+                                    .ToList(),
+
+                RejectionReasonTexts = interview.RejectionReasons
+                                    .Select(r => r.RejectionReason.Reason)
+                                    .ToList(),
+
                 CreatedBy = interview.CreatedBy,
                 CreatedOn = interview.CreatedOn,
                 ModifiedBy = interview.ModifiedBy,
@@ -222,24 +229,62 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             int interviewId,
             InterviewResult result,
             string? feedback,
-            string? note)
+            string? note,
+            List<int>? rejectionReasonIds = null)
         {
             var interview = await _unitOfWork.InterviewRepository
-                .GetByIdAsync(interviewId);
+                .GetWithRejectionReasonsAsync(interviewId);
 
             if (interview == null)
                 return null;
+
+            if (interview.Application == null)
+                throw new InvalidOperationException("Interview application not found");
 
             interview.InterviewResult = result;
             interview.Feedback = feedback;
             interview.InterViewNote = note;
             interview.InterviewStatus = InterviewStatus.Completed;
 
+            switch (result)
+            {
+                case InterviewResult.Accepted:
+                    interview.Application.ApplicationStatus = ApplicationStatus.AcceptedInterview;
+                    interview.RejectionReasons.Clear();
+                    break;
+
+                case InterviewResult.SecondChoice:
+                    interview.Application.ApplicationStatus = ApplicationStatus.Pending;
+                    interview.RejectionReasons.Clear();
+                    break;
+
+                case InterviewResult.Rejected:
+                    interview.Application.ApplicationStatus = ApplicationStatus.Rejected;
+                    interview.RejectionReasons.Clear();
+
+                    if (rejectionReasonIds != null && rejectionReasonIds.Any())
+                    {
+                        foreach (var reasonId in rejectionReasonIds)
+                        {
+                            interview.RejectionReasons.Add(new InterviewRejectionReason
+                            {
+                                InterviewId = interview.Id,
+                                RejectionReasonId = reasonId
+                            });
+                        }
+                    }
+                    break;
+
+                default:
+                    interview.RejectionReasons.Clear();
+                    break;
+            }
+
             _unitOfWork.InterviewRepository.Update(interview);
             await _unitOfWork.CompleteAsync();
-
             return interview.ApplicationId;
         }
+
         public async Task<bool> UpdateInterviewAsync(UpdateInterviewDTO dto)
         {
             if (dto == null)

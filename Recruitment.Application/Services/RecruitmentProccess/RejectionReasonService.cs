@@ -78,5 +78,15 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             _unitOfWork.RejectionReasons.Update(reason);
             await _unitOfWork.CompleteAsync();
         }
+
+        public async Task<List<ReasonDto>> GetAllAsync()
+        {
+            var reasons = await _unitOfWork.RejectionReasons.GetAllAsync();
+            return reasons.Select(r => new ReasonDto
+            {
+                Id = r.Id,
+                Reason = r.Reason
+            }).ToList();
+        }
     }
 }

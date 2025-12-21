@@ -118,6 +118,7 @@
                                                     <th>Result</th>
                                                     <th>Feedback</th>
                                                     <th>Note</th>
+                                                    <th class="text-center">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -168,6 +169,16 @@
 
                                                         <td>@(interview.Feedback ?? "-")</td>
                                                         <td>@(interview.InterViewNote ?? "-")</td>
+                                                        <td class="text-center">
+                                                            <a asp-controller="Interview"
+                                                               asp-action="Details"
+                                                               asp-route-id="@interview.Id"
+                                                               class="btn-component btn-outline btn-sm"
+                                                               title="View Interview">
+                                                                <i class="bi bi-eye"></i>
+                                                            </a>
+                                                        </td>
+
                                                     </tr>
                                                 }
                                             </tbody>

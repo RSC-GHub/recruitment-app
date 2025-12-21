@@ -153,18 +153,38 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             return await _context.Interviews
                 .Include(i => i.Application)
                     .ThenInclude(a => a.Applicant)
+
                 .Include(i => i.Application)
                     .ThenInclude(a => a.Vacancy)
                         .ThenInclude(v => v.Title)
+
                 .Include(i => i.Application)
                     .ThenInclude(a => a.Vacancy)
                         .ThenInclude(v => v.ProjectVacancies!)
                             .ThenInclude(pv => pv.Project)
+
                 .Include(i => i.Interviewer)
+
+                .Include(i => i.RejectionReasons)
+                    .ThenInclude(rr => rr.RejectionReason)
+
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public async Task<bool> UpdateInterviewResultAsync(int id, InterviewResult result, string? feedback, string? Note)
+        public async Task<Interview?> GetWithRejectionReasonsAsync(int interviewId)
+        {
+            return await _context.Interviews
+                .Include(i => i.RejectionReasons)
+                .Include(i => i.Application)
+                .FirstOrDefaultAsync(i => i.Id == interviewId);
+        }
+
+        public async Task<bool> UpdateInterviewResultAsync(
+            int id,
+            InterviewResult result,
+            string? feedback,
+            string? note,
+            List<int>? rejectionReasonIds = null)
         {
             var interview = await GetWithApplicationIdAsync(id);
             if (interview == null)
@@ -177,24 +197,43 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             {
                 case InterviewResult.Accepted:
                     interview.Application.ApplicationStatus = ApplicationStatus.AcceptedInterview;
+
+                    interview.RejectionReasons.Clear();
                     break;
                 case InterviewResult.SecondChoice:
                     interview.Application.ApplicationStatus = ApplicationStatus.Pending;
+                    interview.RejectionReasons.Clear();
                     break;
                 case InterviewResult.Rejected:
                     interview.Application.ApplicationStatus = ApplicationStatus.Rejected;
+
+                    if (rejectionReasonIds != null && rejectionReasonIds.Any())
+                    {
+                        interview.RejectionReasons.Clear();
+
+                        foreach (var reasonId in rejectionReasonIds)
+                        {
+                            interview.RejectionReasons.Add(new InterviewRejectionReason
+                            {
+                                InterviewId = interview.Id,
+                                RejectionReasonId = reasonId
+                            });
+                        }
+                    }
                     break;
                 default:
-                    break; 
+                    interview.RejectionReasons.Clear();
+                    break;
             }
 
             interview.Feedback = feedback;
-            interview.InterViewNote = Note;
+            interview.InterViewNote = note;
 
             _context.Interviews.Update(interview);
             await _context.SaveChangesAsync();
             return true;
         }
+
         public async Task<bool> UpdateInterviewAsync(
             int id,
             int interviewerId,

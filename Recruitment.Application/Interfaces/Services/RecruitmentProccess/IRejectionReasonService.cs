@@ -13,5 +13,8 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
         Task AddAsync(CreateReasonDto dto);
         Task UpdateAsync(ReasonDto dto);
         Task DeleteAsync(int id);
+
+        Task<List<ReasonDto>> GetAllAsync();
+
     }
 }

@@ -22,11 +22,16 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
             DateTime? toDate,
             int page,
             int pageSize);
-
+        Task<Interview?> GetWithRejectionReasonsAsync(int id);
         Task<Interview?> GetWithApplicationAsync(int id);
         Task<Interview?> GetWithRelatedDataAsync(int id);
 
-        Task<bool> UpdateInterviewResultAsync(int id, InterviewResult result, string? feedback, string? Note);
+        Task<bool> UpdateInterviewResultAsync(
+            int id,
+            InterviewResult result,
+            string? feedback,
+            string? note,
+            List<int>? rejectionReasonIds = null);
         Task<bool> UpdateInterviewAsync(int id, int interviewerId,
                                                 InterviewStatus interviewStatus,
                                                 InterviewType interviewType,

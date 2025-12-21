@@ -8,6 +8,9 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Interview
         public InterviewResult InterviewResult { get; set; }
         public string? Feedback { get; set; }
         public string? Note { get; set; }
+
+        public List<int>? RejectionReasonIds { get; set; } = new List<int>();
+
     }
 
 }

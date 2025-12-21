@@ -7,6 +7,7 @@ using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interview;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interview.Recruitment.Web.ViewModels.RecruitmentProcess.Interview;
+using Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason;
 
 namespace Recruitment.Web.Controllers
 {
@@ -15,14 +16,17 @@ namespace Recruitment.Web.Controllers
         private readonly IInterviewService _interviewService;
         private readonly IApplicantApplicationService _applicantApplicationService;
         private readonly IInterviewerService _interviewerService;
+        private readonly IRejectionReasonService _rejectionReasonService;
 
-        public InterviewController(IInterviewService interviewService, 
+        public InterviewController(IInterviewService interviewService,
             IApplicantApplicationService applicantApplicationService,
-            IInterviewerService interviewerService)
+            IInterviewerService interviewerService,
+            IRejectionReasonService rejectionReasonService)
         {
             _interviewService = interviewService;
             _applicantApplicationService = applicantApplicationService;
             _interviewerService = interviewerService;
+            _rejectionReasonService = rejectionReasonService;
         }
 
         // GET: Interview
@@ -110,7 +114,8 @@ namespace Recruitment.Web.Controllers
                 Text = i.Name
             }).ToList();
 
-
+            var allReasons = await _rejectionReasonService.GetAllAsync();
+            
             // Map DTO to VM
             var vm = new InterviewDetailVM
             {
@@ -136,11 +141,20 @@ namespace Recruitment.Web.Controllers
                 CreatedBy = dto.CreatedBy,
                 CreatedOn = dto.CreatedOn,
                 ModifiedBy = dto.ModifiedBy,
-                ModifiedOn = dto.ModifiedOn
+                ModifiedOn = dto.ModifiedOn,
+
+                AllRejectionReasons = allReasons.Select(r => new ReasonsListVM
+                {
+                    Id = r.Id,
+                    Reason = r.Reason
+                }).ToList(),
+
+                SelectedRejectionReasons = dto.RejectionReasonTexts
             };
 
             return View(vm);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateInterview(UpdateInterviewDTO dto)
@@ -159,29 +173,39 @@ namespace Recruitment.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateInterviewResult(UpdateInterviewResultDTO dto)
         {
-            if (!ModelState.IsValid)
-                return Json(new { success = false, message = "Invalid input" });
-
-            var applicationId = await _interviewService.UpdateInterviewResultAsync(
-                dto.Id,
-                dto.InterviewResult,
-                dto.Feedback,
-                dto.Note
-            );
-
-            if (applicationId == null)
-                return Json(new { success = false, message = "Failed to update interview result." });
-
-            await _applicantApplicationService.ProcessInterviewResultAsync(
-                applicationId.Value,
-                dto.InterviewResult
-            );
-
-            return Json(new
+            try
             {
-                success = true,
-                message = "Interview completed and application updated successfully."
-            });
+                if (!ModelState.IsValid)
+                    return Json(new { success = false, message = "Invalid input" });
+
+                var applicationId = await _interviewService.UpdateInterviewResultAsync(
+                    dto.Id,
+                    dto.InterviewResult,
+                    dto.Feedback,
+                    dto.Note,
+                    dto.RejectionReasonIds
+                );
+
+                if (applicationId == null)
+                    return Json(new { success = false, message = "Failed to update interview result." });
+
+                //await _applicantApplicationService.ProcessInterviewResultAsync(
+                //    applicationId.Value,
+                //    dto.InterviewResult
+                //);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Interview completed and application updated successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
         }
+
     }
 }
