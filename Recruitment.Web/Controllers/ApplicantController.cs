@@ -121,6 +121,8 @@ namespace Recruitment.Web.Controllers
                     ApplicationDate = app.ApplicationDate,
                     ReviewedByUserName = app.ReviewedByUserName,
                     Note = app.Note,
+                    ExpectedFirstDate = app.ExpectedFirstDate,
+                    ActualFirstDate = app.ActualFirstDate,
                     Interviews = app.Interviews.Select(i => new InterviewHistoryVM
                     {
                         Id = i.Id,

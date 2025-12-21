@@ -13,11 +13,10 @@
 
         Offered,
         AcceptedOffer,
-        SignedOffer,
         SignedContract,
 
         Hired,
         Notshow,
         Rejected
     }
-} 
+}

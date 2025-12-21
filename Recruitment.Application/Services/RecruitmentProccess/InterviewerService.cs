@@ -94,6 +94,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             {
                 Id = i.Id,
                 Name = i.Name,
+                DepartmentId = i.DepartmentId,
                 DepartmentName = i.Department?.Name!,
                 CreatedOn = i.CreatedOn
             }).ToList();

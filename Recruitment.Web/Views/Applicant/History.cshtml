@@ -69,15 +69,36 @@
                                         <label class="form-label text-muted">Applied On</label>
                                         <div>@app.ApplicationDate.ToString("yyyy-MM-dd HH:mm")</div>
                                     </div>
+
                                     <div class="col-md-4">
                                         <label class="form-label text-muted">Reviewed By</label>
-                                        <div>@app.ReviewedByUserName</div>
+                                        <div>@(string.IsNullOrEmpty(app.ReviewedByUserName) ? "-" : app.ReviewedByUserName)</div>
                                     </div>
+
                                     <div class="col-md-4">
                                         <label class="form-label text-muted">Note</label>
-                                        <div>@(app.Note ?? "-")</div>
+                                        <div>@(string.IsNullOrEmpty(app.Note) ? "-" : app.Note)</div>
                                     </div>
+
+                                    @* Expected First Date *@
+                                    @if (app.ExpectedFirstDate.HasValue)
+                                    {
+                                        <div class="col-md-4">
+                                            <label class="form-label text-muted">Expected Start Date</label>
+                                            <div>@app.ExpectedFirstDate.Value.ToString("MMM dd, yyyy")</div>
+                                        </div>
+                                    }
+
+                                    @* Actual First Date *@
+                                    @if (app.ActualFirstDate.HasValue)
+                                    {
+                                        <div class="col-md-4">
+                                            <label class="form-label text-muted">Actual Start Date</label>
+                                            <div>@app.ActualFirstDate.Value.ToString("MMM dd, yyyy")</div>
+                                        </div>
+                                    }
                                 </div>
+
 
                                 @if (app.Interviews.Any())
                                 {

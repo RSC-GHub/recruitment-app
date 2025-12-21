@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.Interfaces.Common;
+using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
@@ -77,6 +78,8 @@ namespace Recruitment.Web.Controllers
                 PhoneNumber = application.PhoneNumber,
                 CurrentJob = application.CurrentJob,
                 CurrentEmployer = application.CurrentEmployer,
+                ExpectedFirstDate = application.ExpectedFirstDate,
+                ActualFirstDate = application.ActualFirstDate,
                 VacancyId = application.VacancyId,
                 VacancyTitle = application.VacancyTitle,
                 VacancyDescription = application.VacancyDescription,
@@ -121,7 +124,9 @@ namespace Recruitment.Web.Controllers
                     ApplicationId = vm.ApplicationId,
                     ReviewedBy = reviewedBy,
                     ApplicationStatus = vm.ApplicationStatus,
-                    Note = vm.Note
+                    Note = vm.Note,
+                    ExpectedFirstDate = vm.ExpectedFirstDate,
+                    ActualFirstDate = vm.ActualFirstDate
                 };
 
                 await _applicationService.ReviewApplicationAsync(dto);
@@ -139,6 +144,30 @@ namespace Recruitment.Web.Controllers
                     success = false,
                     message = ex.Message
                 });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateActualStartDate([FromBody] UpdateActualStartDateVM vm)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false, message = "Invalid data" });
+
+            try
+            {
+                var dto = new UpdateActualStartDateDto
+                {
+                    ApplicationId = vm.ApplicationId,
+                    ActualFirstDate = vm.ActualFirstDate
+                };
+
+                await _applicationService.UpdateActualStartDateAsync(dto);
+
+                return Json(new { success = true, message = "Actual start date updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
             }
         }
 

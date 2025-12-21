@@ -271,6 +271,8 @@ namespace Recruitment.Application.Services.UserManagement
                     ApplicationDate = app.ApplicationDate,
                     ReviewedByUserName = app.Reviewer?.FullName ?? "-",
                     Note = app.Note,
+                    ExpectedFirstDate = app.ExpectedFirstDate,
+                    ActualFirstDate = app.ActualFirstDate,
                     Interviews = app.Interviews.Select(i => new InterviewHistoryDto
                     {
                         Id = i.Id,

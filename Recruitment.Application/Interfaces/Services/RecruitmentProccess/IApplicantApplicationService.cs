@@ -48,6 +48,8 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
             ApplicationStatus? status,
             string? search);
 
+        Task UpdateActualStartDateAsync(UpdateActualStartDateDto dto);
+
     }
 
 }

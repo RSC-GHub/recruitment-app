@@ -77,7 +77,7 @@ namespace Recruitment.Application.Services.Common
                 ws.Cell(r, 12).Value = ""; // Proposed Salary
                 ws.Cell(r, 13).Value = ""; // Offer Status
                 ws.Cell(r, 14).Value = ""; // N.B
-                ws.Cell(r, 15).Value = ""; // Starting Date
+                ws.Cell(r, 15).Value = d.StartingDate.ToString("MMM dd, yyyy"); 
                 ws.Cell(r, 16).Value = ""; // Total Experience
 
                 ws.Cell(r, 17).Value = d.CurrentSalary;

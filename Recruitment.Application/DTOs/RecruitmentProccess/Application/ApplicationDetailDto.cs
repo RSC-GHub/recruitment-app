@@ -28,5 +28,9 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
         public string? ReviewedByUserName { get; set; }
         public DateTime? ReviewDate { get; set; }
         public string? Note { get; set; }
+
+        public DateTime? ExpectedFirstDate { get; set; }
+        public DateTime? ActualFirstDate { get; set; }
+
     }
 }

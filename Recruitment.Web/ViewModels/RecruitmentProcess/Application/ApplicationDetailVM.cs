@@ -21,6 +21,9 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
         public ApplicationStatus ApplicationStatus { get; set; }
         public DateTime ApplicationDate { get; set; }
 
+        public DateTime? ExpectedFirstDate { get; set; }
+        public DateTime? ActualFirstDate { get; set; } 
+
         public int? ReviewedBy { get; set; }
         public string? ReviewedByUserName { get; set; }
         public DateTime? ReviewDate { get; set; }

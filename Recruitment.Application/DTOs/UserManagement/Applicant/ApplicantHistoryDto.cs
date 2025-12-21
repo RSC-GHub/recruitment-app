@@ -21,6 +21,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public DateTime ApplicationDate { get; set; }
         public string ReviewedByUserName { get; set; } = "-";
         public string? Note { get; set; }
+        public DateTime? ExpectedFirstDate { get; set; }
+        public DateTime? ActualFirstDate { get; set; }
         public List<InterviewHistoryDto> Interviews { get; set; } = new();
     }
 

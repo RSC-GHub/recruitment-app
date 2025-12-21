@@ -89,6 +89,21 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 application.ApplicationStatus,
                 dto.ApplicationStatus);
 
+            if (dto.ApplicationStatus == ApplicationStatus.AcceptedOffer)
+            {
+                if (!dto.ExpectedFirstDate.HasValue)
+                    throw new InvalidOperationException("Expected start date must be provided when offer is accepted.");
+
+                application.ExpectedFirstDate = dto.ExpectedFirstDate.Value;
+            }
+            else if (dto.ApplicationStatus == ApplicationStatus.SignedContract)
+            {
+                if (!dto.ActualFirstDate.HasValue)
+                    throw new InvalidOperationException("Actual start date must be provided when application is signed.");
+
+                application.ActualFirstDate = dto.ActualFirstDate.Value;
+            }
+
             application.ApplicationStatus = dto.ApplicationStatus;
             application.ReviewedBy = userId.Value;
             application.ReviewDate = DateTime.UtcNow;
@@ -139,6 +154,9 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 CurrentJob = entity.Applicant?.CurrentJob,
                 CurrentEmployer = entity.Applicant?.CurrentEmployer,
 
+                ExpectedFirstDate = entity.ExpectedFirstDate,
+                ActualFirstDate = entity.ActualFirstDate,
+
                 VacancyId = entity.VacancyId,
                 VacancyTitle = entity.Vacancy?.Title!.Name ?? "",
                 VacancyDescription = entity.Vacancy?.JobDescription,
@@ -163,6 +181,9 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ApplicantName = a.Applicant?.FullName ?? "",
                 ApplicantEmail = a.Applicant?.Email ?? "",
                 PhoneNumber = a.Applicant?.PhoneNumber ?? "",
+                
+                ExpectedFirstDate = a.ExpectedFirstDate,
+                ActualFirstDate = a.ActualFirstDate,
 
                 VacancyId = a.VacancyId,
                 VacancyTitle = a.Vacancy?.Title?.Name ?? "",
@@ -278,6 +299,9 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 CurrentEmployer = entity.Applicant?.CurrentEmployer,
                 CV = entity.Applicant?.CVFilePath ?? "",
 
+                ExpectedFirstDate = entity.ExpectedFirstDate,
+                ActualFirstDate = entity.ActualFirstDate,
+
                 VacancyId = entity.VacancyId,
                 VacancyTitle = entity.Vacancy?.Title!.Name ?? "",
                 VacancyDescription = entity.Vacancy?.JobDescription,
@@ -366,5 +390,23 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
             return result.ToList();
         }
+
+        public async Task UpdateActualStartDateAsync(UpdateActualStartDateDto dto)
+        {
+            if (dto.ApplicationId == 0 || dto.ActualFirstDate == null)
+                throw new ArgumentException("Invalid data");
+
+            if (dto.ActualFirstDate.Value.Date < DateTime.UtcNow.Date)
+                throw new InvalidOperationException("Actual start date cannot be in the past.");
+
+            var application = await _unitOfWork.ApplicationRepository.GetByIdAsync(dto.ApplicationId);
+            if (application == null)
+                throw new InvalidOperationException("Application not found");
+
+            application.ActualFirstDate = dto.ActualFirstDate.Value;
+            _unitOfWork.ApplicationRepository.Update(application);
+            await _unitOfWork.CompleteAsync();
+        }
+
     }
 }

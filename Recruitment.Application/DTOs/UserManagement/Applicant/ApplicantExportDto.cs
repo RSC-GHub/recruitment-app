@@ -20,6 +20,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public InterviewResult? HRResult { get; set; }
         public InterviewResult? TechResult { get; set; }
 
+        public DateTime StartingDate { get; set; } 
+
         public decimal? CurrentSalary { get; set; }
         public decimal? ExpectedSalary { get; set; }
         public int? NoticePeriod { get; set; }
@@ -37,7 +39,6 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string HRInterviewer { get; set; }
         public string TechInterviewer { get; set; }
 
-        public string CV { get; set; }
     }
 
 }

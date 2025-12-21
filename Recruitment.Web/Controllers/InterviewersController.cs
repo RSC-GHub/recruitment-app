@@ -49,6 +49,7 @@ namespace Recruitment.Web.Controllers
                 {
                     Id = i.Id,
                     Name = i.Name,
+                    DepartmentId = i.DepartmentId,
                     DepartmentName = i.DepartmentName
                 }).ToList(),
 

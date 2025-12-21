@@ -23,6 +23,10 @@ namespace Recruitment.Domain.Entities.Recruitment_Proccess
 
         public string? Note { get; set; }
 
+        public DateTime? ExpectedFirstDate { get; set; }  //  ApplicationStatus == AcceptedOffer
+        public DateTime? ActualFirstDate { get; set; }    //  ApplicationStatus == Signed
+
         public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
     }
+
 }

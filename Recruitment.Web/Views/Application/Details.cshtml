@@ -137,6 +137,31 @@
                                 <span class="text-muted small">Applied On</span>
                                 <p class="mb-0 fw-semibold">@Model.ApplicationDate.ToString("MMM dd, yyyy HH:mm")</p>
                             </div>
+
+                            @* Expected First Date *@
+                            @if (Model.ExpectedFirstDate.HasValue)
+                            {
+                                <div>
+                                    <span class="text-muted small">Expected Start Date</span>
+                                    <p class="mb-0 fw-semibold">@Model.ExpectedFirstDate.Value.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            }
+
+                            @* Actual First Date *@
+                            @if (Model.ActualFirstDate.HasValue)
+                            {
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <span class="text-muted small">Actual Start Date</span>
+                                        <p class="mb-0 fw-semibold">@Model.ActualFirstDate.Value.ToString("MMM dd, yyyy")</p>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary p-1" title="Edit Actual Start Date"
+                                            data-bs-toggle="modal" data-bs-target="#editActualDateModal">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                </div>
+                            }
+
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -152,6 +177,7 @@
                         </div>
                     </div>
                 </div>
+
                 @if (!string.IsNullOrEmpty(Model.Note))
                 {
                     <div class="mt-3">
@@ -161,7 +187,7 @@
                 }
             </div>
         </div>
-    </div>
+
 
     <!-- Review Modal -->
     <div class="modal fade" id="reviewModal" tabindex="-1"
@@ -213,6 +239,26 @@
                                       maxlength="1000"></textarea>
                         </div>
 
+                        <!-- Dynamic Date Fields -->
+                            <div class="form-field d-none" id="expectedDateField">
+                                <label class="form-label">Expected Start Date <span class="text-danger">*</span></label>
+                                <input type="date"
+                                       id="ExpectedFirstDate"
+                                       name="ExpectedFirstDate"
+                                       class="form-input"
+                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            </div>
+
+                            <div class="form-field d-none" id="actualDateField">
+                                <label class="form-label">Actual Start Date <span class="text-danger">*</span></label>
+                                <input type="date"
+                                       id="ActualFirstDate"
+                                       name="ActualFirstDate"
+                                       class="form-input"
+                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            </div>
+
+
                         <div id="reviewError" class="text-danger mt-2"></div>
                         <div id="reviewSuccess" class="text-success mt-2"></div>
                     </div>
@@ -236,7 +282,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Add Interview Modal -->
     <div class="modal fade" id="addInterviewModal" tabindex="-1" aria-labelledby="addInterviewModalLabel" aria-hidden="true">
@@ -328,105 +373,235 @@
 
 </div>
 
+    <!-- Edit Actual Start Date Modal -->
+    <div class="modal fade" id="editActualDateModal" tabindex="-1" aria-labelledby="editActualDateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editActualDateForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editActualDateModalLabel">
+                            <i class="bi bi-pencil-fill me-2"></i>Edit Actual Start Date
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" id="editApplicationId" name="ApplicationId" value="@Model.Id" />
+
+                        <div class="form-field">
+                            <label for="editActualStartDate" class="form-label">Actual Start Date <span class="text-danger">*</span></label>
+                            <input type="date"
+                                   id="editActualStartDate"
+                                   name="ActualFirstDate"
+                                   class="form-control"
+                                   required
+                                   value="@(Model.ActualFirstDate?.ToString("yyyy-MM-dd"))"
+                                   min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+
+
+                        <div id="editActualDateError" class="text-danger mt-2"></div>
+                        <div id="editActualDateSuccess" class="text-success mt-2"></div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 
 @section Scripts {
     <script>
 
-        // Load data when modal opens
-        var reviewModal = document.getElementById('reviewModal');
+         /* =========================
+            Review Modal Logic
+         ========================= */
+         var reviewModal = document.getElementById('reviewModal');
 
-                reviewModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
+         if (reviewModal) {
+             reviewModal.addEventListener('show.bs.modal', function (event) {
+                 var button = event.relatedTarget;
 
-            var applicationId = button.getAttribute('data-application-id');
-            var noteJson = button.getAttribute('data-note');
+                 var applicationId = button.getAttribute('data-application-id');
+                 var noteJson = button.getAttribute('data-note');
 
-            var note = noteJson ? JSON.parse(noteJson) : '';
+                 var note = noteJson ? JSON.parse(noteJson) : '';
 
-            document.getElementById('reviewApplicationId').value = applicationId;
-            document.getElementById('reviewNote').value = note || '';
-            document.getElementById('reviewApplicationStatus').value = '';
+                 document.getElementById('reviewApplicationId').value = applicationId;
+                 document.getElementById('reviewNote').value = note || '';
+                 document.getElementById('reviewApplicationStatus').value = '';
 
-            document.getElementById('reviewError').innerText = '';
-            document.getElementById('reviewSuccess').innerText = '';
-        });
+                 document.getElementById('reviewError').innerText = '';
+                 document.getElementById('reviewSuccess').innerText = '';
 
-        // Submit Review Form
-        document.getElementById('reviewForm')
-            .addEventListener('submit', function (e) {
+                 // Hide date fields initially
+                 document.getElementById('expectedDateField').classList.add('d-none');
+                 document.getElementById('ActualFirstDate').value = '';
+                 document.getElementById('ExpectedFirstDate').value = '';
+                 document.getElementById('actualDateField').classList.add('d-none');
+             });
+         }
 
-            e.preventDefault();
+         // Show/hide date fields based on selected status
+         var reviewStatusSelect = document.getElementById('reviewApplicationStatus');
+         if (reviewStatusSelect) {
+             reviewStatusSelect.addEventListener('change', function () {
+                 var selectedValue = parseInt(this.value);
 
-            var data = {
-                ApplicationId: parseInt(document.getElementById('reviewApplicationId').value),
-                ApplicationStatus: parseInt(document.getElementById('reviewApplicationStatus').value),
-                Note: document.getElementById('reviewNote').value
-            };
+                 var expectedField = document.getElementById('expectedDateField');
+                 var actualField = document.getElementById('actualDateField');
+                 var expectedInput = document.getElementById('ExpectedFirstDate');
+                 var actualInput = document.getElementById('ActualFirstDate');
 
-            fetch('@Url.Action("Review", "Application")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken':
-                        document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify(data)
-            })
-            .then(r => r.json())
-            .then(result => {
-                if (result.success) {
-                    document.getElementById('reviewSuccess').innerText = result.message;
-                    document.getElementById('reviewError').innerText = '';
+                 expectedField.classList.add('d-none');
+                 expectedInput.required = false;
+                 actualField.classList.add('d-none');
+                 actualInput.required = false;
 
-                    setTimeout(() => location.reload(), 800);
-                } else {
-                    document.getElementById('reviewError').innerText = result.message;
-                    document.getElementById('reviewSuccess').innerText = '';
-                }
-            })
-            .catch(() => {
-                document.getElementById('reviewError').innerText = 'An error occurred';
-            });
-        });
+                 if (selectedValue === @((int)ApplicationStatus.AcceptedOffer)) {
+                     expectedField.classList.remove('d-none');
+                     expectedInput.required = true;
+                 } else if (selectedValue === @((int)ApplicationStatus.SignedContract)) {
+                     actualField.classList.remove('d-none');
+                     actualInput.required = true;
+                 }
+             });
+         }
 
+         // Submit Review Form
+         var reviewForm = document.getElementById('reviewForm');
+         if (reviewForm) {
+             reviewForm.addEventListener('submit', function (e) {
+                 e.preventDefault();
 
-             // Submit Add Interview Form
-        document.getElementById('addInterviewForm')
-            .addEventListener('submit', function (e) {
+                 var data = {
+                     ApplicationId: parseInt(document.getElementById('reviewApplicationId').value),
+                     ApplicationStatus: parseInt(document.getElementById('reviewApplicationStatus').value),
+                     Note: document.getElementById('reviewNote').value,
+                     ExpectedFirstDate: document.getElementById('ExpectedFirstDate').value || null,
+                     ActualFirstDate: document.getElementById('ActualFirstDate').value || null
+                 };
 
-            e.preventDefault();
+                 fetch('@Url.Action("Review", "Application")', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                         'RequestVerificationToken':
+                             document.querySelector('input[name="__RequestVerificationToken"]').value
+                     },
+                     body: JSON.stringify(data)
+                 })
+                 .then(r => r.json())
+                 .then(result => {
+                     if (result.success) {
+                         document.getElementById('reviewSuccess').innerText = result.message;
+                         document.getElementById('reviewError').innerText = '';
+                         setTimeout(() => location.reload(), 800);
+                     } else {
+                         document.getElementById('reviewError').innerText = result.message;
+                         document.getElementById('reviewSuccess').innerText = '';
+                     }
+                 })
+                 .catch(() => {
+                     document.getElementById('reviewError').innerText = 'An error occurred';
+                 });
+             });
+         }
 
-            const form = e.target;
-            const formData = new FormData(form);
+        // =========================
+        // Add Interview Logic
+        // =========================
+         var addInterviewForm = document.getElementById('addInterviewForm');
+         if (addInterviewForm) {
+             addInterviewForm.addEventListener('submit', function(e) {
+                 e.preventDefault();
 
-            fetch('@Url.Action("CreateInterview", "Interview")', {
-                method: 'POST',
-                body: formData
-            })
-            .then(r => r.json())
-            .then(result => {
-                if (result.success) {
-                    document.getElementById('addInterviewSuccess').innerText = result.message;
-                    document.getElementById('addInterviewError').innerText = '';
+                 const formData = new FormData(addInterviewForm);
 
-                    setTimeout(() => location.reload(), 800);
-                } else {
-                    document.getElementById('addInterviewError').innerText = result.message;
-                    document.getElementById('addInterviewSuccess').innerText = '';
-                }
-            })
-            .catch(() => {
-                document.getElementById('addInterviewError').innerText = 'An error occurred';
-            });
-        });
+                 fetch('@Url.Action("CreateInterview", "Interview")', {
+                     method: 'POST',
+                     body: formData
+                 })
+                 .then(r => r.json())
+                 .then(result => {
+                     if (result.success) {
+                         document.getElementById('addInterviewSuccess').innerText = result.message;
+                         document.getElementById('addInterviewError').innerText = '';
+                         setTimeout(() => location.reload(), 800);
+                     } else {
+                         document.getElementById('addInterviewError').innerText = result.message;
+                         document.getElementById('addInterviewSuccess').innerText = '';
+                     }
+                 })
+                 .catch(() => {
+                     document.getElementById('addInterviewError').innerText = 'An error occurred';
+                 });
+             });
+         }
 
-                $(document).ready(function() {
-            $('#InterviewerId').select2({
-                placeholder: "Select an interviewer",
-                dropdownParent: $('#addInterviewModal')
-            });
-        });
+         // Initialize Select2 for modal
+         $('#addInterviewModal').on('shown.bs.modal', function () {
+             var $interviewer = $('#InterviewerId');
+
+             if ($interviewer.hasClass('select2-hidden-accessible')) {
+                 $interviewer.select2('destroy');
+             }
+
+             $interviewer.select2({
+                 placeholder: "Select an interviewer",
+                 dropdownParent: $('#addInterviewModal'),
+                 width: '100%'
+             });
+         });
+
+         /* =========================
+                Edit Actual Start Date Logic
+                    ========================= */
+                        var editActualDateForm = document.getElementById('editActualDateForm');
+            if(editActualDateForm){
+                editActualDateForm.addEventListener('submit', function(e){
+                    e.preventDefault();
+
+                    var data = {
+                        ApplicationId: parseInt(document.getElementById('editApplicationId').value),
+                        ActualFirstDate: document.getElementById('editActualStartDate').value
+                    };
+
+                    fetch('@Url.Action("UpdateActualStartDate", "Application")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(r => r.json())
+                    .then(result => {
+                        if(result.success){
+                            document.getElementById('editActualDateSuccess').innerText = result.message;
+                            document.getElementById('editActualDateError').innerText = '';
+                            setTimeout(() => location.reload(), 800);
+                        } else {
+                            document.getElementById('editActualDateError').innerText = result.message;
+                            document.getElementById('editActualDateSuccess').innerText = '';
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('editActualDateError').innerText = 'An error occurred';
+                    });
+                });
+            }
 
     </script>
 }
+
 

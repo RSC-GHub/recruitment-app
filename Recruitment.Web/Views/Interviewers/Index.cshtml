@@ -95,9 +95,10 @@
                                                     data-bs-target="#editModal"
                                                     data-id="@item.Id"
                                                     data-name="@item.Name"
-                                                    data-department="@item.DepartmentName">
+                                                    data-department-id="@item.DepartmentId">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
+
 
                                             <button type="button"
                                                     class="btn-component btn-sm btn-destructive"
@@ -258,37 +259,54 @@
 
 @section Scripts {
     <script>
-        // Initialize Select2 for create modal
+
+        // Create Modal
         $('#createModal').on('shown.bs.modal', function () {
-            $('#createDepartmentId').select2({
+            const $select = $('#createDepartmentId');
+
+            if ($select.hasClass('select2-hidden-accessible')) {
+                $select.select2('destroy');
+            }
+
+            $select.select2({
                 placeholder: "-- Select Department --",
                 dropdownParent: $('#createModal'),
                 width: '100%'
             });
         });
 
+
         // Edit Modal
-        $('#editModal').on('shown.bs.modal', function (e) {
+            $('#editModal').on('show.bs.modal', function (e) {
+
             const btn = e.relatedTarget;
-            $('#editId').val(btn.dataset.id);
-            $('#editName').val(btn.dataset.name);
 
-            $('#editDepartmentId').val(btn.dataset.department).trigger('change');
+            const id = btn.dataset.id;
+            const name = btn.dataset.name;
+            const departmentId = btn.dataset.departmentId;
 
-            $('#editDepartmentId').select2({
+            $('#editId').val('');
+            $('#editName').val('');
+            $('#editDepartmentId').val(null).trigger('change');
+
+            $('#editId').val(id);
+            $('#editName').val(name);
+
+            const $dept = $('#editDepartmentId');
+
+            if ($dept.hasClass('select2-hidden-accessible')) {
+                $dept.select2('destroy');
+            }
+
+            $dept.select2({
                 placeholder: "-- Select Department --",
                 dropdownParent: $('#editModal'),
                 width: '100%'
             });
+
+            $dept.val(departmentId).trigger('change');
         });
 
-        // Initialize Select2 for edit modal
-        $(document).ready(function () {
-            $('#editDepartmentId').select2({
-                placeholder: "-- Select Department --",
-                dropdownParent: $('#editModal')
-            });
-        });
 
         // Delete Modal
         document.getElementById('deleteModal')
@@ -298,13 +316,5 @@
                 document.getElementById('deleteName').textContent = btn.dataset.name;
             });
 
-        @if (TempData["Success"] != null)
-        {
-                        <text>showToast('@TempData["Success"]','success');</text>
-        }
-        @if (TempData["Error"] != null)
-        {
-                        <text>showToast('@TempData["Error"]','error');</text>
-        }
     </script>
 }

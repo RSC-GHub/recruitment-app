@@ -53,7 +53,8 @@ namespace Recruitment.Domain.Workflows
                 {
                     ApplicationStatus.AcceptedInterview, // Passed interview
                     ApplicationStatus.InterviewOnHold,   // Interview postponed or rescheduled
-                    ApplicationStatus.Rejected            // Failed interview
+                    ApplicationStatus.Rejected,            // Failed interview
+                    ApplicationStatus.Pending               // Awaiting further internal decision
                 },
 
                 // Interview postponed or cancelled temporarily
@@ -79,21 +80,14 @@ namespace Recruitment.Domain.Workflows
                 [ApplicationStatus.Offered] = new[]
                 {
                     ApplicationStatus.AcceptedOffer, // Candidate accepted the offer
-                    ApplicationStatus.Rejected       // Candidate rejected the offer
+                    ApplicationStatus.Rejected,       // Candidate rejected the offer
                 },
 
                 // Candidate accepted the offer but has not signed yet
                 [ApplicationStatus.AcceptedOffer] = new[]
                 {
-                    ApplicationStatus.SignedOffer, // Offer signed
-                    ApplicationStatus.Rejected     // Candidate backed out
-                },
-
-                // Offer document is signed, waiting for contract
-                [ApplicationStatus.SignedOffer] = new[]
-                {
                     ApplicationStatus.SignedContract, // Contract signed
-                    ApplicationStatus.Rejected        // Candidate backed out
+                    ApplicationStatus.Rejected     // Candidate backed out
                 },
 
                 #endregion
@@ -107,11 +101,11 @@ namespace Recruitment.Domain.Workflows
                     ApplicationStatus.Notshow  // Candidate did not show up
                 },
 
-                // Candidate joined successfully (final state)
-                [ApplicationStatus.Hired] = Array.Empty<ApplicationStatus>(),
-
                 // Candidate did not show up on first working day (final state)
-                [ApplicationStatus.Notshow] = Array.Empty<ApplicationStatus>(),
+                [ApplicationStatus.Notshow] = new[]
+                {
+                    ApplicationStatus.Rejected  // Marked as rejected
+                },
 
                 #endregion
 
