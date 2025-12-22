@@ -27,5 +27,6 @@ namespace Recruitment.Application.Interfaces.Persistence.CoreBusiness
         Task<PagedResult<Vacancy>> GetPagedAsync(int page, int pageSize);
         Task<int> GetTotalCountAsync();
         Task<Vacancy?> GetForEditAsync(int id);
+        Task<List<Vacancy>> GetAllOpenedVacanciesCards();
     }
 }

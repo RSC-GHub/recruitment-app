@@ -408,5 +408,47 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             await _unitOfWork.CompleteAsync();
         }
 
+        public async Task<ApplicantApplication> SubmitApplicationAsync(SubmitApplicationDto dto)
+        {
+            var applicant = new Applicant
+            {
+                FullName = dto.FullName,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                CountryId = dto.CountryId,
+                City = dto.City,
+                Nationality = dto.Nationality,
+                CurrentJob = dto.CurrentJob,
+                CurrentEmployer = dto.CurrentEmployer,
+                CurrentSalary = dto.CurrentSalary,
+                ExpectedSalary = dto.ExpectedSalary,
+                CurrencyId = dto.CurrencyId,
+                Address = dto.Address,
+                Gender = dto.Gender,
+                MilitaryStatus = dto.MilitaryStatus,
+                MaritalStatus = dto.MaritalStatus,
+                EducationDegree = dto.EducationDegree,
+                GraduationYear = dto.GraduationYear,
+                Major = dto.Major,
+                NoticePeriod = dto.NoticePeriod,
+                ExtraCertificate = dto.ExtraCertificate,
+                CVFilePath = dto.CVFilePath ?? ""
+            };
+
+            await _unitOfWork.ApplicantRepository.AddAsync(applicant);
+
+            var application = new ApplicantApplication
+            {
+                Applicant = applicant,
+                VacancyId = dto.VacancyId,
+                ApplicationDate = DateTime.Now,
+                ApplicationStatus = ApplicationStatus.Submitted
+            };
+
+            await _unitOfWork.ApplicationRepository.AddAsync(application);
+            await _unitOfWork.CompleteAsync(); 
+
+            return application;
+        }
     }
 }

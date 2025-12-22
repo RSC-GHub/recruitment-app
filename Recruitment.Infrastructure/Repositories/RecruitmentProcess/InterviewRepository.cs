@@ -267,7 +267,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
         public async Task<int> CountTodaysInterviewsAsync()
         {
             return await _context.Interviews
-                .CountAsync(i => i.ScheduledDate.Date == DateTime.UtcNow.Date);
+                .CountAsync(i => i.ScheduledDate.Date == DateTime.UtcNow.Date && i.InterviewStatus == InterviewStatus.Scheduled);
         }
 
         public async Task<int> CountPendingInterviewResultsAsync()

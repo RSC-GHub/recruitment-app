@@ -2,6 +2,7 @@
 using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Application.Services.Common;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Enums;
 
@@ -196,6 +197,45 @@ namespace Recruitment.Application.Services.CoreBusiness
         {
             var vacancies = await _unitOfWork.VacancyRepository.GetAllOpenedVacancies();
             return vacancies.Count;
+        }
+
+        public async Task<VacancyDetailsDTO?> GetVacancyByIdAsyncForAPI(int id)
+        {
+            var vacancy = await _unitOfWork.VacancyRepository.GetVacancyByIdAsync(id);
+            if (vacancy == null) return null;
+            return new VacancyDetailsDTO
+            {
+                Id = vacancy.Id,
+                TitleName = TextHelper.CleanText(vacancy.Title?.Name ?? ""),
+                JobDescription = TextHelper.CleanText(vacancy.JobDescription),
+                Requirements = TextHelper.CleanText(vacancy.Requirements),
+                Responsibilities = TextHelper.CleanText(vacancy.Responsibilities),
+                Benefits = TextHelper.CleanText(vacancy.Benefits),
+                PositionCount = vacancy.PositionCount,
+                EmploymentType = vacancy.EmploymentType.ToString(),
+                SalaryRangeMin = vacancy.SalaryRangeMin,
+                SalaryRangeMax = vacancy.SalaryRangeMax,
+            };
+        }
+
+        public async Task<List<VacancyCardDTO>> GetVacancyCardsAsync(int shortTextLength = 200)
+        {
+            var vacancies = await _unitOfWork.VacancyRepository.GetAllOpenedVacanciesCards();
+
+            if (vacancies == null || !vacancies.Any())
+                return new List<VacancyCardDTO>();
+
+            return vacancies.Select(v => new VacancyCardDTO
+            {
+                Id = v.Id,
+                TitleName = TextHelper.CleanText(v.Title?.Name ?? ""),
+                Department = v.Title?.DepartmentTitles?.FirstOrDefault()?.Department?.Name ?? "",
+                EmploymentType = v.EmploymentType.ToString(),
+                Location = v.ProjectVacancies?.Select(pv => pv.Project?.Location?.Name ?? "")
+                                 .FirstOrDefault() ?? "",
+                ShortDescription = TextHelper.TruncateText(TextHelper.CleanText(v.JobDescription ?? ""), shortTextLength),
+                KeyRequirements = TextHelper.TruncateText(TextHelper.CleanText(v.Requirements ?? ""), shortTextLength)
+            }).ToList();
         }
     }
 }

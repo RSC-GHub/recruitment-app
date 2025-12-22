@@ -157,5 +157,19 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
                     .ThenInclude(pv => pv.Project)
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
+
+        public async Task<List<Vacancy>> GetAllOpenedVacanciesCards()
+        {
+            return await _context.Vacancies
+                .Where(v => v.Status == VacancyStatus.Open)
+                .Include(v => v.Title!)
+                    .ThenInclude(t => t.DepartmentTitles!)
+                        .ThenInclude(dt => dt.Department)
+                .Include(v => v.ProjectVacancies!)
+                    .ThenInclude(pv => pv.Project!)
+                        .ThenInclude(p => p.Location)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

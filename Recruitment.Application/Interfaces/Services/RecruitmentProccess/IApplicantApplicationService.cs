@@ -1,6 +1,7 @@
 ﻿using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.DTOs.UserManagement.Applicant;
+using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
@@ -49,6 +50,7 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
             string? search);
 
         Task UpdateActualStartDateAsync(UpdateActualStartDateDto dto);
+        Task<ApplicantApplication> SubmitApplicationAsync(SubmitApplicationDto dto);
 
     }
 
