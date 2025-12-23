@@ -2,6 +2,7 @@
 using Recruitment.Application.DTOs.RecruitmentProccess.RejectionReason;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Services.RecruitmentProccess
 {
@@ -17,6 +18,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             var reason = new Domain.Entities.RecruitmentProccess.RejectionReason
             {
                 Reason = dto.Reason,
+                ReasonType = dto.ReasonType
             };
             await _unitOfWork.RejectionReasons.AddAsync(reason);
             await _unitOfWork.CompleteAsync();
@@ -43,7 +45,8 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             var dtoItems = pagedResult.Items.Select(r => new ReasonDto
             {
                 Id = r.Id,
-                Reason = r.Reason
+                Reason = r.Reason,
+                ReasonType = r.ReasonType
             }).ToList();
 
             return new PagedResult<ReasonDto>(
@@ -66,6 +69,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             {
                 Id = reason.Id,
                 Reason = reason.Reason,
+                ReasonType = reason.ReasonType
             };
         }
 
@@ -75,6 +79,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             if (reason == null)
                 throw new Exception("Rejection Reason not found");
             reason.Reason = dto.Reason;
+            reason.ReasonType = dto.ReasonType;
             _unitOfWork.RejectionReasons.Update(reason);
             await _unitOfWork.CompleteAsync();
         }
@@ -85,7 +90,19 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             return reasons.Select(r => new ReasonDto
             {
                 Id = r.Id,
-                Reason = r.Reason
+                Reason = r.Reason,
+                ReasonType = r.ReasonType
+            }).ToList();
+        }
+
+        public async Task<List<ReasonDto>> GetByTypeAsync(RejectionReasonType reasonType)
+        {
+            var reasons = await _unitOfWork.RejectionReasonRepository.GetByTypeAsync(reasonType);
+            return reasons.Select(r => new ReasonDto
+            {
+                Id = r.Id,
+                Reason = r.Reason,
+                ReasonType = r.ReasonType
             }).ToList();
         }
     }

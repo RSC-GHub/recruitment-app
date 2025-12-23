@@ -7,6 +7,7 @@ using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
+using Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason;
 
 namespace Recruitment.Web.Controllers
 {
@@ -15,14 +16,17 @@ namespace Recruitment.Web.Controllers
         private readonly IApplicantApplicationService _applicationService;
         private readonly IInterviewerService _interviewerService;
         private readonly IExcelExportService _exportService;
+        private readonly IRejectionReasonService _rejectionReasonService;
 
         public ApplicationController(IApplicantApplicationService applicationService, 
             IExcelExportService exportService,
-            IInterviewerService interviewerService)
+            IInterviewerService interviewerService,
+            IRejectionReasonService rejectionReasonService)
         {
             _applicationService = applicationService;
             _exportService = exportService;
             _interviewerService = interviewerService;
+            _rejectionReasonService = rejectionReasonService;
         }
 
         public async Task<IActionResult> Index(
@@ -65,10 +69,11 @@ namespace Recruitment.Web.Controllers
             if (application == null)
                 return NotFound();
 
-            ViewBag.CanAddInterview = await _applicationService
-                .CanAddInterviewAsync(id);
+            ViewBag.CanAddInterview = await _applicationService.CanAddInterviewAsync(id);
 
-            // First, create the VM
+            // All Rejection Reasons for Applications
+            var allReasons = await _rejectionReasonService.GetByTypeAsync(RejectionReasonType.Offer);
+
             var vm = new ApplicationDetailVM
             {
                 Id = application.Id,
@@ -90,7 +95,15 @@ namespace Recruitment.Web.Controllers
                 ReviewDate = application.ReviewDate,
                 Note = application.Note,
                 CVFilePath = application.CV,
-                HasFirstInterview = await _applicationService.CanMoveToSecondInterviewAsync(application.Id)
+                HasFirstInterview = await _applicationService.CanMoveToSecondInterviewAsync(application.Id),
+
+                AllRejectionReasons = allReasons.Select(r => new ReasonsListVM
+                {
+                    Id = r.Id,
+                    Reason = r.Reason
+                }).ToList(),
+
+                SelectedRejectionReasons = application.RejectionReasonTexts
             };
 
             var interviewers = await _interviewerService.GetAllAsync();
@@ -102,6 +115,7 @@ namespace Recruitment.Web.Controllers
 
             return View(vm);
         }
+
 
 
         [HttpPost]
@@ -129,7 +143,7 @@ namespace Recruitment.Web.Controllers
                     ActualFirstDate = vm.ActualFirstDate
                 };
 
-                await _applicationService.ReviewApplicationAsync(dto);
+                await _applicationService.ReviewApplicationAsync(dto, vm.RejectionReasonIds);
 
                 return Json(new
                 {
@@ -146,6 +160,8 @@ namespace Recruitment.Web.Controllers
                 });
             }
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateActualStartDate([FromBody] UpdateActualStartDateVM vm)

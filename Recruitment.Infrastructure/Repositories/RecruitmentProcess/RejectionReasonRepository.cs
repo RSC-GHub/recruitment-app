@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Common;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Domain.Entities.RecruitmentProccess;
+using Recruitment.Domain.Enums;
 using Recruitment.Infrastructure.Data;
 
 namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
@@ -52,6 +53,13 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             query = query.OrderBy(r => r.CreatedOn);
 
             return await ToPagedResultAsync(query, page, pageSize);
+        }
+
+        public async Task<List<RejectionReason>> GetByTypeAsync(RejectionReasonType reasonType)
+        {
+            return await _context.RejectionReasons
+                                 .Where(r => r.ReasonType == reasonType)
+                                 .ToListAsync();
         }
 
     }

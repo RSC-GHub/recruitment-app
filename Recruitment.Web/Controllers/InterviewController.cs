@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Interview;
-using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
-using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interview;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interview.Recruitment.Web.ViewModels.RecruitmentProcess.Interview;
@@ -114,7 +112,7 @@ namespace Recruitment.Web.Controllers
                 Text = i.Name
             }).ToList();
 
-            var allReasons = await _rejectionReasonService.GetAllAsync();
+            var allReasons = await _rejectionReasonService.GetByTypeAsync(RejectionReasonType.Interview);
             
             // Map DTO to VM
             var vm = new InterviewDetailVM
@@ -188,11 +186,6 @@ namespace Recruitment.Web.Controllers
 
                 if (applicationId == null)
                     return Json(new { success = false, message = "Failed to update interview result." });
-
-                //await _applicantApplicationService.ProcessInterviewResultAsync(
-                //    applicationId.Value,
-                //    dto.InterviewResult
-                //);
 
                 return Json(new
                 {

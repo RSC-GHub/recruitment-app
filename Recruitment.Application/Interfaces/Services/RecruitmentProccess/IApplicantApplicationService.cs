@@ -9,7 +9,7 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
     public interface IApplicantApplicationService
     {
         Task AssignApplicantAsync(ApplicationCreateDto dto);
-        Task ReviewApplicationAsync(ApplicationReviewDto dto);
+        Task ReviewApplicationAsync(ApplicationReviewDto dto, List<int>? rejectionReasonIds = null);
 
         Task ChangeStatusAsync(int applicationId, ApplicationStatus newStatus);
         Task ProcessInterviewResultAsync(int applicationId, InterviewResult result);

@@ -27,6 +27,8 @@ namespace Recruitment.Domain.Entities.Recruitment_Proccess
         public DateTime? ActualFirstDate { get; set; }    //  ApplicationStatus == Signed
 
         public ICollection<Interview> Interviews { get; set; } = new List<Interview>();
+        public ICollection<ApplicationRejectionReason> RejectionReasons { get; set; } = new List<ApplicationRejectionReason>();
+
     }
 
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.RejectionReason;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Domain.Enums;
 using Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason;
 
 namespace Recruitment.Web.Controllers
@@ -25,18 +27,26 @@ namespace Recruitment.Web.Controllers
                 Items = pagedDto.Items.Select(r => new ReasonsListVM
                 {
                     Id = r.Id,
-                    Reason = r.Reason
+                    Reason = r.Reason,
+                    ReasonType = r.ReasonType
                 }).ToList(),
                 Page = pagedDto.Page,
                 PageSize = pagedDto.PageSize,
                 TotalCount = pagedDto.TotalCount,
-                Search = search
+                Search = search,
+
+                ReasonTypes = Enum.GetValues(typeof(RejectionReasonType))
+                .Cast<RejectionReasonType>()
+                .Select(s => new SelectListItem
+                {
+                    Value = ((int)s).ToString(),
+                    Text = s.ToString()
+                })
+                .ToList()
             };
 
             return View(vm);
         }
-
-
 
         // POST: RejectionReasons/Create
         [HttpPost]
@@ -53,7 +63,8 @@ namespace Recruitment.Web.Controllers
             {
                 var dto = new CreateReasonDto
                 {
-                    Reason = vm.Reason
+                    Reason = vm.Reason,
+                    ReasonType = vm.ReasonType
                 };
 
                 await _rejectionReasonService.AddAsync(dto);
@@ -83,7 +94,8 @@ namespace Recruitment.Web.Controllers
                 var dto = new ReasonDto
                 {
                     Id = id,
-                    Reason = vm.Reason
+                    Reason = vm.Reason, 
+                    ReasonType = vm.ReasonType
                 };
 
                 await _rejectionReasonService.UpdateAsync(dto);

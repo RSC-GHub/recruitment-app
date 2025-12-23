@@ -54,7 +54,7 @@ namespace Recruitment.Domain.Workflows
                     ApplicationStatus.AcceptedInterview, // Passed interview
                     ApplicationStatus.InterviewOnHold,   // Interview postponed or rescheduled
                     ApplicationStatus.Rejected,            // Failed interview
-                    ApplicationStatus.Pending               // Awaiting further internal decision
+                    ApplicationStatus.Pending               // Awaiting internal decision
                 },
 
                 // Interview postponed or cancelled temporarily

@@ -10,5 +10,7 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
         public string? Note { get; set; }
         public DateTime? ExpectedFirstDate { get; set; }
         public DateTime? ActualFirstDate { get; set; }
+        public List<int>? RejectionReasonIds { get; set; }
+
     }
 }

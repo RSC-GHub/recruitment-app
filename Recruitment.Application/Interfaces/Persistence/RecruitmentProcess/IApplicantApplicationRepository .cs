@@ -22,6 +22,7 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
         Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus);
         Task<int> CountOnHoldOlderThanAsync(int days);
         Task<ApplicantApplication?> GetByIdWithApplicantAsync(int id);
+        Task<ApplicantApplication?> GetWithRejectionReasonsAsync(int applicationId);
 
 
     }

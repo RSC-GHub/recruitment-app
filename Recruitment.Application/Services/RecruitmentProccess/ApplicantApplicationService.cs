@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
@@ -6,11 +7,11 @@ using Recruitment.Application.DTOs.UserManagement.Applicant;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
+using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Domain.Enums;
 using Recruitment.Domain.Workflows;
 using System.Data;
-using Dapper;
 
 namespace Recruitment.Application.Services.RecruitmentProccess
 {
@@ -73,14 +74,14 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
 
         // Review an application
-        public async Task ReviewApplicationAsync(ApplicationReviewDto dto)
+        public async Task ReviewApplicationAsync(ApplicationReviewDto dto, List<int>? rejectionReasonIds = null)
         {
             var userId = await GetCurrentUserIdAsync();
             if (userId == null)
                 throw new InvalidOperationException("Current user not found.");
 
             var application = await _unitOfWork.ApplicationRepository
-                .GetByIdAsync(dto.ApplicationId);
+                .GetWithRejectionReasonsAsync(dto.ApplicationId); 
 
             if (application == null)
                 throw new InvalidOperationException("Application not found.");
@@ -95,6 +96,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     throw new InvalidOperationException("Expected start date must be provided when offer is accepted.");
 
                 application.ExpectedFirstDate = dto.ExpectedFirstDate.Value;
+                application.RejectionReasons.Clear();
             }
             else if (dto.ApplicationStatus == ApplicationStatus.SignedContract)
             {
@@ -102,6 +104,23 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     throw new InvalidOperationException("Actual start date must be provided when application is signed.");
 
                 application.ActualFirstDate = dto.ActualFirstDate.Value;
+                application.RejectionReasons.Clear();
+            }
+            else if (dto.ApplicationStatus == ApplicationStatus.Rejected)
+            {
+                application.RejectionReasons.Clear();
+
+                if (rejectionReasonIds != null && rejectionReasonIds.Any())
+                {
+                    foreach (var reasonId in rejectionReasonIds)
+                    {
+                        application.RejectionReasons.Add(new ApplicationRejectionReason
+                        {
+                            ApplicationId = application.Id,
+                            RejectionReasonId = reasonId
+                        });
+                    }
+                }
             }
 
             application.ApplicationStatus = dto.ApplicationStatus;
@@ -112,6 +131,46 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             _unitOfWork.ApplicationRepository.Update(application);
             await _unitOfWork.CompleteAsync();
         }
+
+        //public async Task ReviewApplicationAsync(ApplicationReviewDto dto)
+        //{
+        //    var userId = await GetCurrentUserIdAsync();
+        //    if (userId == null)
+        //        throw new InvalidOperationException("Current user not found.");
+
+        //    var application = await _unitOfWork.ApplicationRepository
+        //        .GetByIdAsync(dto.ApplicationId);
+
+        //    if (application == null)
+        //        throw new InvalidOperationException("Application not found.");
+
+        //    ApplicationWorkflow.ValidateTransition(
+        //        application.ApplicationStatus,
+        //        dto.ApplicationStatus);
+
+        //    if (dto.ApplicationStatus == ApplicationStatus.AcceptedOffer)
+        //    {
+        //        if (!dto.ExpectedFirstDate.HasValue)
+        //            throw new InvalidOperationException("Expected start date must be provided when offer is accepted.");
+
+        //        application.ExpectedFirstDate = dto.ExpectedFirstDate.Value;
+        //    }
+        //    else if (dto.ApplicationStatus == ApplicationStatus.SignedContract)
+        //    {
+        //        if (!dto.ActualFirstDate.HasValue)
+        //            throw new InvalidOperationException("Actual start date must be provided when application is signed.");
+
+        //        application.ActualFirstDate = dto.ActualFirstDate.Value;
+        //    }
+
+        //    application.ApplicationStatus = dto.ApplicationStatus;
+        //    application.ReviewedBy = userId.Value;
+        //    application.ReviewDate = DateTime.UtcNow;
+        //    application.Note = dto.Note;
+
+        //    _unitOfWork.ApplicationRepository.Update(application);
+        //    await _unitOfWork.CompleteAsync();
+        //}
 
         public async Task ProcessInterviewResultAsync(
                 int applicationId,
@@ -167,7 +226,10 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ReviewedBy = entity.ReviewedBy,
                 ReviewedByUserName = entity.Reviewer?.FullName,
                 ReviewDate = entity.ReviewDate,
-                Note = entity.Note
+                Note = entity.Note,
+
+                RejectionReasonIds = entity.RejectionReasons.Select(ar => ar.RejectionReasonId).ToList(),
+                RejectionReasonTexts = entity.RejectionReasons.Select(ar => ar.RejectionReason.Reason).ToList()
             };
         }
 
@@ -278,7 +340,10 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ReviewedBy = entity.ReviewedBy,
                 ReviewedByUserName = entity.Reviewer?.FullName,
                 ReviewDate = entity.ReviewDate,
-                Note = entity.Note
+                Note = entity.Note,
+
+                RejectionReasonIds = entity.RejectionReasons.Select(ar => ar.RejectionReasonId).ToList(),
+                RejectionReasonTexts = entity.RejectionReasons.Select(ar => ar.RejectionReason.Reason).ToList()
             };
         }
 
@@ -312,7 +377,10 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ReviewedBy = entity.ReviewedBy,
                 ReviewedByUserName = entity.Reviewer?.FullName,
                 ReviewDate = entity.ReviewDate,
-                Note = entity.Note
+                Note = entity.Note,
+
+                RejectionReasonIds = entity.RejectionReasons.Select(ar => ar.RejectionReasonId).ToList(),
+                RejectionReasonTexts = entity.RejectionReasons.Select(ar => ar.RejectionReason.Reason).ToList()
             };
         }
 

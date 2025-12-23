@@ -32,5 +32,9 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
         public DateTime? ExpectedFirstDate { get; set; }
         public DateTime? ActualFirstDate { get; set; }
 
+        public List<int> RejectionReasonIds { get; set; } = new();
+        public List<string> RejectionReasonTexts { get; set; } = new();
+
+
     }
 }

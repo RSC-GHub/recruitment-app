@@ -1,5 +1,6 @@
 ﻿using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.RejectionReason;
+using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
 {
@@ -15,6 +16,7 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
         Task DeleteAsync(int id);
 
         Task<List<ReasonDto>> GetAllAsync();
+        Task<List<ReasonDto>> GetByTypeAsync(RejectionReasonType reasonType);
 
     }
 }

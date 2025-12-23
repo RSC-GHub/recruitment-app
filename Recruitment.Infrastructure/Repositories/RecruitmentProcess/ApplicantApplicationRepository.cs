@@ -75,6 +75,8 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 .Include(a => a.Applicant)
                 .Include(a => a.Vacancy)
                     .ThenInclude(v => v.Title)
+                .Include(a => a.RejectionReasons)            
+                    .ThenInclude(ar => ar.RejectionReason) 
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (application?.ReviewedBy != null)
@@ -86,6 +88,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
             return application;
         }
+
         public async Task<ApplicantApplication?> GetByApplicantAndVacancyAsync(int applicantId, int vacancyId)
         {
             var application = await _context.Applications
@@ -235,5 +238,14 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
             return application;
         }
+
+        public async Task<ApplicantApplication?> GetWithRejectionReasonsAsync(int applicationId)
+        {
+            return await _context.Applications
+                .Include(a => a.RejectionReasons)
+                    .ThenInclude(ar => ar.RejectionReason) 
+                .FirstOrDefaultAsync(a => a.Id == applicationId);
+        }
+
     }
 }

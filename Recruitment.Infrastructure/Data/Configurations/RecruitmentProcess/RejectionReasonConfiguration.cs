@@ -15,9 +15,14 @@ namespace Recruitment.Infrastructure.Data.Configurations.RecruitmentProcess
                    .HasMaxLength(500);
 
             builder
-          .HasMany(r => r.Interviews)
-          .WithOne(ir => ir.RejectionReason)
-          .HasForeignKey(ir => ir.RejectionReasonId);
+              .HasMany(r => r.Interviews)
+              .WithOne(ir => ir.RejectionReason)
+              .HasForeignKey(ir => ir.RejectionReasonId);
+
+            builder
+            .HasMany(r => r.Applications)
+            .WithOne(ar => ar.RejectionReason)
+            .HasForeignKey(ar => ar.RejectionReasonId);
         }
     }
 }

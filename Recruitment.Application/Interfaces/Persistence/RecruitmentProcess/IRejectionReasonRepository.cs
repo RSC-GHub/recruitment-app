@@ -1,5 +1,6 @@
 ﻿using Recruitment.Application.Common;
 using Recruitment.Domain.Entities.RecruitmentProccess;
+using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
 {
@@ -9,5 +10,7 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
             int page,
             int pageSize,
             string? search = null);
+
+        Task<List<RejectionReason>> GetByTypeAsync(RejectionReasonType reasonType);
     }
 }

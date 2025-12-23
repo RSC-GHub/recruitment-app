@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruitment.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Recruitment.Infrastructure.Data;
 namespace Recruitment.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251223091745_addTypePropertyForRejection")]
+    partial class addTypePropertyForRejection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -525,44 +528,6 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasIndex("TitleId");
 
                     b.ToTable("Vacancies");
-                });
-
-            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.ApplicationRejectionReason", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RejectionReasonId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationId");
-
-                    b.HasIndex("RejectionReasonId");
-
-                    b.ToTable("ApplicationRejectionReason");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interview", b =>
@@ -1264,25 +1229,6 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Navigation("Title");
                 });
 
-            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.ApplicationRejectionReason", b =>
-                {
-                    b.HasOne("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", "Application")
-                        .WithMany("RejectionReasons")
-                        .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Recruitment.Domain.Entities.RecruitmentProccess.RejectionReason", "RejectionReason")
-                        .WithMany("Applications")
-                        .HasForeignKey("RejectionReasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Application");
-
-                    b.Navigation("RejectionReason");
-                });
-
             modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interview", b =>
                 {
                     b.HasOne("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", "Application")
@@ -1458,16 +1404,12 @@ namespace Recruitment.Infrastructure.Migrations
 
             modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.RejectionReason", b =>
                 {
-                    b.Navigation("Applications");
-
                     b.Navigation("Interviews");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", b =>
                 {
                     b.Navigation("Interviews");
-
-                    b.Navigation("RejectionReasons");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Applicant", b =>

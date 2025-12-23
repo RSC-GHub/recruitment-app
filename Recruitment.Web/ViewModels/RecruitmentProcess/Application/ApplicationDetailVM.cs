@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Domain.Enums;
+using Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason;
 
 namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
 {
@@ -31,6 +32,9 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
         public bool HasFirstInterview { get; set; }
         public string CVFilePath { get; set; } = null!;
         public List<SelectListItem> Interviewers { get; set; } = new();
+
+        public List<ReasonsListVM> AllRejectionReasons { get; set; } = new();
+        public List<string>? SelectedRejectionReasons { get; set; } = new();
 
     }
 }
