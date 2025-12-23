@@ -161,8 +161,6 @@ namespace Recruitment.Web.Controllers
             }
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> UpdateActualStartDate([FromBody] UpdateActualStartDateVM vm)
         {

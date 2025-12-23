@@ -81,11 +81,12 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 throw new InvalidOperationException("Current user not found.");
 
             var application = await _unitOfWork.ApplicationRepository
-                .GetWithRejectionReasonsAsync(dto.ApplicationId); 
+                .GetWithRejectionReasonsAsync(dto.ApplicationId);
 
             if (application == null)
                 throw new InvalidOperationException("Application not found.");
 
+            // Validate the status transition
             ApplicationWorkflow.ValidateTransition(
                 application.ApplicationStatus,
                 dto.ApplicationStatus);
@@ -96,7 +97,8 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     throw new InvalidOperationException("Expected start date must be provided when offer is accepted.");
 
                 application.ExpectedFirstDate = dto.ExpectedFirstDate.Value;
-                application.RejectionReasons.Clear();
+                application.ActualFirstDate = null; 
+                application.RejectionReasons.Clear(); 
             }
             else if (dto.ApplicationStatus == ApplicationStatus.SignedContract)
             {
@@ -104,12 +106,17 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     throw new InvalidOperationException("Actual start date must be provided when application is signed.");
 
                 application.ActualFirstDate = dto.ActualFirstDate.Value;
-                application.RejectionReasons.Clear();
+                application.ExpectedFirstDate = null; 
+                application.RejectionReasons.Clear(); 
             }
             else if (dto.ApplicationStatus == ApplicationStatus.Rejected)
             {
+                // مسح التواريخ وأي أسباب قديمة
+                application.ExpectedFirstDate = null;
+                application.ActualFirstDate = null;
                 application.RejectionReasons.Clear();
 
+                // إضافة أسباب الرفض الجديدة
                 if (rejectionReasonIds != null && rejectionReasonIds.Any())
                 {
                     foreach (var reasonId in rejectionReasonIds)
@@ -131,6 +138,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             _unitOfWork.ApplicationRepository.Update(application);
             await _unitOfWork.CompleteAsync();
         }
+
 
         //public async Task ReviewApplicationAsync(ApplicationReviewDto dto)
         //{
