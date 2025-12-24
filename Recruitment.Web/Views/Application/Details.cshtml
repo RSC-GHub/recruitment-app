@@ -242,16 +242,20 @@
                                     Decision <span class="text-danger">*</span>
                                 </label>
 
-                                <select id="reviewApplicationStatus"
-                                        name="ApplicationStatus"
-                                        class="form-select"
-                                        required>
-                                    <option value="">-- Select Decision --</option>
-                                    @foreach (var status in ApplicationWorkflow.GetAllowedTransitions(Model.ApplicationStatus))
-                                    {
-                                        <option value="@((int)status)">@status</option>
-                                    }
-                                </select>
+                            <select id="reviewApplicationStatus"
+                                    name="ApplicationStatus"
+                                    class="form-select"
+                                    required>
+                                <option value="">-- Select Decision --</option>
+                                @foreach (var status in ApplicationWorkflow.GetAllowedTransitions(Model.ApplicationStatus))
+                                {
+                                    if (Model.ApplicationStatus == ApplicationStatus.Interviewing)
+                                        continue; 
+
+                                    <option value="@((int)status)">@status</option>
+                                }
+                            </select>
+
                             </div>
 
                             <!-- Rejection Reasons -->

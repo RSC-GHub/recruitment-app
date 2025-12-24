@@ -111,12 +111,10 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             }
             else if (dto.ApplicationStatus == ApplicationStatus.Rejected)
             {
-                // مسح التواريخ وأي أسباب قديمة
                 application.ExpectedFirstDate = null;
                 application.ActualFirstDate = null;
                 application.RejectionReasons.Clear();
 
-                // إضافة أسباب الرفض الجديدة
                 if (rejectionReasonIds != null && rejectionReasonIds.Any())
                 {
                     foreach (var reasonId in rejectionReasonIds)
