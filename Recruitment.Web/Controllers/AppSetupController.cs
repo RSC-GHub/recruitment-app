@@ -6,6 +6,8 @@ namespace Recruitment.Web.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["BreadcrumbTitle"] = "Setup";
+
             return View();
         }
     }

@@ -175,7 +175,7 @@
                             <li class="breadcrumb-separator">/</li>
                             <li class="breadcrumb-item">
                                 <a href="@Url.Action("Index", controller)" class="breadcrumb-link">
-                                    @controller
+                                    @(ViewData["BreadcrumbTitle"]?.ToString() ?? controller)
                                 </a>
                             </li>
                         }

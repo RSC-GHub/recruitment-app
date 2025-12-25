@@ -19,6 +19,7 @@ namespace Recruitment.Web.Controllers
         // GET: RejectionReasons
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string? search = null)
         {
+            ViewData["BreadcrumbTitle"] = "Rejection Reasons";
             ViewData["ParentController"] = "AppSetup";
             ViewData["ParentTitle"] = "Setup";
 
