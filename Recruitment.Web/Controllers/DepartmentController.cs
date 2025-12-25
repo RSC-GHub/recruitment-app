@@ -22,6 +22,9 @@ namespace Recruitment.Web.Controllers
             int pageSize = 10,
             string? search = null)
         {
+            ViewData["ParentController"] = "AppSetup";
+            ViewData["ParentTitle"] = "Setup";
+
             var pagedDto = await _departmentService.GetPagedAsync(page, pageSize, search);
 
             var vm = new DepartmentsPagedVM

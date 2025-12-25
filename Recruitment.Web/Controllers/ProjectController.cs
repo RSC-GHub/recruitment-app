@@ -29,6 +29,9 @@ namespace Recruitment.Web.Controllers
             string? search = null,
             int? countryId = null)
         {
+            ViewData["ParentController"] = "AppSetup";
+            ViewData["ParentTitle"] = "Setup";
+
             // Projects
             var pagedResult = await _projectService
                 .GetPagedAsync(page, pageSize, search, countryId);

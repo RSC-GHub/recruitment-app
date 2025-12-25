@@ -19,6 +19,9 @@ namespace Recruitment.Web.Controllers
         //[HasPermission("Department", "View")]
         public async Task<IActionResult> Index()
         {
+            ViewData["ParentController"] = "AppSetup";
+            ViewData["ParentTitle"] = "Setup";
+
             var dtos = await _departmentTitleService.GetAllAsync();
             var viewModels = dtos.Select(dt => new DepartmentTitleListViewModel
             {

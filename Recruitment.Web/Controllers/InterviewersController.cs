@@ -38,6 +38,9 @@ namespace Recruitment.Web.Controllers
             int pageSize = 10,
             string? search = null)
         {
+            ViewData["ParentController"] = "AppSetup";
+            ViewData["ParentTitle"] = "Setup";
+
             await LoadDepartmentsAsync();
 
             var pagedDto =

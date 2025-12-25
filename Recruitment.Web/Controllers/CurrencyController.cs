@@ -16,6 +16,9 @@ namespace Recruitment.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+            ViewData["ParentController"] = "AppSetup";
+            ViewData["ParentTitle"] = "Setup";
+
             var dtos = await _currencyService.GetAllAsync();
             var vmList = dtos.Select(c => new CurrencyListVM
             {

@@ -17,6 +17,9 @@ namespace Recruitment.Web.Controllers
         // GET: Country
         public async Task<IActionResult> Index()
         {
+            ViewData["ParentController"] = "AppSetup";
+            ViewData["ParentTitle"] = "Setup";
+
             var dtos = await _countryService.GetAllAsync();
             var vmList = dtos.Select(c => new CountryViewModel
             {

@@ -139,31 +139,63 @@
         <!-- Main Content with Sidebar -->
         <div class="main-content-with-sidebar">
             <!-- Breadcrumb -->
+            @{
+                var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+                var action = ViewContext.RouteData.Values["action"]?.ToString();
+
+                var parentController = ViewData["ParentController"]?.ToString();
+                var parentTitle = ViewData["ParentTitle"]?.ToString();
+            }
+
             <div class="breadcrumb-container">
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
+                    <ol class="breadcrumb align-items-center">
+
+                        <!-- Home -->
                         <li class="breadcrumb-item">
                             <a href="@Url.Action("Index", "Home")" class="breadcrumb-link">
                                 <i class="bi bi-house-fill"></i>
                             </a>
                         </li>
-                        <li class="breadcrumb-separator">/</li>
-                        @if (ViewContext.RouteData.Values["controller"]?.ToString() != "Home")
-                        {
-                            <li class="breadcrumb-item">
-                                <span class="breadcrumb-page">@ViewContext.RouteData.Values["controller"]</span>
-                            </li>
-                        }
-                        @if (ViewContext.RouteData.Values["action"]?.ToString() != "Index")
+
+                        <!-- Parent Controller (e.g. Setup) -->
+                        @if (!string.IsNullOrWhiteSpace(parentController))
                         {
                             <li class="breadcrumb-separator">/</li>
                             <li class="breadcrumb-item">
-                                <span class="breadcrumb-page">@ViewContext.RouteData.Values["action"]</span>
+                                <a href="@Url.Action("Index", parentController)" class="breadcrumb-link">
+                                    @parentTitle
+                                </a>
                             </li>
                         }
+
+                        <!-- Current Controller -->
+                        @if (!string.IsNullOrWhiteSpace(controller) && controller != "Home")
+                        {
+                            <li class="breadcrumb-separator">/</li>
+                            <li class="breadcrumb-item">
+                                <a href="@Url.Action("Index", controller)" class="breadcrumb-link">
+                                    @controller
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Current Action -->
+                        @if (!string.IsNullOrWhiteSpace(action) && action != "Index")
+                        {
+                            <li class="breadcrumb-separator">/</li>
+                            <li class="breadcrumb-item">
+                                <span class="breadcrumb-page">
+                                    @action
+                                </span>
+                            </li>
+                        }
+
                     </ol>
                 </nav>
             </div>
+
+
 
             <!-- Main Content -->
             <div class="container-fluid p-4">

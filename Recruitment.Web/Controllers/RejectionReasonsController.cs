@@ -19,6 +19,9 @@ namespace Recruitment.Web.Controllers
         // GET: RejectionReasons
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string? search = null)
         {
+            ViewData["ParentController"] = "AppSetup";
+            ViewData["ParentTitle"] = "Setup";
+
             var pagedDto = await _rejectionReasonService.GetPagedAsync(page, pageSize, search);
 
             // Map DTO -> ViewModel
