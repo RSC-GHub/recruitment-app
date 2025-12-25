@@ -174,20 +174,36 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
         public async Task<bool> CreateAsync(InterviewCreateUpdateDTO dto)
         {
-            // Validate scheduled date
             if (dto.ScheduledDate < DateTime.Now)
-            {
                 throw new ArgumentException("Scheduled date cannot be in the past.");
-            }
+
+            var newStart = dto.ScheduledDate;
+            var newEnd = dto.ScheduledDate.AddMinutes(dto.DurationMinutes);
+
+            var interviewerConflict =
+                await _unitOfWork.InterviewRepository
+                    .HasOverlappingInterviewAsync(dto.InterviewerId, newStart, newEnd);
+
+            if (interviewerConflict)
+                throw new InvalidOperationException(
+                    "Interviewer already has another interview during this time slot.");
+            var applicationConflict =
+                await _unitOfWork.InterviewRepository
+                    .HasOverlappingInterviewAsync(
+                        dto.ApplicationId, newStart, newEnd);
+
+            if (applicationConflict)
+                throw new InvalidOperationException(
+                    "This application already has another interview during this time slot.");
 
             var interview = new Interview
             {
                 ApplicationId = dto.ApplicationId,
                 InterviewerId = dto.InterviewerId,
                 ScheduledDate = dto.ScheduledDate,
+                DurationMinutes = dto.DurationMinutes,
                 InterviewType = dto.InterviewType,
                 InterviewCategory = dto.InterviewCategory,
-                DurationMinutes = dto.DurationMinutes,
                 InterviewStatus = dto.InterviewStatus ?? InterviewStatus.Scheduled,
                 InterviewResult = dto.InterviewResult ?? InterviewResult.Pending,
                 Feedback = dto.Feedback,
@@ -197,7 +213,6 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             await _unitOfWork.InterviewRepository.AddAsync(interview);
             return await _unitOfWork.CompleteAsync() > 0;
         }
-
 
         public async Task<bool> UpdateAsync(int id, InterviewCreateUpdateDTO dto)
         {

@@ -23,6 +23,11 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
         Task<int> CountOnHoldOlderThanAsync(int days);
         Task<ApplicantApplication?> GetByIdWithApplicantAsync(int id);
         Task<ApplicantApplication?> GetWithRejectionReasonsAsync(int applicationId);
+        Task<bool> HasOverlappingInterviewForApplicationAsync(
+    int applicationId,
+    DateTime start,
+    DateTime end);
+
 
 
     }

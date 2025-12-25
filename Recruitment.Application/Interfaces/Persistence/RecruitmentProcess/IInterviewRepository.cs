@@ -42,6 +42,11 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
 
         Task<Interview?> GetByIdWithApplicantAsync(int id);
         Task<List<Interview>> GetAllForCalendarAsync(int? month = null, int? year = null);
+        Task<bool> HasOverlappingInterviewAsync(
+    int interviewerId,
+    DateTime start,
+    DateTime end);
+
 
 
     }

@@ -311,5 +311,17 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             return await query.ToListAsync();
         }
 
+        public async Task<bool> HasOverlappingInterviewAsync(
+        int interviewerId,
+        DateTime start,
+        DateTime end)
+        {
+            return await _context.Interviews.AnyAsync(i =>
+                i.InterviewerId == interviewerId &&
+                i.ScheduledDate < end &&
+                i.ScheduledDate.AddMinutes(i.DurationMinutes) > start &&
+                i.InterviewStatus == InterviewStatus.Scheduled
+            );
+        }
     }
 }

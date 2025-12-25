@@ -247,5 +247,18 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 .FirstOrDefaultAsync(a => a.Id == applicationId);
         }
 
+        public async Task<bool> HasOverlappingInterviewForApplicationAsync(
+    int applicationId,
+    DateTime start,
+    DateTime end)
+        {
+            return await _context.Interviews.AnyAsync(i =>
+                i.ApplicationId == applicationId &&
+                i.ScheduledDate < end &&
+                i.ScheduledDate.AddMinutes(i.DurationMinutes) > start &&
+                i.InterviewStatus != InterviewStatus.Cancelled
+            );
+        }
+
     }
 }
