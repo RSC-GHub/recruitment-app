@@ -87,6 +87,7 @@ namespace Recruitment.Domain.Workflows
                 [ApplicationStatus.AcceptedOffer] = new[]
                 {
                     ApplicationStatus.SignedContract, // Contract signed
+                    ApplicationStatus.Notshow,        // Candidate did not show up
                     ApplicationStatus.Rejected     // Candidate backed out
                 },
 

@@ -4,6 +4,7 @@
     {
         FaceToFace = 1,  
         OnlineZoom = 2,   
-        Teams = 3
+        Teams = 3,
+        PhoneCall = 4
     }
 }
