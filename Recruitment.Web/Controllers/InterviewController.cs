@@ -36,11 +36,12 @@ namespace Recruitment.Web.Controllers
             InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
+            int? interviewerId, 
             int page = 1,
             int pageSize = 10)
         {
             var pagedResult = await _interviewService.SearchAsync(
-                search, status, result, type, category, fromDate, toDate, page, pageSize);
+                search, status, result, type, category, fromDate, toDate, interviewerId, page, pageSize);
 
             var vm = new InterviewIndexVM
             {
@@ -51,11 +52,19 @@ namespace Recruitment.Web.Controllers
                 InterviewCategory = category,
                 FromDate = fromDate,
                 ToDate = toDate,
+                InterviewerId = interviewerId,
                 Page = page,
                 PageSize = pageSize,
                 TotalCount = pagedResult.TotalCount,
                 Interviews = pagedResult.Items
             };
+
+            var interviewers = await _interviewerService.GetAllAsync();
+            vm.Interviewers = interviewers.Select(i => new SelectListItem
+            {
+                Value = i.Id.ToString(),
+                Text = i.Name
+            }).ToList();
 
             return View(vm);
         }

@@ -20,6 +20,7 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
             InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
+            int? interviewerId,
             int page,
             int pageSize);
         Task<Interview?> GetWithRejectionReasonsAsync(int id);

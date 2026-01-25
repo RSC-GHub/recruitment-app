@@ -12,6 +12,7 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
         public string ApplicantName { get; set; } = "";
         public string ApplicantEmail { get; set; } = "";
         public string PhoneNumber { get; set; } = "";
+        public string? TargetPosition { get; set; }
         public string? CurrentJob { get; set; }
         public string? CurrentEmployer { get; set; }
 

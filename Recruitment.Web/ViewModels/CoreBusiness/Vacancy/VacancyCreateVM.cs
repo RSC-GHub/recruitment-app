@@ -15,10 +15,9 @@ namespace Recruitment.Web.ViewModels.CoreBusiness.Vacancy
         [Required]
         public string Requirements { get; set; } = string.Empty;
 
-        [Required]
-        public string Responsibilities { get; set; } = string.Empty;
+        public string? Responsibilities { get; set; }
 
-        public string? Benefits { get; set; } = string.Empty;
+        public string? Benefits { get; set; }
 
         [Required]
         public int PositionCount { get; set; } = 1;

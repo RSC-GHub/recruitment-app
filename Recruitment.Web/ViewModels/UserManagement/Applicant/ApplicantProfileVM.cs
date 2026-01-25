@@ -15,6 +15,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string City { get; set; } = null!;
         public string Nationality { get; set; } = null!;
 
+        public string? TargetPosition { get; set; }
         public string CurrentJob { get; set; } = null!;
         public string CurrentEmployer { get; set; } = null!;
 

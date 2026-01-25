@@ -81,6 +81,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
+            int? interviewerId,
             int page,
             int pageSize)
         {
@@ -114,6 +115,12 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
 
             if (category.HasValue)
                 query = query.Where(i => i.InterviewCategory == category.Value);
+
+            if (interviewerId.HasValue)
+            {
+                query = query.Where(i => i.InterviewerId == interviewerId.Value);
+            }
+
 
             if (fromDate.HasValue && toDate.HasValue)
             {

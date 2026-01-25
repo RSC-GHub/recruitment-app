@@ -39,6 +39,8 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         [Display(Name = "Nationality")]
         public string Nationality { get; set; } = null!;
 
+        public string? TargetPosition { get; set; } 
+
         [Required(ErrorMessage = "Current Job is required")]
         [StringLength(100, ErrorMessage = "Current Job cannot exceed 100 characters")]
         [Display(Name = "Current Job")]

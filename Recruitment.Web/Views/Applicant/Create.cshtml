@@ -11,154 +11,160 @@
     <div class="card-content">
         <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3" id="applicantForm">
 
-        <div class="col-md-6">
-            <label class="form-field-label">Full Name<span class="text-danger"> *</span></label>
-            <input asp-for="FullName" class="form-field-input" id="fullName" />
-            <span asp-validation-for="FullName" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Full Name<span class="text-danger"> *</span></label>
+                <input asp-for="FullName" class="form-field-input" id="fullName" />
+                <span asp-validation-for="FullName" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Email<span class="text-danger"> *</span></label>
-            <input asp-for="Email" class="form-field-input" type="email" id="email" />
-            <span asp-validation-for="Email" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Email<span class="text-danger"> *</span></label>
+                <input asp-for="Email" class="form-field-input" type="email" id="email" />
+                <span asp-validation-for="Email" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Phone Number<span class="text-danger"> *</span></label>
-            <input asp-for="PhoneNumber" class="form-field-input" id="phoneNumber" />
-            <span asp-validation-for="PhoneNumber" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Phone Number<span class="text-danger"> *</span></label>
+                <input asp-for="PhoneNumber" class="form-field-input" id="phoneNumber" />
+                <span asp-validation-for="PhoneNumber" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Country<span class="text-danger"> *</span></label>
-            <select asp-for="CountryId" asp-items="Model.Countries" class="form-field-select" id="countryId">
-                <option value="">-- Select Country --</option>
-            </select>
-            <span asp-validation-for="CountryId" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Country<span class="text-danger"> *</span></label>
+                <select asp-for="CountryId" asp-items="Model.Countries" class="form-field-select" id="countryId">
+                    <option value="">-- Select Country --</option>
+                </select>
+                <span asp-validation-for="CountryId" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">City<span class="text-danger"> *</span></label>
-            <input asp-for="City" class="form-field-input" id="city" />
-            <span asp-validation-for="City" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">City<span class="text-danger"> *</span></label>
+                <input asp-for="City" class="form-field-input" id="city" />
+                <span asp-validation-for="City" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Nationality<span class="text-danger"> *</span></label>
-            <input asp-for="Nationality" class="form-field-input" id="nationality" />
-            <span asp-validation-for="Nationality" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Nationality<span class="text-danger"> *</span></label>
+                <input asp-for="Nationality" class="form-field-input" id="nationality" />
+                <span asp-validation-for="Nationality" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Gender<span class="text-danger"> *</span></label>
-            <select asp-for="Gender" asp-items="Model.GenderType" class="form-field-select" id="gender">
-                <option value="">-- Select Gender --</option>
-            </select>
-            <span asp-validation-for="Gender" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Gender<span class="text-danger"> *</span></label>
+                <select asp-for="Gender" asp-items="Model.GenderType" class="form-field-select" id="gender">
+                    <option value="">-- Select Gender --</option>
+                </select>
+                <span asp-validation-for="Gender" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Military Status<span class="text-danger"> *</span></label>
-            <select asp-for="MilitaryStatus" asp-items="Model.MilitaryStatuses" class="form-field-select" id="militaryStatus">
-                <option value="">-- Select Military Status --</option>
-            </select>
-            <span asp-validation-for="MilitaryStatus" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Military Status<span class="text-danger"> *</span></label>
+                <select asp-for="MilitaryStatus" asp-items="Model.MilitaryStatuses" class="form-field-select" id="militaryStatus">
+                    <option value="">-- Select Military Status --</option>
+                </select>
+                <span asp-validation-for="MilitaryStatus" class="form-field-error"></span>
+            </div>
 
-        <!-- Marital Status -->
-        <div class="col-md-6">
-            <label class="form-field-label">Marital Status<span class="text-danger"> *</span></label>
-            <select asp-for="MaritalStatus" asp-items="Model.MaritalStatuses" class="form-field-select" id="maritalStatus">
-                <option value="">-- Select Marital Status --</option>
-            </select>
-            <span asp-validation-for="MaritalStatuses" class="form-field-error"></span>
-        </div>
+            <!-- Marital Status -->
+            <div class="col-md-6">
+                <label class="form-field-label">Marital Status<span class="text-danger"> *</span></label>
+                <select asp-for="MaritalStatus" asp-items="Model.MaritalStatuses" class="form-field-select" id="maritalStatus">
+                    <option value="">-- Select Marital Status --</option>
+                </select>
+                <span asp-validation-for="MaritalStatuses" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Current Job<span class="text-danger"> *</span></label>
-            <input asp-for="CurrentJob" class="form-field-input" id="currentJob" />
-            <span asp-validation-for="CurrentJob" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Target Position</label>
+                <input asp-for="TargetPosition" class="form-field-input" id="targetPosition" />
+                <span asp-validation-for="TargetPosition" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Current Employer<span class="text-danger"> *</span></label>
-            <input asp-for="CurrentEmployer" class="form-field-input" id="currentEmployer" />
-            <span asp-validation-for="CurrentEmployer" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Current Job<span class="text-danger"> *</span></label>
+                <input asp-for="CurrentJob" class="form-field-input" id="currentJob" />
+                <span asp-validation-for="CurrentJob" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Current Salary<span class="text-danger"> *</span></label>
-            <input asp-for="CurrentSalary" class="form-field-input" type="number" step="0.01" id="currentSalary" />
-            <span asp-validation-for="CurrentSalary" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Current Employer<span class="text-danger"> *</span></label>
+                <input asp-for="CurrentEmployer" class="form-field-input" id="currentEmployer" />
+                <span asp-validation-for="CurrentEmployer" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Expected Salary<span class="text-danger"> *</span></label>
-            <input asp-for="ExpectedSalary" class="form-field-input" type="number" step="0.01" id="expectedSalary" />
-            <span asp-validation-for="ExpectedSalary" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Current Salary<span class="text-danger"> *</span></label>
+                <input asp-for="CurrentSalary" class="form-field-input" type="number" step="0.01" id="currentSalary" />
+                <span asp-validation-for="CurrentSalary" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Currency<span class="text-danger"> *</span></label>
-            <select asp-for="CurrencyId" asp-items="Model.Currencies" class="form-field-select" id="currencyId">
-                <option value="">-- Select Currency --</option>
-            </select>
-            <span asp-validation-for="CurrencyId" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Expected Salary<span class="text-danger"> *</span></label>
+                <input asp-for="ExpectedSalary" class="form-field-input" type="number" step="0.01" id="expectedSalary" />
+                <span asp-validation-for="ExpectedSalary" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Address</label>
-            <input asp-for="Address" class="form-field-input" />
-            <span asp-validation-for="Address" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Currency<span class="text-danger"> *</span></label>
+                <select asp-for="CurrencyId" asp-items="Model.Currencies" class="form-field-select" id="currencyId">
+                    <option value="">-- Select Currency --</option>
+                </select>
+                <span asp-validation-for="CurrencyId" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Education Degree<span class="text-danger"> *</span></label>
-            <select asp-for="EducationDegree" asp-items="Model.EducationDegrees" class="form-field-select" id="educationDegree">
-                <option value="">-- Select Degree --</option>
-            </select>
-            <span asp-validation-for="EducationDegree" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Address</label>
+                <input asp-for="Address" class="form-field-input" />
+                <span asp-validation-for="Address" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Graduation Year</label>
-            <input asp-for="GraduationYear" class="form-field-input" type="number" />
-            <span asp-validation-for="GraduationYear" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Education Degree<span class="text-danger"> *</span></label>
+                <select asp-for="EducationDegree" asp-items="Model.EducationDegrees" class="form-field-select" id="educationDegree">
+                    <option value="">-- Select Degree --</option>
+                </select>
+                <span asp-validation-for="EducationDegree" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Major</label>
-            <input asp-for="Major" class="form-field-input" />
-            <span asp-validation-for="Major" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Graduation Year</label>
+                <input asp-for="GraduationYear" class="form-field-input" type="number" />
+                <span asp-validation-for="GraduationYear" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-6">
-            <label class="form-field-label">Notice Period (days)<span class="text-danger"> *</span></label>
-            <input asp-for="NoticePeriod" class="form-field-input" type="number" id="noticePeriod" />
-            <span asp-validation-for="NoticePeriod" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Major</label>
+                <input asp-for="Major" class="form-field-input" />
+                <span asp-validation-for="Major" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-12">
-            <label class="form-field-label">Extra Certificate</label>
-            <textarea asp-for="ExtraCertificate" class="form-field-input"></textarea>
-            <span asp-validation-for="ExtraCertificate" class="form-field-error"></span>
-        </div>
+            <div class="col-md-6">
+                <label class="form-field-label">Notice Period (days)<span class="text-danger"> *</span></label>
+                <input asp-for="NoticePeriod" class="form-field-input" type="number" id="noticePeriod" />
+                <span asp-validation-for="NoticePeriod" class="form-field-error"></span>
+            </div>
 
-        <div class="col-md-12">
-            <label class="form-field-label">Upload CV (PDF)<span class="text-danger"> *</span></label>
-            <input asp-for="CV" type="file" class="form-field-input" accept=".pdf" id="cv" />
-            <span asp-validation-for="CV" class="form-field-error"></span>
-        </div>
+            <div class="col-md-12">
+                <label class="form-field-label">Extra Certificate</label>
+                <textarea asp-for="ExtraCertificate" class="form-field-input"></textarea>
+                <span asp-validation-for="ExtraCertificate" class="form-field-error"></span>
+            </div>
 
-        <div class="col-12 text-end mt-4">
+            <div class="col-md-12">
+                <label class="form-field-label">Upload CV (PDF)<span class="text-danger"> *</span></label>
+                <input asp-for="CV" type="file" class="form-field-input" accept=".pdf" id="cv" />
+                <span asp-validation-for="CV" class="form-field-error"></span>
+            </div>
+
+            <div class="col-12 text-end mt-4">
                 <button type="submit" class="btn-component btn-primary px-4">
-                <i class="bi bi-check-circle me-1"></i> Save
-            </button>
-            <a asp-action="Index" class="btn-component btn-secondary px-4 ms-2">
-                <i class="bi bi-x-circle me-1"></i> Cancel
-            </a>
-        </div>
-    </form>
+                    <i class="bi bi-check-circle me-1"></i> Save
+                </button>
+                <a asp-action="Index" class="btn-component btn-secondary px-4 ms-2">
+                    <i class="bi bi-x-circle me-1"></i> Cancel
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 

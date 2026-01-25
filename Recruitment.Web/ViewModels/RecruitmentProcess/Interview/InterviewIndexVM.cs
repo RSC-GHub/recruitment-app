@@ -14,6 +14,8 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Interview
         public InterviewResult? Result { get; set; }
         public InterviewType? Type { get; set; }
         public InterviewCategory? InterviewCategory { get; set; }
+        public List<SelectListItem> Interviewers { get; set; } = new();
+        public int? InterviewerId { get; set; }
         public DateTime? FromDate { get; set; } = DateTime.MinValue;
         public DateTime? ToDate { get; set; } = DateTime.MaxValue;
 

@@ -8,6 +8,8 @@
 
         InterviewOnHold,          // Interview postponed / cancelled temporarily
         AcceptedInterview,
+        AcceptedHRInterview,
+        AcceptedTechnicalInterview,
 
         Pending, // Accepted but waiting for internal reason
 

@@ -24,261 +24,267 @@
             </a>
             <button type="button" class="btn-component btn-outline" data-bs-toggle="modal" data-bs-target="#assignVacancyModal">
                 <i class="bi bi-person-plus me-1"></i>Assign Vacancy
-            </button>            
+            </button>
             <button type="button" class="btn-component btn-destructive" data-bs-toggle="modal" data-bs-target="#deleteModal">
                 <i class="bi bi-trash me-1"></i>Delete
             </button>
         </div>
-    </div>  
+    </div>
 
     <div class="card-content">
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: hsl(0, 84%, 97%); border-bottom-color: hsl(0, 84%, 85%);">
-                    <h5 class="modal-title" id="deleteModalLabel" style="color: hsl(0, 84%, 40%);">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert-component alert-destructive">
-                        <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
-                        <div>
-                            <div class="alert-title">Are you absolutely sure?</div>
-                            <div class="alert-description">
-                                This will permanently delete <strong>@Model.FullName</strong>. This action cannot be undone.
-                            </div>
-                        </div>
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: hsl(0, 84%, 97%); border-bottom-color: hsl(0, 84%, 85%);">
+                        <h5 class="modal-title" id="deleteModalLabel" style="color: hsl(0, 84%, 40%);">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
-
-                    <form asp-action="Delete" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="@Model.Id" />
-                        <button type="submit" class="btn-component btn-destructive">
-                            <i class="bi bi-trash me-1"></i>Yes, Delete
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Summary Card -->
-    <div class="card-component mb-4">
-        <div class="card-content">
-            <h4 class="card-title text-primary mb-2">@Model.CurrentJob</h4>
-            <p class="text-muted mb-1">
-                <strong>@Model.City</strong>, @Model.CountryName |
-                <strong>Nationality:</strong> @Model.Nationality
-            </p>
-            <p class="mb-0">
-                <strong>Expected Salary:</strong> @Model.ExpectedSalary @Model.CurrencyName
-            </p>
-        </div>
-    </div>
-
-    <div class="row g-4">
-
-        <!-- Left Column -->
-        <div class="col-md-6">
-
-            <!-- Contact Info -->
-            <div class="card-component mb-4">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="bi bi-telephone-fill me-2"></i>Contact Details
-                    </h4>
-                </div>
-                <div class="card-content">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Email</span>
-                            <p class="mb-0 fw-semibold">@Model.Email</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Phone</span>
-                            <p class="mb-0 fw-semibold">@Model.PhoneNumber</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Address</span>
-                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.Address) ? "N/A" : Model.Address)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Job Info -->
-            <div class="card-component mb-4">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="bi bi-briefcase-fill me-2"></i>Professional Information
-                    </h4>
-                </div>
-                <div class="card-content">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Current Job</span>
-                            <p class="mb-0 fw-semibold">@Model.CurrentJob</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Current Employer</span>
-                            <p class="mb-0 fw-semibold">@Model.CurrentEmployer</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Current Salary</span>
-                            <p class="mb-0 fw-semibold">@Model.CurrentSalary @Model.CurrencyName</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Notice Period</span>
-                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.NoticePeriod) ? "N/A" : Model.NoticePeriod + " days")</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Extra Certifications</span>
-                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.ExtraCertificate) ? "N/A" : Model.ExtraCertificate)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Right Column -->
-        <div class="col-md-6">
-
-            <!-- Education -->
-            <div class="card-component mb-4">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="bi bi-mortarboard-fill me-2"></i>Education
-                    </h4>
-                </div>
-                <div class="card-content">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Degree</span>
-                            <p class="mb-0 fw-semibold">@Model.EducationDegree</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Major</span>
-                            <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.Major) ? "N/A" : Model.Major)</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Graduation Year</span>
-                            <p class="mb-0 fw-semibold">@(Model.GraduationYear ?? 0)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Personal Info -->
-            <div class="card-component mb-4">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="bi bi-person-fill me-2"></i>Personal Information
-                    </h4>
-                </div>
-                <div class="card-content">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Gender</span>
-                            <p class="mb-0 fw-semibold">@Model.Gender</p>
-                        </div>
-
-                        @if (Model.Gender != Gender.Female)
-                        {
-                            <div>
-                                <span class="text-muted small">Military Status</span>
-                                <p class="mb-0 fw-semibold">@Model.MilitaryStatus</p>
-                            </div>
-                        }
-
-                        <div>
-                            <span class="text-muted small">Marital Status</span>
-                            <p class="mb-0 fw-semibold">@Model.MaritalStatus</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CV -->
-            <div class="card-component mb-4">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">
-                        <i class="bi bi-file-earmark-pdf-fill me-2"></i>CV
-                    </h4>
-                </div>
-                <div class="card-content">
-                    @if (!string.IsNullOrWhiteSpace(Model.CVFilePath))
-                    {
-                            <a class="btn-component btn-primary w-100" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">
-                            <i class="bi bi-download me-2"></i>Download CV
-                        </a>
-                    }
-                    else
-                    {
+                    <div class="modal-body">
                         <div class="alert-component alert-destructive">
                             <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
                             <div>
-                                <div class="alert-description">No CV uploaded.</div>
+                                <div class="alert-title">Are you absolutely sure?</div>
+                                <div class="alert-description">
+                                    This will permanently delete <strong>@Model.FullName</strong>. This action cannot be undone.
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-component btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                        <form asp-action="Delete" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn-component btn-destructive">
+                                <i class="bi bi-trash me-1"></i>Yes, Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Summary Card -->
+        <div class="card-component mb-4">
+            <div class="card-content">
+                <h4 class="card-title text-primary mb-2">@Model.CurrentJob</h4>
+                <p class="text-muted mb-1">
+                    <strong>@Model.City</strong>, @Model.CountryName |
+                    <strong>Nationality:</strong> @Model.Nationality
+                </p>
+                <p class="mb-0">
+                    <strong>Expected Salary:</strong> @Model.ExpectedSalary @Model.CurrencyName
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Left Column -->
+            <div class="col-md-6">
+
+                <!-- Contact Info -->
+                <div class="card-component mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-telephone-fill me-2"></i>Contact Details
+                        </h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Email</span>
+                                <p class="mb-0 fw-semibold">@Model.Email</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Phone</span>
+                                <p class="mb-0 fw-semibold">@Model.PhoneNumber</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Address</span>
+                                <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.Address) ? "N/A" : Model.Address)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Info -->
+                <div class="card-component mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-briefcase-fill me-2"></i>Professional Information
+                        </h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="space-y-3">
+
+                            <div>
+                                <span class="text-muted small">Target Position</span>
+                                <p class="mb-0 fw-semibold">@Model.TargetPosition</p>
+                            </div>
+
+                            <div>
+                                <span class="text-muted small">Current Job</span>
+                                <p class="mb-0 fw-semibold">@Model.CurrentJob</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Current Employer</span>
+                                <p class="mb-0 fw-semibold">@Model.CurrentEmployer</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Current Salary</span>
+                                <p class="mb-0 fw-semibold">@Model.CurrentSalary @Model.CurrencyName</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Notice Period</span>
+                                <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.NoticePeriod) ? "N/A" : Model.NoticePeriod + " days")</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Extra Certifications</span>
+                                <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.ExtraCertificate) ? "N/A" : Model.ExtraCertificate)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-6">
+
+                <!-- Education -->
+                <div class="card-component mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-mortarboard-fill me-2"></i>Education
+                        </h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Degree</span>
+                                <p class="mb-0 fw-semibold">@Model.EducationDegree</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Major</span>
+                                <p class="mb-0 fw-semibold">@(string.IsNullOrEmpty(Model.Major) ? "N/A" : Model.Major)</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Graduation Year</span>
+                                <p class="mb-0 fw-semibold">@(Model.GraduationYear ?? 0)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Info -->
+                <div class="card-component mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-person-fill me-2"></i>Personal Information
+                        </h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Gender</span>
+                                <p class="mb-0 fw-semibold">@Model.Gender</p>
+                            </div>
+
+                            @if (Model.Gender != Gender.Female)
+                            {
+                                <div>
+                                    <span class="text-muted small">Military Status</span>
+                                    <p class="mb-0 fw-semibold">@Model.MilitaryStatus</p>
+                                </div>
+                            }
+
+                            <div>
+                                <span class="text-muted small">Marital Status</span>
+                                <p class="mb-0 fw-semibold">@Model.MaritalStatus</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CV -->
+                <div class="card-component mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-file-earmark-pdf-fill me-2"></i>CV
+                        </h4>
+                    </div>
+                    <div class="card-content">
+                        @if (!string.IsNullOrWhiteSpace(Model.CVFilePath))
+                        {
+                            <a class="btn-component btn-primary w-100" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">
+                                <i class="bi bi-download me-2"></i>Download CV
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="alert-component alert-destructive">
+                                <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
+                                <div>
+                                    <div class="alert-description">No CV uploaded.</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Audit Info -->
+        <div class="card-component mt-4 mb-4">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-clock-history me-2"></i>Audit Information
+                </h4>
+            </div>
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-muted small">Created By</span>
+                                <p class="mb-0 fw-semibold">@Model.CreatedBy</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Created On</span>
+                                <p class="mb-0 fw-semibold">@Model.CreatedOn</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.ModifiedOn.HasValue)
+                    {
+                        <div class="col-md-6">
+                            <div class="space-y-3">
+                                <div>
+                                    <span class="text-muted small">Modified By</span>
+                                    <p class="mb-0 fw-semibold">@Model.ModifiedBy</p>
+                                </div>
+                                <div>
+                                    <span class="text-muted small">Modified On</span>
+                                    <p class="mb-0 fw-semibold">@Model.ModifiedOn</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">Never modified.</p>
                         </div>
                     }
                 </div>
             </div>
-
         </div>
-    </div>
-
-    <!-- Audit Info -->
-    <div class="card-component mt-4 mb-4">
-        <div class="card-header">
-            <h4 class="card-title mb-0">
-                <i class="bi bi-clock-history me-2"></i>Audit Information
-            </h4>
-        </div>
-        <div class="card-content">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="space-y-3">
-                        <div>
-                            <span class="text-muted small">Created By</span>
-                            <p class="mb-0 fw-semibold">@Model.CreatedBy</p>
-                        </div>
-                        <div>
-                            <span class="text-muted small">Created On</span>
-                            <p class="mb-0 fw-semibold">@Model.CreatedOn</p>
-                        </div>
-                    </div>
-                </div>
-
-                @if (Model.ModifiedOn.HasValue)
-                {
-                    <div class="col-md-6">
-                        <div class="space-y-3">
-                            <div>
-                                <span class="text-muted small">Modified By</span>
-                                <p class="mb-0 fw-semibold">@Model.ModifiedBy</p>
-                            </div>
-                            <div>
-                                <span class="text-muted small">Modified On</span>
-                                <p class="mb-0 fw-semibold">@Model.ModifiedOn</p>
-                            </div>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="col-md-6">
-                        <p class="text-muted mb-0">Never modified.</p>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
 
     </div>
 </div>

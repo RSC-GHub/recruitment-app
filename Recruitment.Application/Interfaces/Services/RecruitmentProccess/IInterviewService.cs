@@ -6,17 +6,6 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
 {
     public interface IInterviewService
     {
-        Task<PagedResult<InterviewListDTO>> GetPagedAsync(
-                        int page,
-                        int pageSize,
-                        string? search,
-                        InterviewStatus? status,
-                        InterviewResult? result,
-                        InterviewType? type,
-                        InterviewCategory? category,
-                        DateTime? fromDate,
-                        DateTime? toDate);
-        Task<PagedResult<InterviewListDTO>> GetByApplicationIdAsync(int applicationId, int page, int pageSize);
         Task<PagedResult<InterviewListDTO>> SearchAsync(
             string? search,
             InterviewStatus? status,
@@ -25,8 +14,21 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
             InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
+            int? interviewerId,
             int page,
             int pageSize);
+        Task<PagedResult<InterviewListDTO>> GetByApplicationIdAsync(int applicationId, int page, int pageSize);
+        Task<PagedResult<InterviewListDTO>> GetPagedAsync(
+                int page,
+                int pageSize,
+                string? search,
+                InterviewStatus? status,
+                InterviewResult? result,
+                InterviewType? type,
+                InterviewCategory? category,
+                DateTime? fromDate,
+                DateTime? toDate,
+                int? interviewerId);
 
         Task<InterviewDetailDTO?> GetByIdAsync(int id);
 

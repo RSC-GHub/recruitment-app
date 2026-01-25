@@ -193,6 +193,7 @@ namespace Recruitment.Web.Controllers
                     CountryId = vm.CountryId,
                     City = vm.City,
                     Nationality = vm.Nationality,
+                    TargetPosition = vm.TargetPosition,
                     CurrentJob = vm.CurrentJob,
                     CurrentEmployer = vm.CurrentEmployer,
                     CurrentSalary = vm.CurrentSalary,
@@ -239,6 +240,7 @@ namespace Recruitment.Web.Controllers
                 CountryId = dto.CountryId,
                 City = dto.City,
                 Nationality = dto.Nationality,
+                TargetPosition = dto.TargetPosition,
                 CurrentJob = dto.CurrentJob,
                 CurrentEmployer = dto.CurrentEmployer,
                 CurrentSalary = dto.CurrentSalary,
@@ -303,6 +305,7 @@ namespace Recruitment.Web.Controllers
                 CountryId = vm.CountryId,
                 City = vm.City,
                 Nationality = vm.Nationality,
+                TargetPosition = vm.TargetPosition,
                 CurrentJob = vm.CurrentJob,
                 CurrentEmployer = vm.CurrentEmployer,
                 CurrentSalary = vm.CurrentSalary,
@@ -343,6 +346,8 @@ namespace Recruitment.Web.Controllers
                 CountryName = dto.CountryName,
                 City = dto.City,
                 Nationality = dto.Nationality,
+
+                TargetPosition = dto.TargetPosition,
 
                 CurrentJob = dto.CurrentJob,
                 CurrentEmployer = dto.CurrentEmployer,

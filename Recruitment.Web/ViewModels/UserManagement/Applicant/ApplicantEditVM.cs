@@ -32,6 +32,8 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         [Required]
         public string Nationality { get; set; } = null!;
 
+        public string? TargetPosition { get; set; }
+
         [Required]
         public string CurrentJob { get; set; } = null!;
 

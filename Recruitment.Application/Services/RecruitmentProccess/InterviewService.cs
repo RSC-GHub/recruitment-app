@@ -1,4 +1,5 @@
-﻿using Recruitment.Application.Common;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.Interview;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
@@ -24,17 +25,19 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             InterviewCategory? category,
             DateTime? fromDate,
             DateTime? toDate,
+            int? interviewerId,
             int page,
             int pageSize)
         {
             var paged = await _unitOfWork.InterviewRepository.SearchAsync(
-                search, status, result, type, category, fromDate, toDate, page, pageSize);
+                search, status, result, type, category, fromDate, toDate, interviewerId, page, pageSize);
 
             var dtoItems = paged.Items.Select(i => new InterviewListDTO
             {
                 Id = i.Id,
                 ApplicantName = i.Application.Applicant.FullName,
                 VacancyTitle = i.Application.Vacancy.Title!.Name,
+                InterviewerId = i.InterviewerId,
                 InterviewerName = i.Interviewer.Name,
                 ScheduledDate = i.ScheduledDate,
                 InterviewType = i.InterviewType,
@@ -57,7 +60,8 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 InterviewType? type,
                 InterviewCategory? category,
                 DateTime? fromDate,
-                DateTime? toDate)
+                DateTime? toDate,
+                int? interviewerId)
 
         {
             PagedResult<Interview> paged;
@@ -72,6 +76,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     category,
                     fromDate,
                     toDate,
+                    interviewerId,
                     page,
                     pageSize
                 );
@@ -264,7 +269,19 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             switch (result)
             {
                 case InterviewResult.Accepted:
-                    interview.Application.ApplicationStatus = ApplicationStatus.AcceptedInterview;
+                    if (interview.InterviewCategory == InterviewCategory.HR)
+                    {
+                        interview.Application.ApplicationStatus = ApplicationStatus.AcceptedHRInterview;
+                    }
+                    else if (interview.InterviewCategory == InterviewCategory.Technical)
+                    {
+                        interview.Application.ApplicationStatus = ApplicationStatus.AcceptedTechnicalInterview;
+                    }
+                    else
+                    {
+                        interview.Application.ApplicationStatus = ApplicationStatus.AcceptedInterview;
+                    }
+                        
                     interview.RejectionReasons.Clear();
                     break;
 
@@ -344,5 +361,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
             return dtos;
         }
+
+        
     }
 }

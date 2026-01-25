@@ -81,6 +81,7 @@ namespace Recruitment.Web.Controllers
                 ApplicantName = application.ApplicantName,
                 ApplicantEmail = application.ApplicantEmail,
                 PhoneNumber = application.PhoneNumber,
+                TargetPosition = application.TargetPosition,
                 CurrentJob = application.CurrentJob,
                 CurrentEmployer = application.CurrentEmployer,
                 ExpectedFirstDate = application.ExpectedFirstDate,

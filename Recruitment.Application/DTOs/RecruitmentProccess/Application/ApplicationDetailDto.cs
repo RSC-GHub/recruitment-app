@@ -11,6 +11,7 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
         public string ApplicantName { get; set; } = null!;
         public string ApplicantEmail { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
+        public string? TargetPosition { get; set; }
         public string? CurrentJob { get; set; }
         public string? CurrentEmployer { get; set; }
         public string CV { get; set; } = null!;

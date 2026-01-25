@@ -59,7 +59,7 @@
                 <!-- Responsibilities -->
                 <div class="field">
                     <label class="field-label" for="Responsibilities">
-                        @Html.DisplayNameFor(m => m.Responsibilities) <span class="text-danger">*</span>
+                        @Html.DisplayNameFor(m => m.Responsibilities) 
                         <span class="tooltip-trigger">
                             <i>i</i>
                             <span class="tooltip-content multiline">Outline the key duties and responsibilities the candidate will be expected to perform in this role.</span>
@@ -67,7 +67,6 @@
                     </label>
                     <textarea asp-for="Responsibilities" id="Responsibilities" class="form-field-textarea" rows="4"></textarea>
                     <span class="field-description">Define the main duties and tasks</span>
-                    <span asp-validation-for="Responsibilities" class="field-error" style="display:none;">The Responsibilities field is required.</span>
                 </div>
 
                 <!-- Benefits -->
@@ -304,7 +303,7 @@
                 }
             });
 
-            // Optional: Real-time validation as user types (only for touched fields)
+            // Real-time validation as user types (only for touched fields)
             $('input[type="text"], input[type="number"], input[type="date"], textarea').on('input', function() {
                 var fieldName = $(this).attr('name');
                 if (touchedFields.has(fieldName)) {

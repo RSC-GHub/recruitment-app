@@ -29,6 +29,7 @@ namespace Recruitment.Application.Services.UserManagement
                 CountryId = dto.CountryId,
                 City = dto.City,
                 Nationality = dto.Nationality,
+                TargetPosition = dto.TargetPosition,
                 CurrentJob = dto.CurrentJob,
                 CurrentEmployer = dto.CurrentEmployer,
                 CurrentSalary = dto.CurrentSalary,
@@ -67,6 +68,7 @@ namespace Recruitment.Application.Services.UserManagement
             applicant.CountryId = dto.CountryId;
             applicant.City = dto.City;
             applicant.Nationality = dto.Nationality;
+            applicant.TargetPosition = dto.TargetPosition;
             applicant.CurrentJob = dto.CurrentJob;
             applicant.CurrentEmployer = dto.CurrentEmployer;
             applicant.CurrentSalary = dto.CurrentSalary;
@@ -147,6 +149,7 @@ namespace Recruitment.Application.Services.UserManagement
                 CountryId = applicant.CountryId,
                 City = applicant.City,
                 Nationality = applicant.Nationality,
+                TargetPosition = applicant.TargetPosition,
                 CurrentJob = applicant.CurrentJob,
                 CurrentEmployer = applicant.CurrentEmployer,
                 CurrentSalary = applicant.CurrentSalary,
@@ -181,6 +184,8 @@ namespace Recruitment.Application.Services.UserManagement
                 CountryName = applicant.Country.Name,
                 City = applicant.City,
                 Nationality = applicant.Nationality,
+
+                TargetPosition = applicant.TargetPosition,
 
                 CurrentJob = applicant.CurrentJob,
                 CurrentEmployer = applicant.CurrentEmployer,

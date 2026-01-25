@@ -120,7 +120,9 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                     (a.Applicant.Email != null && a.Applicant.Email.Contains(search)) ||
                     (a.Applicant.PhoneNumber != null && a.Applicant.PhoneNumber.Contains(search)) ||
                     (a.Note != null && a.Note.Contains(search)) ||
-                    (a.Vacancy.Title != null && a.Vacancy.Title.Name.Contains(search))
+                    (a.Vacancy.Title != null && a.Vacancy.Title.Name.Contains(search)) || 
+                    (a.Applicant.CurrentJob != null && a.Applicant.CurrentJob.Contains(search)) ||
+                    (a.Applicant.TargetPosition != null && a.Applicant.TargetPosition.Contains(search))
                 );
             }
 

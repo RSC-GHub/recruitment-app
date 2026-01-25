@@ -18,6 +18,7 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string Nationality { get; set; } = null!;
 
         // Job Info
+        public string? TargetPosition { get; set; }
         public string CurrentJob { get; set; } = null!;
         public string CurrentEmployer { get; set; } = null!;
 

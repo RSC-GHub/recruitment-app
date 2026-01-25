@@ -61,7 +61,7 @@
                 <!-- Responsibilities -->
                 <div class="field">
                     <label class="field-label" for="Responsibilities">
-                        Responsibilities <span class="text-danger">*</span>
+                        Responsibilities 
                         <span class="tooltip-trigger">
                             <i>i</i>
                             <span class="tooltip-content multiline">Outline the key duties and responsibilities the candidate will be expected to perform in this role.</span>
@@ -69,7 +69,6 @@
                     </label>
                     <textarea asp-for="Responsibilities" id="Responsibilities" class="form-field-textarea" rows="4"></textarea>
                     <span class="field-description">Define the main duties and tasks</span>
-                    <span asp-validation-for="Responsibilities" class="field-error" style="display:none;"></span>
                 </div>
 
                 <!-- Benefits -->
@@ -83,7 +82,6 @@
                     </label>
                     <textarea asp-for="Benefits" id="Benefits" class="form-field-textarea" rows="3"></textarea>
                     <span class="field-description">Optional: Highlight perks and benefits offered</span>
-                    <span asp-validation-for="Benefits" class="field-error" style="display:none;"></span>
                 </div>
 
                 <div class="field-separator"></div>
@@ -302,7 +300,6 @@
                     }
                 }
             });
-
         });
     </script>
 }

@@ -39,7 +39,9 @@ namespace Recruitment.Infrastructure.Repositories.UserManagement
                     a.Email.Contains(search) ||
                     a.City.Contains(search) ||
                     a.Nationality.Contains(search) ||
-                    a.PhoneNumber.Contains(search)
+                    a.PhoneNumber.Contains(search) || 
+                    a.CurrentJob.Contains(search) ||
+                    a.TargetPosition!.Contains(search)
                 );
             }
 

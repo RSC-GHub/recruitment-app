@@ -366,6 +366,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ApplicantName = entity.Applicant?.FullName ?? "",
                 ApplicantEmail = entity.Applicant?.Email ?? "",
                 PhoneNumber = entity.Applicant?.PhoneNumber ?? "",
+                TargetPosition = entity.Applicant?.TargetPosition ?? "",
                 CurrentJob = entity.Applicant?.CurrentJob,
                 CurrentEmployer = entity.Applicant?.CurrentEmployer,
                 CV = entity.Applicant?.CVFilePath ?? "",

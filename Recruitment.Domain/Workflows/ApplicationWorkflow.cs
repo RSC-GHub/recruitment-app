@@ -2,17 +2,8 @@
 
 namespace Recruitment.Domain.Workflows
 {
-    /// <summary>
-    /// Defines the allowed state transitions for the job application lifecycle.
-    /// This ensures that application status changes follow valid business rules.
-    /// </summary>
     public static class ApplicationWorkflow
     {
-        /// <summary>
-        /// Allowed transitions for each application status.
-        /// Key   : Current status
-        /// Value : List of valid next statuses
-        /// </summary>
         private static readonly Dictionary<ApplicationStatus, ApplicationStatus[]> AllowedTransitions =
             new()
             {
@@ -52,6 +43,8 @@ namespace Recruitment.Domain.Workflows
                 [ApplicationStatus.Interviewing] = new[]
                 {
                     ApplicationStatus.AcceptedInterview, // Passed interview
+                    ApplicationStatus.AcceptedHRInterview,   // Passed HR interview
+                    ApplicationStatus.AcceptedTechnicalInterview, // Passed technical interview
                     ApplicationStatus.InterviewOnHold,   // Interview postponed or rescheduled
                     ApplicationStatus.Rejected,            // Failed interview
                     ApplicationStatus.Pending               // Awaiting internal decision
@@ -66,6 +59,22 @@ namespace Recruitment.Domain.Workflows
 
                 // Candidate passed interview successfully
                 [ApplicationStatus.AcceptedInterview] = new[]
+                {
+                    ApplicationStatus.Offered,                    // Offer sent
+                    ApplicationStatus.Pending, // Waiting for internal approval
+                    ApplicationStatus.Interviewing                // Additional interview round
+                },
+
+                // Candidate passed interview successfully
+                [ApplicationStatus.AcceptedHRInterview] = new[]
+                {
+                    ApplicationStatus.Offered,                    // Offer sent
+                    ApplicationStatus.Pending, // Waiting for internal approval
+                    ApplicationStatus.Interviewing                // Additional interview round
+                },
+
+                // Candidate passed interview successfully
+                [ApplicationStatus.AcceptedTechnicalInterview] = new[]
                 {
                     ApplicationStatus.Offered,                    // Offer sent
                     ApplicationStatus.Pending, // Waiting for internal approval
@@ -122,10 +131,6 @@ namespace Recruitment.Domain.Workflows
                 #endregion
             };
 
-        /// <summary>
-        /// Validates whether a transition from the current status to the next status is allowed.
-        /// Throws InvalidOperationException if the transition is invalid.
-        /// </summary>
         public static void ValidateTransition(ApplicationStatus current, ApplicationStatus next)
         {
             if (!AllowedTransitions.TryGetValue(current, out var allowed) ||
@@ -136,9 +141,6 @@ namespace Recruitment.Domain.Workflows
             }
         }
 
-        /// <summary>
-        /// Returns all allowed next statuses for the given current status.
-        /// </summary>
         public static IEnumerable<ApplicationStatus> GetAllowedTransitions(ApplicationStatus current)
         {
             return AllowedTransitions.TryGetValue(current, out var allowed)
