@@ -44,7 +44,7 @@ namespace Recruitment.Domain.Workflows
                 {
                     ApplicationStatus.AcceptedInterview, // Passed interview
                     ApplicationStatus.AcceptedHRInterview,   // Passed HR interview
-                    ApplicationStatus.AcceptedTechnicalInterview, // Passed technical interview
+                    ApplicationStatus.AcceptedTechInterview, // Passed technical interview
                     ApplicationStatus.InterviewOnHold,   // Interview postponed or rescheduled
                     ApplicationStatus.Rejected,            // Failed interview
                     ApplicationStatus.Pending               // Awaiting internal decision
@@ -74,7 +74,7 @@ namespace Recruitment.Domain.Workflows
                 },
 
                 // Candidate passed interview successfully
-                [ApplicationStatus.AcceptedTechnicalInterview] = new[]
+                [ApplicationStatus.AcceptedTechInterview] = new[]
                 {
                     ApplicationStatus.Offered,                    // Offer sent
                     ApplicationStatus.Pending, // Waiting for internal approval

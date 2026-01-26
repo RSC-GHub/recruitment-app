@@ -36,7 +36,7 @@ namespace Recruitment.Application.Interfaces.Persistence.RecruitmentProcess
         Task<bool> UpdateInterviewAsync(int id, int interviewerId,
                                                 InterviewStatus interviewStatus,
                                                 InterviewType interviewType,
-                                                int durationMinutes, string? interviewNote);
+                                                int durationMinutes, DateTime? scheduledDate, string? interviewNote);
 
         Task<int> CountTodaysInterviewsAsync();
         Task<int> CountPendingInterviewResultsAsync();

@@ -1,4 +1,5 @@
 ﻿using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Enums;
 
@@ -28,5 +29,7 @@ namespace Recruitment.Application.Interfaces.Persistence.CoreBusiness
         Task<int> GetTotalCountAsync();
         Task<Vacancy?> GetForEditAsync(int id);
         Task<List<Vacancy>> GetAllOpenedVacanciesCards();
+
+        Task<List<VacancyPositionsChartDTO>> GetVacanciesPositionsChartAsync();
     }
 }

@@ -275,13 +275,13 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     }
                     else if (interview.InterviewCategory == InterviewCategory.Technical)
                     {
-                        interview.Application.ApplicationStatus = ApplicationStatus.AcceptedTechnicalInterview;
+                        interview.Application.ApplicationStatus = ApplicationStatus.AcceptedTechInterview;
                     }
                     else
                     {
                         interview.Application.ApplicationStatus = ApplicationStatus.AcceptedInterview;
                     }
-                        
+
                     interview.RejectionReasons.Clear();
                     break;
 
@@ -329,8 +329,15 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 dto.InterviewStatus,
                 dto.InterviewType,
                 dto.DurationMinutes,
+                dto.ScheduledDate,
                 dto.InterviewNote
             );
+            
+            if (dto.InterviewStatus == InterviewStatus.Postponed && !dto.ScheduledDate.HasValue)
+            {
+                return false;
+            }
+
 
             return result;
         }
@@ -362,6 +369,6 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             return dtos;
         }
 
-        
+
     }
 }

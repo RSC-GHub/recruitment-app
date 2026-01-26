@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Recruitment.Web.Models;
 using System.Text.Json;
 
 namespace Recruitment.Web.Middleware.ExceptionMiddleware
@@ -21,6 +22,12 @@ namespace Recruitment.Web.Middleware.ExceptionMiddleware
 
         public async Task InvokeAsync(HttpContext context)
         {
+            if (context.Request.Path.StartsWithSegments("/Home/ErrorModal"))
+            {
+                await _next(context);
+                return;
+            }
+
             try
             {
                 await _next(context);
@@ -29,33 +36,39 @@ namespace Recruitment.Web.Middleware.ExceptionMiddleware
             {
                 _logger.LogError(ex, "Unhandled exception occurred");
 
-                context.Response.Clear();
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                bool isAjax =
+                    context.Request.Headers["X-Requested-With"] == "XMLHttpRequest" ||
+                    context.Request.Headers["Accept"].Any(a => a.Contains("application/json")) ||
+                    context.Request.Path.StartsWithSegments("/api");
 
-                // API request
-                if (context.Request.Path.StartsWithSegments("/api"))
+                if (isAjax)
                 {
                     context.Response.ContentType = "application/json";
+                    context.Response.StatusCode = 500;
 
-                    var result = JsonSerializer.Serialize(new
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(new
                     {
-                        message = "An unexpected error occurred.",
-                        details = _env.IsDevelopment() ? ex.Message : null,
+                        success = false,
+                        message = ex.Message,
                         traceId = context.TraceIdentifier
-                    });
-
-                    await context.Response.WriteAsync(result);
+                    }));
                     return;
                 }
 
-                //  MVC request
-                context.Items["Exception"] = ex;
-                context.Request.Path = "/Home/Error";
+                var tempDataFactory =
+                    context.RequestServices.GetRequiredService<ITempDataDictionaryFactory>();
 
+                var tempData = tempDataFactory.GetTempData(context);
+
+                tempData["ErrorMessage"] = "Something went wrong";
+                tempData["ErrorDetails"] = _env.IsDevelopment() ? ex.Message : null;
+                tempData["TraceId"] = context.TraceIdentifier;
+
+                context.Request.Path = "/Home/ErrorModal";
                 await _next(context);
             }
         }
+
     }
-
-
 }
+

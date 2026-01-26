@@ -457,6 +457,27 @@
     </div>
 </div>
 
+
+<!-- ===================== -->
+<!-- Vacancies Positions Chart -->
+<!-- ===================== -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm animate-in">
+            <div class="card-body p-4">
+                <div class="section-title">
+                    <i class="bi bi-bar-chart-fill text-primary"></i>
+                    <span>Vacancies Positions Chart</span>
+                </div>
+
+                <canvas id="vacanciesPositionsChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <!-- ===================== -->
 <!-- Calendar -->
 <!-- ===================== -->
@@ -472,29 +493,85 @@
 </div>
 
 @section Scripts {
+
     <script src="~/lib/fullcalendar/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ===================== -->
+    <!-- Vacancies Positions Chart -->
+    <!-- ===================== -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('interviewCalendar');
 
-            // Build events with extra data
-            var events = [
-                @Html.Raw(string.Join(",",
-                    Model.CalendarInterviews.Select(interview =>
-                            "{" +
-                                    $"title: '{interview.ApplicantName}'," +
-                                    $"start: '{interview.ScheduledDate:yyyy-MM-ddTHH:mm:ss}'," +
-                                    "color: '#082F49'," +
-                                    "extendedProps: {" +
-                                            $"vacancyTitle: '{interview.VacancyTitle}'," +
-                                            $"interviewId: '{interview.Id}'" +
-                                    "}" +
-                            "}"
-                    )
+            const chartEl = document.getElementById('vacanciesPositionsChart');
+            if (!chartEl) return;
+
+                    const labels = [
+            @Html.Raw(string.Join(",",
+                Model.VacanciesPositionsChart.Select(v =>
+                                $"'{v.VacancyTitle.Replace("'", "\\'")}'"
+                )
+                ))
+    ];
+
+    const data = [
+        @Html.Raw(string.Join(",",
+                        Model.VacanciesPositionsChart.Select(v =>
+                                        v.PositionCount.ToString()
+                        )
+                ))
+    ];
+
+
+        new Chart(chartEl, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Required Positions',
+                    data: data,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+<!-- ===================== -->
+<!-- Interview Calendar -->
+<!-- ===================== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('interviewCalendar');
+
+        var events = [
+            @Html.Raw(string.Join(",",
+                                Model.CalendarInterviews.Select(interview =>
+                                                "{" +
+                                                                $"title: '{interview.ApplicantName}'," +
+                                                                $"start: '{interview.ScheduledDate:yyyy-MM-ddTHH:mm:ss}'," +
+                                                                "color: '#082F49'," +
+                                                                "extendedProps: {" +
+                                                                                $"vacancyTitle: '{interview.VacancyTitle}'," +
+                                                                                $"interviewId: '{interview.Id}'" +
+                                                                "}" +
+                                                "}"
+                                )
                         ))
         ];
 
-        // Initialize FullCalendar and store globally
         window.calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: window.innerWidth < 768 ? 'timeGridDay' : 'dayGridMonth',
             height: 'auto',
@@ -519,99 +596,57 @@
             eventClassNames: 'fw-semibold',
             eventDisplay: 'block',
             dayMaxEvents: 3,
-            moreLinkClick: 'popover',
             nowIndicator: true,
 
-            businessHours: { daysOfWeek: [1,2,3,4,5], startTime: '09:00', endTime: '17:00' },
-            slotMinTime: '08:00', slotMaxTime: '19:00', slotDuration: '00:30:00',
-
-            loading: function(isLoading) {
-                calendarEl.style.opacity = isLoading ? '0.5' : '1';
+            businessHours: {
+                daysOfWeek: [1, 2, 3, 4, 5],
+                startTime: '09:00',
+                endTime: '17:00'
             },
 
-            eventDidMount: function (info) {
-                var start = new Date(info.event.start);
-                var tooltipContent =
-                    '<div class="text-start p-1">' +
-                    '<strong class="d-block mb-2 text-success">' +
-                    '<i class="bi bi-person-fill me-1"></i>' + info.event.title +
-                    '</strong>' +
-                    '<small class="d-block text-white mb-1">' +
-                    '<i class="bi bi-briefcase-fill me-1"></i>' + info.event.extendedProps.vacancyTitle +
-                    '</small>' +
-                    '<small class="d-block text-muted">' +
-                    '<i class="bi bi-clock-fill me-1"></i>' +
-                    start.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) +
-                    ' at ' +
-                    start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) +
-                    '</small>' +
-                    '</div>';
+            slotMinTime: '08:00',
+            slotMaxTime: '19:00',
+            slotDuration: '00:30:00',
 
-                new bootstrap.Tooltip(info.el, {
-                    title: tooltipContent,
-                    html: true,
-                    placement: 'top',
-                    container: 'body',
-                    trigger: 'hover',
-                    boundary: 'viewport'
-                });
-            },
-
-            eventClick: function(info) {
+            eventClick: function (info) {
                 info.jsEvent.preventDefault();
+
                 var start = new Date(info.event.start);
                 var formattedDateTime = start.toLocaleString('en-US', {
-                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-                    hour: '2-digit', minute: '2-digit'
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
                 });
 
-                document.getElementById('modalPosition').textContent = info.event.extendedProps.vacancyTitle;
-                document.getElementById('modalApplicant').textContent = info.event.title;
-                document.getElementById('modalDateTime').textContent = formattedDateTime;
-                document.getElementById('viewDetailsBtn').setAttribute('data-interview-id', info.event.extendedProps.interviewId);
+                document.getElementById('modalPosition').textContent =
+                    info.event.extendedProps.vacancyTitle;
 
-                var interviewModal = new bootstrap.Modal(document.getElementById('interviewModal'));
+                document.getElementById('modalApplicant').textContent =
+                    info.event.title;
+
+                document.getElementById('modalDateTime').textContent =
+                    formattedDateTime;
+
+                document
+                    .getElementById('viewDetailsBtn')
+                    .setAttribute('data-interview-id',
+                        info.event.extendedProps.interviewId);
+
+                var interviewModal =
+                    new bootstrap.Modal(document.getElementById('interviewModal'));
+
                 interviewModal.show();
-
-                // Highlight clicked event
-                document.querySelectorAll('.fc-event').forEach(el => { el.style.border = ''; });
-                info.el.style.border = '3px solid #082F49';
-            },
-
-            windowResize: function() {
-                if (window.innerWidth < 768) calendar.changeView('timeGridDay');
-                else if (window.innerWidth < 992) calendar.changeView('timeGridWeek');
-                // Recalculate size after resize
-                setTimeout(() => window.calendar.updateSize(), 200);
-            },
-
-            dateClick: function(info) {
-                calendar.changeView('timeGridDay', info.dateStr);
             }
         });
 
         calendar.render();
-
-        // Handle "View Full Details" button
-        document.getElementById('viewDetailsBtn').addEventListener('click', function() {
-            var interviewId = this.getAttribute('data-interview-id');
-            if (interviewId) window.location.href = '@Url.Action("Details", "Interview")/' + interviewId;
-        });
-
-        // Reset highlights when modal closes
-        document.getElementById('interviewModal').addEventListener('hidden.bs.modal', function () {
-            document.querySelectorAll('.fc-event').forEach(el => el.style.border = '');
-        });
-
-        // **Function to update calendar after sidebar toggle**
-        window.updateCalendarAfterSidebar = function() {
-            if (window.calendar) {
-                setTimeout(() => window.calendar.updateSize(), 250);
-            }
-        };
     });
 </script>
 }
+
 
 
 

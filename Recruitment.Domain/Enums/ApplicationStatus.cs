@@ -9,7 +9,7 @@
         InterviewOnHold,          // Interview postponed / cancelled temporarily
         AcceptedInterview,
         AcceptedHRInterview,
-        AcceptedTechnicalInterview,
+        AcceptedTechInterview,
 
         Pending, // Accepted but waiting for internal reason
 

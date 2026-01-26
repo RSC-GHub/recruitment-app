@@ -1,0 +1,41 @@
+﻿@model Recruitment.Web.Models.ErrorViewModel
+
+@{
+    ViewData["Title"] = "Error";
+}
+
+
+<div class="modal fade" id="globalErrorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>@Model.Message</p>
+                @if (!string.IsNullOrEmpty(Model.Details))
+                {
+                    <small class="text-muted">@Model.Details</small>
+                }
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeBtn">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var errorModal = document.getElementById("globalErrorModal");
+        if (errorModal) {
+            var modal = new bootstrap.Modal(errorModal);
+            modal.show();
+        }
+
+        document.getElementById("closeBtn").addEventListener("click", function () {
+            window.history.back();
+        });
+    });
+</script>

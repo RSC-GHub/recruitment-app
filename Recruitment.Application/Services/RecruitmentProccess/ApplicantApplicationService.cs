@@ -23,8 +23,8 @@ namespace Recruitment.Application.Services.RecruitmentProccess
         private readonly UserManager<User> _userManager;
 
 
-        public ApplicantApplicationService(IUnitOfWork unitOfWork, 
-            IHttpContextAccessor httpContextAccessor, 
+        public ApplicantApplicationService(IUnitOfWork unitOfWork,
+            IHttpContextAccessor httpContextAccessor,
             UserManager<User> userManager, IDbConnection connection)
         {
             _unitOfWork = unitOfWork;
@@ -97,8 +97,8 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     throw new InvalidOperationException("Expected start date must be provided when offer is accepted.");
 
                 application.ExpectedFirstDate = dto.ExpectedFirstDate.Value;
-                application.ActualFirstDate = null; 
-                application.RejectionReasons.Clear(); 
+                application.ActualFirstDate = null;
+                application.RejectionReasons.Clear();
             }
             else if (dto.ApplicationStatus == ApplicationStatus.SignedContract)
             {
@@ -106,8 +106,8 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     throw new InvalidOperationException("Actual start date must be provided when application is signed.");
 
                 application.ActualFirstDate = dto.ActualFirstDate.Value;
-                application.ExpectedFirstDate = null; 
-                application.RejectionReasons.Clear(); 
+                application.ExpectedFirstDate = null;
+                application.RejectionReasons.Clear();
             }
             else if (dto.ApplicationStatus == ApplicationStatus.Rejected)
             {
@@ -127,6 +127,32 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                     }
                 }
             }
+            else if (dto.ApplicationStatus == ApplicationStatus.Hired)
+            {
+                if (application.ApplicationStatus != ApplicationStatus.Hired)
+                {
+                    if (application.Vacancy == null)
+                        throw new InvalidOperationException("Vacancy not found.");
+
+                    if (application.Vacancy.PositionCount <= 0)
+                        throw new InvalidOperationException("No available positions for this vacancy.");
+
+                    application.Vacancy.PositionCount -= 1;
+
+                    // Optional: close vacancy automatically
+                    if (application.Vacancy.PositionCount == 0)
+                    {
+                        application.Vacancy.Status = VacancyStatus.Closed;
+                    }
+                }
+
+                // Clear unrelated data
+                application.ExpectedFirstDate = null;
+                application.ActualFirstDate = null;
+                application.RejectionReasons.Clear();
+            }
+
+
 
             application.ApplicationStatus = dto.ApplicationStatus;
             application.ReviewedBy = userId.Value;
@@ -249,7 +275,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ApplicantName = a.Applicant?.FullName ?? "",
                 ApplicantEmail = a.Applicant?.Email ?? "",
                 PhoneNumber = a.Applicant?.PhoneNumber ?? "",
-                
+
                 ExpectedFirstDate = a.ExpectedFirstDate,
                 ActualFirstDate = a.ActualFirstDate,
 
@@ -521,7 +547,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             };
 
             await _unitOfWork.ApplicationRepository.AddAsync(application);
-            await _unitOfWork.CompleteAsync(); 
+            await _unitOfWork.CompleteAsync();
 
             return application;
         }

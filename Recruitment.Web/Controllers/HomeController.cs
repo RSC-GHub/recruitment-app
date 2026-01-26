@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Recruitment.Application.Interfaces.Services.Audit;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
 using Recruitment.Web.Models;
 using Recruitment.Web.ViewModels.Dashboard;
-using System.Diagnostics;
 
 namespace Recruitment.Web.Controllers
 {
@@ -57,7 +55,10 @@ namespace Recruitment.Web.Controllers
                     await _interviewService.GetPendingInterviewResultsAlertAsync(),
 
 
-                CalendarInterviews = calendarInterviews
+                CalendarInterviews = calendarInterviews,
+
+                VacanciesPositionsChart =
+                    await _vacancyService.GetVacanciesPositionsChartAsync()
 
             };
 
@@ -70,20 +71,19 @@ namespace Recruitment.Web.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult ErrorModal()
         {
-            var exception = HttpContext.Items["Exception"] as Exception;
-
             var model = new ErrorViewModel
             {
-                Message = "Something went wrong. Please contact support.",
-                Details = exception?.Message,
-                TraceId = HttpContext.TraceIdentifier
+                Message = TempData["ErrorMessage"]?.ToString(),
+                Details = TempData["ErrorDetails"]?.ToString(),
+                TraceId = TempData["TraceId"]?.ToString()
             };
 
             return View(model);
         }
+
+
     }
 }
 //var recentActivities = await _auditService.GetRecentActivitiesAsync(5);

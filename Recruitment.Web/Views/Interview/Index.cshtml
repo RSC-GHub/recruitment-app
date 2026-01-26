@@ -29,11 +29,11 @@
             <div class="col-md-3">
                 <div class="form-field">
                     <label class="form-label" for="search">Search</label>
-                    <input type="text" 
+                    <input type="text"
                            id="search"
-                           name="search" 
+                           name="search"
                            value="@Model.Search"
-                           class="form-input" 
+                           class="form-input"
                            placeholder="Applicant, Vacancy, Interviewer..." />
                 </div>
             </div>
@@ -97,10 +97,10 @@
             <div class="col-md-2">
                 <div class="form-field">
                     <label class="form-label" for="fromDate">From Date</label>
-                    <input type="date" 
+                    <input type="date"
                            id="fromDate"
-                           name="fromDate" 
-                           value="@Model.FromDate?.ToString("yyyy-MM-dd")" 
+                           name="fromDate"
+                           value="@Model.FromDate?.ToString("yyyy-MM-dd")"
                            class="form-input" />
                 </div>
             </div>
@@ -108,10 +108,10 @@
             <div class="col-md-2">
                 <div class="form-field">
                     <label class="form-label" for="toDate">To Date</label>
-                    <input type="date" 
+                    <input type="date"
                            id="toDate"
-                           name="toDate" 
-                           value="@Model.ToDate?.ToString("yyyy-MM-dd")" 
+                           name="toDate"
+                           value="@Model.ToDate?.ToString("yyyy-MM-dd")"
                            class="form-input" />
                 </div>
             </div>
@@ -237,7 +237,7 @@
                                         }
                                     </td>
                                     <td class="text-center">
-                                        <a href="@Url.Action("Details", "Interview", new { id = interview.Id })" 
+                                        <a href="@Url.Action("Details", "Interview", new { id = interview.Id })"
                                            class="btn-component btn-sm btn-outline"
                                            title="View Details">
                                             <i class="bi bi-eye"></i>
@@ -319,19 +319,29 @@
 
 @section Scripts {
     <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "Select Interviewer",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+
+    <script>
         // Show toast notifications
         @if (TempData["SuccessMessage"] != null)
         {
-            <text>
-            showToast('@TempData["SuccessMessage"]', 'success');
-            </text>
+                <text>
+                showToast('@TempData["SuccessMessage"]', 'success');
+                </text>
         }
 
         @if (TempData["ErrorMessage"] != null)
         {
-            <text>
-            showToast('@TempData["ErrorMessage"]', 'error');
-            </text>
+                <text>
+                showToast('@TempData["ErrorMessage"]', 'error');
+                </text>
         }
     </script>
 }

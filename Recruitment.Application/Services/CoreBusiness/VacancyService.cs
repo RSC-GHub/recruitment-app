@@ -1,4 +1,6 @@
-﻿using Recruitment.Application.Common;
+﻿using DocumentFormat.OpenXml.InkML;
+using Microsoft.EntityFrameworkCore;
+using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
@@ -236,6 +238,11 @@ namespace Recruitment.Application.Services.CoreBusiness
                 ShortDescription = TextHelper.TruncateText(TextHelper.CleanText(v.JobDescription ?? ""), shortTextLength),
                 KeyRequirements = TextHelper.TruncateText(TextHelper.CleanText(v.Requirements ?? ""), shortTextLength)
             }).ToList();
+        }
+
+        public async Task<List<VacancyPositionsChartDTO>> GetVacanciesPositionsChartAsync()
+        {
+            return await _unitOfWork.VacancyRepository.GetVacanciesPositionsChartAsync();
         }
     }
 }

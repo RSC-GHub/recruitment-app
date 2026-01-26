@@ -21,5 +21,7 @@ namespace Recruitment.Application.Interfaces.Services.CoreBusiness
         Task<VacancyDetailsDTO?> GetVacancyByIdAsyncForAPI(int id);
         Task<List<VacancyCardDTO>> GetVacancyCardsAsync(int shortTextLength = 200);
         Task<int> CountOpenedVacanciesAsync();
+        Task<List<VacancyPositionsChartDTO>> GetVacanciesPositionsChartAsync();
+    
     }
 }

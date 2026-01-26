@@ -247,6 +247,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             InterviewStatus interviewStatus,
             InterviewType interviewType,
             int durationMinutes,
+            DateTime? scheduledDate,
             string? interviewNote
                 )
         {
@@ -259,6 +260,11 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
             interview.InterviewType = interviewType;
             interview.DurationMinutes = durationMinutes;
             interview.InterViewNote = interviewNote;
+
+            if (scheduledDate.HasValue)
+            {
+                interview.ScheduledDate = scheduledDate.Value;
+            }
 
             if (interviewStatus == InterviewStatus.Cancelled || interviewStatus == InterviewStatus.Postponed)
             {

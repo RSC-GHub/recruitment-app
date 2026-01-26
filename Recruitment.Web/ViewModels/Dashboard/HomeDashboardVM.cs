@@ -1,4 +1,5 @@
 ﻿using Recruitment.Application.DTOs.Audit;
+using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Application.DTOs.RecruitmentProccess.Interview;
 
 namespace Recruitment.Web.ViewModels.Dashboard
@@ -17,6 +18,9 @@ namespace Recruitment.Web.ViewModels.Dashboard
         = new();
 
         public List<InterviewCalendarDto> CalendarInterviews { get; set; } = new();
+
+        public List<VacancyPositionsChartDTO> VacanciesPositionsChart { get; set; }
+        = new();
 
     }
 

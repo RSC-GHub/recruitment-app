@@ -44,6 +44,12 @@ namespace Recruitment.Infrastructure.Repositories
         public void Update(T entity)
             => _dbSet.Update(entity);
 
+        public IQueryable<T> AsQueryable()
+        {
+            return _context.Set<T>().AsQueryable();
+        }
+
+
         public void Delete(T entity)
         {
             _dbSet.Remove(entity);

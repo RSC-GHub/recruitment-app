@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Recruitment.Application.Common;
+using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Enums;
 using Recruitment.Infrastructure.Data;
-using Recruitment.Application.Common;
 
 namespace Recruitment.Infrastructure.Repositories.CoreBusiness
 {
@@ -171,5 +172,20 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<List<VacancyPositionsChartDTO>> GetVacanciesPositionsChartAsync()
+        {
+            return await _context.Vacancies
+                .Include(v => v.Title)
+                .Where(v => v.Status == VacancyStatus.Open)
+                .Select(v => new VacancyPositionsChartDTO
+                {
+                    VacancyTitle = v.Title.Name,
+                    PositionCount = v.PositionCount
+                })
+                .ToListAsync();
+        }
+
+
     }
 }

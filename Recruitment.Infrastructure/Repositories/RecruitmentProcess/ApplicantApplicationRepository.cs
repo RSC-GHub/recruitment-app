@@ -245,7 +245,8 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
         {
             return await _context.Applications
                 .Include(a => a.RejectionReasons)
-                    .ThenInclude(ar => ar.RejectionReason) 
+                    .ThenInclude(ar => ar.RejectionReason)
+                .Include(v => v.Vacancy)
                 .FirstOrDefaultAsync(a => a.Id == applicationId);
         }
 

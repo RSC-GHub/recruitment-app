@@ -20,8 +20,7 @@ namespace Recruitment.Web.ViewModels.CoreBusiness.Vacancy
 
         public string? Responsibilities { get; set; } = string.Empty;
 
-        [Required]
-        public string Benefits { get; set; } = string.Empty;
+        public string? Benefits { get; set; } = string.Empty;
 
         [Required]
         public int PositionCount { get; set; } = 1;
