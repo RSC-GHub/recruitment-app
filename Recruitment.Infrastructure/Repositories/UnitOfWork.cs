@@ -3,15 +3,18 @@ using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Persistence.Audit;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
+using Recruitment.Application.Interfaces.Persistence.Reports;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.RecruitmentProccess;
+using Recruitment.Domain.Entities.Reports;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure.Data;
 using Recruitment.Infrastructure.Repositories.Audit;
 using Recruitment.Infrastructure.Repositories.CoreBusiness;
 using Recruitment.Infrastructure.Repositories.RecruitmentProcess;
+using Recruitment.Infrastructure.Repositories.Reports;
 using Recruitment.Infrastructure.Repositories.UserManagement;
 
 namespace Recruitment.Infrastructure.Repositories
@@ -22,7 +25,7 @@ namespace Recruitment.Infrastructure.Repositories
 
         // Core Business Repositories
 
-        public IGenericRepository<AuditLog> AuditLog { get; set; } 
+        public IGenericRepository<AuditLog> AuditLog { get; set; }
         public IGenericRepository<Country> Countries { get; }
         public IGenericRepository<Location> Locations { get; }
         public IGenericRepository<Project> Projects { get; }
@@ -32,24 +35,29 @@ namespace Recruitment.Infrastructure.Repositories
         public IGenericRepository<Department> Departments { get; }
         public IGenericRepository<DepartmentTitle> DepartmentTitles { get; }
 
-        public IGenericRepository<Permission> Permissions  { get; }
+        public IGenericRepository<Permission> Permissions { get; }
         public IGenericRepository<RolePermission> RolePermissions { get; set; }
         public IGenericRepository<Currency> Currencies { get; }
         public IGenericRepository<RejectionReason> RejectionReasons { get; }
-        public IGenericRepository<Interviewer> Interviewers { get; set; } 
+        public IGenericRepository<Interviewer> Interviewers { get; set; }
+
+        // Report Repository
+        //public IGenericRepository<Report> Reports { get; }
         public IRoleRepository Roles { get; }
         public IVacancyRepository VacancyRepository { get; }
         public IProjectRepository ProjectRepository { get; }
         public ITitleRepository TitleRepository { get; }
         public IApplicantRepository ApplicantRepository { get; }
         public IApplicantApplicationRepository ApplicationRepository { get; }
-        public IInterviewRepository InterviewRepository { get; set; } 
-        public IAuditLogRepository AuditLogRepository { get; set; } 
+        public IInterviewRepository InterviewRepository { get; set; }
+        public IAuditLogRepository AuditLogRepository { get; set; }
         public IRejectionReasonRepository RejectionReasonRepository { get; set; }
         public IDepartmentRepository DepartmentRepository { get; }
 
         public ILocationRepository LocationRepository { get; set; }
         public IInterviewerRepository InterviewerRepository { get; set; }
+        public IReportRepository ReportsRepository { get; set; }
+
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
@@ -83,6 +91,10 @@ namespace Recruitment.Infrastructure.Repositories
             LocationRepository = new LocationRepository(context, httpContextAccessor);
             DepartmentRepository = new DepartmentRepository(context, httpContextAccessor);
             InterviewerRepository = new InterviewerRepository(context, httpContextAccessor);
+
+            //Reports = new GenericRepository<Report>(_context, httpContextAccessor);
+            ReportsRepository = new ReportRepository(context, httpContextAccessor);
+
         }
 
         public async Task<int> CompleteAsync()

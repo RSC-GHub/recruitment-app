@@ -1,10 +1,12 @@
 ﻿using Recruitment.Application.Interfaces.Persistence.Audit;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
+using Recruitment.Application.Interfaces.Persistence.Reports;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.RecruitmentProccess;
+using Recruitment.Domain.Entities.Reports;
 using Recruitment.Domain.Entities.UserManagement;
 
 namespace Recruitment.Application.Interfaces.Persistence
@@ -29,6 +31,10 @@ namespace Recruitment.Application.Interfaces.Persistence
         IGenericRepository<RejectionReason> RejectionReasons { get; }
         IGenericRepository<Interviewer> Interviewers { get; }
 
+        // Report
+        //IGenericRepository<Report> Reports { get; }
+
+        IReportRepository ReportsRepository { get; }
         IProjectRepository ProjectRepository { get; }
         ITitleRepository TitleRepository { get; }
         IVacancyRepository VacancyRepository { get; }

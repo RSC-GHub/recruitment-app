@@ -1,0 +1,63 @@
+﻿@model Recruitment.Web.ViewModels.Report.ReportDetailsViewModel
+
+<div class="card-component">
+    <div class="card-header">
+        <h2 class="card-title">Report Details</h2>
+        <p class="card-description">View report information and parameters</p>
+    </div>
+
+    <div class="card-content">
+        <div class="mb-3">
+            <strong>Name:</strong> @Model.Name
+        </div>
+        <div class="mb-3">
+            <strong>Stored Procedure:</strong> @Model.StoredProcedure
+        </div>
+        <div class="mb-3">
+            <strong>Description:</strong> @Model.Description
+        </div>
+        <div class="mb-3">
+            <strong>Status:</strong>
+            @if (Model.IsActive)
+            {
+                <span class="badge-component badge-success">Active</span>
+            }
+            else
+            {
+                <span class="badge-component badge-muted">Inactive</span>
+            }
+        </div>
+
+        <h5>Parameters</h5>
+        @if (Model.Parameters.Any())
+        {
+            <table class="table-component">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Display Name</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Parameters)
+                    {
+                        <tr>
+                            <td>@p.Name</td>
+                            <td>@p.DisplayName</td>
+                            <td>@p.Type</td>
+                            <td>@(p.IsRequired ? "Yes" : "No")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No parameters defined for this report.</p>
+        }
+
+        <a asp-action="Index" class="btn-component btn-secondary mt-3">Back to Reports</a>
+    </div>
+</div>

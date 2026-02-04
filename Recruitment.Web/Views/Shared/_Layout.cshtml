@@ -49,32 +49,6 @@
                     </li>
                 </ul>
 
-                <!-- User Management Section (Admin Only) -->
-                @if (User.IsInRole("Admin"))
-                {
-                    <div class="sidebar-group-label">User Management</div>
-                    <ul class="sidebar-menu">
-                        <li class="sidebar-menu-item">
-                            <a asp-controller="UserManagement" asp-action="Index" class="sidebar-menu-button">
-                                <i class="bi bi-people-fill"></i>
-                                <span>Users</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-menu-item">
-                            <a asp-controller="Permission" asp-action="Index" class="sidebar-menu-button">
-                                <i class="bi bi-shield-lock-fill"></i>
-                                <span>Permissions</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-menu-item">
-                            <a asp-controller="Role" asp-action="Index" class="sidebar-menu-button">
-                                <i class="bi bi-award-fill"></i>
-                                <span>Roles</span>
-                            </a>
-                        </li>
-                    </ul>
-                }
-
                 <!-- Recruitment Section -->
                 <div class="sidebar-group-label">Recruitment</div>
                 <ul class="sidebar-menu">
@@ -116,6 +90,53 @@
                 </ul>
             </div>
 
+            <!-- Reports Section (Dynamic Active Reports) -->
+            <div class="sidebar-group-label">Reports</div>
+            <div class="sidebar-section">
+                @await Component.InvokeAsync("ActiveReportsSidebar")
+            </div>
+
+
+            <!-- User Management Section (Admin Only) -->
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="sidebar-group-label">User Management</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="UserManagement" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-people-fill"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Permission" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            <span>Permissions</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Role" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-award-fill"></i>
+                            <span>Roles</span>
+                        </a>
+                    </li>
+                </ul>
+
+
+                <!-- Developer Reports Section -->
+                <div class="sidebar-group-label">Developer</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item">
+                        <a asp-controller="Reports" asp-action="Index" class="sidebar-menu-button">
+                            <i class="bi bi-bar-chart-fill"></i>
+                            <span>Reports dev</span>
+                        </a>
+                    </li>
+                </ul>
+            }
+
+            
+
             <!-- Sidebar Footer -->
             <div class="sidebar-footer">
                 <div class="d-flex flex-column gap-2">
@@ -152,6 +173,7 @@
                             </a>
                         </li>
 
+                        @* Parent breadcrumb dynamic *@
                         @if (!string.IsNullOrWhiteSpace(parentController))
                         {
                             <li class="breadcrumb-separator">/</li>
@@ -162,6 +184,7 @@
                             </li>
                         }
 
+                        @* Current controller breadcrumb *@
                         @if (!string.IsNullOrWhiteSpace(controller) && controller != "Home")
                         {
                             <li class="breadcrumb-separator">/</li>
@@ -172,6 +195,16 @@
                             </li>
                         }
 
+                        @* Specific: Reports action breadcrumb *@
+                        @if (controller == "Reports" && action == "Index")
+                        {
+                            <li class="breadcrumb-separator">/</li>
+                            <li class="breadcrumb-item">
+                                <span class="breadcrumb-page">Reports</span>
+                            </li>
+                        }
+
+                        @* Action-specific breadcrumb if not Index *@
                         @if (!string.IsNullOrWhiteSpace(action) && action != "Index")
                         {
                             <li class="breadcrumb-separator">/</li>
@@ -192,6 +225,7 @@
                 </main>
             </div>
         </div>
+
     }
     else
     {
@@ -199,7 +233,7 @@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light"
                  style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-                                box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <div class="container-fluid">
                     <a class="navbar-brand" asp-controller="Home" asp-action="Index">
                         <img src="~/logo/logo.png" style="height:40px" alt="Recruitment Logo" />

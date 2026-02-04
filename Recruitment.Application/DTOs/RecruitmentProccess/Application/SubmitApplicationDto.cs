@@ -18,6 +18,7 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
         public decimal CurrentSalary { get; set; }
         public decimal ExpectedSalary { get; set; }
         public int CurrencyId { get; set; }
+        public string? TargetPosition { get; set; }
 
         // Optional
         public string? Address { get; set; }

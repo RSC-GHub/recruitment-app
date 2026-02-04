@@ -7,6 +7,7 @@ using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.RecruitmentProccess;
+using Recruitment.Domain.Entities.Reports;
 using Recruitment.Domain.Entities.UserManagement;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -45,7 +46,8 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<Interview> Interviews { get; set; }
         public DbSet<RejectionReason> RejectionReasons { get; set; } = null!;
         public DbSet<Interviewer> Interviewers { get; set; }
-         
+        public DbSet<Report> Reports { get; set; }
+
         private string GetCurrentUsername()
         {
             return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";

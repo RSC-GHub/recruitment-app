@@ -524,6 +524,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 CurrentSalary = dto.CurrentSalary,
                 ExpectedSalary = dto.ExpectedSalary,
                 CurrencyId = dto.CurrencyId,
+                TargetPosition = dto.TargetPosition,    
                 Address = dto.Address,
                 Gender = dto.Gender,
                 MilitaryStatus = dto.MilitaryStatus,
