@@ -47,6 +47,7 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<RejectionReason> RejectionReasons { get; set; } = null!;
         public DbSet<Interviewer> Interviewers { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<ReportParameter> ReportParameters { get; set; }
 
         private string GetCurrentUsername()
         {

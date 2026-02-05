@@ -58,7 +58,7 @@ namespace Recruitment.Web
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
-            //app.UseExceptionHandler("/Home/ErrorModal");
+            app.UseExceptionHandler("/Home/ErrorModal");
 
             // Custom Middleware
             app.UseGlobalExceptionHandling();

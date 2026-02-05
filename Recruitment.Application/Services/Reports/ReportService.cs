@@ -69,7 +69,8 @@ namespace Recruitment.Application.Services.Reports
 
         public async Task UpdateAsync(UpdateReportDto dto)
         {
-            var report = await _unitOfWork.ReportsRepository.GetByIdAsync(dto.Id);
+            var report = await _unitOfWork.ReportsRepository
+                .GetByIdWithParametersAsync(dto.Id);
 
             if (report == null)
                 throw new Exception("Report not found");
@@ -79,9 +80,48 @@ namespace Recruitment.Application.Services.Reports
             report.Description = dto.Description;
             report.IsActive = dto.IsActive;
 
-            _unitOfWork.ReportsRepository.Update(report);
+
+            var removedParameters = report.Parameters
+                .Where(p => !dto.Parameters.Any(dp => dp.Id == p.Id))
+                .ToList();
+
+            foreach (var param in removedParameters)
+            {
+                report.Parameters.Remove(param);
+            }
+
+            foreach (var paramDto in dto.Parameters)
+            {
+                if (paramDto.Id > 0)
+                {
+                    // Update existing
+                    var existingParam = report.Parameters
+                        .FirstOrDefault(p => p.Id == paramDto.Id);
+
+                    if (existingParam == null)
+                        continue;
+
+                    existingParam.Name = paramDto.Name;
+                    existingParam.DisplayName = paramDto.DisplayName;
+                    existingParam.Type = paramDto.Type;
+                    existingParam.IsRequired = paramDto.IsRequired;
+                }
+                else
+                {
+                    // Add new
+                    report.Parameters.Add(new ReportParameter
+                    {
+                        Name = paramDto.Name,
+                        DisplayName = paramDto.DisplayName,
+                        Type = paramDto.Type,
+                        IsRequired = paramDto.IsRequired
+                    });
+                }
+            }
+
             await _unitOfWork.CompleteAsync();
         }
+
 
         public async Task DeleteAsync(int id)
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Recruitment.Application.DTOs.Reports;
 using Recruitment.Application.Interfaces.Services.Reports;
+using Recruitment.Domain.Enums.Reports;
 using Recruitment.Web.ViewModels.Report;
 
 namespace Recruitment.Web.Controllers.Report
@@ -24,11 +25,19 @@ namespace Recruitment.Web.Controllers.Report
                 Name = r.Name,
                 StoredProcedure = r.StoredProcedure,
                 Description = r.Description,
-                IsActive = r.IsActive
+                IsActive = r.IsActive,
+                Parameters = r.Parameters.Select(p => new ReportParameterDetailsViewModel
+                {
+                    Name = p.Name,
+                    DisplayName = p.DisplayName,
+                    Type = p.Type,
+                    IsRequired = p.IsRequired
+                }).ToList()
             });
 
             return View(vm);
         }
+
 
         // CREATE
         [HttpPost]
@@ -79,7 +88,15 @@ namespace Recruitment.Web.Controllers.Report
                 Name = vm.Name,
                 StoredProcedure = vm.StoredProcedure,
                 Description = vm.Description,
-                IsActive = vm.IsActive
+                IsActive = vm.IsActive,
+                Parameters = vm.Parameters?.Select(p => new ReportParameterDto
+                {
+                    Id = p.Id, 
+                    Name = p.Name,
+                    DisplayName = p.DisplayName,
+                    Type = Enum.Parse<ReportParameterType>(p.Type, ignoreCase: true),
+                    IsRequired = p.IsRequired
+                }).ToList() ?? new List<ReportParameterDto>()
             };
 
             await _reportService.UpdateAsync(dto);
@@ -87,6 +104,8 @@ namespace Recruitment.Web.Controllers.Report
             TempData["SuccessMessage"] = "Report updated successfully";
             return RedirectToAction(nameof(Index));
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
