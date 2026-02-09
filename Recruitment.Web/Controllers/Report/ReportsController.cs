@@ -1,129 +1,51 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Recruitment.Application.DTOs.Reports;
 using Recruitment.Application.Interfaces.Services.Reports;
+using Recruitment.Application.Services.Reports;
 using Recruitment.Domain.Enums.Reports;
 using Recruitment.Web.ViewModels.Report;
+using System.Text.Json;
 
 namespace Recruitment.Web.Controllers.Report
 {
     public class ReportsController : Controller
     {
         private readonly IReportService _reportService;
+        private readonly IReportExecutionService _reportExecutionService;
 
-        public ReportsController(IReportService reportService)
+        public ReportsController(
+            IReportService reportService,
+            IReportExecutionService reportExecutionService)
         {
             _reportService = reportService;
+            _reportExecutionService = reportExecutionService;
         }
 
         public async Task<IActionResult> Index()
         {
             var reports = await _reportService.GetAllAsync();
-
-            var vm = reports.Select(r => new ReportListViewModel
-            {
-                Id = r.Id,
-                Name = r.Name,
-                StoredProcedure = r.StoredProcedure,
-                Description = r.Description,
-                IsActive = r.IsActive,
-                Parameters = r.Parameters.Select(p => new ReportParameterDetailsViewModel
-                {
-                    Name = p.Name,
-                    DisplayName = p.DisplayName,
-                    Type = p.Type,
-                    IsRequired = p.IsRequired
-                }).ToList()
-            });
-
-            return View(vm);
+            return View(reports);
         }
 
-
-        // CREATE
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateReportViewModel vm)
-        {
-            if (!ModelState.IsValid)
-            {
-                TempData["ErrorMessage"] = "Invalid data";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var dto = new CreateReportDto
-            {
-                Name = vm.Name,
-                StoredProcedure = vm.StoredProcedure,
-                Description = vm.Description,
-                IsActive = vm.IsActive,
-                Parameters = vm.Parameters.Select(p => new CreateReportParameterDto
-                {
-                    Name = p.Name,
-                    DisplayName = p.DisplayName,
-                    Type = p.Type,
-                    IsRequired = p.IsRequired
-                }).ToList()
-            };
-
-            await _reportService.CreateAsync(dto);
-
-            TempData["SuccessMessage"] = "Report created successfully";
-            return RedirectToAction(nameof(Index));
-        }
-
-        // EDIT
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(UpdateReportViewModel vm)
-        {
-            if (!ModelState.IsValid)
-            {
-                TempData["ErrorMessage"] = "Invalid data";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var dto = new UpdateReportDto
-            {
-                Id = vm.Id,
-                Name = vm.Name,
-                StoredProcedure = vm.StoredProcedure,
-                Description = vm.Description,
-                IsActive = vm.IsActive,
-                Parameters = vm.Parameters?.Select(p => new ReportParameterDto
-                {
-                    Id = p.Id, 
-                    Name = p.Name,
-                    DisplayName = p.DisplayName,
-                    Type = Enum.Parse<ReportParameterType>(p.Type, ignoreCase: true),
-                    IsRequired = p.IsRequired
-                }).ToList() ?? new List<ReportParameterDto>()
-            };
-
-            await _reportService.UpdateAsync(dto);
-
-            TempData["SuccessMessage"] = "Report updated successfully";
-            return RedirectToAction(nameof(Index));
-        }
-
-
-
-        [HttpGet]
-        public async Task<IActionResult> Details(int id)
+        // GET: /Reports/Run/5
+        public async Task<IActionResult> Run(int id)
         {
             var report = await _reportService.GetByIdAsync(id);
+            if (report == null) return NotFound();
 
-            if (report == null)
-                return NotFound();
-
-            var vm = new ReportDetailsViewModel
+            if (!report.Parameters.Any())
             {
-                Id = report.Id,
-                Name = report.Name,
-                StoredProcedure = report.StoredProcedure,
-                Description = report.Description,
-                IsActive = report.IsActive,
-                Parameters = report.Parameters.Select(p => new ReportParameterDetailsViewModel
+                var data = await _reportExecutionService.ExecuteAsync(id, new());
+                return View("ReportResult", new ReportResultViewModel { Report = report, Data = data });
+            }
+
+            var vm = new ReportRunViewModel
+            {
+                ReportId = report.Id,
+                ReportName = report.Name,
+                Parameters = report.Parameters.Select(p => new ReportParameterInputViewModel
                 {
+                    Id = p.Id,
                     Name = p.Name,
                     DisplayName = p.DisplayName,
                     Type = p.Type,
@@ -131,19 +53,44 @@ namespace Recruitment.Web.Controllers.Report
                 }).ToList()
             };
 
-            return View(vm);
+            return View("RunReport", vm);
         }
 
-
-        // DELETE
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Run(ReportRunInputModel input)
         {
-            await _reportService.DeleteAsync(id);
+            var parameters = input.Parameters.ToDictionary(
+                p => p.Name,
+                p => (object?)p.Value
+            );
 
-            TempData["SuccessMessage"] = "Report deleted successfully";
-            return RedirectToAction(nameof(Index));
+            var data = await _reportExecutionService.ExecuteAsync(input.ReportId, parameters);
+            var report = await _reportService.GetByIdAsync(input.ReportId);
+
+            var runVm = new ReportRunViewModel
+            {
+                ReportId = report.Id,
+                ReportName = report.Name,
+                Parameters = report.Parameters.Select(p => new ReportParameterInputViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    DisplayName = p.DisplayName,
+                    Type = p.Type,
+                    IsRequired = p.IsRequired
+                }).ToList()
+            };
+
+            ViewBag.ReportResult = new ReportResultViewModel
+            {
+                Report = report,
+                Data = data
+            };
+
+            return View("RunReport", runVm);
         }
+
     }
+
 }

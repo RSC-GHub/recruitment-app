@@ -1,0 +1,159 @@
+﻿@using Recruitment.Domain.Enums.Reports
+@using Recruitment.Web.ViewModels.Report
+@model ReportRunViewModel
+
+
+<h2>@Model.ReportName</h2>
+
+<form asp-action="Run" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ReportId" value="@Model.ReportId" />
+
+    <div class="row g-3">
+        @foreach (var p in Model.Parameters)
+        {
+            var index = Model.Parameters.IndexOf(p);
+            <div class="col-md-6">
+                <label class="form-label">
+                    @p.DisplayName @if(p.IsRequired){
+                    <span class="text-danger">*</span>
+                }
+            </label>
+
+            @switch (p.Type)
+            {
+                case ReportParameterType.String:
+                case ReportParameterType.NString:
+                case ReportParameterType.Char:
+                case ReportParameterType.NChar:
+                case ReportParameterType.Text:
+                case ReportParameterType.NText:
+                    <input type="text"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           @(p.IsRequired ? "required" : "") />
+                    break;
+
+                case ReportParameterType.Int:
+                case ReportParameterType.BigInt:
+                case ReportParameterType.SmallInt:
+                case ReportParameterType.TinyInt:
+                    <input type="number"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           step="1"
+                           @(p.IsRequired ? "required" : "") />
+                    break;
+
+                case ReportParameterType.Decimal:
+                case ReportParameterType.Money:
+                case ReportParameterType.SmallMoney:
+                case ReportParameterType.Float:
+                case ReportParameterType.Real:
+                    <input type="number"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           step="any"
+                           @(p.IsRequired ? "required" : "") />
+                    break;
+
+                case ReportParameterType.Date:
+                    <input type="date"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           @(p.IsRequired ? "required" : "") />
+                    break;
+
+                case ReportParameterType.Time:
+                    <input type="time"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           @(p.IsRequired ? "required" : "") />
+                    break;
+
+                case ReportParameterType.DateTime:
+                case ReportParameterType.DateTime2:
+                case ReportParameterType.SmallDateTime:
+                    <input type="datetime-local"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           @(p.IsRequired ? "required" : "") />
+                    break;
+
+                case ReportParameterType.DateTimeOffset:
+                    <input type="datetime-local"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           @(p.IsRequired ? "required" : "") />
+                    <small class="text-muted d-block">Will be treated as offset-aware datetime</small>
+                    break;
+
+                case ReportParameterType.Boolean:
+                    <div class="form-check">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               name="Parameters[@index].Value"
+                               value="true" />
+                        <input type="hidden" name="Parameters[@index].Value" value="false" />
+                    </div>
+                    break;
+
+                case ReportParameterType.Binary:
+                case ReportParameterType.VarBinary:
+                case ReportParameterType.Image:
+                    <input type="file"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           @(p.IsRequired ? "required" : "") />
+                    break;
+
+                default:
+                    <input type="text"
+                           class="form-control"
+                           name="Parameters[@index].Value"
+                           placeholder="Enter value"
+                           @(p.IsRequired ? "required" : "") />
+                    break;
+            }
+
+            <input type="hidden" name="Parameters[@index].Name" value="@p.Name" />
+        </div>
+                }
+    </div>
+
+    @if (Model.Parameters.Any())
+    {
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Run Report</button>
+        </div>
+    }
+    else
+    {
+        <div class="mt-3 alert alert-info">
+            This report has no parameters and will run immediately.
+        </div>
+    }
+</form>
+
+<div id="reportResultContainer" class="mt-5">
+    @if (ViewBag.ReportResult != null)
+    {
+        <div class="card-component">
+            <div class="card-header">
+                <h4 class="card-title d-flex align-items-center gap-2">
+                    <i class="bi bi-table"></i>
+                    Report Result
+                </h4>
+            </div>
+
+            <div class="card-content">
+                @await Html.PartialAsync(
+                "_PartialReportResult",
+                        (ReportResultViewModel)ViewBag.ReportResult
+                        )
+        </div>
+    </div>
+        }
+</div>
+
+
