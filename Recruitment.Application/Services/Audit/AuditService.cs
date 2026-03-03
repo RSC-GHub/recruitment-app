@@ -115,9 +115,5 @@ namespace Recruitment.Application.Services.Audit
                 .Take(take)
                 .ToList();
         }
-
-
-
-
     }
 }

@@ -10,6 +10,7 @@ using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Entities.Reports;
 using Recruitment.Domain.Entities.UserManagement;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace Recruitment.Infrastructure.Data
@@ -17,6 +18,12 @@ namespace Recruitment.Infrastructure.Data
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        public int CurrentUserId => GetCurrentUserId() ?? 0;
+
+        public bool IsAdmin => _httpContextAccessor
+        .HttpContext?
+        .User?
+        .IsInRole("Admin") ?? false;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
             : base(options)
@@ -48,10 +55,76 @@ namespace Recruitment.Infrastructure.Data
         public DbSet<Interviewer> Interviewers { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<ReportParameter> ReportParameters { get; set; }
+        public DbSet<UserProject> UserProjects { get; set; }
 
         private string GetCurrentUsername()
         {
             return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";
+        }
+        private int? GetCurrentUserId()
+        {
+            var userIdClaim = _httpContextAccessor
+                .HttpContext?
+                .User?
+                .FindFirst(ClaimTypes.NameIdentifier)?
+                .Value;
+
+            return userIdClaim != null ? int.Parse(userIdClaim) : null;
+        }
+
+        private void ApplyProjectFilters(ModelBuilder modelBuilder)
+        {
+            // Projects
+            modelBuilder.Entity<Project>()
+                .HasQueryFilter(p =>
+                    IsAdmin ||
+                    UserProjects.Any(up =>
+                        up.UserId == CurrentUserId &&
+                        up.ProjectId == p.Id));
+
+            // ProjectVacancies
+            modelBuilder.Entity<ProjectVacancy>()
+                .HasQueryFilter(pv =>
+                    IsAdmin ||
+                    UserProjects.Any(up =>
+                        up.UserId == CurrentUserId &&
+                        up.ProjectId == pv.ProjectId));
+
+            // Vacancies
+            modelBuilder.Entity<Vacancy>()
+                .HasQueryFilter(v =>
+                    IsAdmin ||
+                    v.ProjectVacancies!.Any(pv =>
+                        UserProjects.Any(up =>
+                            up.UserId == CurrentUserId &&
+                            up.ProjectId == pv.ProjectId)));
+
+            // Applications
+            modelBuilder.Entity<ApplicantApplication>()
+                .HasQueryFilter(a =>
+                    IsAdmin ||
+                    a.Vacancy.ProjectVacancies!.Any(pv =>
+                        UserProjects.Any(up =>
+                            up.UserId == CurrentUserId &&
+                            up.ProjectId == pv.ProjectId)));
+
+            // Interviews
+            modelBuilder.Entity<Interview>()
+                .HasQueryFilter(i =>
+                    IsAdmin ||
+                    i.Application.Vacancy.ProjectVacancies!.Any(pv =>
+                        UserProjects.Any(up =>
+                            up.UserId == CurrentUserId &&
+                            up.ProjectId == pv.ProjectId)));
+
+            // Locations
+            modelBuilder.Entity<Location>()
+                .HasQueryFilter(l =>
+                    IsAdmin ||
+                    l.Projects!.Any(p =>
+                        UserProjects.Any(up =>
+                            up.UserId == CurrentUserId &&
+                            up.ProjectId == p.Id)));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -70,6 +143,14 @@ namespace Recruitment.Infrastructure.Data
             }
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserProject>()
+                .HasKey(up => new { up.UserId, up.ProjectId });
+
+            modelBuilder.Entity<UserProject>()
+                .HasIndex(up => up.UserId);
+
+            ApplyProjectFilters(modelBuilder);
         }
 
         public override async Task<int> SaveChangesAsync(
@@ -192,7 +273,5 @@ namespace Recruitment.Infrastructure.Data
 
             return result;
         }
-
-
     }
 }

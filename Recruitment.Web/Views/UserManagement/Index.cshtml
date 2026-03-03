@@ -4,6 +4,15 @@
     ViewData["Title"] = "User Management";
 }
 
+<div class="text-end">
+    <a class="btn-component btn-primary"
+       asp-controller="UserManagement"
+       asp-action="Register">
+        <i class="bi bi-plus-circle me-2"></i>
+        Create User
+    </a>
+</div>
+
 <div class="card-component">
     <div class="card-header">
         <div class="flex-between">
@@ -64,12 +73,12 @@
                                            title="View Profile">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <button type="button" 
+                                        @* <button type="button" 
                                                 class="btn-component btn-sm btn-destructive"
                                                 onclick="confirmDelete('@user.Id', '@user.FullName')"
                                                 title="Delete User">
                                             <i class="bi bi-trash"></i>
-                                        </button>
+                                        </button> *@
                                     </div>
                                 </td>
                             </tr>

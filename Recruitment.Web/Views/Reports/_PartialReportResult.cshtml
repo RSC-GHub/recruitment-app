@@ -14,7 +14,7 @@
         <p class="card-description">Report data generated from database</p>
     </div>
     <div>
-        <a href="@Url.Action("ExportReport", "Reports", new { reportId = Model.Report.Id })"
+        <a href="@Url.Action("ExportToExcel", "Reports", new { reportId = Model.Report.Id })"
            class="btn-component btn-outline">
             <i class="bi bi-file-earmark-excel-fill me-2"></i>
             Export Excel
@@ -91,7 +91,6 @@
             box-shadow: inset 15px 0 15px -15px rgba(0,0,0,0.15), inset -15px 0 15px -15px rgba(0,0,0,0.15);
         }
 
-        /* تحسين شكل الـ scrollbar */
         .table-responsive::-webkit-scrollbar {
             height: 12px;
         }

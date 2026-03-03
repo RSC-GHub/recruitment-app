@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Web.Authorization;
+using Recruitment.Web.ViewModels.UserManagement.Account;
 using Recruitment.Web.ViewModels.UserManagement.User;
 
 namespace Recruitment.Web.Controllers
@@ -13,6 +14,7 @@ namespace Recruitment.Web.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IDepartmentService _departmentService;
 
         public UserManagementController(UserManager<User> userManager,
@@ -187,6 +189,72 @@ namespace Recruitment.Web.Controllers
                 TempData["Error"] = string.Join(", ", result.Errors.Select(e => e.Description));
 
             return RedirectToAction("Profile", new { id = userId });
+        }
+
+        // GET: UserManagement/Register
+        [HttpGet]
+        public async Task<IActionResult> Register()
+        {
+            var departments = await _departmentService.GetAllAsync();
+
+            var model = new RegisterViewModel
+            {
+                Departments = departments.Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                })
+            };
+
+            return View(model);
+        }
+
+        // POST: UserManagement/Register
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var departments = await _departmentService.GetAllAsync();
+                model.Departments = departments.Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                });
+                return View(model);
+            }
+
+            var user = new User
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                DepartmentId = model.DepartmentId,
+                FullName = model.FullName,
+                IsActive = true
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                if (await _roleManager.RoleExistsAsync("User"))
+                    await _userManager.AddToRoleAsync(user, "User");
+
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Index", "Home");
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            var allDepartments = await _departmentService.GetAllAsync();
+            model.Departments = allDepartments.Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = d.Name
+            });
+
+            return View(model);
         }
     }
 }
