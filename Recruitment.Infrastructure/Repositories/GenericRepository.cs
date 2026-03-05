@@ -49,6 +49,10 @@ namespace Recruitment.Infrastructure.Repositories
             return _context.Set<T>().AsQueryable();
         }
 
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
 
         public void Delete(T entity)
         {

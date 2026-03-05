@@ -47,6 +47,8 @@ namespace Recruitment.Application.Interfaces.Persistence
 
         ILocationRepository LocationRepository { get; }
         IInterviewerRepository InterviewerRepository { get; }
+
+
         Task<int> CompleteAsync();
     }
 }

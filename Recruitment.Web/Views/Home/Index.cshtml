@@ -124,8 +124,8 @@
         }
 
     /* .animate-in {
-        animation: fadeInUp 0.6s ease-out forwards;
-    } */
+            animation: fadeInUp 0.6s ease-out forwards;
+        } */
 
     .card-header-custom {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -150,7 +150,7 @@
     /* Make the entire calendar fit better */
     #interviewCalendar {
         width: 100%;
-        min-width: 900px; 
+        min-width: 900px;
     }
 
     /* Day names (Sun, Mon, Tue...) */
@@ -342,7 +342,7 @@
 
                 </div>
             </div>
-        </div> 
+        </div>
 
         <!-- Quick Actions -->
         <div class="col-lg-4">
@@ -501,25 +501,25 @@
     <!-- Vacancies Positions Chart -->
     <!-- ===================== -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function () {
 
-            const chartEl = document.getElementById('vacanciesPositionsChart');
-            if (!chartEl) return;
+                const chartEl = document.getElementById('vacanciesPositionsChart');
+                if (!chartEl) return;
 
-                    const labels = [
-            @Html.Raw(string.Join(",",
-                Model.VacanciesPositionsChart.Select(v =>
-                                $"'{v.VacancyTitle.Replace("'", "\\'")}'"
-                )
-                ))
+                        const labels = [
+                @Html.Raw(string.Join(",",
+                    Model.VacanciesPositionsChart.Select(v =>
+                                                    $"'{v.VacancyTitle.Replace("'", "\\'")}'"
+                    )
+                                ))
     ];
 
     const data = [
         @Html.Raw(string.Join(",",
-                        Model.VacanciesPositionsChart.Select(v =>
-                                        v.PositionCount.ToString()
-                        )
-                ))
+                                                Model.VacanciesPositionsChart.Select(v =>
+                                                                                v.PositionCount.ToString()
+                                                )
+                                ))
     ];
 
 
@@ -558,18 +558,18 @@
 
         var events = [
             @Html.Raw(string.Join(",",
-                                Model.CalendarInterviews.Select(interview =>
-                                                "{" +
-                                                                $"title: '{interview.ApplicantName}'," +
-                                                                $"start: '{interview.ScheduledDate:yyyy-MM-ddTHH:mm:ss}'," +
-                                                                "color: '#082F49'," +
-                                                                "extendedProps: {" +
-                                                                                $"vacancyTitle: '{interview.VacancyTitle}'," +
-                                                                                $"interviewId: '{interview.Id}'" +
-                                                                "}" +
-                                                "}"
-                                )
-                        ))
+                                                                Model.CalendarInterviews.Select(interview =>
+                                                                                                "{" +
+                                                                                                                                $"title: '{interview.ApplicantName}'," +
+                                                                                                                                $"start: '{interview.ScheduledDate:yyyy-MM-ddTHH:mm:ss}'," +
+                                                                                                                                "color: '#082F49'," +
+                                                                                                                                "extendedProps: {" +
+                                                                                                                                                                $"vacancyTitle: '{interview.VacancyTitle}'," +
+                                                                                                                                                                $"interviewId: '{interview.Id}'" +
+                                                                                                                                "}" +
+                                                                                                "}"
+                                                                )
+                                                ))
         ];
 
         window.calendar = new FullCalendar.Calendar(calendarEl, {
@@ -645,43 +645,28 @@
         calendar.render();
     });
 </script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const btn = document.getElementById('viewDetailsBtn');
+
+        if (btn) {
+            btn.addEventListener('click', function () {
+
+                const interviewId =
+                    this.getAttribute('data-interview-id');
+
+                if (!interviewId) return;
+
+                window.location.href =
+                    '/Interview/Details/' + interviewId;
+            });
+        }
+
+    });
+
+</script>
 }
 
-
-
-
-@*     <!-- Recently Updated / Audit Logs -->
-            <div class="card activity-card border-0 shadow-sm animate-in" style="animation-delay: 0.6s">
-                <div class="card-body p-4">
-                    <div class="section-title">
-                        <i class="bi bi-clock-history text-primary"></i>
-                        <span>Recent Activity</span>
-                    </div>
-
-                    @if (Model.RecentActivities.Any())
-                    {
-                        <div class="list-group list-group-flush">
-                            @foreach (var activity in Model.RecentActivities)
-                            {
-                                <div class="list-group-item activity-item border-0 d-flex justify-content-between align-items-start px-0 py-3">
-                                    <div class="flex-grow-1">
-                                        <i class="@activity.Icon me-2 text-primary"></i>
-                                        <span>@activity.Message</span>
-                                    </div>
-                                    <small class="text-muted ms-3" style="white-space: nowrap;">
-                                        <i class="bi bi-clock me-1"></i>
-                                        @activity.Date.ToString("dd MMM HH:mm")
-                                    </small>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-5">
-                            <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
-                            <p class="text-muted mt-3 mb-0">No recent activities to display.</p>
-                        </div>
-                    }
-                </div>
-            </div>*@

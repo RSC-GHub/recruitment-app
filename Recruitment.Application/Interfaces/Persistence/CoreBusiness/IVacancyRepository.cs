@@ -31,5 +31,6 @@ namespace Recruitment.Application.Interfaces.Persistence.CoreBusiness
         Task<List<Vacancy>> GetAllOpenedVacanciesCards();
 
         Task<List<VacancyPositionsChartDTO>> GetVacanciesPositionsChartAsync();
+        void RemoveProjectVacancies(IEnumerable<ProjectVacancy> pvs);
     }
 }

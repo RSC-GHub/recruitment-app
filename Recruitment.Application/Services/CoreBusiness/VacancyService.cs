@@ -125,21 +125,27 @@ namespace Recruitment.Application.Services.CoreBusiness
             vacancy.Status = dto.Status;
             vacancy.Deadline = dto.Deadline;
 
-            var existingProjectIds = vacancy.ProjectVacancies?.Select(pv => pv.ProjectId).ToList() ?? new List<int>();
-            var newProjectIds = dto.ProjectIds?.Distinct().ToList() ?? new List<int>();
+            var existingProjectIds = vacancy.ProjectVacancies?.Select(pv => pv.ProjectId).ToList() ?? new();
+            var newProjectIds = dto.ProjectIds?.Distinct().ToList() ?? new();
 
-            var toRemove = vacancy.ProjectVacancies?.Where(pv => !newProjectIds.Contains(pv.ProjectId)).ToList();
-            if (toRemove != null)
-                foreach (var pv in toRemove)
-                    vacancy.ProjectVacancies.Remove(pv);
+            var toRemove = vacancy.ProjectVacancies?
+                .Where(pv => !newProjectIds.Contains(pv.ProjectId))
+                .ToList() ?? new();
+
+            if (toRemove.Any())
+                _unitOfWork.VacancyRepository.RemoveProjectVacancies(toRemove);
 
             var toAdd = newProjectIds.Except(existingProjectIds);
             foreach (var pid in toAdd)
-                vacancy.ProjectVacancies.Add(new ProjectVacancy { ProjectId = pid, VacancyId = vacancy.Id });
+            {
+                vacancy.ProjectVacancies!.Add(new ProjectVacancy
+                {
+                    VacancyId = vacancy.Id,
+                    ProjectId = pid
+                });
+            }
 
-            _unitOfWork.VacancyRepository.Update(vacancy);
             await _unitOfWork.CompleteAsync();
-
             return await GetVacancyByIdAsync(vacancy.Id);
         }
 

@@ -186,6 +186,17 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
                 .ToListAsync();
         }
 
+        public void RemoveProjectVacancies(IEnumerable<ProjectVacancy> pvs)
+        {
+            var ids = pvs.Select(pv => new { pv.VacancyId, pv.ProjectId }).ToList();
 
+            var toDelete = _context.Set<ProjectVacancy>()
+                .IgnoreQueryFilters()
+                .Where(pv => ids.Select(x => x.VacancyId).Contains(pv.VacancyId) &&
+                             ids.Select(x => x.ProjectId).Contains(pv.ProjectId))
+                .ToList();
+
+            _context.Set<ProjectVacancy>().RemoveRange(toDelete);
+        }
     }
 }

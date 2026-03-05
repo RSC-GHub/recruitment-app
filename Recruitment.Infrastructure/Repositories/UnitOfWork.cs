@@ -57,6 +57,7 @@ namespace Recruitment.Infrastructure.Repositories
         public ILocationRepository LocationRepository { get; set; }
         public IInterviewerRepository InterviewerRepository { get; set; }
         public IReportRepository ReportsRepository { get; set; }
+        public ApplicationDbContext Context => _context;
 
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)

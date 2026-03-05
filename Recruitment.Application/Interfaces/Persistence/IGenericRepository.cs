@@ -10,6 +10,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         IQueryable<T> AsQueryable();
 
+        void RemoveRange(IEnumerable<T> entities);
         Task AddAsync(T entity);
         void Update(T entity);
         void Delete(T entity);

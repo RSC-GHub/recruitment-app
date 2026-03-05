@@ -187,6 +187,14 @@ namespace Recruitment.Infrastructure.Data
                 else if (entry.State == EntityState.Deleted &&
                          entry.Entity is ISoftDeletable softDeletable)
                 {
+                    if (entry.Entity is ProjectVacancy 
+                        || entry.Entity is UserProject
+                        || entry.Entity is RolePermission
+                        || entry.Entity is DepartmentTitle)
+                    {
+                        continue;
+                    }
+
                     // Check related collections for any not-deleted entities
                     var navigationProperties = entry.Navigations
                              .Where(n => n.Metadata.IsCollection)
