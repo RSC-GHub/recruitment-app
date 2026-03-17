@@ -55,7 +55,8 @@ namespace Recruitment.Web.Controllers
                     PhoneNumber = a.PhoneNumber,
                     CountryName = a.CountryName,
                     EducationDegree = a.EducationDegree,
-                    GraduationYear = a.GraduationYear
+                    GraduationYear = a.GraduationYear,
+                    Comment = a.Comment
                 })
             };
 
@@ -112,6 +113,7 @@ namespace Recruitment.Web.Controllers
                 PhoneNumber = dto.PhoneNumber!,
                 CountryName = dto.CountryName,
                 CityName = dto.CityName,
+                Comment = dto.Comment,
 
                 Applications = dto.Applications.Select(app => new ApplicationHistoryVM
                 {
@@ -208,7 +210,8 @@ namespace Recruitment.Web.Controllers
                     Major = vm.Major,
                     NoticePeriod = vm.NoticePeriod,
                     ExtraCertificate = vm.ExtraCertificate,
-                    CV = vm.CV
+                    CV = vm.CV,
+                    Comment = vm.Comment
                 };
 
                 await _applicantService.CreateApplicantAsync(dto);
@@ -256,6 +259,7 @@ namespace Recruitment.Web.Controllers
                 NoticePeriod = dto.NoticePeriod,
                 ExtraCertificate = dto.ExtraCertificate,
                 ExistingCVPath = dto.CVFilePath,
+                Comment = dto.Comment
             };
 
             await LoadDropdowns(vm);
@@ -320,7 +324,8 @@ namespace Recruitment.Web.Controllers
                 Major = vm.Major,
                 NoticePeriod = vm.NoticePeriod,
                 ExtraCertificate = vm.ExtraCertificate,
-                CV = vm.CV
+                CV = vm.CV,
+                Comment = vm.Comment,
             };
 
             await _applicantService.UpdateApplicantAsync(dto);
@@ -346,6 +351,7 @@ namespace Recruitment.Web.Controllers
                 CountryName = dto.CountryName,
                 City = dto.City,
                 Nationality = dto.Nationality,
+                Comment = dto.Comment,
 
                 TargetPosition = dto.TargetPosition,
 

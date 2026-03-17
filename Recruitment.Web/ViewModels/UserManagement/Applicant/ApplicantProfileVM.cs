@@ -36,6 +36,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string? ExtraCertificate { get; set; }
 
         public string CVFilePath { get; set; } = null!;
+        public string? Comment { get; set; } = string.Empty;
 
         // Audit
         public string? CreatedBy { get; set; }

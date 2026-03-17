@@ -65,6 +65,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
 
         public IFormFile? CV { get; set; }  
         public string? ExistingCVPath { get; set; }
+        public string? Comment { get; set; } = string.Empty;
 
         public IEnumerable<SelectListItem>? Countries { get; set; }
         public IEnumerable<SelectListItem>? Currencies { get; set; }

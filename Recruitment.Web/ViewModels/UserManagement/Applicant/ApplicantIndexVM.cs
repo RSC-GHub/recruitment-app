@@ -24,5 +24,6 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string CountryName { get; set; } = null!;
         public EducationDegree EducationDegree { get; set; }
         public short? GraduationYear { get; set; }
+        public string? Comment { get; set; } = string.Empty;
     }
 }

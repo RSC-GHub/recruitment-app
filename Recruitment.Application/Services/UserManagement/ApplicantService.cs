@@ -43,7 +43,8 @@ namespace Recruitment.Application.Services.UserManagement
                 GraduationYear = dto.GraduationYear,
                 Major = dto.Major,
                 NoticePeriod = dto.NoticePeriod,
-                ExtraCertificate = dto.ExtraCertificate
+                ExtraCertificate = dto.ExtraCertificate,
+                Comment = dto.Comment
             };
 
             if (dto.CV != null)
@@ -83,6 +84,7 @@ namespace Recruitment.Application.Services.UserManagement
             applicant.Major = dto.Major;
             applicant.NoticePeriod = dto.NoticePeriod;
             applicant.ExtraCertificate = dto.ExtraCertificate;
+            applicant.Comment = dto.Comment;
 
             if (dto.CV != null)
             {
@@ -164,7 +166,8 @@ namespace Recruitment.Application.Services.UserManagement
                 Major = applicant.Major,
                 NoticePeriod = applicant.NoticePeriod,
                 ExtraCertificate = applicant.ExtraCertificate,
-                CVFilePath = applicant.CVFilePath
+                CVFilePath = applicant.CVFilePath,
+                Comment = applicant.Comment
             };
         }
 
@@ -179,6 +182,7 @@ namespace Recruitment.Application.Services.UserManagement
                 FullName = applicant.FullName,
                 Email = applicant.Email,
                 PhoneNumber = applicant.PhoneNumber,
+                Comment = applicant.Comment,
 
                 CountryId = applicant.CountryId,
                 CountryName = applicant.Country.Name,
@@ -240,7 +244,8 @@ namespace Recruitment.Application.Services.UserManagement
                 PhoneNumber = a.PhoneNumber,
                 CountryName = a.Country.Name,
                 EducationDegree = a.EducationDegree,
-                GraduationYear = a.GraduationYear
+                GraduationYear = a.GraduationYear,
+                Comment = a.Comment
             }).ToList();
 
             return new PagedResult<ApplicantListDto>(dtoItems, pagedResult.TotalCount, pagedResult.Page, pagedResult.PageSize);
@@ -267,6 +272,7 @@ namespace Recruitment.Application.Services.UserManagement
                 PhoneNumber = baseApplicant.PhoneNumber,
                 CountryName = baseApplicant.Country?.Name,
                 CityName = baseApplicant.City,
+                Comment = baseApplicant.Comment,
 
                 Applications = allApplications.Select(app => new ApplicationHistoryDto
                 {

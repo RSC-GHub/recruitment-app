@@ -10,6 +10,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string? PhoneNumber { get; set; }
         public string? CountryName { get; set; }
         public string? CityName { get; set; }
+        public string? Comment { get; set; } = string.Empty;
+
         public List<ApplicationHistoryDto> Applications { get; set; } = new();
     }
 

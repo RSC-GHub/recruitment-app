@@ -106,6 +106,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         [StringLength(500, ErrorMessage = "Extra Certificate cannot exceed 500 characters")]
         [Display(Name = "Extra Certificate")]
         public string? ExtraCertificate { get; set; }
+        public string? Comment { get; set; } = string.Empty;
 
         // Dropdowns
         public IEnumerable<SelectListItem>? Countries { get; set; }

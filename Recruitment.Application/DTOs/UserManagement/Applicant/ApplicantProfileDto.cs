@@ -10,6 +10,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string FullName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
+        public string? Comment { get; set; } = string.Empty;
+
 
         // Location
         public int CountryId { get; set; }
