@@ -20,6 +20,9 @@ namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
             builder.Property(v => v.PositionCount)
                   .HasDefaultValue(1);
 
+            builder.Property(v => v.SalaryRangeMin).HasPrecision(18, 2);
+            builder.Property(v => v.SalaryRangeMax).HasPrecision(18, 2);
+
             builder.Property(v => v.EmploymentType)
                    .HasConversion<string>()
                    .HasMaxLength(20);

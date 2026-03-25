@@ -12,8 +12,8 @@ using Recruitment.Infrastructure.Data;
 namespace Recruitment.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251130070932_FixRelationUserWithApplication")]
-    partial class FixRelationUserWithApplication
+    [Migration("20260325141036_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -481,7 +481,6 @@ namespace Recruitment.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Benefits")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
@@ -521,13 +520,14 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Responsibilities")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("SalaryRangeMax")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("SalaryRangeMin")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Status")
@@ -545,6 +545,214 @@ namespace Recruitment.Infrastructure.Migrations
                     b.ToTable("Vacancies", (string)null);
                 });
 
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.ApplicationRejectionReason", b =>
+                {
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RejectionReasonId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ApplicationId", "RejectionReasonId");
+
+                    b.HasIndex("RejectionReasonId");
+
+                    b.ToTable("ApplicationRejectionReason");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Feedback")
+                        .HasMaxLength(2000)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("InterViewNote")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InterviewCategory")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InterviewResult")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<int>("InterviewStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<int>("InterviewType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InterviewerId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ScheduledDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.HasIndex("InterviewerId");
+
+                    b.ToTable("Interviews", (string)null);
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.InterviewRejectionReason", b =>
+                {
+                    b.Property<int>("InterviewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RejectionReasonId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("InterviewId", "RejectionReasonId");
+
+                    b.HasIndex("RejectionReasonId");
+
+                    b.ToTable("InterviewRejectionReason");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interviewer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("Interviewers", (string)null);
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.RejectionReason", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ReasonType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RejectionReasons", (string)null);
+                });
+
             modelBuilder.Entity("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", b =>
                 {
                     b.Property<int>("Id")
@@ -552,6 +760,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ActualFirstDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ApplicantId")
                         .HasColumnType("int");
@@ -566,6 +777,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpectedFirstDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -587,9 +801,6 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Property<int?>("ReviewedBy")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("VacancyId")
                         .HasColumnType("int");
 
@@ -599,11 +810,98 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("ReviewedBy");
 
-                    b.HasIndex("UserId");
-
                     b.HasIndex("VacancyId");
 
                     b.ToTable("Applications", (string)null);
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.Reports.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StoredProcedure")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reports");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.Reports.ReportParameter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("ReportParameters");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Applicant", b =>
@@ -627,6 +925,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
@@ -686,6 +987,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<int>("MaritalStatus")
+                        .HasColumnType("int");
+
                     b.Property<int>("MilitaryStatus")
                         .HasColumnType("int");
 
@@ -708,6 +1012,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("TargetPosition")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -763,6 +1070,437 @@ namespace Recruitment.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Permissions", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 9,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to add applicants to the system",
+                            IsDeleted = false,
+                            PermissionName = "Add new Applicant",
+                            Resource = "Applicant"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to add vacancy to the system",
+                            IsDeleted = false,
+                            PermissionName = "Add new Vacancy",
+                            Resource = "Vacancy"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to Edit on vacancy data",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence vacancy",
+                            Resource = "Vacancy"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Action = "Assign",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to assign a job applicant in order to create application for him/her",
+                            IsDeleted = false,
+                            PermissionName = "Assign applicants to open vacancies",
+                            Resource = "Vacancy"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Action = "ViewSubmission",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to see who applied for this Vacancy",
+                            IsDeleted = false,
+                            PermissionName = "View submission for specific Vacancy",
+                            Resource = "Vacancy"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Action = "Delete",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to delete vacancies",
+                            IsDeleted = false,
+                            PermissionName = "Delete specific Vacancy",
+                            Resource = "Vacancy"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Action = "Assign",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to assign a job applicant in order to create application for him/her",
+                            IsDeleted = false,
+                            PermissionName = "Assign vacancies to applicants",
+                            Resource = "Applicant"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Action = "ViewHistory",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to view specific applicant's history",
+                            IsDeleted = false,
+                            PermissionName = "Show applicant's history",
+                            Resource = "Applicant"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing user to edit applicant's data",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence Applicant's information",
+                            Resource = "Applicant"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Action = "Delete",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to delete applicants",
+                            IsDeleted = false,
+                            PermissionName = "Delete specific applicant",
+                            Resource = "Applicant"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Action = "ReviewApplication",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to make changes to application's status",
+                            IsDeleted = false,
+                            PermissionName = "Take action about specific application",
+                            Resource = "Application"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Action = "RegisterFinalResult",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing user to submit the final result for the interviews",
+                            IsDeleted = false,
+                            PermissionName = "Register interview's final result",
+                            Resource = "Interview"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to modify interview details",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence interview",
+                            Resource = "Interview"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to add project to the system",
+                            IsDeleted = false,
+                            PermissionName = "Add new project",
+                            Resource = "Project"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to change project's name, status, or location",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence Project",
+                            Resource = "Project"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to add new job title to the system",
+                            IsDeleted = false,
+                            PermissionName = "Add new Job title",
+                            Resource = "Title"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to edit title name or department",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence Job title",
+                            Resource = "Title"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to add new location to the system",
+                            IsDeleted = false,
+                            PermissionName = "Add new Location",
+                            Resource = "Location"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to edit location data",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence location",
+                            Resource = "Location"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to add new interviewer",
+                            IsDeleted = false,
+                            PermissionName = "Add new Interviewer",
+                            Resource = "Interviewer"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to edit interviewer data",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence interviewer",
+                            Resource = "Interviewer"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Action = "Delete",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to delete interviewer",
+                            IsDeleted = false,
+                            PermissionName = "Delete specific interviewer",
+                            Resource = "Interviewer"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to add rejection reasons",
+                            IsDeleted = false,
+                            PermissionName = "Add rejection reasons to the system",
+                            Resource = "RejectionReason"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to edit rejection reason",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence rejection reason",
+                            Resource = "RejectionReason"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            Action = "Delete",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to delete rejection reasons",
+                            IsDeleted = false,
+                            PermissionName = "Delete specific rejection reason",
+                            Resource = "RejectionReason"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to add department",
+                            IsDeleted = false,
+                            PermissionName = "Add new departments",
+                            Resource = "Department"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Action = "View",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to see departments",
+                            IsDeleted = false,
+                            PermissionName = "View Department",
+                            Resource = "Department"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Action = "Edit",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing user to edit department name",
+                            IsDeleted = false,
+                            PermissionName = "Make changes to existence department's name",
+                            Resource = "Department"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Action = "Delete",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing user to delete department",
+                            IsDeleted = false,
+                            PermissionName = "Delete specific Department",
+                            Resource = "Department"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            Action = "View",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing user to view location list",
+                            IsDeleted = false,
+                            PermissionName = "View Locations",
+                            Resource = "Location"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            Action = "View",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to view job title list",
+                            IsDeleted = false,
+                            PermissionName = "View titles",
+                            Resource = "Title"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            Action = "View",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to view projects list",
+                            IsDeleted = false,
+                            PermissionName = "View Projects",
+                            Resource = "Project"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            Action = "View",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to view rejection reasons list",
+                            IsDeleted = false,
+                            PermissionName = "View Rejection Reasons",
+                            Resource = "RejectionReason"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            Action = "View",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to view interviewer lists",
+                            IsDeleted = false,
+                            PermissionName = "View interviewers list",
+                            Resource = "Interviewer"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            Action = "View",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to manage countries",
+                            IsDeleted = false,
+                            PermissionName = "View and manage Countries module",
+                            Resource = "Country"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            Action = "View",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to manage currency",
+                            IsDeleted = false,
+                            PermissionName = "View and manage Currency module",
+                            Resource = "Currency"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            Action = "Create",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to schedule an interview",
+                            IsDeleted = false,
+                            PermissionName = "Add Interview for specific application in the system",
+                            Resource = "Interview"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            Action = "Delete",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to delete location",
+                            IsDeleted = false,
+                            PermissionName = "Delete Location",
+                            Resource = "Location"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            Action = "Delete",
+                            CreatedBy = "admin@rsc.com.eg",
+                            CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1, 0, DateTimeKind.Unspecified),
+                            Description = "Allowing the user to delete title",
+                            IsDeleted = false,
+                            PermissionName = "Delete specific Title",
+                            Resource = "Title"
+                        });
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Role", b =>
@@ -974,6 +1712,23 @@ namespace Recruitment.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Recruitment.Domain.Entities.UserProject", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "ProjectId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserProjects", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Recruitment.Domain.Entities.UserManagement.Role", null)
@@ -1096,6 +1851,74 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Navigation("Title");
                 });
 
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.ApplicationRejectionReason", b =>
+                {
+                    b.HasOne("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", "Application")
+                        .WithMany("RejectionReasons")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Recruitment.Domain.Entities.RecruitmentProccess.RejectionReason", "RejectionReason")
+                        .WithMany("Applications")
+                        .HasForeignKey("RejectionReasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+
+                    b.Navigation("RejectionReason");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interview", b =>
+                {
+                    b.HasOne("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", "Application")
+                        .WithMany("Interviews")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Recruitment.Domain.Entities.RecruitmentProccess.Interviewer", "Interviewer")
+                        .WithMany("Interviews")
+                        .HasForeignKey("InterviewerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+
+                    b.Navigation("Interviewer");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.InterviewRejectionReason", b =>
+                {
+                    b.HasOne("Recruitment.Domain.Entities.RecruitmentProccess.Interview", "Interview")
+                        .WithMany("RejectionReasons")
+                        .HasForeignKey("InterviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Recruitment.Domain.Entities.RecruitmentProccess.RejectionReason", "RejectionReason")
+                        .WithMany("Interviews")
+                        .HasForeignKey("RejectionReasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interview");
+
+                    b.Navigation("RejectionReason");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interviewer", b =>
+                {
+                    b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Department", "Department")
+                        .WithMany("Interviewers")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", b =>
                 {
                     b.HasOne("Recruitment.Domain.Entities.UserManagement.Applicant", "Applicant")
@@ -1105,13 +1928,9 @@ namespace Recruitment.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Recruitment.Domain.Entities.UserManagement.User", "Reviewer")
-                        .WithMany()
+                        .WithMany("ReviewedApplications")
                         .HasForeignKey("ReviewedBy")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Recruitment.Domain.Entities.UserManagement.User", null)
-                        .WithMany("ReviewedApplications")
-                        .HasForeignKey("UserId");
 
                     b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Vacancy", "Vacancy")
                         .WithMany("Applications")
@@ -1124,6 +1943,17 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Navigation("Reviewer");
 
                     b.Navigation("Vacancy");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.Reports.ReportParameter", b =>
+                {
+                    b.HasOne("Recruitment.Domain.Entities.Reports.Report", "Report")
+                        .WithMany("Parameters")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Applicant", b =>
@@ -1178,6 +2008,21 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Navigation("Department");
                 });
 
+            modelBuilder.Entity("Recruitment.Domain.Entities.UserProject", b =>
+                {
+                    b.HasOne("Recruitment.Domain.Entities.CoreBusiness.Project", "Project")
+                        .WithMany("UserProjects")
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("Recruitment.Domain.Entities.UserManagement.User", "User")
+                        .WithMany("UserProjects")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Country", b =>
                 {
                     b.Navigation("Locations");
@@ -1186,6 +2031,8 @@ namespace Recruitment.Infrastructure.Migrations
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Department", b =>
                 {
                     b.Navigation("DepartmentTitles");
+
+                    b.Navigation("Interviewers");
 
                     b.Navigation("Users");
                 });
@@ -1198,6 +2045,8 @@ namespace Recruitment.Infrastructure.Migrations
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Project", b =>
                 {
                     b.Navigation("ProjectVacancies");
+
+                    b.Navigation("UserProjects");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.CoreBusiness.Title", b =>
@@ -1212,6 +2061,35 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Navigation("Applications");
 
                     b.Navigation("ProjectVacancies");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interview", b =>
+                {
+                    b.Navigation("RejectionReasons");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.Interviewer", b =>
+                {
+                    b.Navigation("Interviews");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.RecruitmentProccess.RejectionReason", b =>
+                {
+                    b.Navigation("Applications");
+
+                    b.Navigation("Interviews");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.Recruitment_Proccess.ApplicantApplication", b =>
+                {
+                    b.Navigation("Interviews");
+
+                    b.Navigation("RejectionReasons");
+                });
+
+            modelBuilder.Entity("Recruitment.Domain.Entities.Reports.Report", b =>
+                {
+                    b.Navigation("Parameters");
                 });
 
             modelBuilder.Entity("Recruitment.Domain.Entities.UserManagement.Applicant", b =>
@@ -1234,6 +2112,8 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Navigation("ReviewedApplications");
 
                     b.Navigation("RolePermissions");
+
+                    b.Navigation("UserProjects");
                 });
 #pragma warning restore 612, 618
         }

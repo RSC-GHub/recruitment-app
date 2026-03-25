@@ -24,6 +24,8 @@ namespace Recruitment.Domain.Entities.UserManagement
         public ICollection<RolePermission>? RolePermissions { get; set; }
 
         public ICollection<ApplicantApplication> ReviewedApplications { get; set; } = new List<ApplicantApplication>();
+        public ICollection<UserProject> UserProjects { get; set; } = new List<UserProject>();
+
 
     }
 }

@@ -25,6 +25,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
                    .WithMany(l => l.Projects)
                    .HasForeignKey(p => p.LocationId)
                    .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

@@ -11,5 +11,7 @@ namespace Recruitment.Domain.Entities.CoreBusiness
         public Location? Location { get; set; }
 
         public ICollection<ProjectVacancy>? ProjectVacancies { get; set; }
+        public ICollection<UserProject>? UserProjects { get; set; } = new List<UserProject>();
+
     }
 }

@@ -10,6 +10,7 @@ using Recruitment.Domain.Entities.RecruitmentProccess;
 using Recruitment.Domain.Entities.Reports;
 using Recruitment.Domain.Entities.UserManagement;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -141,6 +142,7 @@ namespace Recruitment.Infrastructure.Data
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
                 }
             }
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(modelBuilder);
 
