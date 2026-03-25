@@ -15,7 +15,7 @@
         <p class="card-description">Manage applicant profiles and information</p>
     </div>
 
-    @if (PermissionService.HasPermission("Applicant", "Add"))
+    @if (PermissionService.HasPermission("Applicant", "Create"))
     {
         <a asp-action="Create" class="btn-component btn-primary" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
             <i class="bi bi-plus-lg me-2"></i>
