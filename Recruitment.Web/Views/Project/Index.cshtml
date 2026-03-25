@@ -1,5 +1,6 @@
-﻿@model Recruitment.Web.ViewModels.CoreBusiness.Project.ProjectsPagedVM
-
+﻿@using Recruitment.Application.Interfaces.Services.UserManagement
+@model Recruitment.Web.ViewModels.CoreBusiness.Project.ProjectsPagedVM
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Projects";
 }
@@ -13,13 +14,17 @@
         </h2>
         <p class="card-description">Manage projects and assignments</p>
     </div>
-    <button type="button"
-            class="btn-component btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#createModal">
-        <i class="bi bi-plus-lg me-2"></i>
-        Add Project
-    </button>
+    @if (PermissionService.HasPermission("Project", "Create"))
+    {
+        <button type="button"
+                class="btn-component btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#createModal">
+            <i class="bi bi-plus-lg me-2"></i>
+            Add Project
+        </button>
+    }
+
 </div>
 
 <!-- Search & Filter -->
@@ -92,7 +97,10 @@
                     <th>Project Name</th>
                     <th>Status</th>
                     <th>Location</th>
-                    <th class="text-end" style="width:150px;">Actions</th>
+                    @if (PermissionService.HasPermission("Project", "Edit"))
+                    {
+                        <th class="text-end" style="width:150px;">Actions</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -124,15 +132,19 @@
                             </td>
                             <td>@p.LocationName</td>
                             <td class="text-end">
-                                <button class="btn-component btn-sm btn-primary"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editModal"
-                                        data-id="@p.Id"
-                                        data-name="@p.ProjectName"
-                                        data-status="@p.Status"
-                                        data-location-id="@p.LocationId">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
+                                @if (PermissionService.HasPermission("Project", "Edit"))
+                                {
+                                    <button class="btn-component btn-sm btn-primary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
+                                            data-id="@p.Id"
+                                            data-name="@p.ProjectName"
+                                            data-status="@p.Status"
+                                            data-location-id="@p.LocationId">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                }
+
                             </td>
                         </tr>
                     }

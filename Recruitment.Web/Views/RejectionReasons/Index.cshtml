@@ -1,5 +1,6 @@
-﻿@model Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason.ReasonsPagedVM
-
+﻿@using Recruitment.Application.Interfaces.Services.UserManagement
+@model Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason.ReasonsPagedVM
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Rejection Reasons";
 }
@@ -13,13 +14,17 @@
         </h2>
         <p class="card-description">Manage application rejection reasons</p>
     </div>
-    <button type="button"
-            class="btn-component btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#createModal">
-        <i class="bi bi-plus-circle me-2"></i>
-        Add Reason
-    </button>
+    @if (PermissionService.HasPermission("RejectionReason", "Create"))
+    {
+        <button type="button"
+                class="btn-component btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#createModal">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add Reason
+        </button>
+    }
+
 </div>
 
 <!-- Search Card -->
@@ -72,7 +77,11 @@
                             <th style="width:60px;">#</th>
                             <th>Reason</th>
                             <th>Type</th>
-                            <th style="width:150px" class="text-end">Actions</th>
+                            @if (PermissionService.HasPermission("RejectionReason", "Edit") || PermissionService.HasPermission("RejectionReason", "Delete"))
+                            {
+                                <th style="width:150px" class="text-end">Actions</th>
+                            }
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -89,22 +98,29 @@
                                         </span>
                                     </td>
                                     <td class="text-end">
-                                        <button class="btn-component btn-sm btn-primary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editModal"
-                                                data-id="@item.Id"
-                                                data-reason="@item.Reason"
-                                                data-reasontype="@((int)item.ReasonType)">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
+                                        @if (PermissionService.HasPermission("RejectionReason", "Edit"))
+                                        {
+                                            <button class="btn-component btn-sm btn-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editModal"
+                                                    data-id="@item.Id"
+                                                    data-reason="@item.Reason"
+                                                    data-reasontype="@((int)item.ReasonType)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                        }
 
-                                        <button class="btn-component btn-sm btn-destructive"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal"
-                                                data-id="@item.Id"
-                                                data-reason="@item.Reason">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        @if (PermissionService.HasPermission("RejectionReason", "Delete"))
+                                        {
+                                            <button class="btn-component btn-sm btn-destructive"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    data-id="@item.Id"
+                                                    data-reason="@item.Reason">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        }
+
                                     </td>
                                 </tr>
                             }
@@ -249,11 +265,11 @@
 
         @if (TempData["Success"] != null)
         {
-                <text>showToast('@TempData["Success"]','success');</text>
+                            <text>showToast('@TempData["Success"]','success');</text>
         }
         @if (TempData["Error"] != null)
         {
-                <text>showToast('@TempData["Error"]','error');</text>
+                            <text>showToast('@TempData["Error"]','error');</text>
         }
     </script>
 }

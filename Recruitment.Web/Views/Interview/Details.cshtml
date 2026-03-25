@@ -1,6 +1,7 @@
-﻿@using Recruitment.Domain.Enums
+﻿@using Recruitment.Application.Interfaces.Services.UserManagement
+@using Recruitment.Domain.Enums
 @model Recruitment.Web.ViewModels.RecruitmentProcess.Interview.InterviewDetailVM
-
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Interview Details";
 }
@@ -13,24 +14,29 @@
             @if (Model.InterviewStatus != InterviewStatus.Completed
                         && Model.InterviewStatus != InterviewStatus.Cancelled)
             {
-                <button type="button"
-                        class="btn-component btn-outline"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editInterviewModal">
-                    <i class="bi bi-pencil me-2"></i>Edit Interview
-                </button>
-
-                <button type="button"
-                        class="btn-component btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#completeInterviewModal"
-                        data-id="@Model.Id"
-                        data-result="@Model.InterviewResult"
-                        data-feedback="@Model.Feedback"
-                        data-note="@Model.InterViewNote">
-                    <i class="bi bi-check-lg me-2"></i>
-                    Final Result
-                </button>
+                @if (PermissionService.HasPermission("Interview", "Edit"))
+                {
+                    <button type="button"
+                            class="btn-component btn-outline"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editInterviewModal">
+                        <i class="bi bi-pencil me-2"></i>Edit Interview
+                    </button>
+                }
+                @if (PermissionService.HasPermission("Interview", "RegisterFinalResult"))
+                {
+                    <button type="button"
+                            class="btn-component btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#completeInterviewModal"
+                            data-id="@Model.Id"
+                            data-result="@Model.InterviewResult"
+                            data-feedback="@Model.Feedback"
+                            data-note="@Model.InterViewNote">
+                        <i class="bi bi-check-lg me-2"></i>
+                        Final Result
+                    </button>
+                }
             }
 
         </div>

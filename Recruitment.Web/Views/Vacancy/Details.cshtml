@@ -1,5 +1,6 @@
-﻿@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyDetailsVM
-
+﻿@using Recruitment.Application.Interfaces.Services.UserManagement
+@model Recruitment.Web.ViewModels.CoreBusiness.Vacancy.VacancyDetailsVM
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Vacancy Details";
 }
@@ -11,31 +12,41 @@
             <a asp-action="Index" class="btn-component btn-secondary">
                 <i class="bi bi-arrow-left me-1"></i> Back
             </a>
-
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-component btn-primary">
-                <i class="bi bi-pencil me-1"></i> Edit
-            </a>
-
-            <a asp-action="GetSubmissions" asp-route-vacancyId="@Model.Id" class="btn-component btn-outline">
-                <i class="bi bi-file-earmark-text me-1"></i> View Submissions
-            </a>
+            @if (PermissionService.HasPermission("Vacancy", "Edit"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-component btn-primary">
+                    <i class="bi bi-pencil me-1"></i> Edit
+                </a>
+            }
+            @if (PermissionService.HasPermission("Vacancy", "ViewSubmission"))
+            {
+                <a asp-action="GetSubmissions" asp-route-vacancyId="@Model.Id" class="btn-component btn-outline">
+                    <i class="bi bi-file-earmark-text me-1"></i> View Submissions
+                </a>
+            }
 
             @if (Model.Status == "Open")
             {
+                @if (PermissionService.HasPermission("Vacancy", "Assign"))
+                {
+                    <button type="button"
+                            class="btn-component btn-outline"
+                            data-bs-toggle="modal"
+                            data-bs-target="#assignApplicantModal">
+                        <i class="bi bi-person-plus me-1"></i> Assign Applicant
+                    </button>
+                }
+
+            }
+            @if (PermissionService.HasPermission("Vacancy", "Delete"))
+            {
                 <button type="button"
-                        class="btn-component btn-outline"
+                        class="btn-component btn-destructive"
                         data-bs-toggle="modal"
-                        data-bs-target="#assignApplicantModal">
-                    <i class="bi bi-person-plus me-1"></i> Assign Applicant
+                        data-bs-target="#deleteVacancyModal">
+                    <i class="bi bi-trash me-1"></i> Delete
                 </button>
             }
-
-            <button type="button"
-                    class="btn-component btn-destructive"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteVacancyModal">
-                <i class="bi bi-trash me-1"></i> Delete
-            </button>
         </div>
     </div>
 

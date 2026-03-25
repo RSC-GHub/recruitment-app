@@ -1,5 +1,6 @@
+@using Recruitment.Application.Interfaces.Services.UserManagement
 @model Recruitment.Web.ViewModels.CoreBusiness.Location.LocationsPagedVM
-
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Locations";
 }
@@ -13,10 +14,14 @@
         </h2>
         <p class="card-description">Manage location profiles and information</p>
     </div>
-    <button type="button" class="btn-component btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
-        <i class="bi bi-plus-lg me-2"></i>
-        Add Location
-    </button>
+    @if (PermissionService.HasPermission("Location", "Create"))
+    {
+        <button type="button" class="btn-component btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
+            <i class="bi bi-plus-lg me-2"></i>
+            Add Location
+        </button>
+    }
+
 </div>
 
 <!-- Search and Filter Card -->
@@ -74,33 +79,39 @@
     </div>
 </div>
 
-    <div class="card-content">
-        <div class="table-component">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Country</th>
-                        <th style="width: 150px;" class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.Items != null && Model.Items.Any())
+<div class="card-content">
+    <div class="table-component">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Country</th>
+                    @if (PermissionService.HasPermission("Location", "Edit") || PermissionService.HasPermission("Location", "Delete"))
                     {
-                        foreach (var item in Model.Items)
-                        {
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-geo-alt-fill icon-color text-primary"></i>
-                                        <span class="fw-semibold">@item.Name</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge-component badge-secondary">@item.CountryName</span>
-                                </td>
-                                <td class="text-end">
-                                    <div class="d-flex gap-2 justify-content-end">
+                        <th style="width: 150px;" class="text-end">Actions</th>
+                    }
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-geo-alt-fill icon-color text-primary"></i>
+                                    <span class="fw-semibold">@item.Name</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge-component badge-secondary">@item.CountryName</span>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex gap-2 justify-content-end">
+                                    @if (PermissionService.HasPermission("Location", "Edit"))
+                                    {
                                         <button type="button"
                                                 class="btn-component btn-sm btn-primary edit-btn"
                                                 data-bs-toggle="modal"
@@ -111,6 +122,9 @@
                                                 title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </button>
+                                    }
+                                    @if (PermissionService.HasPermission("Location", "Delete"))
+                                    {
                                         <button type="button"
                                                 class="btn-component btn-sm btn-destructive delete-btn"
                                                 data-bs-toggle="modal"
@@ -120,86 +134,88 @@
                                                 title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="3" class="text-center py-5">
-                                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
-                                <span class="text-muted">No locations found</span>
+                                    }
+
+                                </div>
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="text-center py-5">
+                            <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                            <span class="text-muted">No locations found</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (Model.TotalPages > 1)
+{
+    <div class="card-footer">
+        <nav class="pagination-component" aria-label="Pagination">
+            <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
+               asp-action="Index"
+               asp-route-page="@(Model.Page - 1)"
+               asp-route-pageSize="@Model.PageSize"
+               asp-route-search="@Model.Search">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+
+            @{
+                int startPage = Math.Max(1, Model.Page - 2);
+                int endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+            }
+
+            @if (startPage > 1)
+            {
+                <a class="pagination-button" asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.Search">1</a>
+                @if (startPage > 2)
+                {
+                    <span class="pagination-button disabled">...</span>
+                }
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-pageSize="@Model.PageSize"
+                   asp-route-search="@Model.Search">
+                    @i
+                </a>
+            }
+
+            @if (endPage < Model.TotalPages)
+            {
+                @if (endPage < Model.TotalPages - 1)
+                {
+                    <span class="pagination-button disabled">...</span>
+                }
+                <a class="pagination-button" asp-action="Index" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.Search">@Model.TotalPages</a>
+            }
+
+            <a class="pagination-button @(Model.Page == Model.TotalPages ? "disabled" : "")"
+               asp-action="Index"
+               asp-route-page="@(Model.Page + 1)"
+               asp-route-pageSize="@Model.PageSize"
+               asp-route-search="@Model.Search">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </nav>
+
+        <div class="text-center mt-3 text-muted small">
+            Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount results
         </div>
     </div>
-
-    <!-- Pagination -->
-    @if (Model.TotalPages > 1)
-    {
-        <div class="card-footer">
-            <nav class="pagination-component" aria-label="Pagination">
-                <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
-                   asp-action="Index"
-                   asp-route-page="@(Model.Page - 1)"
-                   asp-route-pageSize="@Model.PageSize"
-                   asp-route-search="@Model.Search">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-
-                @{
-                    int startPage = Math.Max(1, Model.Page - 2);
-                    int endPage = Math.Min(Model.TotalPages, Model.Page + 2);
-                }
-
-                @if (startPage > 1)
-                {
-                    <a class="pagination-button" asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.Search">1</a>
-                    @if (startPage > 2)
-                    {
-                        <span class="pagination-button disabled">...</span>
-                    }
-                }
-
-                @for (int i = startPage; i <= endPage; i++)
-                {
-                    <a class="pagination-button @(i == Model.Page ? "active" : "")"
-                       asp-action="Index"
-                       asp-route-page="@i"
-                       asp-route-pageSize="@Model.PageSize"
-                       asp-route-search="@Model.Search">
-                        @i
-                    </a>
-                }
-
-                @if (endPage < Model.TotalPages)
-                {
-                    @if (endPage < Model.TotalPages - 1)
-                    {
-                        <span class="pagination-button disabled">...</span>
-                    }
-                    <a class="pagination-button" asp-action="Index" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.Search">@Model.TotalPages</a>
-                }
-
-                <a class="pagination-button @(Model.Page == Model.TotalPages ? "disabled" : "")"
-                   asp-action="Index"
-                   asp-route-page="@(Model.Page + 1)"
-                   asp-route-pageSize="@Model.PageSize"
-                   asp-route-search="@Model.Search">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            </nav>
-
-            <div class="text-center mt-3 text-muted small">
-                Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount results
-            </div>
-        </div>
-    }
+}
 </div>
 
 <!-- Create Modal -->
@@ -327,11 +343,11 @@
         // Show toast notifications
         @if (TempData["SuccessMessage"] != null)
         {
-                        <text>showToast('@TempData["SuccessMessage"]', 'success');</text>
+                                    <text>showToast('@TempData["SuccessMessage"]', 'success');</text>
         }
         @if (TempData["ErrorMessage"] != null)
         {
-                        <text>showToast('@TempData["ErrorMessage"]', 'error');</text>
+                                    <text>showToast('@TempData["ErrorMessage"]', 'error');</text>
         }
     </script>
 }

@@ -1,5 +1,6 @@
+@using Recruitment.Application.Interfaces.Services.UserManagement
 @model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantIndexVM
-
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Applicants";
 }
@@ -13,10 +14,15 @@
         </h2>
         <p class="card-description">Manage applicant profiles and information</p>
     </div>
-    <a asp-action="Create" class="btn-component btn-primary" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
-        <i class="bi bi-plus-lg me-2"></i>
-        Add Applicant
-    </a>
+
+    @if (PermissionService.HasPermission("Applicant", "Add"))
+    {
+        <a asp-action="Create" class="btn-component btn-primary" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
+            <i class="bi bi-plus-lg me-2"></i>
+            Add Applicant
+        </a>
+    }
+
 </div>
 
 <!-- Search Card -->
@@ -32,11 +38,11 @@
             <div class="col-md-8">
                 <div class="form-field">
                     <label class="form-label" for="search">Search</label>
-                    <input type="text" 
+                    <input type="text"
                            id="search"
-                           name="search" 
-                           value="@Model.Search" 
-                           class="form-input" 
+                           name="search"
+                           value="@Model.Search"
+                           class="form-input"
                            placeholder="Search by name, email, city, nationality, phone, Current Job, Target Position..." />
                 </div>
             </div>
@@ -79,56 +85,56 @@
                             <th style="width: 100px; min-width: 100px;" class="text-end">Actions</th>
                         </tr>
                     </thead>
-                <tbody>
-                    @if (Model.Applicants != null && Model.Applicants.Any())
-                    {
-                        foreach (var a in Model.Applicants)
+                    <tbody>
+                        @if (Model.Applicants != null && Model.Applicants.Any())
+                        {
+                            foreach (var a in Model.Applicants)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-person-circle fs-5 text-primary"></i>
+                                            <span class="fw-semibold">@a.FullName</span>
+                                        </div>
+                                    </td>
+                                    <td>@a.Email</td>
+                                    <td>@a.PhoneNumber</td>
+                                    <td>
+                                        <span class="badge-component badge-secondary">@a.CountryName</span>
+                                    </td>
+                                    <td>@a.EducationDegree</td>
+                                    <td>
+                                        <span class="badge-component badge-outline">@a.GraduationYear</span>
+                                    </td>
+                                    <td>
+                                        <span>@a.Comment</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="@Url.Action("Profile", "Applicant", new { id = a.Id })"
+                                           class="btn-component btn-sm btn-outline"
+                                           title="View Profile">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-person-circle fs-5 text-primary"></i>
-                                        <span class="fw-semibold">@a.FullName</span>
-                                    </div>
-                                </td>
-                                <td>@a.Email</td>
-                                <td>@a.PhoneNumber</td>
-                                <td>
-                                    <span class="badge-component badge-secondary">@a.CountryName</span>
-                                </td>
-                                <td>@a.EducationDegree</td>
-                                <td>
-                                    <span class="badge-component badge-outline">@a.GraduationYear</span>
-                                </td>
-                                <td>
-                                    <span>@a.Comment</span>
-                                </td>
-                                <td class="text-end">
-                                    <a href="@Url.Action("Profile", "Applicant", new { id = a.Id })" 
-                                       class="btn-component btn-sm btn-outline"
-                                       title="View Profile">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
+                                <td colspan="7" class="text-center py-5">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                                    <div class="text-muted">No applicants found</div>
+                                    @if (!string.IsNullOrEmpty(Model.Search))
+                                    {
+                                        <a href="@Url.Action("Index")" class="btn-component btn-outline mt-3">Clear Search</a>
+                                    }
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
-                                <div class="text-muted">No applicants found</div>
-                                @if (!string.IsNullOrEmpty(Model.Search))
-                                {
-                                    <a href="@Url.Action("Index")" class="btn-component btn-outline mt-3">Clear Search</a>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -216,16 +222,16 @@
         // Show toast notifications
         @if (TempData["SuccessMessage"] != null)
         {
-            <text>
-            showToast('@TempData["SuccessMessage"]', 'success');
-            </text>
+                <text>
+                showToast('@TempData["SuccessMessage"]', 'success');
+                </text>
         }
 
         @if (TempData["ErrorMessage"] != null)
         {
-            <text>
-            showToast('@TempData["ErrorMessage"]', 'error');
-            </text>
+                <text>
+                showToast('@TempData["ErrorMessage"]', 'error');
+                </text>
         }
     </script>
 }

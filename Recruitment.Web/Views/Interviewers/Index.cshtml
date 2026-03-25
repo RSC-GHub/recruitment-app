@@ -1,5 +1,6 @@
-﻿@model Recruitment.Web.ViewModels.RecruitmentProcess.Interviewer.InterviewersPagedVM
-
+﻿@using Recruitment.Application.Interfaces.Services.UserManagement
+@model Recruitment.Web.ViewModels.RecruitmentProcess.Interviewer.InterviewersPagedVM
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Interviewers";
 }
@@ -14,13 +15,17 @@
         </h2>
         <p class="card-description">Manage interviewers and their departments</p>
     </div>
-    <button type="button"
-            class="btn-component btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#createModal">
-        <i class="bi bi-plus-circle me-2"></i>
-        Add Interviewer
-    </button>
+    @if (PermissionService.HasPermission("Interviewer", "Create"))
+    {
+        <button type="button"
+                class="btn-component btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#createModal">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add Interviewer
+        </button>
+    }
+
 </div>
 
 <!-- Search Card -->
@@ -75,7 +80,11 @@
                             <th style="width:60px;">#</th>
                             <th>Name</th>
                             <th>Department</th>
-                            <th style="width:150px" class="text-end">Actions</th>
+                            @if (PermissionService.HasPermission("Interviewer", "Edit") || PermissionService.HasPermission("Interviewer", "Delete"))
+                            {
+                                <th style="width:150px" class="text-end">Actions</th>
+                            }
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -89,25 +98,31 @@
                                     <td>@item.DepartmentName</td>
                                     <td class="text-end">
                                         <div class="d-flex gap-2 justify-content-end">
-                                            <button type="button"
-                                                    class="btn-component btn-sm btn-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#editModal"
-                                                    data-id="@item.Id"
-                                                    data-name="@item.Name"
-                                                    data-department-id="@item.DepartmentId">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
+                                            @if (PermissionService.HasPermission("Interviewer", "Edit"))
+                                            {
+                                                <button type="button"
+                                                        class="btn-component btn-sm btn-primary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editModal"
+                                                        data-id="@item.Id"
+                                                        data-name="@item.Name"
+                                                        data-department-id="@item.DepartmentId">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                            }
 
+                                            @if (PermissionService.HasPermission("Interviewer", "Delete"))
+                                            {
+                                                <button type="button"
+                                                        class="btn-component btn-sm btn-destructive"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        data-id="@item.Id"
+                                                        data-name="@item.Name">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            }
 
-                                            <button type="button"
-                                                    class="btn-component btn-sm btn-destructive"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal"
-                                                    data-id="@item.Id"
-                                                    data-name="@item.Name">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -318,11 +333,11 @@
 
             @if (TempData["Success"] != null)
         {
-                        <text>showToast('@TempData["Success"]','success');</text>
+                                    <text>showToast('@TempData["Success"]','success');</text>
         }
         @if (TempData["Error"] != null)
         {
-                        <text>showToast('@TempData["Error"]','error');</text>
+                                    <text>showToast('@TempData["Error"]','error');</text>
         }
 
     </script>

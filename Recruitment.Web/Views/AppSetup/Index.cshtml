@@ -1,3 +1,6 @@
+@using Recruitment.Application.Interfaces.Services.UserManagement
+@inject IPermissionService PermissionService
+
 @{
     ViewData["Title"] = "Setup";
 }
@@ -13,110 +16,133 @@
 
     <div class="row g-4">
 
-        <!-- Country -->
-        <div class="col-md-4">
-            <a asp-controller="Country" asp-action="Index" class="text-decoration-none">
-                <div class="card-component setup-card">
-                    <div class="card-content text-center">
-                        <i class="bi bi-globe2 setup-color fs-1 text-primary mb-3 d-block"></i>
-                        <h5 class="card-title setup-color">Country</h5>
-                        <p class="card-description">Manage countries and regions</p>
+        @if (PermissionService.HasPermission("Country", "View"))
+        {
+            <!-- Country -->
+            <div class="col-md-4">
+                <a asp-controller="Country" asp-action="Index" class="text-decoration-none">
+                    <div class="card-component setup-card">
+                        <div class="card-content text-center">
+                            <i class="bi bi-globe2 setup-color fs-1 text-primary mb-3 d-block"></i>
+                            <h5 class="card-title setup-color">Country</h5>
+                            <p class="card-description">Manage countries and regions</p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
-        <!-- Location -->
-        <div class="col-md-4">
-            <a asp-controller="Location" asp-action="Index" class="text-decoration-none">
-                <div class="card-component setup-card">
-                    <div class="card-content text-center">
-                        <i class="bi bi-geo-alt-fill fs-1 setup-color text-primary mb-3 d-block"></i>
-                        <h5 class="card-title setup-color">Location</h5>
-                        <p class="card-description">Manage office locations</p>
+        @if (PermissionService.HasPermission("Location", "View"))
+        {
+            <!-- Location -->
+            <div class="col-md-4">
+                <a asp-controller="Location" asp-action="Index" class="text-decoration-none">
+                    <div class="card-component setup-card">
+                        <div class="card-content text-center">
+                            <i class="bi bi-geo-alt-fill fs-1 setup-color text-primary mb-3 d-block"></i>
+                            <h5 class="card-title setup-color">Location</h5>
+                            <p class="card-description">Manage office locations</p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
-        <!-- Department -->
-        <div class="col-md-4">
-            <a asp-controller="Department" asp-action="Index" class="text-decoration-none">
-                <div class="card-component setup-card">
-                    <div class="card-content text-center">
-                        <i class="bi bi-building fs-1 setup-color text-primary mb-3 d-block"></i>
-                        <h5 class="card-title setup-color">Department</h5>
-                        <p class="card-description">Manage departments</p>
+        @if (PermissionService.HasPermission("Department", "View"))
+        {
+            <!-- Department -->
+            <div class="col-md-4">
+                <a asp-controller="Department" asp-action="Index" class="text-decoration-none">
+                    <div class="card-component setup-card">
+                        <div class="card-content text-center">
+                            <i class="bi bi-building fs-1 setup-color text-primary mb-3 d-block"></i>
+                            <h5 class="card-title setup-color">Department</h5>
+                            <p class="card-description">Manage departments</p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
-        <!-- Title -->
-        <div class="col-md-4">
-            <a asp-controller="Title" asp-action="Index" class="text-decoration-none">
-                <div class="card-component setup-card">
-                    <div class="card-content text-center">
-                        <i class="bi bi-card-heading fs-1 setup-color text-primary mb-3 d-block"></i>
-                        <h5 class="card-title setup-color">Job Titles</h5>
-                        <p class="card-description">Manage job titles and positions</p>
+        @if (PermissionService.HasPermission("Title", "View"))
+        {
+            <!-- Title -->
+            <div class="col-md-4">
+                <a asp-controller="Title" asp-action="Index" class="text-decoration-none">
+                    <div class="card-component setup-card">
+                        <div class="card-content text-center">
+                            <i class="bi bi-card-heading fs-1 setup-color text-primary mb-3 d-block"></i>
+                            <h5 class="card-title setup-color">Job Titles</h5>
+                            <p class="card-description">Manage job titles and positions</p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
-        <!-- Project -->
-        <div class="col-md-4">
-            <a asp-controller="Project" asp-action="Index" class="text-decoration-none">
-                <div class="card-component setup-card">
-                    <div class="card-content text-center">
-                        <i class="bi bi-folder-fill fs-1 setup-color text-primary mb-3 d-block"></i>
-                        <h5 class="card-title setup-color">Projects</h5>
-                        <p class="card-description">Manage projects and assignments</p>
+        @if (PermissionService.HasPermission("Project", "View"))
+        {
+            <!-- Project -->
+            <div class="col-md-4">
+                <a asp-controller="Project" asp-action="Index" class="text-decoration-none">
+                    <div class="card-component setup-card">
+                        <div class="card-content text-center">
+                            <i class="bi bi-folder-fill fs-1 setup-color text-primary mb-3 d-block"></i>
+                            <h5 class="card-title setup-color">Projects</h5>
+                            <p class="card-description">Manage projects and assignments</p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
-        <!-- Currency -->
-        <div class="col-md-4">
-            <a asp-controller="Currency" asp-action="Index" class="text-decoration-none">
-                <div class="card-component setup-card">
-                    <div class="card-content text-center">
-                        <i class="bi bi-cash-coin fs-1 setup-color text-primary mb-3 d-block"></i>
-                        <h5 class="card-title setup-color">Currency</h5>
-                        <p class="card-description">Manage currencies and exchange rates</p>
+        @if (PermissionService.HasPermission("Currency", "View"))
+        {
+            <!-- Currency -->
+            <div class="col-md-4">
+                <a asp-controller="Currency" asp-action="Index" class="text-decoration-none">
+                    <div class="card-component setup-card">
+                        <div class="card-content text-center">
+                            <i class="bi bi-cash-coin fs-1 setup-color text-primary mb-3 d-block"></i>
+                            <h5 class="card-title setup-color">Currency</h5>
+                            <p class="card-description">Manage currencies and exchange rates</p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
-        <!-- Rejection Reasons -->
-        <div class="col-md-4">
-            <a asp-controller="RejectionReasons" asp-action="Index" class="text-decoration-none">
-                <div class="card-component setup-card">
-                    <div class="card-content text-center">
-                        <i class="bi bi-x-octagon-fill fs-1 setup-color text-primary mb-3 d-block"></i>
-                        <h5 class="card-title setup-color">Rejection Reasons</h5>
-                        <p class="card-description">Manage application rejection reasons</p>
+        @if (PermissionService.HasPermission("RejectionReason", "View"))
+        {
+            <!-- Rejection Reasons -->
+            <div class="col-md-4">
+                <a asp-controller="RejectionReasons" asp-action="Index" class="text-decoration-none">
+                    <div class="card-component setup-card">
+                        <div class="card-content text-center">
+                            <i class="bi bi-x-octagon-fill fs-1 setup-color text-primary mb-3 d-block"></i>
+                            <h5 class="card-title setup-color">Rejection Reasons</h5>
+                            <p class="card-description">Manage application rejection reasons</p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        }
 
-        <!-- Interviewers -->
-        <div class="col-md-4">
-            <a asp-controller="Interviewers" asp-action="Index" class="text-decoration-none">
-                <div class="card-component setup-card">
-                    <div class="card-content text-center">
-                        <i class="bi bi-people-fill fs-1 setup-color text-primary mb-3 d-block"></i>
-                        <h5 class="card-title setup-color">Interviewers</h5>
-                        <p class="card-description">Manage interviewers and their departments</p>
+        @if (PermissionService.HasPermission("Interviewer", "View"))
+        {
+            <!-- Interviewers -->
+            <div class="col-md-4">
+                <a asp-controller="Interviewers" asp-action="Index" class="text-decoration-none">
+                    <div class="card-component setup-card">
+                        <div class="card-content text-center">
+                            <i class="bi bi-people-fill fs-1 setup-color text-primary mb-3 d-block"></i>
+                            <h5 class="card-title setup-color">Interviewers</h5>
+                            <p class="card-description">Manage interviewers and their departments</p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
-
+                </a>
+            </div>
+        }
     </div>
 </div>
 

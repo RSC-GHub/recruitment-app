@@ -1,5 +1,6 @@
+@using Recruitment.Application.Interfaces.Services.UserManagement
 @model Recruitment.Web.ViewModels.CoreBusiness.Title.TitlesPagedVM
-
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Titles";
 }
@@ -13,10 +14,14 @@
         </h2>
         <p class="card-description">Manage job titles and positions</p>
     </div>
-    <button type="button" class="btn-component btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
-        <i class="bi bi-plus-lg me-2"></i>
-        Add Title
-    </button>
+    @if (PermissionService.HasPermission("Title", "Create"))
+    {
+        <button type="button" class="btn-component btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
+            <i class="bi bi-plus-lg me-2"></i>
+            Add Title
+        </button>
+    }
+
 </div>
 
 <!-- Search & Filter Card -->
@@ -81,7 +86,11 @@
                     <th style="width:80px">#</th>
                     <th>Title Name</th>
                     <th>Departments</th>
-                    <th style="width:150px;" class="text-end">Actions</th>
+                    @if (PermissionService.HasPermission("Title", "Edit") || PermissionService.HasPermission("Title", "Delete"))
+                    {
+                        <th style="width:150px;" class="text-end">Actions</th>
+                    }
+                    
                 </tr>
             </thead>
             <tbody>
@@ -112,25 +121,32 @@
                             </td>
                             <td class="text-end">
                                 <div class="d-flex gap-2 justify-content-end">
-                                    <button type="button"
-                                            class="btn-component btn-sm btn-primary edit-btn"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-                                            data-id="@item.Id"
-                                            data-name="@item.Name"
-                                            data-departments="@string.Join(",", item.Departments.Select(d => d.Id))"
-                                            title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    @* <button type="button"
-                                            class="btn-component btn-sm btn-destructive delete-btn"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@item.Id"
-                                            data-name="@item.Name"
-                                            title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </button> *@
+                                    @if (PermissionService.HasPermission("Title", "Edit"))
+                                    {
+                                        <button type="button"
+                                                class="btn-component btn-sm btn-primary edit-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="@item.Id"
+                                                data-name="@item.Name"
+                                                data-departments="@string.Join(",", item.Departments.Select(d => d.Id))"
+                                                title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    }
+                                    @if (PermissionService.HasPermission("Title", "Delete"))
+                                    {
+                                        <button type="button"
+                                                class="btn-component btn-sm btn-destructive delete-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-id="@item.Id"
+                                                data-name="@item.Name"
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    }
+
                                 </div>
                             </td>
                         </tr>
@@ -356,11 +372,11 @@
         // Toast notifications
         @if (TempData["SuccessMessage"] != null)
         {
-                <text>showToast('@Html.Raw(TempData["SuccessMessage"])', 'success');</text>
+                            <text>showToast('@Html.Raw(TempData["SuccessMessage"])', 'success');</text>
         }
         @if (TempData["ErrorMessage"] != null)
         {
-                <text>showToast('@Html.Raw(TempData["ErrorMessage"])', 'error');</text>
+                            <text>showToast('@Html.Raw(TempData["ErrorMessage"])', 'error');</text>
         }
     </script>
 }

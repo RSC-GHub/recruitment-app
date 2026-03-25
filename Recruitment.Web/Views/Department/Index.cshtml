@@ -1,4 +1,6 @@
+@using Recruitment.Application.Interfaces.Services.UserManagement
 @model Recruitment.Web.ViewModels.CoreBusiness.Department.DepartmentsPagedVM
+@inject IPermissionService PermissionService
 
 @{
     ViewData["Title"] = "Departments";
@@ -13,13 +15,17 @@
         </h2>
         <p class="card-description">Manage organizational departments</p>
     </div>
-    <button type="button"
-            class="btn-component btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#createModal">
-        <i class="bi bi-plus-lg me-2"></i>
-        Add Department
-    </button>
+    @if (PermissionService.HasPermission("Department", "Create"))
+    {
+        <button type="button"
+                class="btn-component btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#createModal">
+            <i class="bi bi-plus-lg me-2"></i>
+            Add Department
+        </button>
+    }
+
 </div>
 
 <!-- Search & Filter -->
@@ -94,21 +100,28 @@
 
                             <td class="text-end">
                                 <div class="d-flex gap-2 justify-content-end">
-                                    <button class="btn-component btn-sm btn-primary"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-                                            data-id="@item.Id"
-                                            data-name="@item.Name">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
+                                    @if (PermissionService.HasPermission("Department", "Edit"))
+                                    {
+                                        <button class="btn-component btn-sm btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal"
+                                                data-id="@item.Id"
+                                                data-name="@item.Name">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    }
 
-                                    <button class="btn-component btn-sm btn-destructive"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal"
-                                            data-id="@item.Id"
-                                            data-name="@item.Name">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    @if (PermissionService.HasPermission("Department", "Delete"))
+                                    {
+                                        <button class="btn-component btn-sm btn-destructive"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                data-id="@item.Id"
+                                                data-name="@item.Name">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    }
+
                                 </div>
                             </td>
                         </tr>
@@ -288,12 +301,12 @@
 
         @if (TempData["SuccessMessage"] != null)
         {
-                <text>showToast('@TempData["SuccessMessage"]', 'success');</text>
+                            <text>showToast('@TempData["SuccessMessage"]', 'success');</text>
         }
 
         @if (TempData["ErrorMessage"] != null)
         {
-                <text>showToast('@TempData["ErrorMessage"]', 'error');</text>
+                            <text>showToast('@TempData["ErrorMessage"]', 'error');</text>
         }
     </script>
 }

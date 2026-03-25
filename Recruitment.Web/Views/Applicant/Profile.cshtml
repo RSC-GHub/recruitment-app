@@ -1,6 +1,7 @@
-﻿@using Recruitment.Domain.Enums
+﻿@using Recruitment.Application.Interfaces.Services.UserManagement
+@using Recruitment.Domain.Enums
 @model Recruitment.Web.ViewModels.UserManagement.Applicant.ApplicantProfileVM
-
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Applicant Profile";
 }
@@ -16,18 +17,34 @@
             <a href="@Url.Action("Index")" class="btn-component btn-secondary">
                 <i class="bi bi-arrow-left me-1"></i>Back to List
             </a>
-            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn-component btn-primary" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
-                <i class="bi bi-pencil me-1"></i>Edit
-            </a>
-            <a href="@Url.Action("History", new { id = Model.Id })" class="btn-component btn-outline">
-                <i class="bi bi-clock-history me-1"></i>History
-            </a>
-            <button type="button" class="btn-component btn-outline" data-bs-toggle="modal" data-bs-target="#assignVacancyModal">
-                <i class="bi bi-person-plus me-1"></i>Assign Vacancy
-            </button>
-            <button type="button" class="btn-component btn-destructive" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="bi bi-trash me-1"></i>Delete
-            </button>
+            @if (PermissionService.HasPermission("Applicant", "Edit"))
+            {
+                <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn-component btn-primary" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </a>
+            }
+
+            @if (PermissionService.HasPermission("Applicant", "ViewHistory"))
+            {
+                <a href="@Url.Action("History", new { id = Model.Id })" class="btn-component btn-outline">
+                    <i class="bi bi-clock-history me-1"></i>History
+                </a>
+            }
+
+            @if (PermissionService.HasPermission("Applicant", "Assign"))
+            {
+                <button type="button" class="btn-component btn-outline" data-bs-toggle="modal" data-bs-target="#assignVacancyModal">
+                    <i class="bi bi-person-plus me-1"></i>Assign Vacancy
+                </button>
+            }
+
+            @if (PermissionService.HasPermission("Applicant", "Delete"))
+            {
+                <button type="button" class="btn-component btn-destructive" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+            }
+
         </div>
     </div>
 

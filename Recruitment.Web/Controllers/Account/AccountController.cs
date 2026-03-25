@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Web.ViewModels.UserManagement.Account;
+using System.Security.Claims;
 
 namespace Recruitment.Web.Controllers.Account
 {
@@ -32,7 +34,6 @@ namespace Recruitment.Web.Controllers.Account
             return View();
         }
 
-        // POST: /Account/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
@@ -41,11 +42,30 @@ namespace Recruitment.Web.Controllers.Account
                 return View(model);
 
             var user = await _userManager.FindByEmailAsync(model.Email);
+
             if (user != null && user.IsActive)
             {
-                var result = await _signInManager.PasswordSignInAsync(user.UserName!, model.Password, model.RememberMe, false);
+                var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
                 if (result.Succeeded)
                 {
+                    // Get roles
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    var claims = new List<Claim>();
+
+                    foreach (var role in roles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role));
+                    }
+
+                    // Get permissions
+                    var permissions = await GetUserPermissions(user.Id);
+
+                    claims.AddRange(permissions.Select(p => new Claim("Permission", p)));
+
+                    await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
+
                     // Update LastLogin
                     user.LastLogin = DateTime.UtcNow;
                     await _userManager.UpdateAsync(user);
@@ -61,7 +81,6 @@ namespace Recruitment.Web.Controllers.Account
             return View(model);
         }
 
-
         // POST: /Account/Logout
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -76,6 +95,28 @@ namespace Recruitment.Web.Controllers.Account
         {
             TempData["ShowAccessDenied"] = true;
             return RedirectToAction("Index", "Home");
+        }
+
+        private async Task<List<string>> GetUserPermissions(int userId)
+        {
+            var roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(userId.ToString()));
+
+            var permissions = new List<string>();
+
+            foreach (var role in roles)
+            {
+                var roleEntity = await _roleManager.FindByNameAsync(role);
+
+                var rolePermissions = _roleManager.Roles
+                    .Where(r => r.Id == roleEntity.Id)
+                    .SelectMany(r => r.RolePermissions)
+                    .Select(rp => rp.Permission.Resource + "." + rp.Permission.Action)
+                    .ToList();
+
+                permissions.AddRange(rolePermissions);
+            }
+
+            return permissions.Distinct().ToList();
         }
     }
 }

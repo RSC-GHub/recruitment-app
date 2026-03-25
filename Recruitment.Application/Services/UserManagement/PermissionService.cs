@@ -1,4 +1,5 @@
-﻿using Recruitment.Application.DTOs.UserManagement.Permission;
+﻿using Microsoft.AspNetCore.Http;
+using Recruitment.Application.DTOs.UserManagement.Permission;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Entities.UserManagement;
@@ -8,10 +9,13 @@ namespace Recruitment.Application.Services.UserManagement
     public class PermissionService : IPermissionService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PermissionService(IUnitOfWork unitOfWork)
+
+        public PermissionService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<PermissionDto>> GetAllAsync()
@@ -80,6 +84,19 @@ namespace Recruitment.Application.Services.UserManagement
 
             _unitOfWork.Permissions.Delete(permission);
             await _unitOfWork.CompleteAsync();
+        }
+
+        public bool HasPermission(string module, string action)
+        {
+            var user = _httpContextAccessor.HttpContext.User;
+
+            if (user.IsInRole("Admin"))
+                return true;
+
+            var permission = $"{module}.{action}";
+
+            return user.Claims
+                .Any(c => c.Type == "Permission" && c.Value == permission);
         }
     }
 }

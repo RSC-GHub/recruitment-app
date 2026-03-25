@@ -144,6 +144,7 @@ namespace Recruitment.Web.Controllers
         // POST: Title/Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Title", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             try
