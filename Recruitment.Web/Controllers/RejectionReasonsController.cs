@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.RejectionReason;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason;
 
 namespace Recruitment.Web.Controllers
@@ -17,6 +18,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: RejectionReasons
+        [HasPermission("RejectionReason", "View")]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string? search = null)
         {
             ViewData["BreadcrumbTitle"] = "Rejection Reasons";
@@ -55,6 +57,7 @@ namespace Recruitment.Web.Controllers
         // POST: RejectionReasons/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("RejectionReason", "Create")]
         public async Task<IActionResult> Create(CreateRejectionReasonVM vm)
         {
             if (!ModelState.IsValid)
@@ -85,6 +88,7 @@ namespace Recruitment.Web.Controllers
         // POST: RejectionReasons/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("RejectionReason", "Edit")]
         public async Task<IActionResult> Edit(int id, CreateRejectionReasonVM vm)
         {
             if (!ModelState.IsValid)
@@ -116,6 +120,7 @@ namespace Recruitment.Web.Controllers
         // POST: RejectionReasons/Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("RejectionReason", "Delete")]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
             try
@@ -138,5 +143,4 @@ namespace Recruitment.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
     }
-
 }

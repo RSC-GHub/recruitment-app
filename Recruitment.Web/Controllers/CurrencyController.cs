@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Recruitment.Application.DTOs.CoreBusiness.Currency;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.CoreBusiness.Currency;
 
 namespace Recruitment.Web.Controllers
 {
+    [HasPermission("Currency", "View")]
     public class CurrencyController : Controller
     {
         private readonly ICurrencyService _currencyService;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Interview;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interview;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interview.Recruitment.Web.ViewModels.RecruitmentProcess.Interview;
 using Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason;
@@ -71,6 +72,7 @@ namespace Recruitment.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Interview", "Create")]
         public async Task<IActionResult> CreateInterview(InterviewCreateVM vm)
         {
             try
@@ -164,6 +166,7 @@ namespace Recruitment.Web.Controllers
 
 
         [HttpPost]
+        [HasPermission("Interview", "Edit")]
         public async Task<IActionResult> UpdateInterview(UpdateInterviewDTO dto)
         {
             if (!ModelState.IsValid)
@@ -178,6 +181,7 @@ namespace Recruitment.Web.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Interview", "RegisterFinalResult")]
         public async Task<IActionResult> UpdateInterviewResult(UpdateInterviewResultDTO dto)
         {
             try
@@ -208,6 +212,5 @@ namespace Recruitment.Web.Controllers
                 return Json(new { success = false, message = $"Error: {ex.Message}" });
             }
         }
-
     }
 }

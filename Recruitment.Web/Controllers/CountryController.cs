@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Recruitment.Application.DTOs.CoreBusiness.Country;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.CoreBusiness.Country;
 
 namespace Recruitment.Web.Controllers
 {
+    [HasPermission("Country", "View")]
     public class CountryController : Controller
     {
         private readonly ICountryService _countryService;

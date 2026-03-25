@@ -4,109 +4,664 @@
     ViewData["Title"] = "Edit Role";
 }
 
-<div class="card-component">
-    <div class="card-header">
-        <h2 class="card-title"><i class="bi bi-pencil-square me-2"></i>Edit Role</h2>
-    </div>
-    <div class="card-content">
-        <form asp-action="Edit" method="post">
-            <input type="hidden" asp-for="Id" />
+<style>
+    :root {
+        --ink: #0d0d0d;
+        --paper: #f7f6f3;
+        --muted: #888;
+        --line: #e0deda;
+        --tag-bg: #efefed;
+        --radius: 6px;
+        --radius-lg: 10px;
+    }
 
-            <div class="mb-3">
-                <label asp-for="RoleName" class="form-field-label"></label><span class="text-danger"> *</span>
-                <input asp-for="RoleName" class="form-field-input" />
-                <span asp-validation-for="RoleName" class="form-field-error"></span>
-            </div>
+    body {
+        /* font-family: 'Syne', sans-serif; */
+        background: var(--paper);
+        color: var(--ink);
+    }
 
-            <div class="mb-3">
-                <label asp-for="Description" class="form-field-label"></label>
-                <input asp-for="Description" class="form-field-input" />
-            </div>
+    /* ── PAGE HEADER ─────────────────────────────── */
+    .page-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding-bottom: 1.25rem;
+        border-bottom: 2px solid var(--ink);
+        margin-bottom: 2rem;
+    }
 
-            <div class="mb-3 form-check">
-                <input asp-for="IsActive" class="form-check-input" />
-                <label asp-for="IsActive" class="form-check-label"></label>
-            </div>
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
 
-            <h5 class="mt-4 mb-3"><i class="bi bi-key me-2"></i>Permissions</h5>
+        .page-header p {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 0.4rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
 
-            @foreach (var group in Model.AllPermissions
-                .OrderBy(p => p.Resource)
-                .GroupBy(p => p.Resource))
-            {
-                var resourceId = group.Key.Replace(" ", "_"); // ID-safe key
-                <div class="card-component mb-3">
-                    <div class="card-header flex-between">
-                        <strong>@group.Key</strong>
-                        <div>
-                            <input type="checkbox" id="selectAll_@resourceId" class="form-check-input me-1"
-                                   onclick="toggleGroup('@resourceId', this)" />
-                            <label for="selectAll_@resourceId" class="form-check-label">Select All</label>
-                        </div>
-                    </div>
-                    <div class="card-content" id="group_@resourceId">
-                        <div class="row">
-                            @foreach (var p in group.OrderBy(p => p.Action))
-                            {
-                                <div class="col-md-3 mb-2">
-                                    <input type="checkbox" name="SelectedPermissionIds" value="@p.Id"
-                                           id="perm_@p.Id" class="perm_@resourceId form-check-input"
-                                           @(p.IsSelected ? "checked" : "") />
-                                    <label for="perm_@p.Id" class="form-check-label">@p.Action</label>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            }
+    /* ── FORM LAYOUT ─────────────────────────────── */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
 
-            <button type="submit" class="button-primary mt-3"><i class="bi bi-check-circle me-1"></i>Update</button>
-            <a asp-action="Index" class="button-secondary mt-3 ms-2"><i class="bi bi-x-circle me-1"></i>Cancel</a>
-        </form>
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .form-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.65rem 0.9rem;
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius);
+        /* font-family: 'Syne', sans-serif; */
+        font-size: 0.9rem;
+        color: var(--ink);
+        background: #fff;
+        outline: none;
+        transition: border-color .2s;
+    }
+
+        .form-input:focus {
+            border-color: var(--ink);
+        }
+
+        .form-input.is-invalid {
+            border-color: #c0392b;
+        }
+
+    .form-error {
+        font-size: 0.75rem;
+        color: #c0392b;
+        margin-top: 0.2rem;
+    }
+
+    /* ── TOGGLE SWITCH ───────────────────────────── */
+    .toggle-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+        padding: 0.85rem 1rem;
+        background: #fff;
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius);
+    }
+
+    .toggle-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--ink);
+        flex: 1;
+    }
+
+    .toggle-sub {
+        font-size: 0.75rem;
+        color: var(--muted);
+        font-weight: 400;
+    }
+
+    .switch {
+        position: relative;
+        width: 40px;
+        height: 22px;
+        flex-shrink: 0;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        inset: 0;
+        background: var(--line);
+        border-radius: 22px;
+        cursor: pointer;
+        transition: background .2s;
+    }
+
+        .slider::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform .2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,.2);
+        }
+
+    input:checked + .slider {
+        background: var(--ink);
+    }
+
+        input:checked + .slider::before {
+            transform: translateX(18px);
+        }
+
+    /* ── SECTION DIVIDER ─────────────────────────── */
+    .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-divider-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        white-space: nowrap;
+    }
+
+    .section-divider-line {
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+    }
+
+    /* ── PERMISSION TREE ─────────────────────────── */
+    .perm-search-wrap {
+        position: relative;
+        margin-bottom: 0.85rem;
+    }
+
+        .perm-search-wrap svg {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+    .perm-search {
+        width: 100%;
+        padding: 0.6rem 0.9rem 0.6rem 2.4rem;
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius);
+        /* font-family: 'DM Mono', monospace; */
+        font-size: 0.82rem;
+        color: var(--ink);
+        background: #fff;
+        outline: none;
+        transition: border-color .2s;
+    }
+
+        .perm-search:focus {
+            border-color: var(--ink);
+        }
+
+    .tree-section {
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius-lg);
+        margin-bottom: 0.6rem;
+        overflow: hidden;
+        background: #fff;
+    }
+
+        .tree-section.hidden {
+            display: none;
+        }
+
+    .tree-toggle {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.85rem 1rem;
+        background: var(--paper);
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        /* font-family: 'Syne', sans-serif; */
+        border-bottom: 1.5px solid transparent;
+        transition: background .15s;
+    }
+
+        .tree-toggle:hover {
+            background: #eeecea;
+        }
+
+        .tree-toggle.open {
+            border-bottom-color: var(--line);
+        }
+
+    .tree-chevron {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        color: var(--muted);
+        transition: transform .2s;
+    }
+
+    .tree-toggle.open .tree-chevron {
+        transform: rotate(90deg);
+    }
+
+    .tree-resource-name {
+        flex: 1;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--ink);
+    }
+
+    .tree-count {
+        /* font-family: 'DM Mono', monospace; */
+        font-size: 0.7rem;
+        color: var(--muted);
+        background: var(--tag-bg);
+        padding: 0.15rem 0.55rem;
+        border-radius: 20px;
+    }
+
+    .tree-select-all {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.78rem;
+        color: var(--muted);
+        cursor: pointer;
+        padding-left: 0.5rem;
+        border-left: 1px solid var(--line);
+    }
+
+        .tree-select-all input {
+            cursor: pointer;
+            accent-color: var(--ink);
+        }
+
+        .tree-select-all label {
+            cursor: pointer;
+        }
+
+    .tree-body {
+        display: none;
+    }
+
+        .tree-body.open {
+            display: block;
+        }
+
+    .tree-leaf {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.6rem 1rem 0.6rem 2.25rem;
+        cursor: pointer;
+        transition: background .12s;
+        border-bottom: 1px solid var(--line);
+    }
+
+        .tree-leaf:last-child {
+            border-bottom: none;
+        }
+
+        .tree-leaf:hover {
+            background: var(--paper);
+        }
+
+        .tree-leaf input[type=checkbox] {
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+            accent-color: var(--ink);
+            flex-shrink: 0;
+        }
+
+        .tree-leaf label {
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--ink);
+            flex: 1;
+        }
+
+    .action-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .dot-create {
+        background: #2ecc71;
+    }
+
+    .dot-edit {
+        background: #f39c12;
+    }
+
+    .dot-delete {
+        background: #e74c3c;
+    }
+
+    .dot-view {
+        background: #3498db;
+    }
+
+    .dot-legend {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.85rem;
+        flex-wrap: wrap;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        /* font-family: 'DM Mono', monospace; */
+        font-size: 0.72rem;
+        color: var(--muted);
+    }
+
+    /* ── FORM ACTIONS ────────────────────────────── */
+    .form-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 2px solid var(--ink);
+    }
+
+    .btn-save {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--ink);
+        color: #fff;
+        border: none;
+        padding: 0.7rem 1.5rem;
+        /* font-family: 'Syne', sans-serif; */
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: opacity .2s;
+    }
+
+        .btn-save:hover {
+            opacity: .75;
+        }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: transparent;
+        color: var(--ink);
+        border: 1.5px solid var(--line);
+        padding: 0.7rem 1.25rem;
+        /* font-family: 'Syne', sans-serif; */
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: border-color .2s, color .2s;
+    }
+
+        .btn-cancel:hover {
+            border-color: var(--ink);
+            color: var(--ink);
+        }
+
+    .selected-count {
+        margin-left: auto;
+        /* font-family: 'DM Mono', monospace; */
+        font-size: 0.78rem;
+        color: var(--muted);
+        align-self: center;
+    }
+
+        .selected-count strong {
+            color: var(--ink);
+        }
+</style>
+
+<!-- ── PAGE HEADER ──────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h1>Edit Role</h1>
+        <p>Update role details and permissions</p>
     </div>
 </div>
 
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <!-- ── BASIC INFO ────────────────────────────── -->
+    <div class="form-grid">
+        <div class="form-field">
+            <label asp-for="RoleName" class="form-label"></label>
+            <input asp-for="RoleName" class="form-input" />
+            <span asp-validation-for="RoleName" class="form-error"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="Description" class="form-label"></label>
+            <input asp-for="Description" class="form-input" />
+        </div>
+    </div>
+
+    <!-- ── IS ACTIVE TOGGLE ──────────────────────── -->
+    <div class="toggle-row">
+        <div class="toggle-label">
+            Active Role
+            <div class="toggle-sub">Inactive roles cannot be assigned to users</div>
+        </div>
+        <label class="switch">
+            <input asp-for="IsActive" type="checkbox" />
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <!-- ── PERMISSIONS ───────────────────────────── -->
+    <div class="section-divider">
+        <span class="section-divider-label">Permissions</span>
+        <span class="section-divider-line"></span>
+    </div>
+
+    <div class="dot-legend">
+        <span class="legend-item"><span class="action-dot dot-view"></span>View</span>
+        <span class="legend-item"><span class="action-dot dot-create"></span>Create</span>
+        <span class="legend-item"><span class="action-dot dot-edit"></span>Edit</span>
+        <span class="legend-item"><span class="action-dot dot-delete"></span>Delete</span>
+    </div>
+
+    <div class="perm-search-wrap">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input type="text" id="permSearch" class="perm-search" placeholder="Filter permissions…" autocomplete="off">
+    </div>
+
+    <div id="permTree">
+        @foreach (var group in Model.AllPermissions.OrderBy(p => p.Resource).GroupBy(p => p.Resource))
+        {
+            var rid = group.Key.Replace(" ", "_");
+            var count = group.Count();
+            var selectedCount = group.Count(p => p.IsSelected);
+
+            <div class="tree-section" data-resource="@group.Key.ToLower()">
+                <button type="button"
+                        class="tree-toggle @(selectedCount > 0 ? "open" : "")"
+                        onclick="toggleTree(this,'tbody_@rid')">
+                    <svg class="tree-chevron" viewBox="0 0 16 16" fill="none"
+                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <polyline points="5,3 11,8 5,13" />
+                    </svg>
+                    <span class="tree-resource-name">@group.Key</span>
+                    <span class="tree-count">@count</span>
+                    <div class="tree-select-all" onclick="event.stopPropagation()">
+                        <input type="checkbox"
+                               id="all_@rid"
+                               onchange="toggleAll('@rid', this)"
+                               @(selectedCount == count ? "checked" : "")>
+                        <label for="all_@rid">All</label>
+                    </div>
+                </button>
+
+                <div class="tree-body @(selectedCount > 0 ? "open" : "")" id="tbody_@rid">
+                    @foreach (var p in group.OrderBy(p => p.Action))
+                    {
+                        var dotCls = p.Action?.ToLower() switch
+                        {
+                            "create" => "dot-create",
+                            "edit" => "dot-edit",
+                            "delete" => "dot-delete",
+                            _ => "dot-view"
+                        };
+
+                        <div class="tree-leaf"
+                             onclick="document.getElementById('perm_@p.Id').click()"
+                             data-action="@p.Action?.ToLower()">
+                            <span class="action-dot @dotCls"></span>
+                            <input type="checkbox"
+                                   name="SelectedPermissionIds"
+                                   value="@p.Id"
+                                   id="perm_@p.Id"
+                                   class="leaf_@rid"
+                                   @(p.IsSelected ? "checked" : "")
+                                   onclick="event.stopPropagation(); syncParent('@rid'); updateCount()">
+                            <label for="perm_@p.Id">@p.PermissionName</label>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- ── FORM ACTIONS ──────────────────────────── -->
+    <div class="form-actions">
+        <button type="submit" class="btn-component btn-primary">
+            <i class="bi bi-check-lg"></i> Update Role
+        </button>
+        <a asp-action="Index" class="btn-cancel">
+            <i class="bi bi-x-lg"></i> Cancel
+        </a>
+        <span class="selected-count">
+            <strong id="selCount">0</strong> permissions selected
+        </span>
+    </div>
+
+</form>
+
 @section Scripts {
     <script>
-        function toggleGroup(resourceId, masterCheckbox) {
-            const checkboxes = document.querySelectorAll(`.perm_${resourceId}`);
-            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        // ── TREE TOGGLE ──────────────────────────────
+        function toggleTree(btn, bodyId) {
+            const body  = document.getElementById(bodyId);
+            const isOpen = body.classList.toggle('open');
+            btn.classList.toggle('open', isOpen);
         }
-    </script>
-    <script>
-        $(document).ready(function () {
 
-            var $roleName = $('input[name="RoleName"]');
-            var $validationMsg = $('span[data-valmsg-for="RoleName"]');
+        // ── SELECT ALL ───────────────────────────────
+        function toggleAll(rid, master) {
+            document.querySelectorAll(`.leaf_${rid}`).forEach(cb => cb.checked = master.checked);
+            master.indeterminate = false;
+            updateCount();
+        }
 
-            function validateRoleName() {
-                if (!$roleName.val().trim()) {
-                    $validationMsg.text('Role Name is required').show();
-                    $roleName.addClass('is-invalid').removeClass('is-valid');
-                    return false;
-                } else {
-                    $validationMsg.text('').hide();
-                    $roleName.addClass('is-valid').removeClass('is-invalid');
-                    return true;
+        // ── SYNC PARENT CHECKBOX ─────────────────────
+        function syncParent(rid) {
+            const leaves  = [...document.querySelectorAll(`.leaf_${rid}`)];
+            const checked = leaves.filter(c => c.checked).length;
+            const master  = document.getElementById(`all_${rid}`);
+            master.checked     = checked === leaves.length;
+            master.indeterminate = checked > 0 && checked < leaves.length;
+        }
+
+        // ── COUNTER ──────────────────────────────────
+        function updateCount() {
+            const n = document.querySelectorAll('input[name="SelectedPermissionIds"]:checked').length;
+            document.getElementById('selCount').textContent = n;
+        }
+
+        // ── SEARCH / FILTER ──────────────────────────
+        document.getElementById('permSearch').addEventListener('input', function () {
+            const term = this.value.toLowerCase().trim();
+            document.querySelectorAll('.tree-section').forEach(section => {
+                const resource = section.dataset.resource || '';
+                const leaves   = section.querySelectorAll('.tree-leaf');
+                let hits = 0;
+
+                leaves.forEach(leaf => {
+                    const action = leaf.dataset.action || '';
+                    const match  = !term || resource.includes(term) || action.includes(term);
+                    leaf.style.display = match ? '' : 'none';
+                    if (match) hits++;
+                });
+
+                section.classList.toggle('hidden', !hits && !!term);
+
+                if (term && hits > 0) {
+                    const body   = section.querySelector('.tree-body');
+                    const toggle = section.querySelector('.tree-toggle');
+                    body.classList.add('open');
+                    toggle.classList.add('open');
                 }
-            }
-
-            $roleName.on('input blur', function () {
-                validateRoleName();
             });
-
-            $('form').on('submit', function (e) {
-                if (!validateRoleName()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            });
-
         });
 
-        function toggleGroup(resourceId, masterCheckbox) {
-            const checkboxes = document.querySelectorAll(`.perm_${resourceId}`);
-            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        // ── VALIDATION ───────────────────────────────
+        const roleName = document.querySelector('input[name="RoleName"]');
+        const roleErr  = document.querySelector('span[data-valmsg-for="RoleName"]');
+
+        function validateName() {
+            if (!roleName.value.trim()) {
+                roleErr.textContent = 'Role name is required';
+                roleName.classList.add('is-invalid');
+                return false;
+            }
+            roleErr.textContent = '';
+            roleName.classList.remove('is-invalid');
+            return true;
         }
+
+        roleName.addEventListener('blur', validateName);
+        document.querySelector('form').addEventListener('submit', e => {
+            if (!validateName()) { e.preventDefault(); e.stopPropagation(); }
+        });
+
+        // ── INIT: sync all parent checkboxes + counter on load ──
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.tree-section').forEach(section => {
+                const rid = [...section.querySelectorAll('.tree-select-all input')][0]
+                              ?.id?.replace('all_', '');
+                if (rid) syncParent(rid);
+            });
+            updateCount();
+        });
     </script>
 }

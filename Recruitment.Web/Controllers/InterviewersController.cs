@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.RecruitmentProccess.Interviewer;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Interviewer;
 
 namespace Recruitment.Web.Controllers
@@ -33,6 +34,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Interviewers
+        [HasPermission("Interviewer", "View")]
         public async Task<IActionResult> Index(
             int page = 1,
             int pageSize = 10,
@@ -69,6 +71,7 @@ namespace Recruitment.Web.Controllers
         // POST: Interviewers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Interviewer","Create")]
         public async Task<IActionResult> Create(CreateInterviewerVM vm)
         {
             if (!ModelState.IsValid)
@@ -101,6 +104,7 @@ namespace Recruitment.Web.Controllers
         // POST: Interviewers/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Interviewer", "Edit")]
         public async Task<IActionResult> Edit(int id, CreateInterviewerVM vm)
         {
             if (!ModelState.IsValid)
@@ -134,6 +138,7 @@ namespace Recruitment.Web.Controllers
         // POST: Interviewers/Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Interviewer", "Delete")]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
             try

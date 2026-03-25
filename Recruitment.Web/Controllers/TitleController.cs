@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Recruitment.Application.DTOs.CoreBusiness.Title;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.CoreBusiness.Department;
 using Recruitment.Web.ViewModels.CoreBusiness.Title;
 
@@ -19,6 +20,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Title/Index
+        [HasPermission("Title","View")]
         public async Task<IActionResult> Index(
             int page = 1,
             int pageSize = 10,
@@ -67,6 +69,7 @@ namespace Recruitment.Web.Controllers
         // POST: Title/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Title", "Create")]
         public async Task<IActionResult> Create(string name, List<int> departmentIds)
         {
             try
@@ -103,6 +106,7 @@ namespace Recruitment.Web.Controllers
         // POST: Title/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Title", "Edit")]
         public async Task<IActionResult> Edit(int id, string name, List<int> selectedDepartmentIds)
         {
             try

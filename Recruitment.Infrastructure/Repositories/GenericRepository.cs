@@ -58,7 +58,6 @@ namespace Recruitment.Infrastructure.Repositories
         {
             _dbSet.Remove(entity);
         }
-
     }
 
 }

@@ -6,6 +6,7 @@ using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Enums;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.Common;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
 using Recruitment.Web.ViewModels.UserManagement.Applicant;
@@ -72,6 +73,8 @@ namespace Recruitment.Web.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Applicant", "Assign")]
+
         public async Task<IActionResult> AssignVacancy([FromBody] AssignVacancyVM vm)
         {
             if (vm.SelectedVacancyId == 0)
@@ -99,6 +102,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Applicant/History/5
+        [HasPermission("Applicant", "ViewHistory")]
         public async Task<IActionResult> History(int id)
         {
             var dto = await _applicantService.GetApplicantHistoryAsync(id);
@@ -142,6 +146,8 @@ namespace Recruitment.Web.Controllers
 
             return View(vm);
         }
+
+        [HasPermission("Applicant", "Create")]
         public async Task<IActionResult> Create()
         {
             var vm = new ApplicantCreateVM();
@@ -151,6 +157,7 @@ namespace Recruitment.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Applicant", "Create")]
         public async Task<IActionResult> Create(ApplicantCreateVM vm)
         {
             if (vm.Gender == Gender.Female)
@@ -229,6 +236,7 @@ namespace Recruitment.Web.Controllers
             }
         }
 
+        [HasPermission("Applicant", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var dto = await _applicantService.GetApplicantByIdAsync(id);
@@ -268,6 +276,7 @@ namespace Recruitment.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Applicant", "Edit")]
         public async Task<IActionResult> Edit(ApplicantEditVM vm)
         {
             // Conditional validation for MilitaryStatus
@@ -402,6 +411,7 @@ namespace Recruitment.Web.Controllers
 
 
         [HttpPost]
+        [HasPermission("Applicant", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             await _applicantService.DeleteApplicantAsync(id);

@@ -6,6 +6,7 @@ using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Services.RecruitmentProccess;
 using Recruitment.Domain.Enums;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
 using Recruitment.Web.ViewModels.RecruitmentProcess.RejectionReason;
 
@@ -121,6 +122,7 @@ namespace Recruitment.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Application", "ReviewApplication")]
         public async Task<IActionResult> Review([FromBody] ApplicationReviewVM vm)
         {
             if (!ModelState.IsValid)

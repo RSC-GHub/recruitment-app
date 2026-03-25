@@ -22,7 +22,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Project
-        //[HasPermission("Project", "View")]
+        [HasPermission("Project", "View")]
         public async Task<IActionResult> Index(
             int page = 1,
             int pageSize = 10,
@@ -80,7 +80,7 @@ namespace Recruitment.Web.Controllers
         // POST: Project/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[HasPermission("Project", "Create")]
+        [HasPermission("Project", "Create")]
         public async Task<IActionResult> Create(ProjectFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -105,7 +105,7 @@ namespace Recruitment.Web.Controllers
         // POST: Project/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[HasPermission("Project", "Edit")]
+        [HasPermission("Project", "Edit")]
         public async Task<IActionResult> Edit(ProjectFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -131,7 +131,6 @@ namespace Recruitment.Web.Controllers
         // POST: Project/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        //[HasPermission("Project", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _projectService.DeleteProjectAsync(id);
@@ -152,5 +151,4 @@ namespace Recruitment.Web.Controllers
             }).ToList();
         }
     }
-
 }

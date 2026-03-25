@@ -316,5 +316,14 @@
                 document.getElementById('deleteName').textContent = btn.dataset.name;
             });
 
+            @if (TempData["Success"] != null)
+        {
+                        <text>showToast('@TempData["Success"]','success');</text>
+        }
+        @if (TempData["Error"] != null)
+        {
+                        <text>showToast('@TempData["Error"]','error');</text>
+        }
+
     </script>
 }

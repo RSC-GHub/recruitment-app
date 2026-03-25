@@ -6,6 +6,7 @@ using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Enums;
+using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.CoreBusiness.Vacancy;
 using Recruitment.Web.ViewModels.RecruitmentProcess.Application;
 
@@ -142,6 +143,7 @@ namespace Recruitment.Web.Controllers
 
         // POST: assign applicant
         [HttpPost]
+        [HasPermission("Vacancy", "Assign")]
         public async Task<IActionResult> AssignApplicant([FromBody] AssignApplicantVM vm)
         {
             if (vm.SelectedApplicantId == 0)
@@ -157,6 +159,7 @@ namespace Recruitment.Web.Controllers
             return Json(new { success = true, message = "Applicant assigned successfully" });
         }
 
+        [HasPermission("Vacancy", "ViewSubmission")]
         public async Task<IActionResult> GetSubmissions(
             int vacancyId,
             int page = 1,
@@ -181,6 +184,7 @@ namespace Recruitment.Web.Controllers
 
 
         // GET: Vacancy/Create
+        [HasPermission("Vacancy", "Create")]
         public async Task<IActionResult> Create()
         {
             var vm = new VacancyCreateVM();
@@ -191,6 +195,7 @@ namespace Recruitment.Web.Controllers
         // POST: Vacancy/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Vacancy", "Create")]
         public async Task<IActionResult> Create(VacancyCreateVM vm)
         {
             if (!ModelState.IsValid)
@@ -219,6 +224,7 @@ namespace Recruitment.Web.Controllers
         }
 
         // GET: Vacancy/Edit/5
+        [HasPermission("Vacancy", "Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             var vacancy = await _vacancyService.GetVacancyByIdAsync(id);
@@ -251,6 +257,7 @@ namespace Recruitment.Web.Controllers
         // POST: Vacancy/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Vacancy", "Edit")]
         public async Task<IActionResult> Edit(VacancyEditVM vm)
         {
             if (!ModelState.IsValid)
@@ -283,6 +290,7 @@ namespace Recruitment.Web.Controllers
         // POST: Vacancy/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HasPermission("Vacancy", "Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             await _vacancyService.DeleteVacancyAsync(id);

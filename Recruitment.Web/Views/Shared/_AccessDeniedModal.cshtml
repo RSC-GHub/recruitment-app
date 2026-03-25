@@ -1,0 +1,178 @@
+﻿@*
+    Usage — add this anywhere in your _Layout.cshtml or the page that needs it:
+    <partial name="_AccessDeniedModal" />
+
+    Then trigger it from your controller/middleware by passing TempData:
+    TempData["ShowAccessDenied"] = true;
+
+    Or trigger it directly from JS:
+    var modal = new bootstrap.Modal(document.getElementById('accessDeniedModal'));
+    modal.show();
+*@
+
+<style>
+
+    #accessDeniedModal .modal-dialog {
+        max-width: 420px;
+    }
+
+    #accessDeniedModal .modal-content {
+        border: 1.5px solid #e0deda;
+        border-radius: 14px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+    }
+
+    #accessDeniedModal .modal-body {
+        padding: 2.5rem 2rem;
+        text-align: center;
+        font-family: 'Syne', sans-serif;
+    }
+
+    .ad-icon-wrap {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: #f7f6f3;
+        border: 1.5px solid #e0deda;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+
+    .ad-code {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        color: #888;
+        margin-bottom: 0.4rem;
+    }
+
+    .ad-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #0d0d0d;
+        margin-bottom: 0.75rem;
+    }
+
+    .ad-desc {
+        font-size: 0.88rem;
+        color: #888;
+        line-height: 1.65;
+        margin-bottom: 1.75rem;
+    }
+
+    .ad-divider {
+        height: 1px;
+        background: #e0deda;
+        margin-bottom: 1.5rem;
+    }
+
+    .ad-actions {
+        display: flex;
+        gap: 0.65rem;
+        justify-content: center;
+    }
+
+    .ad-btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: transparent;
+        color: #0d0d0d;
+        border: 1.5px solid #e0deda;
+        padding: 0.6rem 1.2rem;
+        font-family: 'Syne', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: border-color .2s;
+        text-decoration: none;
+    }
+
+        .ad-btn-back:hover {
+            border-color: #0d0d0d;
+            color: #0d0d0d;
+        }
+
+    .ad-btn-home {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: #0d0d0d;
+        color: #fff;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        font-family: 'Syne', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: opacity .2s;
+    }
+
+        .ad-btn-home:hover {
+            opacity: .75;
+            color: #fff;
+        }
+</style>
+
+<div class="modal fade" id="accessDeniedModal" tabindex="-1" aria-labelledby="accessDeniedLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <div class="ad-icon-wrap">
+                    <svg width="26" height="26" fill="none" stroke="#0d0d0d" stroke-width="1.5"
+                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5z" />
+                        <circle cx="12" cy="16" r="1.5" fill="#0d0d0d" stroke="none" />
+                    </svg>
+                </div>
+
+                <p class="ad-code">Error 403</p>
+                <h2 class="ad-title" id="accessDeniedLabel">Access Denied</h2>
+                <p class="ad-desc">
+                    You don't have permission to view this page.<br>
+                    Contact your administrator if you think this is a mistake.
+                </p>
+
+                <div class="ad-divider"></div>
+
+                <div class="ad-actions">
+                    <button class="ad-btn-back" onclick="history.back(); bootstrap.Modal.getInstance(document.getElementById('accessDeniedModal')).hide();">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                        Go Back
+                    </button>
+                    <a asp-controller="Home" asp-action="Index" class="ad-btn-home">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                        Home
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Auto-show if controller set TempData["ShowAccessDenied"] *@
+@if (TempData["ShowAccessDenied"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            new bootstrap.Modal(document.getElementById('accessDeniedModal')).show();
+        });
+    </script>
+}
