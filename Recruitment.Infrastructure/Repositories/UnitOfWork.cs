@@ -5,6 +5,7 @@ using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.Reports;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
+using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.RecruitmentProccess;
@@ -57,6 +58,8 @@ namespace Recruitment.Infrastructure.Repositories
         public ILocationRepository LocationRepository { get; set; }
         public IInterviewerRepository InterviewerRepository { get; set; }
         public IReportRepository ReportsRepository { get; set; }
+
+        public IGenericRepository<UserProject> UserProjects { get; }
         public ApplicationDbContext Context => _context;
 
 
@@ -95,6 +98,7 @@ namespace Recruitment.Infrastructure.Repositories
 
             //Reports = new GenericRepository<Report>(_context, httpContextAccessor);
             ReportsRepository = new ReportRepository(context, httpContextAccessor);
+            UserProjects = new GenericRepository<UserProject>(_context, httpContextAccessor);
 
         }
 

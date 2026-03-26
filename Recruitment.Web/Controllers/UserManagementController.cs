@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Application.Interfaces.Services.UserManagement;
+using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.UserManagement.Account;
@@ -16,14 +19,22 @@ namespace Recruitment.Web.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IDepartmentService _departmentService;
+        private readonly IUserProjectService _userProjectService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public UserManagementController(UserManager<User> userManager,
                                         RoleManager<Role> roleManager,
-                                        IDepartmentService departmentService)
+                                        IDepartmentService departmentService,
+                                        SignInManager<User> signInManager,
+                                        IUnitOfWork unitOfWork,
+                                        IUserProjectService userProjectService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _userProjectService = userProjectService;
             _departmentService = departmentService;
+            _unitOfWork = unitOfWork;
+            _userProjectService = userProjectService;
         }
 
         // GET: Users
@@ -47,7 +58,6 @@ namespace Recruitment.Web.Controllers
 
         // GET: User Profile
         [HttpGet]
-        //[HasPermission("User", "Edit")]
         public async Task<IActionResult> Profile(int id)
         {
             var user = await _userManager.Users
@@ -57,17 +67,25 @@ namespace Recruitment.Web.Controllers
             if (user == null)
                 return NotFound();
 
+            // ===== Roles =====
             var userRoles = await _userManager.GetRolesAsync(user);
-
             var allRoles = await _roleManager.Roles
                 .Where(r => r.IsActive)
                 .ToListAsync();
-
-            var departments = await _departmentService.GetAllAsync();
-
             var userRoleIds = allRoles
                 .Where(r => userRoles.Contains(r.Name))
                 .Select(r => r.Id)
+                .ToList();
+
+            // ===== Departments =====
+            var departments = await _departmentService.GetAllAsync();
+
+            // ===== Projects =====
+            var allProjects = await _unitOfWork.Projects.GetAllAsync();
+            var userProjectIds = await _userProjectService.GetUserProjectsAsync(user.Id);
+
+            var userProjects = allProjects
+                .Where(p => userProjectIds.Contains(p.Id))
                 .ToList();
 
             var model = new UserProfileViewModel
@@ -78,6 +96,8 @@ namespace Recruitment.Web.Controllers
                 DepartmentId = user.DepartmentId,
                 DepartmentName = user.Department?.Name ?? "—",
                 IsActive = user.IsActive,
+
+                // ===== Roles =====
                 Roles = userRoles.ToList(),
                 SelectedRoleIds = userRoleIds,
                 AvailableRoles = allRoles.Select(r => new SelectListItem
@@ -86,11 +106,23 @@ namespace Recruitment.Web.Controllers
                     Text = r.Name,
                     Selected = userRoles.Contains(r.Name)
                 }),
+
+                // ===== Departments =====
                 Departments = departments.Select(d => new SelectListItem
                 {
                     Value = d.Id.ToString(),
                     Text = d.Name
-                })
+                }),
+
+                // ===== Projects =====
+                SelectedProjectIds = userProjectIds,
+                AvailableProjects = allProjects.Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = p.ProjectName,
+                    Selected = userProjectIds.Contains(p.Id)
+                }),
+                Projects = userProjects
             };
 
             return View(model);
@@ -171,10 +203,43 @@ namespace Recruitment.Web.Controllers
             return RedirectToAction("Profile", new { id = model.Id });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProjects(int id, List<int> selectedProjectIds)
+        {
+            if (id == 0)
+                return BadRequest();
+
+            // Example: update user projects
+            await _userProjectService.UpdateUserProjectsAsync(id, selectedProjectIds);
+
+            TempData["Success"] = "Projects updated successfully!";
+            return RedirectToAction("Profile", new { id });
+        }
+
+        // POST: Remove project from user
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveProject(int userId, int projectId)
+        {
+            if (userId == 0 || projectId == 0)
+                return BadRequest();
+
+            try
+            {
+                await _userProjectService.RemoveProjectFromUserAsync(userId, projectId);
+                TempData["Success"] = "Project removed successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Failed to remove project: {ex.Message}";
+            }
+
+            return RedirectToAction("Profile", new { id = userId });
+        }
         // POST: Remove role
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[HasPermission("User", "Edit")]
         public async Task<IActionResult> RemoveRole(int userId, string roleName)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());

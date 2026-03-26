@@ -3,6 +3,7 @@ using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.Reports;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
+using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.Aduit;
 using Recruitment.Domain.Entities.CoreBusiness;
 using Recruitment.Domain.Entities.RecruitmentProccess;
@@ -30,6 +31,7 @@ namespace Recruitment.Application.Interfaces.Persistence
         IGenericRepository<Currency> Currencies { get; }
         IGenericRepository<RejectionReason> RejectionReasons { get; }
         IGenericRepository<Interviewer> Interviewers { get; }
+        IGenericRepository<UserProject> UserProjects { get; }
 
         // Report
         //IGenericRepository<Report> Reports { get; }

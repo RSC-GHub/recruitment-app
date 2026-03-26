@@ -82,6 +82,7 @@ namespace Recruitment.Infrastructure
             services.AddScoped<DbConnectionFactory>();
             services.AddScoped<IReportExecutor, SqlReportExecutor>();
             services.AddScoped<IReportExecutionService, ReportExecutionService>();
+            services.AddScoped<IUserProjectService, UserProjectService>();
 
 
             return services;

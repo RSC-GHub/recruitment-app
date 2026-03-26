@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.InkML;
-using Microsoft.EntityFrameworkCore;
-using Recruitment.Application.Common;
+﻿using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;

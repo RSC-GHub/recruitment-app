@@ -3,7 +3,7 @@ using Recruitment.Domain.Entities.UserManagement;
 
 namespace Recruitment.Domain.Entities
 {
-    public class UserProject
+    public class UserProject : BaseEntity
     {
         public int UserId { get; set; }
         public User User { get; set; }

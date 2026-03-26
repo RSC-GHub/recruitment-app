@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Recruitment.Domain.Entities.CoreBusiness;
 
 namespace Recruitment.Web.ViewModels.UserManagement.User
 {
@@ -15,5 +16,10 @@ namespace Recruitment.Web.ViewModels.UserManagement.User
         public List<string> Roles { get; set; } = new();
         public List<int> SelectedRoleIds { get; set; } = new();
         public IEnumerable<SelectListItem> AvailableRoles { get; set; } = new List<SelectListItem>();
+        // Projects
+        public List<int> SelectedProjectIds { get; set; } = new(); 
+        public IEnumerable<SelectListItem> AvailableProjects { get; set; } = new List<SelectListItem>();
+        public List<Project> Projects { get; set; } = new();
+
     }
 }
