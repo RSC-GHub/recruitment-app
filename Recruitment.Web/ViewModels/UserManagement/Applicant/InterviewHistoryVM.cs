@@ -41,6 +41,8 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string? CountryName { get; set; }
         public string? CityName { get; set; }
         public string? Comment { get; set; } = string.Empty;
+        public string? OfferStatus { get; set; } = string.Empty;
+
         public List<ApplicationHistoryVM> Applications { get; set; } = new();
     }
 

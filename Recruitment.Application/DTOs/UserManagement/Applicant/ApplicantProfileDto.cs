@@ -11,6 +11,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string? Comment { get; set; } = string.Empty;
+        public string? OfferStatus { get; set; } = string.Empty;
+
 
 
         // Location

@@ -157,6 +157,12 @@
             </div>
 
             <div class="col-md-12">
+                <label class="form-field-label">Offer Status</label>
+                <input asp-for="OfferStatus" type="text" class="form-field-input" id="offerStatus" />
+                <span asp-validation-for="OfferStatus" class="form-field-error"></span>
+            </div>
+
+            <div class="col-md-12">
                 <label class="form-field-label">Comment</label>
                 <input asp-for="Comment" type="text" class="form-field-input" id="comment" />
                 <span asp-validation-for="Comment" class="form-field-error"></span>

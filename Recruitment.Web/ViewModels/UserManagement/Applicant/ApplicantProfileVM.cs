@@ -37,6 +37,8 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
 
         public string CVFilePath { get; set; } = null!;
         public string? Comment { get; set; } = string.Empty;
+        public string? OfferStatus { get; set; } = string.Empty;
+
 
         // Audit
         public string? CreatedBy { get; set; }

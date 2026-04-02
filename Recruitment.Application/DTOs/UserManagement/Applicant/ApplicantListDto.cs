@@ -15,6 +15,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public EducationDegree EducationDegree { get; set; }
         public short? GraduationYear { get; set; }
         public string? Comment { get; set; } = string.Empty;
+        public string? OfferStatus { get; set; } = string.Empty;
+
 
     }
 

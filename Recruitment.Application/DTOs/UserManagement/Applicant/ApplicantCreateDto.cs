@@ -33,6 +33,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string? Major { get; set; }
         public string? NoticePeriod { get; set; }
         public string? ExtraCertificate { get; set; }
+        public string? OfferStatus { get; set; } = string.Empty;
+
         public string? Comment { get; set; } = string.Empty;
 
         public IFormFile? CV { get; set; }   

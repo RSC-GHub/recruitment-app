@@ -26,4 +26,9 @@
     <ProjectReference Include="..\Recruitment.Infrastructure\Recruitment.Infrastructure.csproj" />
   </ItemGroup>
 
+	
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\cv\" />
+  </ItemGroup>
+
 </Project>

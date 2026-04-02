@@ -44,7 +44,8 @@ namespace Recruitment.Application.Services.UserManagement
                 Major = dto.Major,
                 NoticePeriod = dto.NoticePeriod,
                 ExtraCertificate = dto.ExtraCertificate,
-                Comment = dto.Comment
+                Comment = dto.Comment,
+                OfferStatus = dto.OfferStatus,
             };
 
             if (dto.CV != null)
@@ -85,6 +86,7 @@ namespace Recruitment.Application.Services.UserManagement
             applicant.NoticePeriod = dto.NoticePeriod;
             applicant.ExtraCertificate = dto.ExtraCertificate;
             applicant.Comment = dto.Comment;
+            applicant.OfferStatus = dto.OfferStatus;
 
             if (dto.CV != null)
             {
@@ -167,7 +169,8 @@ namespace Recruitment.Application.Services.UserManagement
                 NoticePeriod = applicant.NoticePeriod,
                 ExtraCertificate = applicant.ExtraCertificate,
                 CVFilePath = applicant.CVFilePath,
-                Comment = applicant.Comment
+                Comment = applicant.Comment,
+                OfferStatus = applicant.OfferStatus,
             };
         }
 
@@ -183,6 +186,7 @@ namespace Recruitment.Application.Services.UserManagement
                 Email = applicant.Email,
                 PhoneNumber = applicant.PhoneNumber,
                 Comment = applicant.Comment,
+                OfferStatus = applicant.OfferStatus,
 
                 CountryId = applicant.CountryId,
                 CountryName = applicant.Country.Name,
@@ -245,7 +249,8 @@ namespace Recruitment.Application.Services.UserManagement
                 CountryName = a.Country.Name,
                 EducationDegree = a.EducationDegree,
                 GraduationYear = a.GraduationYear,
-                Comment = a.Comment
+                Comment = a.Comment,
+                OfferStatus = a.OfferStatus,
             }).ToList();
 
             return new PagedResult<ApplicantListDto>(dtoItems, pagedResult.TotalCount, pagedResult.Page, pagedResult.PageSize);
@@ -273,6 +278,7 @@ namespace Recruitment.Application.Services.UserManagement
                 CountryName = baseApplicant.Country?.Name,
                 CityName = baseApplicant.City,
                 Comment = baseApplicant.Comment,
+                OfferStatus = baseApplicant.OfferStatus,
 
                 Applications = allApplications.Select(app => new ApplicationHistoryDto
                 {

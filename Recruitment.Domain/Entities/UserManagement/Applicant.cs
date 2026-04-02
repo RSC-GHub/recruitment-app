@@ -38,6 +38,7 @@ namespace Recruitment.Domain.Entities.UserManagement
         public string? ExtraCertificate { get; set; }
         public string? TargetPosition { get; set; } 
         public string CVFilePath { get; set; } = null!;
+        public string? OfferStatus { get; set; } = string.Empty;
         public string? Comment { get; set; } = string.Empty;
         public ICollection<ApplicantApplication> Applications { get; set; } = new List<ApplicantApplication>();
 

@@ -195,6 +195,12 @@
             </div>
 
             <div class="col-md-12">
+                <label class="form-field-label">Offer Status</label>
+                <input asp-for="OfferStatus" type="text" class="form-field-input" id="offerStatus" />
+                <span asp-validation-for="OfferStatus" class="form-field-error"></span>
+            </div>
+
+            <div class="col-md-12">
                 <label class="form-field-label">Comment</label>
                 <input asp-for="Comment" type="text" class="form-field-input" id="comment" />
                 <span asp-validation-for="Comment" class="form-field-error"></span>
@@ -202,10 +208,11 @@
 
 
             <div class="col-12 text-end mt-4">
-                <button type="submit" class="button-primary px-4">
+                <button type="submit" class="btn-component btn-primary">
                     <i class="bi bi-check-circle me-1"></i>Save Changes
                 </button>
-                <a asp-action="Index" class="button-secondary px-4 ms-2"><i class="bi bi-x-circle me-1"></i>Cancel</a>
+                <a asp-action="Index" class="class=" btn-component btn-secondary"">
+                    <i class="bi bi-x-circle me-1"></i>Cancel</a>
             </div>
         </form>
     </div>

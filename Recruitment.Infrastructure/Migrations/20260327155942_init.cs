@@ -267,6 +267,7 @@ namespace Recruitment.Infrastructure.Migrations
                     ExtraCertificate = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     TargetPosition = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CVFilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    OfferStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -679,7 +680,13 @@ namespace Recruitment.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ProjectId = table.Column<int>(type: "int", nullable: false)
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1006,6 +1013,12 @@ namespace Recruitment.Infrastructure.Migrations
                 name: "IX_UserProjects_UserId",
                 table: "UserProjects",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProjects_UserId_ProjectId",
+                table: "UserProjects",
+                columns: new[] { "UserId", "ProjectId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vacancies_TitleId",

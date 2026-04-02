@@ -107,6 +107,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         [Display(Name = "Extra Certificate")]
         public string? ExtraCertificate { get; set; }
         public string? Comment { get; set; } = string.Empty;
+        public string? OfferStatus { get; set; } = string.Empty;
 
         // Dropdowns
         public IEnumerable<SelectListItem>? Countries { get; set; }

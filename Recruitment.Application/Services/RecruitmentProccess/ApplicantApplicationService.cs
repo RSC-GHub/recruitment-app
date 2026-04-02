@@ -99,6 +99,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 application.ExpectedFirstDate = dto.ExpectedFirstDate.Value;
                 application.ActualFirstDate = null;
                 application.RejectionReasons.Clear();
+
             }
             else if (dto.ApplicationStatus == ApplicationStatus.SignedContract)
             {

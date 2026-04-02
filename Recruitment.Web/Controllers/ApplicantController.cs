@@ -57,7 +57,8 @@ namespace Recruitment.Web.Controllers
                     CountryName = a.CountryName,
                     EducationDegree = a.EducationDegree,
                     GraduationYear = a.GraduationYear,
-                    Comment = a.Comment
+                    Comment = a.Comment,
+                    OfferStatus = a.OfferStatus
                 })
             };
 
@@ -118,6 +119,7 @@ namespace Recruitment.Web.Controllers
                 CountryName = dto.CountryName,
                 CityName = dto.CityName,
                 Comment = dto.Comment,
+                OfferStatus = dto.OfferStatus,
 
                 Applications = dto.Applications.Select(app => new ApplicationHistoryVM
                 {
@@ -218,7 +220,8 @@ namespace Recruitment.Web.Controllers
                     NoticePeriod = vm.NoticePeriod,
                     ExtraCertificate = vm.ExtraCertificate,
                     CV = vm.CV,
-                    Comment = vm.Comment
+                    Comment = vm.Comment,
+                    OfferStatus = vm.OfferStatus,
                 };
 
                 await _applicantService.CreateApplicantAsync(dto);
@@ -267,7 +270,8 @@ namespace Recruitment.Web.Controllers
                 NoticePeriod = dto.NoticePeriod,
                 ExtraCertificate = dto.ExtraCertificate,
                 ExistingCVPath = dto.CVFilePath,
-                Comment = dto.Comment
+                Comment = dto.Comment,
+                OfferStatus = dto.OfferStatus,
             };
 
             await LoadDropdowns(vm);
@@ -335,6 +339,7 @@ namespace Recruitment.Web.Controllers
                 ExtraCertificate = vm.ExtraCertificate,
                 CV = vm.CV,
                 Comment = vm.Comment,
+                OfferStatus = vm.OfferStatus,
             };
 
             await _applicantService.UpdateApplicantAsync(dto);
@@ -361,6 +366,7 @@ namespace Recruitment.Web.Controllers
                 City = dto.City,
                 Nationality = dto.Nationality,
                 Comment = dto.Comment,
+                OfferStatus = dto.OfferStatus,
 
                 TargetPosition = dto.TargetPosition,
 
