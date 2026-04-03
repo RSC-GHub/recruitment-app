@@ -45,10 +45,23 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string? ExtraCertificate { get; set; }
         public string CVFilePath { get; set; } = null!;
 
+        public List<ApplicantDuplicateDto> Duplicates { get; set; } = new();
+
         // Audit
         public string? CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public string? ModifiedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
     }
+
+    public class ApplicantDuplicateDto
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public bool IsApplicationsOwner { get; set; } 
+    }
+
+    
 }

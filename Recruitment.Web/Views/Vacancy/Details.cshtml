@@ -235,7 +235,7 @@
 </div>
 <!-- Assign Applicant Modal -->
 <div class="modal fade" id="assignApplicantModal" tabindex="-1" aria-labelledby="assignApplicantModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form id="assignApplicantForm">
                 <div class="modal-header">
@@ -284,7 +284,7 @@
 @section Scripts {
     <script>
         var assignModal = document.getElementById('assignApplicantModal');
-               assignModal.addEventListener('show.bs.modal', function (event) {
+        assignModal.addEventListener('show.bs.modal', function (event) {
             var select = document.getElementById('SelectedApplicantId');
             select.innerHTML = '<option value="">Loading...</option>';
 
@@ -292,25 +292,42 @@
                 .then(response => response.json())
                 .then(data => {
                     select.innerHTML = '<option value="">-- Select Applicant --</option>';
+
                     data.forEach(a => {
                         var opt = document.createElement('option');
                         opt.value = a.id;
-                        opt.text = a.name + ' (' + (a.currentJob || '-') + ')';
+                        opt.text = a.name; 
+                        opt.dataset.name = a.name;
+                        opt.dataset.currentjob = a.currentJob || '-';
+                        opt.dataset.createdon = a.createdOn;
                         select.appendChild(opt);
                     });
 
-                    // Init Select2 with search
                     $(select).select2({
                         dropdownParent: $('#assignApplicantModal'),
                         width: '100%',
-                        placeholder: '-- Select Applicant --'
+                        placeholder: '-- Select Applicant --',
+                        templateResult: function(data) {
+                            if (!data.id) return data.text; 
+                            var item = data.element.dataset;
+
+                            return $(
+                                '<div style="display: flex; justify-content: space-between; gap: 10px;">' +
+                                    '<span style="flex:2;">' + item.name + '</span>' +
+                                    '<span style="flex:2;">' + item.currentjob + '</span>' +
+                                    '<span style="flex:2;">' + item.createdon + '</span>' +
+                                '</div>'
+                            );
+                        },
+                        templateSelection: function(data) {
+                            return data.text; 
+                        }
                     });
                 })
                 .catch(err => {
                     select.innerHTML = '<option value="">Error loading applicants</option>';
                 });
         });
-
     </script>
 
     <script>

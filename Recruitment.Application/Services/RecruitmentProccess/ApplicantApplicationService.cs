@@ -553,5 +553,6 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
             return application;
         }
+
     }
 }

@@ -38,7 +38,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string CVFilePath { get; set; } = null!;
         public string? Comment { get; set; } = string.Empty;
         public string? OfferStatus { get; set; } = string.Empty;
-
+        public List<ApplicantDuplicateVM> Duplicates { get; set; } = new();
 
         // Audit
         public string? CreatedBy { get; set; }
@@ -46,5 +46,11 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string? ModifiedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
     }
-
+    public class ApplicantDuplicateVM
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string PhoneNumber { get; set; } = "";
+    }
 }

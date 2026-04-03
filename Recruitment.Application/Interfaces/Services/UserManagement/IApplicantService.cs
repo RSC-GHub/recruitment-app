@@ -14,6 +14,8 @@ namespace Recruitment.Application.Interfaces.Services.UserManagement
         Task<List<ApplicantDropdownDto>> GetAvailableApplicantsForVacancyAsync(int vacancyId);
         Task<List<ApplicantDropdownDto>> GetAllApplicantsAsync();
         Task<ApplicantHistoryDto?> GetApplicantHistoryAsync(int applicantId);
+        Task<List<ApplicantListDto>> GetDuplicateApplicantsAsync(int applicantId);
+        Task<List<ApplicantDuplicateDto>> GetApplicantDuplicatesWithOwnerInfoAsync(int applicantId);
 
     }
 }

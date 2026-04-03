@@ -389,6 +389,13 @@ namespace Recruitment.Web.Controllers
                 NoticePeriod = dto.NoticePeriod,
                 ExtraCertificate = dto.ExtraCertificate,
                 CVFilePath = dto.CVFilePath,
+                Duplicates = dto.Duplicates.Select(d => new ApplicantDuplicateVM
+                {
+                    Id = d.Id,
+                    FullName = d.FullName,
+                    Email = d.Email,
+                    PhoneNumber = d.PhoneNumber
+                }).ToList(),
 
                 CreatedBy = dto.CreatedBy,
                 CreatedOn = dto.CreatedOn,
@@ -397,6 +404,12 @@ namespace Recruitment.Web.Controllers
             };
 
             return View(vm);
+        }
+
+        public async Task<IActionResult> GetDuplicates(int id)
+        {
+            var duplicates = await _applicantService.GetDuplicateApplicantsAsync(id);
+            return Json(duplicates);
         }
 
         [HttpGet]

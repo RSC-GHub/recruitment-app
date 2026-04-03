@@ -137,7 +137,13 @@ namespace Recruitment.Web.Controllers
         public async Task<IActionResult> GetAllApplicants()
         {
             var applicants = await _applicantService.GetAllApplicantsAsync();
-            var result = applicants.Select(a => new { a.Id, Name = a.FullName, a.Email, a.CurrentJob }).ToList();
+            var result = applicants.Select(a => new 
+            { 
+                a.Id, 
+                Name = a.FullName, 
+                a.Email, 
+                a.CurrentJob,
+                createdOn = a.CreatedOn.ToString("MMM dd, yyyy")}).ToList();
             return Json(result);
         }
 

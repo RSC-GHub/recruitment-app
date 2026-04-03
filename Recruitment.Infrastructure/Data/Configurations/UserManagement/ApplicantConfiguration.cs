@@ -94,6 +94,11 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                 .WithMany()
                 .HasForeignKey(x => x.CurrencyId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.MasterApplicant)
+                .WithMany(d => d.Duplicates)
+                .HasForeignKey(x => x.MasterApplicantId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

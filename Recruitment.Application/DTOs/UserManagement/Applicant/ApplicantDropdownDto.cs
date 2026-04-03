@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string FullName { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public string CurrentJob { get; set; } = null!; 
+        public string CurrentJob { get; set; } = null!;
+        public DateTime CreatedOn { get; set; }
     }
 }

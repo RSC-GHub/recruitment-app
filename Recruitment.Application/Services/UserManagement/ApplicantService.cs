@@ -1,10 +1,10 @@
-﻿using Recruitment.Application.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.UserManagement.Applicant;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.File;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Entities.UserManagement;
-using Recruitment.Domain.Enums;
 
 namespace Recruitment.Application.Services.UserManagement
 {
@@ -51,6 +51,14 @@ namespace Recruitment.Application.Services.UserManagement
             if (dto.CV != null)
             {
                 applicant.CVFilePath = await _fileStorageService.SaveCVAsync(dto.CV);
+            }
+
+            var existingApplicant = (await _unitOfWork.ApplicantRepository.FindAsync(a =>
+                    a.Email == dto.Email || a.PhoneNumber == dto.PhoneNumber)).FirstOrDefault();
+
+            if (existingApplicant != null)
+            {
+                applicant.MasterApplicantId = existingApplicant.MasterApplicantId ?? existingApplicant.Id;
             }
 
             await _unitOfWork.ApplicantRepository.AddAsync(applicant);
@@ -134,7 +142,8 @@ namespace Recruitment.Application.Services.UserManagement
                 Id = a.Id,
                 FullName = a.FullName,
                 Email = a.Email,
-                CurrentJob = a.CurrentJob
+                CurrentJob = a.CurrentJob,
+                CreatedOn = a.CreatedOn
             }).ToList();
         }
 
@@ -177,6 +186,7 @@ namespace Recruitment.Application.Services.UserManagement
         public async Task<ApplicantProfileDto?> GetApplicantProfileAsync(int id)
         {
             var applicant = await _unitOfWork.ApplicantRepository.GetApplicantProfileAsync(id);
+            var duplicates = await _unitOfWork.ApplicantRepository.GetApplicantDuplicatesAsync(id);
             if (applicant == null) return null;
 
             return new ApplicantProfileDto
@@ -218,9 +228,20 @@ namespace Recruitment.Application.Services.UserManagement
                 CreatedBy = applicant.CreatedBy,
                 CreatedOn = applicant.CreatedOn,
                 ModifiedBy = applicant.ModifiedBy,
-                ModifiedOn = applicant.ModifiedOn
+                ModifiedOn = applicant.ModifiedOn,
+                Duplicates = duplicates
+                    .Where(d => d.Id != applicant.Id)
+                    .Select(d => new ApplicantDuplicateDto
+                    {
+                        Id = d.Id,
+                        FullName = d.FullName,
+                        Email = d.Email,
+                        PhoneNumber = d.PhoneNumber
+                    })
+                    .ToList()
             };
         }
+
 
         public async Task<bool> DeleteApplicantAsync(int id)
         {
@@ -306,6 +327,38 @@ namespace Recruitment.Application.Services.UserManagement
             };
         }
 
+        public async Task<List<ApplicantListDto>> GetDuplicateApplicantsAsync(int applicantId)
+        {
+            var applicant = await _unitOfWork.ApplicantRepository.GetByIdAsync(applicantId);
 
+            if (applicant == null)
+                return new List<ApplicantListDto>();
+
+            var duplicates = await _unitOfWork.ApplicantRepository
+                .GetAllAsQueryable()
+                .Where(a => a.Id != applicantId &&
+                           (a.Email == applicant.Email || a.FullName == applicant.FullName))
+                .Select(a => new ApplicantListDto
+                {
+                    Id = a.Id,
+                    FullName = a.FullName,
+                    Email = a.Email,
+                    PhoneNumber = a.PhoneNumber,
+                    CountryName = a.Country.Name,
+                    EducationDegree = a.EducationDegree,
+                    GraduationYear = a.GraduationYear,
+                    Comment = a.Comment,
+                    OfferStatus = a.OfferStatus
+                })
+                .ToListAsync();
+
+            return duplicates;
+        }
+
+        public async Task<List<ApplicantDuplicateDto>> GetApplicantDuplicatesWithOwnerInfoAsync(int applicantId)
+        {
+            return await _unitOfWork.ApplicantRepository
+                .GetApplicantDuplicatesWithOwnerInfoAsync(applicantId);
+        }
     }
 }

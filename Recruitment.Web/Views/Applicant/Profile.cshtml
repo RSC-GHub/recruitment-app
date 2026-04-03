@@ -266,6 +266,35 @@
             </div>
         </div>
 
+        <div class="card-component mt-4">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-files me-2"></i>Possible Duplicates
+                </h4>
+            </div>
+
+            <div class="card-content">
+
+                <table class="table table-hover" id="duplicatesTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Country</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div id="noDuplicates" class="text-muted">
+                    No duplicates found.
+                </div>
+
+            </div>
+        </div>
+
         <!-- Audit Info -->
         <div class="card-component mt-4 mb-4">
             <div class="card-header">
@@ -437,6 +466,49 @@
                 errorDiv.style.display = 'block';
                 successDiv.style.display = 'none';
             });
+        });
+
+                document.addEventListener("DOMContentLoaded", function () {
+
+            var applicantId = @Model.Id;
+
+            fetch('/Applicant/GetDuplicates?id=' + applicantId)
+                .then(res => res.json())
+                .then(data => {
+
+                    var table = document.querySelector("#duplicatesTable tbody");
+                    var noDup = document.getElementById("noDuplicates");
+
+                    if (data.length === 0) {
+                        noDup.style.display = "block";
+                        return;
+                    }
+
+                    noDup.style.display = "none";
+
+                    data.forEach(d => {
+
+                                var row = `
+                                        <tr>
+                                            <td>
+                                                ${d.fullName}
+                                                ${d.isApplicationsOwner ? '<span class="badge bg-success">Real Owner</span>' : ''}
+                                            </td>
+                                            <td>${d.email}</td>
+                                            <td>${d.phoneNumber}</td>
+                                            <td>${d.countryName}</td>
+                                            <td>
+                                                <a href="/Applicant/Profile/${d.id}" class="btn-component btn-sm btn-outline">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    `;
+
+                        table.innerHTML += row;
+                    });
+
+                });
         });
     </script>
 }

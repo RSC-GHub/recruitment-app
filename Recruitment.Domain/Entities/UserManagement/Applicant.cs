@@ -42,6 +42,12 @@ namespace Recruitment.Domain.Entities.UserManagement
         public string? Comment { get; set; } = string.Empty;
         public ICollection<ApplicantApplication> Applications { get; set; } = new List<ApplicantApplication>();
 
+        // solve duplicate applicants issue
+        public int? MasterApplicantId { get; set; }
+        public Applicant? MasterApplicant { get; set; }
+
+        public ICollection<Applicant> Duplicates { get; set; } = new List<Applicant>();
+
 
     }
 }
