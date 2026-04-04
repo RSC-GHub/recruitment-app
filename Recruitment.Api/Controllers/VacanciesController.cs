@@ -15,7 +15,7 @@ namespace Recruitment.Api.Controllers
             _vacancyService = vacancyService;
         }
 
-        [HttpGet]
+        [HttpGet("Vacancy")]
         public async Task<IActionResult> GetVacancyById(int id)
         {
             return Ok(await _vacancyService.GetVacancyByIdAsyncForAPI(id));

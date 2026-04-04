@@ -9,6 +9,7 @@ namespace Recruitment.Application.Interfaces.Persistence.CoreBusiness
     public interface IVacancyRepository : IGenericRepository<Vacancy>
     {
         Task<Vacancy?> GetVacancyByIdAsync(int id);
+        Task<Vacancy?> GetVacancyByIdForApi(int id);  //  For API, to ignore global query filters
         Task<List<Vacancy>> GetAllVacanciesWithProjectsAsync();
 
         Task<List<Vacancy>> GetAllOpenedVacancies();

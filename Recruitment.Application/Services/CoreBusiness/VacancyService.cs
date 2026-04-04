@@ -207,7 +207,7 @@ namespace Recruitment.Application.Services.CoreBusiness
 
         public async Task<VacancyDetailsDTO?> GetVacancyByIdAsyncForAPI(int id)
         {
-            var vacancy = await _unitOfWork.VacancyRepository.GetVacancyByIdAsync(id);
+            var vacancy = await _unitOfWork.VacancyRepository.GetVacancyByIdForApi(id);
             if (vacancy == null) return null;
             return new VacancyDetailsDTO
             {

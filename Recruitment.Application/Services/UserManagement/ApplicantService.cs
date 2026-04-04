@@ -67,6 +67,54 @@ namespace Recruitment.Application.Services.UserManagement
             return applicant.Id;
         }
 
+
+        public async Task<int> CreateApplicantFromAPIAsync(ApplicantCreateFromAPIDto dto)
+        {
+            var applicant = new Applicant
+            {
+                FullName = dto.FullName,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                CountryId = dto.CountryId,
+                City = dto.City,
+                Nationality = dto.Nationality,
+                TargetPosition = dto.TargetPosition,
+                CurrentJob = dto.CurrentJob,
+                CurrentEmployer = dto.CurrentEmployer,
+                CurrentSalary = dto.CurrentSalary,
+                ExpectedSalary = dto.ExpectedSalary,
+                CurrencyId = dto.CurrencyId,
+                Address = dto.Address,
+                Gender = dto.Gender,
+                MilitaryStatus = dto.MilitaryStatus,
+                MaritalStatus = dto.MaritalStatus,
+                EducationDegree = dto.EducationDegree,
+                GraduationYear = dto.GraduationYear,
+                Major = dto.Major,
+                NoticePeriod = dto.NoticePeriod,
+                ExtraCertificate = dto.ExtraCertificate,
+            };
+
+            if (dto.CV != null)
+            {
+                applicant.CVFilePath = await _fileStorageService.SaveCVAsync(dto.CV);
+            }
+
+            var existingApplicant = (await _unitOfWork.ApplicantRepository.FindAsync(a =>
+                    a.Email == dto.Email || a.PhoneNumber == dto.PhoneNumber)).FirstOrDefault();
+
+            if (existingApplicant != null)
+            {
+                applicant.MasterApplicantId = existingApplicant.MasterApplicantId ?? existingApplicant.Id;
+            }
+
+            await _unitOfWork.ApplicantRepository.AddAsync(applicant);
+            await _unitOfWork.CompleteAsync();
+
+            return applicant.Id;
+        }
+
+
         public async Task<bool> UpdateApplicantAsync(ApplicantUpdateDto dto)
         {
             var applicant = await _unitOfWork.ApplicantRepository.GetByIdAsync(dto.Id);
@@ -337,7 +385,7 @@ namespace Recruitment.Application.Services.UserManagement
             var duplicates = await _unitOfWork.ApplicantRepository
                 .GetAllAsQueryable()
                 .Where(a => a.Id != applicantId &&
-                           (a.Email == applicant.Email || a.FullName == applicant.FullName))
+                           (a.Email == applicant.Email || a.PhoneNumber == applicant.PhoneNumber))
                 .Select(a => new ApplicantListDto
                 {
                     Id = a.Id,

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.CoreBusiness.Vacancy;
@@ -16,6 +17,14 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
         {
         }
        
+        public async Task<Vacancy?> GetVacancyByIdForApi(int id)
+        {
+            var vacancy = await _context.Vacancies
+                   .IgnoreQueryFilters()
+                   .FirstOrDefaultAsync(v => v.Id == id);
+            return vacancy;
+        }
+        
         public async Task<Vacancy?> GetVacancyByIdAsync(int id)
         {
             return await _context.Vacancies
@@ -162,6 +171,7 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
         public async Task<List<Vacancy>> GetAllOpenedVacanciesCards()
         {
             return await _context.Vacancies
+                .IgnoreQueryFilters()
                 .Where(v => v.Status == VacancyStatus.Open)
                 .Include(v => v.Title!)
                     .ThenInclude(t => t.DepartmentTitles!)

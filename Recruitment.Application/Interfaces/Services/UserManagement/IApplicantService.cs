@@ -9,6 +9,7 @@ namespace Recruitment.Application.Interfaces.Services.UserManagement
         Task<ApplicantUpdateDto?> GetApplicantByIdAsync(int id);
         Task<ApplicantProfileDto?> GetApplicantProfileAsync(int id);
         Task<int> CreateApplicantAsync(ApplicantCreateDto dto);
+        Task<int> CreateApplicantFromAPIAsync(ApplicantCreateFromAPIDto dto);
         Task<bool> UpdateApplicantAsync(ApplicantUpdateDto dto);
         Task<bool> DeleteApplicantAsync(int id);
         Task<List<ApplicantDropdownDto>> GetAvailableApplicantsForVacancyAsync(int vacancyId);
@@ -16,6 +17,5 @@ namespace Recruitment.Application.Interfaces.Services.UserManagement
         Task<ApplicantHistoryDto?> GetApplicantHistoryAsync(int applicantId);
         Task<List<ApplicantListDto>> GetDuplicateApplicantsAsync(int applicantId);
         Task<List<ApplicantDuplicateDto>> GetApplicantDuplicatesWithOwnerInfoAsync(int applicantId);
-
     }
 }

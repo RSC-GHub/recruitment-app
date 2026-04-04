@@ -1,15 +1,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Recruitment.Api.Services;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Persistence.CoreBusiness;
 using Recruitment.Application.Interfaces.Persistence.RecruitmentProcess;
 using Recruitment.Application.Interfaces.Persistence.UserManagement;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
+using Recruitment.Application.Interfaces.Services.File;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
+using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Application.MappingProfiles;
 using Recruitment.Application.Services.CoreBusiness;
 using Recruitment.Application.Services.RecruitmentProccess;
+using Recruitment.Application.Services.UserManagement;
 using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Infrastructure.Data;
 using Recruitment.Infrastructure.Repositories;
@@ -41,6 +45,11 @@ namespace Recruitment.Api
                 return new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.Configure<IISServerOptions>(options =>
+            {
+                options.MaxRequestBodySize = 52428800;
+            });
+
             builder.Services.AddScoped<UserManager<User>>(sp => null!);
 
             builder.Services.AddControllers();
@@ -62,8 +71,9 @@ namespace Recruitment.Api
             builder.Services.AddScoped<IApplicantRepository, ApplicantRepository>();
 
             builder.Services.AddScoped<IApplicantApplicationRepository, ApplicantApplicationRepository>();
-
+            builder.Services.AddScoped<IFileStorageService, FileService>();
             builder.Services.AddScoped<IApplicantApplicationService, ApplicantApplicationService>();
+            builder.Services.AddScoped<IApplicantService, ApplicantService>();
 
             builder.Services.AddCors(options =>
             {
@@ -79,8 +89,6 @@ namespace Recruitment.Api
 
             var app = builder.Build();
 
-            app.UseCors("AllowAll");
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -89,6 +97,8 @@ namespace Recruitment.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCors("AllowAll");
 
             //app.UseAuthentication();
 
