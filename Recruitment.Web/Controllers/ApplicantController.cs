@@ -21,14 +21,17 @@ namespace Recruitment.Web.Controllers
         private readonly IApplicantApplicationService _applicationService;
         private readonly IVacancyService _vacancyService;
         private readonly IWebHostEnvironment _env;
+        private readonly string _cvPath;
+        private readonly IConfiguration _configuration;
 
         public ApplicantController(
-            IApplicantService applicantService,
-            ICountryService countryService,
-            ICurrencyService currencyService,
-            IWebHostEnvironment env,
-            IApplicantApplicationService applicantApplicationService,
-            IVacancyService vacancyService)
+                    IApplicantService applicantService,
+                    ICountryService countryService,
+                    ICurrencyService currencyService,
+                    IWebHostEnvironment env,
+                    IApplicantApplicationService applicantApplicationService,
+                    IVacancyService vacancyService,
+                    IConfiguration configuration)
         {
             _applicantService = applicantService;
             _countryService = countryService;
@@ -36,6 +39,10 @@ namespace Recruitment.Web.Controllers
             _env = env;
             _applicationService = applicantApplicationService;
             _vacancyService = vacancyService;
+            _configuration = configuration;
+
+            _cvPath = _configuration["FileStorage:CvPath"]
+                      ?? throw new ArgumentNullException("FileStorage:CvPath is missing in configuration");
         }
 
         public async Task<IActionResult> Index(string? search, int page = 1, int pageSize = 10)
@@ -412,20 +419,33 @@ namespace Recruitment.Web.Controllers
             return Json(duplicates);
         }
 
+        //[HttpGet]
+        //public IActionResult DownloadCV(string filePath)
+        //{
+        //    if (string.IsNullOrWhiteSpace(filePath))
+        //        return NotFound();
+
+        //    var fullPath = Path.Combine(_env.WebRootPath, filePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+        //    if (!System.IO.File.Exists(fullPath))
+        //        return NotFound();
+
+        //    var fileBytes = System.IO.File.ReadAllBytes(fullPath);
+        //    var fileName = Path.GetFileName(fullPath); // you can store original file name if needed
+
+        //    return File(fileBytes, "application/octet-stream", fileName);
+        //}
         [HttpGet]
-        public IActionResult DownloadCV(string filePath)
+        public IActionResult DownloadCV(string fileName)
         {
-            if (string.IsNullOrWhiteSpace(filePath))
+            if (string.IsNullOrWhiteSpace(fileName))
                 return NotFound();
 
-            var fullPath = Path.Combine(_env.WebRootPath, filePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+            var fullPath = Path.Combine(_cvPath, fileName);
+
             if (!System.IO.File.Exists(fullPath))
                 return NotFound();
 
-            var fileBytes = System.IO.File.ReadAllBytes(fullPath);
-            var fileName = Path.GetFileName(fullPath); // you can store original file name if needed
-
-            return File(fileBytes, "application/octet-stream", fileName);
+            return PhysicalFile(fullPath, "application/octet-stream", fileName);
         }
 
 

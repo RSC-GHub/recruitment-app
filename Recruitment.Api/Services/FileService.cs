@@ -1,15 +1,15 @@
 ﻿using Recruitment.Application.Interfaces.Services.File;
 
-namespace Recruitment.Api.Services
+namespace Recruitment.Web.Services
 {
     public class FileService : IFileStorageService
     {
-        private readonly IWebHostEnvironment _env;
-        private const string CVFolder = "uploads/cv";
+        private readonly string _cvPath;
 
-        public FileService(IWebHostEnvironment env)
+        public FileService(IConfiguration configuration)
         {
-            _env = env;
+            _cvPath = configuration["FileStorage:CvPath"]
+                ?? throw new ArgumentNullException("FileStorage:CvPath is missing in configuration");
         }
 
         public async Task<string> SaveCVAsync(IFormFile file)
@@ -20,32 +20,31 @@ namespace Recruitment.Api.Services
             if (!IsValidCV(file))
                 throw new InvalidOperationException("Only PDF or Word files are allowed");
 
-            var folderPath = Path.Combine(_env.WebRootPath, CVFolder);
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
+            if (!Directory.Exists(_cvPath))
+                Directory.CreateDirectory(_cvPath);
 
             var extension = Path.GetExtension(file.FileName);
             var fileName = $"{Guid.NewGuid()}{extension}";
-            var filePath = Path.Combine(folderPath, fileName);
+            var filePath = Path.Combine(_cvPath, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            return "/" + Path.Combine(CVFolder, fileName).Replace("\\", "/");
+            return fileName; // store only filename in DB
         }
 
-        public void DeleteFile(string relativePath)
+        public void DeleteFile(string fileName)
         {
-            if (string.IsNullOrWhiteSpace(relativePath))
+            if (string.IsNullOrWhiteSpace(fileName))
                 return;
 
-            var fullPath = Path.Combine(_env.WebRootPath, relativePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+            var fullPath = Path.Combine(_cvPath, fileName);
+
             if (File.Exists(fullPath))
                 File.Delete(fullPath);
         }
-
 
         public bool IsValidCV(IFormFile file)
         {
@@ -53,6 +52,7 @@ namespace Recruitment.Api.Services
                 return false;
 
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
             return extension == ".pdf" || extension == ".docx" || extension == ".doc";
         }
     }
