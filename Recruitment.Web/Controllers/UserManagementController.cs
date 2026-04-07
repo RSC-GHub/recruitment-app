@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.CoreBusiness;
 using Recruitment.Application.Interfaces.Services.UserManagement;
-using Recruitment.Domain.Entities;
 using Recruitment.Domain.Entities.UserManagement;
-using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.UserManagement.Account;
 using Recruitment.Web.ViewModels.UserManagement.User;
 
@@ -274,7 +272,6 @@ namespace Recruitment.Web.Controllers
             return View(model);
         }
 
-        // POST: UserManagement/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -290,34 +287,113 @@ namespace Recruitment.Web.Controllers
                 return View(model);
             }
 
+            // Trim email and full name
+            var email = model.Email?.Trim();
+            var fullName = model.FullName?.Trim();
+
+            // Check if user with the same email already exists
+            var existingUserByEmail = await _userManager.FindByEmailAsync(email);
+            if (existingUserByEmail != null)
+            {
+                TempData["ErrorMessage"] = "This email is already registered.";
+                var departments = await _departmentService.GetAllAsync();
+                model.Departments = departments.Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                });
+                return View(model);
+            }
+
+            // Check if username already exists (in case username != email in your system)
+            var existingUserByUsername = await _userManager.FindByNameAsync(email);
+            if (existingUserByUsername != null)
+            {
+                TempData["ErrorMessage"] = "This username is already taken.";
+                var departments = await _departmentService.GetAllAsync();
+                model.Departments = departments.Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                });
+                return View(model);
+            }
+
             var user = new User
             {
-                UserName = model.Email,
-                Email = model.Email,
+                UserName = email,
+                Email = email,
                 DepartmentId = model.DepartmentId,
-                FullName = model.FullName,
+                FullName = fullName,
                 IsActive = true
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+                // Add default "User" role if exists
                 if (await _roleManager.RoleExistsAsync("User"))
                     await _userManager.AddToRoleAsync(user, "User");
 
+                // Sign in the new user
                 await _signInManager.SignInAsync(user, isPersistent: false);
+
+                TempData["SuccessMessage"] = "User created successfully!";
                 return RedirectToAction("Index", "Home");
             }
 
-            foreach (var error in result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
+            // If creation failed, show errors
+            TempData["ErrorMessage"] = string.Join(", ", result.Errors.Select(e => e.Description));
 
+            // Re-populate departments for the view
             var allDepartments = await _departmentService.GetAllAsync();
             model.Departments = allDepartments.Select(d => new SelectListItem
             {
                 Value = d.Id.ToString(),
                 Text = d.Name
             });
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword(int userId)
+        {
+            var model = new UpdatePasswordViewModel
+            {
+                UserId = userId
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(UpdatePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByIdAsync(model.UserId.ToString());
+            if (user == null)
+                return NotFound();
+
+            var passwordCheck = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+            if (!passwordCheck)
+            {
+                ModelState.AddModelError(string.Empty, "Current password is incorrect.");
+                return View(model);
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Password updated successfully.";
+                return RedirectToAction("Profile", new { id = model.UserId });
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
 
             return View(model);
         }

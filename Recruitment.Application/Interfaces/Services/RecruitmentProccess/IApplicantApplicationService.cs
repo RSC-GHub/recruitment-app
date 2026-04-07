@@ -51,6 +51,7 @@ namespace Recruitment.Application.Interfaces.Services.RecruitmentProccess
 
         Task UpdateActualStartDateAsync(UpdateActualStartDateDto dto);
         Task<ApplicantApplication> SubmitApplicationAsync(SubmitApplicationDto dto);
+        Task<ApplicantApplication> SubmitApplicationFromAPIAsync(SubmitApplicationFromApiDto dto);
 
     }
 

@@ -144,31 +144,80 @@
     </div>
 
     <!-- Pagination -->
-    @if (Model.TotalPages > 1)
+    @{
+        int totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
+    }
+
+    @if (totalPages > 1)
     {
         <div class="card-footer">
-            <nav class="pagination-component">
+            <nav class="pagination-component" aria-label="Pagination">
                 <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
+                   asp-action="Index"
                    asp-route-page="@(Model.Page - 1)"
+                   asp-route-pageSize="@Model.PageSize"
                    asp-route-search="@Model.Search">
                     <i class="bi bi-chevron-left"></i>
                 </a>
 
-                @for (int i = 1; i <= Model.TotalPages; i++)
+                @{
+                    int startPage = Math.Max(1, Model.Page - 2);
+                    int endPage = Math.Min(totalPages, Model.Page + 2);
+                }
+
+                @if (startPage > 1)
+                {
+                    <a class="pagination-button"
+                       asp-action="Index"
+                       asp-route-page="1"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        1
+                    </a>
+                    @if (startPage > 2)
+                    {
+                        <span class="pagination-button disabled">...</span>
+                    }
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
                 {
                     <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                       asp-action="Index"
                        asp-route-page="@i"
+                       asp-route-pageSize="@Model.PageSize"
                        asp-route-search="@Model.Search">
                         @i
                     </a>
                 }
 
-                <a class="pagination-button @(Model.Page == Model.TotalPages ? "disabled" : "")"
+                @if (endPage < totalPages)
+                {
+                    @if (endPage < totalPages - 1)
+                    {
+                        <span class="pagination-button disabled">...</span>
+                    }
+                    <a class="pagination-button"
+                       asp-action="Index"
+                       asp-route-page="@totalPages"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        @totalPages
+                    </a>
+                }
+
+                <a class="pagination-button @(Model.Page == totalPages ? "disabled" : "")"
+                   asp-action="Index"
                    asp-route-page="@(Model.Page + 1)"
+                   asp-route-pageSize="@Model.PageSize"
                    asp-route-search="@Model.Search">
                     <i class="bi bi-chevron-right"></i>
                 </a>
             </nav>
+
+            <div class="text-center mt-3 text-muted small">
+                Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount results
+            </div>
         </div>
     }
 </div>

@@ -174,8 +174,6 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
                 .IgnoreQueryFilters()
                 .Where(v => v.Status == VacancyStatus.Open)
                 .Include(v => v.Title!)
-                    .ThenInclude(t => t.DepartmentTitles!)
-                        .ThenInclude(dt => dt.Department)
                 .Include(v => v.ProjectVacancies!)
                     .ThenInclude(pv => pv.Project!)
                         .ThenInclude(p => p.Location)

@@ -24,7 +24,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
 
             builder.Property(x => x.PhoneNumber)
                 .IsRequired()
-                .HasMaxLength(30);
+                .HasMaxLength(100);
 
             builder.Property(x => x.City)
                 .IsRequired()

@@ -41,6 +41,7 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
         {
             var query = _context.Locations
                                 .Include(l => l.Country)
+                                .Where(l => !l.IsDeleted)
                                 .AsQueryable();
 
             // Search by name

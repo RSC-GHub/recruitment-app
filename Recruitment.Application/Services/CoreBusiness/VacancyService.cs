@@ -235,7 +235,6 @@ namespace Recruitment.Application.Services.CoreBusiness
             {
                 Id = v.Id,
                 TitleName = TextHelper.CleanText(v.Title?.Name ?? ""),
-                Department = v.Title?.DepartmentTitles?.FirstOrDefault()?.Department?.Name ?? "",
                 EmploymentType = v.EmploymentType.ToString(),
                 Location = v.ProjectVacancies?.Select(pv => pv.Project?.Location?.Name ?? "")
                                  .FirstOrDefault() ?? "",

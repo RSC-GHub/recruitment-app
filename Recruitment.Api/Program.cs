@@ -22,7 +22,6 @@ using Recruitment.Infrastructure.Repositories.RecruitmentProcess;
 using Recruitment.Infrastructure.Repositories.UserManagement;
 using System.Data;
 
-
 namespace Recruitment.Api
 {
     public class Program
@@ -31,10 +30,9 @@ namespace Recruitment.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // ------------------ Services ------------------
 
             builder.Services.AddHttpContextAccessor();
-
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -53,23 +51,22 @@ namespace Recruitment.Api
             builder.Services.AddScoped<UserManager<User>>(sp => null!);
 
             builder.Services.AddControllers();
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddAutoMapper(typeof(CoreBusinessProfile));
 
+            // ------------------ Dependency Injection ------------------
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<ICountryService, CountryService>();
-
             builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 
             builder.Services.AddScoped<IVacancyRepository, VacancyRepository>();
             builder.Services.AddScoped<IVacancyService, VacancyService>();
 
             builder.Services.AddScoped<IApplicantRepository, ApplicantRepository>();
-
             builder.Services.AddScoped<IApplicantApplicationRepository, ApplicantApplicationRepository>();
             builder.Services.AddScoped<IFileStorageService, FileService>();
             builder.Services.AddScoped<IApplicantApplicationService, ApplicantApplicationService>();
@@ -77,19 +74,24 @@ namespace Recruitment.Api
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll",
-                    policy =>
-                    {
-                        policy
-                            .AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    });
+                options.AddPolicy("AllowRedSea", policy =>
+                {
+                    policy.WithOrigins(
+                            "https://redseaconstruct.com",
+                            "https://www.redseaconstruct.com",
+                            "https://recruitment.rsc.com.eg",  
+                            "http://localhost:3000"            
+                          )
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .SetIsOriginAllowedToAllowWildcardSubdomains();
+                });
             });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // ------------------ HTTP Pipeline ------------------
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -97,15 +99,19 @@ namespace Recruitment.Api
             }
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
-            app.UseCors("AllowAll");
 
+            app.UseRouting();
+
+            app.UseCors("AllowRedSea");
             //app.UseAuthentication();
-
             app.UseAuthorization();
 
-
-            app.MapControllers();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             app.Run();
         }

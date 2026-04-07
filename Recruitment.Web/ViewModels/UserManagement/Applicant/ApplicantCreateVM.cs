@@ -21,7 +21,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
 
         [Required(ErrorMessage = "Phone Number is required")]
         [Phone(ErrorMessage = "Invalid phone number format")]
-        [StringLength(30, ErrorMessage = "Phone Number cannot exceed 30 characters")]
+        [StringLength(100, ErrorMessage = "Phone Number cannot exceed 30 characters")]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; } = null!;
 

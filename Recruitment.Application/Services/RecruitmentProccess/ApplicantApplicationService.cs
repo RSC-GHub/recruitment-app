@@ -5,6 +5,7 @@ using Recruitment.Application.Common;
 using Recruitment.Application.DTOs.RecruitmentProccess.Application;
 using Recruitment.Application.DTOs.UserManagement.Applicant;
 using Recruitment.Application.Interfaces.Persistence;
+using Recruitment.Application.Interfaces.Services.File;
 using Recruitment.Application.Interfaces.Services.RecruitmentProccess;
 using Recruitment.Domain.Entities.Recruitment_Proccess;
 using Recruitment.Domain.Entities.RecruitmentProccess;
@@ -20,17 +21,19 @@ namespace Recruitment.Application.Services.RecruitmentProccess
         private readonly IUnitOfWork _unitOfWork;
         private readonly IDbConnection _connection;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IFileStorageService _fileStorageService;
         private readonly UserManager<User> _userManager;
 
 
         public ApplicantApplicationService(IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor,
-            UserManager<User> userManager, IDbConnection connection)
+            UserManager<User> userManager,  IDbConnection connection, IFileStorageService fileStorageService)
         {
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
             _connection = connection;
+            _fileStorageService = fileStorageService;
         }
 
         private async Task<int?> GetCurrentUserIdAsync()
@@ -512,6 +515,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
         public async Task<ApplicantApplication> SubmitApplicationAsync(SubmitApplicationDto dto)
         {
+
             var applicant = new Applicant
             {
                 FullName = dto.FullName,
@@ -537,6 +541,54 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 ExtraCertificate = dto.ExtraCertificate,
                 CVFilePath = dto.CVFilePath ?? ""
             };
+
+            await _unitOfWork.ApplicantRepository.AddAsync(applicant);
+
+            var application = new ApplicantApplication
+            {
+                Applicant = applicant,
+                VacancyId = dto.VacancyId,
+                ApplicationDate = DateTime.Now,
+                ApplicationStatus = ApplicationStatus.Submitted
+            };
+
+            await _unitOfWork.ApplicationRepository.AddAsync(application);
+            await _unitOfWork.CompleteAsync();
+
+            return application;
+        }
+
+        public async Task<ApplicantApplication> SubmitApplicationFromAPIAsync(SubmitApplicationFromApiDto dto)
+        {
+            var applicant = new Applicant
+            {
+                FullName = dto.FullName,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                CountryId = dto.CountryId,
+                City = dto.City,
+                Nationality = dto.Nationality,
+                CurrentJob = dto.CurrentJob,
+                CurrentEmployer = dto.CurrentEmployer,
+                CurrentSalary = dto.CurrentSalary,
+                ExpectedSalary = dto.ExpectedSalary,
+                CurrencyId = dto.CurrencyId,
+                TargetPosition = dto.TargetPosition,
+                Address = dto.Address,
+                Gender = dto.Gender,
+                MilitaryStatus = dto.MilitaryStatus,
+                MaritalStatus = dto.MaritalStatus,
+                EducationDegree = dto.EducationDegree,
+                GraduationYear = dto.GraduationYear,
+                Major = dto.Major,
+                NoticePeriod = dto.NoticePeriod,
+                ExtraCertificate = dto.ExtraCertificate
+            };
+
+            if (dto.CV != null)
+            {
+                applicant.CVFilePath = await _fileStorageService.SaveCVAsync(dto.CV);
+            }
 
             await _unitOfWork.ApplicantRepository.AddAsync(applicant);
 

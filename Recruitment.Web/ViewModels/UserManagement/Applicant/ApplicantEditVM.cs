@@ -20,7 +20,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
 
         [Required]
         [Phone]
-        [StringLength(20)]
+        [StringLength(100)]
         public string PhoneNumber { get; set; } = null!;
 
         [Required]

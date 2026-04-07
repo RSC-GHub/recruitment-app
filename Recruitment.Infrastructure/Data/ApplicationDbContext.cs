@@ -79,6 +79,7 @@ namespace Recruitment.Infrastructure.Data
             modelBuilder.Entity<Project>()
                 .HasQueryFilter(p =>
                     IsAdmin ||
+                    !UserProjects.Any() || 
                     UserProjects.Any(up =>
                         up.UserId == CurrentUserId &&
                         up.ProjectId == p.Id));
@@ -87,6 +88,7 @@ namespace Recruitment.Infrastructure.Data
             modelBuilder.Entity<ProjectVacancy>()
                 .HasQueryFilter(pv =>
                     IsAdmin ||
+                    pv.ProjectId == null || 
                     UserProjects.Any(up =>
                         up.UserId == CurrentUserId &&
                         up.ProjectId == pv.ProjectId));
@@ -95,7 +97,8 @@ namespace Recruitment.Infrastructure.Data
             modelBuilder.Entity<Vacancy>()
                 .HasQueryFilter(v =>
                     IsAdmin ||
-                    v.ProjectVacancies!.Any(pv =>
+                    !v.ProjectVacancies!.Any() || 
+                    v.ProjectVacancies.Any(pv =>
                         UserProjects.Any(up =>
                             up.UserId == CurrentUserId &&
                             up.ProjectId == pv.ProjectId)));
@@ -104,7 +107,8 @@ namespace Recruitment.Infrastructure.Data
             modelBuilder.Entity<ApplicantApplication>()
                 .HasQueryFilter(a =>
                     IsAdmin ||
-                    a.Vacancy.ProjectVacancies!.Any(pv =>
+                    !a.Vacancy.ProjectVacancies!.Any() || 
+                    a.Vacancy.ProjectVacancies.Any(pv =>
                         UserProjects.Any(up =>
                             up.UserId == CurrentUserId &&
                             up.ProjectId == pv.ProjectId)));
@@ -113,7 +117,8 @@ namespace Recruitment.Infrastructure.Data
             modelBuilder.Entity<Interview>()
                 .HasQueryFilter(i =>
                     IsAdmin ||
-                    i.Application.Vacancy.ProjectVacancies!.Any(pv =>
+                    !i.Application.Vacancy.ProjectVacancies!.Any() || 
+                    i.Application.Vacancy.ProjectVacancies.Any(pv =>
                         UserProjects.Any(up =>
                             up.UserId == CurrentUserId &&
                             up.ProjectId == pv.ProjectId)));
@@ -122,7 +127,8 @@ namespace Recruitment.Infrastructure.Data
             modelBuilder.Entity<Location>()
                 .HasQueryFilter(l =>
                     IsAdmin ||
-                    l.Projects!.Any(p =>
+                    !l.Projects!.Any() || 
+                    l.Projects.Any(p =>
                         UserProjects.Any(up =>
                             up.UserId == CurrentUserId &&
                             up.ProjectId == p.Id)));

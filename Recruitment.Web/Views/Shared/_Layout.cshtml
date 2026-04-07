@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Recruitment.Domain.Entities.UserManagement
+@inject UserManager<User> UserManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -141,8 +144,15 @@
             <div class="sidebar-footer">
                 <div class="d-flex flex-column gap-2">
                     <div class="text-sm" style="color: var(--sidebar-foreground); opacity: 0.9;">
-                        <i class="bi bi-person-circle"></i>
-                        <span class="ms-2">@User.Identity.Name</span>
+                        <div class="text-sm" style="color: var(--sidebar-foreground); opacity: 0.9;">
+                            <i class="bi bi-person-circle"></i>
+                            <a asp-controller="UserManagement"
+                               asp-action="ChangePassword"
+                               asp-route-userId="@UserManager.GetUserId(User)"
+                               class="ms-2 link-like-text">
+                                @User.Identity.Name
+                            </a>
+                        </div>
                     </div>
                     <form asp-controller="Account" asp-action="Logout" method="post">
                         <button type="submit" class="btn-component btn-destructive w-100">

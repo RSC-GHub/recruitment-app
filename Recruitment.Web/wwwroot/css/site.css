@@ -2,6 +2,17 @@ html {
   font-size: 14px;
 }
 
+.link-like-text {
+    color: inherit; /* Use the parent text color */
+    text-decoration: none; /* Remove underline */
+    cursor: pointer; /* Hand pointer on hover */
+}
+
+    .link-like-text:hover {
+        color: inherit; /* Optional: prevent color change on hover */
+        text-decoration: underline; /* Optional: add subtle hover effect */
+    }
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;

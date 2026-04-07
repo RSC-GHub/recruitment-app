@@ -148,16 +148,16 @@
         // Show any registration messages as toast
         @if (TempData["ErrorMessage"] != null)
         {
-                    <text>
-                    showToast('@TempData["ErrorMessage"]', 'error');
-                    </text>
+                <text>
+                showToast(@Html.Raw(Json.Serialize(TempData["ErrorMessage"])), 'error');
+                </text>
         }
 
         @if (TempData["SuccessMessage"] != null)
         {
-                    <text>
-                    showToast('@TempData["SuccessMessage"]', 'success');
-                    </text>
+                <text>
+                showToast(@Html.Raw(Json.Serialize(TempData["SuccessMessage"])), 'success');
+                </text>
         }
     </script>
 }

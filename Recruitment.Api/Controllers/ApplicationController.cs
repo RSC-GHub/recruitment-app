@@ -16,21 +16,21 @@ namespace Recruitment.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitApplication([FromBody] SubmitApplicationDto dto)
+        public async Task<IActionResult> SubmitApplication([FromForm] SubmitApplicationFromApiDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var application = await _applicantApplicationService.SubmitApplicationAsync(dto);
+            var application = await _applicantApplicationService.SubmitApplicationFromAPIAsync(dto);
 
             return Ok(new
             {
+                Message = "Application submitted successfully",
                 application.Id,
                 application.ApplicationDate,
                 application.ApplicationStatus,
                 Applicant = new { application.Applicant.FullName, application.Applicant.Email }
             });
         }
-
     }
 }
