@@ -78,7 +78,7 @@
                                 <span class="text-muted small">CV</span><br />
                                 @if (!string.IsNullOrWhiteSpace(Model.CVFilePath))
                                 {
-                                    <a class="mb-0 btn-component btn-primary w-50" asp-controller="Applicant" asp-action="DownloadCV" asp-route-filePath="@Model.CVFilePath">
+                                    <a class="mb-0 btn-component btn-primary w-50" asp-controller="Applicant" asp-action="DownloadCV" asp-route-fileName="@Model.CVFilePath">
                                         <i class="bi bi-download me-2"></i>Download CV
                                     </a>
                                 }
