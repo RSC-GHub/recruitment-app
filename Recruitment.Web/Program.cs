@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Recruitment.Application.Interfaces.Services.File;
@@ -15,9 +16,17 @@ namespace Recruitment.Web
 {
     public class Program
     {
-        public static async Task Main(string[] args) 
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Forwarded headers for running behind Nginx reverse proxy
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
 
             builder.Services.AddScoped<IDbConnection>(sp =>
             new SqlConnection(
@@ -58,6 +67,10 @@ namespace Recruitment.Web
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
+
+            // Must be first — translates proxy headers before any redirect logic
+            app.UseForwardedHeaders();
+
             app.UseExceptionHandler("/Home/ErrorModal");
 
             // Custom Middleware
@@ -66,11 +79,14 @@ namespace Recruitment.Web
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // Only redirect to HTTPS if NOT behind a reverse proxy (Nginx handles SSL)
+            if (!app.Environment.IsProduction())
+            {
+                app.UseHttpsRedirection();
+            }
             app.UseStaticFiles();
 
             app.UseRouting();

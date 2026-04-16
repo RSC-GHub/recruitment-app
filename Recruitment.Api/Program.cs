@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,14 @@ public class Program
 
         // ------------------ Services ------------------
 
+        // Forwarded headers for running behind Nginx reverse proxy
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -43,9 +52,10 @@ public class Program
             return new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         });
 
-        builder.Services.Configure<IISServerOptions>(options =>
+        // Kestrel max request body size (50 MB) for CV uploads
+        builder.WebHost.ConfigureKestrel(options =>
         {
-            options.MaxRequestBodySize = 52428800;
+            options.Limits.MaxRequestBodySize = 52428800;
         });
 
         builder.Services.AddScoped<UserManager<User>>(sp => null!);
@@ -79,8 +89,9 @@ public class Program
                 policy.WithOrigins(
                         "https://redseaconstruct.com",
                         "https://www.redseaconstruct.com",
-                        "https://recruitment.rsc.com.eg",  
-                        "http://localhost:3000"            
+                        "https://recruitment.redseaconstruct.com",
+                        "https://recruitment.rsc.com.eg",
+                        "http://localhost:3000"
                       )
                       .AllowAnyHeader()
                       .AllowAnyMethod()
@@ -92,13 +103,20 @@ public class Program
 
         // ------------------ HTTP Pipeline ------------------
 
+        // Must be first — translates proxy headers before any redirect logic
+        app.UseForwardedHeaders();
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        // Only redirect to HTTPS if NOT behind a reverse proxy (Nginx handles SSL)
+        if (!app.Environment.IsProduction())
+        {
+            app.UseHttpsRedirection();
+        }
 
         app.UseStaticFiles();
 
