@@ -189,7 +189,13 @@
                 {
                     <div class="mt-2">
                         <strong>Existing CV:</strong>
-                        <a href="@Model.ExistingCVPath" class="btn btn-sm btn-outline-primary" target="_blank">View / Download</a>
+                        <a class="btn-component btn-secondary w-100 mb-2"
+                           asp-controller="Applicant"
+                           asp-action="ViewCV"
+                           asp-route-fileName="@Model.ExistingCVPath"
+                           target="_blank">
+                            <i class="bi bi-eye me-2"></i>View CV
+                        </a>
                     </div>
                 }
             </div>
@@ -204,6 +210,24 @@
                 <label class="form-field-label">Comment</label>
                 <input asp-for="Comment" type="text" class="form-field-input" id="comment" />
                 <span asp-validation-for="Comment" class="form-field-error"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-field-label">Relatives</label>
+                <input asp-for="Relatives" type="text" class="form-field-input" id="relatives" />
+                <span asp-validation-for="Relatives" class="form-field-error"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-field-label">Leaving Reason</label>
+                <input asp-for="LeavingReason" type="text" class="form-field-input" id="leavingReason" />
+                <span asp-validation-for="LeavingReason" class="form-field-error"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-field-label">TotalExperience (years)<span class="text-danger"> *</span></label>
+                <input asp-for="TotalExperience" class="form-field-input" type="number" id="totalExperience" />
+                <span asp-validation-for="TotalExperience" class="form-field-error"></span>
             </div>
 
 

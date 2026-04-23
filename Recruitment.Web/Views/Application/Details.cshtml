@@ -81,6 +81,14 @@
                                     <a class="mb-0 btn-component btn-primary w-50" asp-controller="Applicant" asp-action="DownloadCV" asp-route-fileName="@Model.CVFilePath">
                                         <i class="bi bi-download me-2"></i>Download CV
                                     </a>
+
+                                    <a class="btn-component btn-secondary w-50 mb-2"
+                                       asp-controller="Applicant"
+                                       asp-action="ViewCV"
+                                       asp-route-fileName="@Model.CVFilePath"
+                                       target="_blank">
+                                        <i class="bi bi-eye me-2"></i>View CV
+                                    </a>
                                 }
                                 else
                                 {

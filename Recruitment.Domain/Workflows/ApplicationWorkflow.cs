@@ -13,7 +13,8 @@ namespace Recruitment.Domain.Workflows
                 [ApplicationStatus.Submitted] = new[]
                 {
                     ApplicationStatus.UnderReview, // Start reviewing the application
-                    ApplicationStatus.Rejected     // Rejected without review
+                    ApplicationStatus.Rejected,    // Rejected without review
+                    ApplicationStatus.NotQualified  // Marked as not qualified after initial screening
                 },
 
                 #endregion
@@ -24,7 +25,8 @@ namespace Recruitment.Domain.Workflows
                 [ApplicationStatus.UnderReview] = new[]
                 {
                     ApplicationStatus.Interviewing, // Candidate selected for interview
-                    ApplicationStatus.Rejected      // Rejected after review
+                    ApplicationStatus.Rejected,      // Rejected after review
+                    ApplicationStatus.NotQualified  // Marked as not qualified after initial screening
                 },
 
                 // Application is on hold due to business reasons
@@ -129,6 +131,12 @@ namespace Recruitment.Domain.Workflows
                 },
 
                 #endregion
+
+                [ApplicationStatus.NotQualified] = new[]
+                {
+                    ApplicationStatus.UnderReview,
+                    ApplicationStatus.Rejected
+                },
             };
 
         public static void ValidateTransition(ApplicationStatus current, ApplicationStatus next)

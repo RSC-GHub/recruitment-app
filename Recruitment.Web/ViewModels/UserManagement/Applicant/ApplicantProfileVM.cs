@@ -38,6 +38,9 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string CVFilePath { get; set; } = null!;
         public string? Comment { get; set; } = string.Empty;
         public string? OfferStatus { get; set; } = string.Empty;
+        public string? LeavingReason { get; set; } = string.Empty;
+        public string? Relatives { get; set; } = string.Empty;
+        public int? TotalExperience { get; set; }
         public List<ApplicantDuplicateVM> Duplicates { get; set; } = new();
 
         // Audit

@@ -40,6 +40,10 @@ namespace Recruitment.Domain.Entities.UserManagement
         public string CVFilePath { get; set; } = null!;
         public string? OfferStatus { get; set; } = string.Empty;
         public string? Comment { get; set; } = string.Empty;
+        public string? LeavingReason { get; set; } = string.Empty;  
+        public string? Relatives { get; set; } = string.Empty; 
+        public int? TotalExperience { get; set; }
+
         public ICollection<ApplicantApplication> Applications { get; set; } = new List<ApplicantApplication>();
 
         // solve duplicate applicants issue
@@ -47,7 +51,6 @@ namespace Recruitment.Domain.Entities.UserManagement
         public Applicant? MasterApplicant { get; set; }
 
         public ICollection<Applicant> Duplicates { get; set; } = new List<Applicant>();
-
 
     }
 }

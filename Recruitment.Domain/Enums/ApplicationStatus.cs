@@ -19,6 +19,7 @@
 
         Hired,
         Notshow,
-        Rejected
+        Rejected,
+        NotQualified
     }
 }

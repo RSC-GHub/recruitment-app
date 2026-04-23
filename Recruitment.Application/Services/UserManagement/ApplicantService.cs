@@ -46,6 +46,9 @@ namespace Recruitment.Application.Services.UserManagement
                 ExtraCertificate = dto.ExtraCertificate,
                 Comment = dto.Comment,
                 OfferStatus = dto.OfferStatus,
+                LeavingReason = dto.LeavingReason,
+                Relatives = dto.Relatives,
+                TotalExperience = dto.TotalExperience
             };
 
             if (dto.CV != null)
@@ -143,6 +146,9 @@ namespace Recruitment.Application.Services.UserManagement
             applicant.ExtraCertificate = dto.ExtraCertificate;
             applicant.Comment = dto.Comment;
             applicant.OfferStatus = dto.OfferStatus;
+            applicant.LeavingReason = dto.LeavingReason;
+            applicant.Relatives = dto.Relatives;
+            applicant.TotalExperience = dto.TotalExperience;
 
             if (dto.CV != null)
             {
@@ -228,6 +234,9 @@ namespace Recruitment.Application.Services.UserManagement
                 CVFilePath = applicant.CVFilePath,
                 Comment = applicant.Comment,
                 OfferStatus = applicant.OfferStatus,
+                LeavingReason = applicant.LeavingReason,
+                Relatives = applicant.Relatives,
+                TotalExperience = applicant.TotalExperience
             };
         }
 
@@ -244,7 +253,9 @@ namespace Recruitment.Application.Services.UserManagement
                 Email = applicant.Email,
                 PhoneNumber = applicant.PhoneNumber,
                 Comment = applicant.Comment,
-                OfferStatus = applicant.OfferStatus,
+                OfferStatus = applicant.OfferStatus, 
+                Relatives = applicant.Relatives, 
+                TotalExperience = applicant.TotalExperience,
 
                 CountryId = applicant.CountryId,
                 CountryName = applicant.Country.Name,
@@ -255,6 +266,7 @@ namespace Recruitment.Application.Services.UserManagement
 
                 CurrentJob = applicant.CurrentJob,
                 CurrentEmployer = applicant.CurrentEmployer,
+                LeavingReason = applicant.LeavingReason,
 
                 CurrentSalary = applicant.CurrentSalary,
                 ExpectedSalary = applicant.ExpectedSalary,
@@ -348,6 +360,9 @@ namespace Recruitment.Application.Services.UserManagement
                 CityName = baseApplicant.City,
                 Comment = baseApplicant.Comment,
                 OfferStatus = baseApplicant.OfferStatus,
+                LeavingReason = baseApplicant.LeavingReason,
+                Relatives = baseApplicant.Relatives,
+                TotalExperience = baseApplicant.TotalExperience,
 
                 Applications = allApplications.Select(app => new ApplicationHistoryDto
                 {

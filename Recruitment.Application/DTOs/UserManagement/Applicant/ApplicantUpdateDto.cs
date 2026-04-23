@@ -40,7 +40,11 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
 
 
         public IFormFile? CV { get; set; }
-        public string? CVFilePath { get; set; }  
+        public string? CVFilePath { get; set; }
+
+        public string? LeavingReason { get; set; } = string.Empty;
+        public string? Relatives { get; set; } = string.Empty;
+        public int? TotalExperience { get; set; }
 
     }
 }

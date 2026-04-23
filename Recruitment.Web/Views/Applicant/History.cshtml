@@ -32,6 +32,10 @@
                 <div>@(Model.CityName ?? "-")</div>
             </div>
             <div class="col-md-3">
+                <label class="form-label text-muted">Relatives</label>
+                <div>@(Model.Relatives)</div>
+            </div>
+            <div class="col-md-3">
                 <label class="form-label text-muted">Offer Status</label>
                 <div>@(Model.OfferStatus ?? "-")</div>
             </div>
@@ -39,6 +43,11 @@
                 <label class="form-label text-muted">Comment</label>
                 <div>@(Model.Comment ?? "-")</div>
             </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted">Total Experience</label>
+                <div>@(Model.TotalExperience)</div>
+            </div>
+            
         </div>
 
         <hr class="my-4" />

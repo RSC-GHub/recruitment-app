@@ -72,7 +72,13 @@ namespace Recruitment.Application.Services.CoreBusiness
             return titles.Select(t => new TitleDto
             {
                 Id = t.Id,
-                Name = t.Name
+                Name = t.Name,
+                Departments = t.DepartmentTitles?
+                        .Select(dt => new DepartmentDto
+                        {
+                            Name = dt.Department!.Name
+                        })
+                        .ToList() ?? new List<DepartmentDto>()
             });
         }
 

@@ -31,9 +31,19 @@ namespace Recruitment.Web.Controllers
 
         private async Task PopulateDropdowns(VacancyCreateVM vm)
         {
-            vm.TitlesDropdown = (await _titleService.GetAllAsync())
-                                .Select(t => new SelectListItem(t.Name, t.Id.ToString()))
-                                .ToList();
+            vm.TitlesDropdown = (await _titleService.GetAllWithDepartmentsAsync())
+                .Select(t =>
+                {
+                    var deptNames = t.Departments.Any()
+                        ? string.Join(", ", t.Departments.Select(d => d.Name))
+                        : "Unknown";
+
+                    return new SelectListItem(
+                        $"{t.Name} - {deptNames}",
+                        t.Id.ToString()
+                    );
+                })
+                .ToList();
 
             vm.ProjectsDropdown = (await _projectService.GetAllActiveProjectsAsync())
                                   .Select(p => new SelectListItem(p.ProjectName, p.Id.ToString()))

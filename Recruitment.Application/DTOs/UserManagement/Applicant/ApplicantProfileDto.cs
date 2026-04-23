@@ -12,6 +12,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string PhoneNumber { get; set; } = null!;
         public string? Comment { get; set; } = string.Empty;
         public string? OfferStatus { get; set; } = string.Empty;
+        public string? Relatives { get; set; } = string.Empty;
+        public int? TotalExperience { get; set; }
 
 
 
@@ -25,6 +27,7 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string? TargetPosition { get; set; }
         public string CurrentJob { get; set; } = null!;
         public string CurrentEmployer { get; set; } = null!;
+        public string? LeavingReason { get; set; } = string.Empty;
 
         public decimal CurrentSalary { get; set; }
         public decimal ExpectedSalary { get; set; }

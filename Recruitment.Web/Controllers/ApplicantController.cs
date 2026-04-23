@@ -127,6 +127,9 @@ namespace Recruitment.Web.Controllers
                 CityName = dto.CityName,
                 Comment = dto.Comment,
                 OfferStatus = dto.OfferStatus,
+                LeavingReason = dto.LeavingReason,
+                Relatives = dto.Relatives,
+                TotalExperience = dto.TotalExperience,
 
                 Applications = dto.Applications.Select(app => new ApplicationHistoryVM
                 {
@@ -229,6 +232,9 @@ namespace Recruitment.Web.Controllers
                     CV = vm.CV,
                     Comment = vm.Comment,
                     OfferStatus = vm.OfferStatus,
+                    LeavingReason = vm.LeavingReason,
+                    Relatives = vm.Relatives,
+                    TotalExperience = vm.TotalExperience
                 };
 
                 await _applicantService.CreateApplicantAsync(dto);
@@ -279,6 +285,9 @@ namespace Recruitment.Web.Controllers
                 ExistingCVPath = dto.CVFilePath,
                 Comment = dto.Comment,
                 OfferStatus = dto.OfferStatus,
+                LeavingReason = dto.LeavingReason,
+                Relatives = dto.Relatives,
+                TotalExperience = dto.TotalExperience
             };
 
             await LoadDropdowns(vm);
@@ -347,6 +356,9 @@ namespace Recruitment.Web.Controllers
                 CV = vm.CV,
                 Comment = vm.Comment,
                 OfferStatus = vm.OfferStatus,
+                LeavingReason = vm.LeavingReason,
+                Relatives = vm.Relatives,
+                TotalExperience = vm.TotalExperience,
             };
 
             await _applicantService.UpdateApplicantAsync(dto);
@@ -374,11 +386,14 @@ namespace Recruitment.Web.Controllers
                 Nationality = dto.Nationality,
                 Comment = dto.Comment,
                 OfferStatus = dto.OfferStatus,
-
+                Relatives = dto.Relatives, 
+                
+                TotalExperience = dto.TotalExperience,
                 TargetPosition = dto.TargetPosition,
 
                 CurrentJob = dto.CurrentJob,
                 CurrentEmployer = dto.CurrentEmployer,
+                LeavingReason = dto.LeavingReason,
                 CurrentSalary = dto.CurrentSalary,
                 ExpectedSalary = dto.ExpectedSalary,
 
@@ -446,6 +461,22 @@ namespace Recruitment.Web.Controllers
                 return NotFound();
 
             return PhysicalFile(fullPath, "application/octet-stream", fileName);
+        }
+
+        [HttpGet]
+        public IActionResult ViewCV(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+                return NotFound();
+
+            var fullPath = Path.Combine(_cvPath, fileName);
+
+            if (!System.IO.File.Exists(fullPath))
+                return NotFound();
+
+            var contentType = "application/pdf"; 
+
+            return PhysicalFile(fullPath, contentType);
         }
 
 
