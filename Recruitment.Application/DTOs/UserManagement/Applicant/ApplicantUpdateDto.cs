@@ -21,7 +21,7 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public string CurrentEmployer { get; set; } = null!;
 
         public decimal CurrentSalary { get; set; }
-        public decimal ExpectedSalary { get; set; }
+        public decimal? ExpectedSalary { get; set; }
 
         public int CurrencyId { get; set; }
 

@@ -43,8 +43,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         [Required]
         public decimal CurrentSalary { get; set; }
 
-        [Required]
-        public decimal ExpectedSalary { get; set; }
+        public decimal? ExpectedSalary { get; set; }
 
         [Required]
         public int CurrencyId { get; set; }

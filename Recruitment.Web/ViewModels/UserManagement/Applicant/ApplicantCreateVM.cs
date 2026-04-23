@@ -56,10 +56,9 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         [Display(Name = "Current Salary")]
         public decimal CurrentSalary { get; set; }
 
-        [Required(ErrorMessage = "Expected Salary is required")]
         [Range(0, double.MaxValue, ErrorMessage = "Expected Salary must be a positive value")]
         [Display(Name = "Expected Salary")]
-        public decimal ExpectedSalary { get; set; }
+        public decimal? ExpectedSalary { get; set; }
 
         [Required(ErrorMessage = "Currency is required")]
         [Display(Name = "Currency")]
