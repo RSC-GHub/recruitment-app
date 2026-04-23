@@ -21,7 +21,7 @@ namespace Recruitment.Domain.Entities.UserManagement
         public string CurrentEmployer { get; set; } = null!;
 
         public decimal CurrentSalary { get; set; }
-        public decimal? ExpectedSalary { get; set; }
+        public decimal ExpectedSalary { get; set; }
 
         public int CurrencyId { get; set; }
         public Currency Currency { get; set; } = null!;

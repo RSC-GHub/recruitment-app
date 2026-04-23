@@ -20,7 +20,7 @@ namespace Recruitment.Web.ViewModels.UserManagement.Applicant
         public string CurrentEmployer { get; set; } = null!;
 
         public decimal CurrentSalary { get; set; }
-        public decimal? ExpectedSalary { get; set; }
+        public decimal ExpectedSalary { get; set; }
 
         public int CurrencyId { get; set; }
         public string CurrencyName { get; set; } = null!;

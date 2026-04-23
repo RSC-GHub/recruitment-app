@@ -47,6 +47,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                 .HasColumnType("decimal(18,2)");
 
             builder.Property(x => x.ExpectedSalary)
+                .IsRequired()
                 .HasColumnType("decimal(18,2)");
 
             builder.Property(x => x.NoticePeriod)

@@ -23,8 +23,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public DateTime StartingDate { get; set; } 
 
         public decimal? CurrentSalary { get; set; }
-        public decimal ExpectedSalary { get; set; }
-        public int? NoticePeriod { get; set; } 
+        public decimal? ExpectedSalary { get; set; }
+        public int? NoticePeriod { get; set; }
 
         public string Address { get; set; }
 

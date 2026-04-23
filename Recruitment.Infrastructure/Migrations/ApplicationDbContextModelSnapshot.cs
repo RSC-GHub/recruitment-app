@@ -959,7 +959,7 @@ namespace Recruitment.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<decimal?>("ExpectedSalary")
+                    b.Property<decimal>("ExpectedSalary")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ExtraCertificate")
