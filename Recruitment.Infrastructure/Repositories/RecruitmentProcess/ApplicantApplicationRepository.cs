@@ -75,8 +75,9 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                 .Include(a => a.Applicant)
                 .Include(a => a.Vacancy)
                     .ThenInclude(v => v.Title)
-                .Include(a => a.RejectionReasons)            
-                    .ThenInclude(ar => ar.RejectionReason) 
+                .Include(a => a.RejectionReasons)
+                    .ThenInclude(ar => ar.RejectionReason)
+                .Include(a => a.AssignedToUser)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (application?.ReviewedBy != null)
@@ -120,7 +121,7 @@ namespace Recruitment.Infrastructure.Repositories.RecruitmentProcess
                     (a.Applicant.Email != null && a.Applicant.Email.Contains(search)) ||
                     (a.Applicant.PhoneNumber != null && a.Applicant.PhoneNumber.Contains(search)) ||
                     (a.Note != null && a.Note.Contains(search)) ||
-                    (a.Vacancy.Title != null && a.Vacancy.Title.Name.Contains(search)) || 
+                    (a.Vacancy.Title != null && a.Vacancy.Title.Name.Contains(search)) ||
                     (a.Applicant.CurrentJob != null && a.Applicant.CurrentJob.Contains(search)) ||
                     (a.Applicant.TargetPosition != null && a.Applicant.TargetPosition.Contains(search))
                 );

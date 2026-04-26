@@ -28,6 +28,7 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public ApplicationStatus ApplicationStatus { get; set; }
         public DateTime ApplicationDate { get; set; }
         public string ReviewedByUserName { get; set; } = "-";
+        public int? AssignedTo { get; set; }
         public string? Note { get; set; }
         public DateTime? ExpectedFirstDate { get; set; }
         public DateTime? ActualFirstDate { get; set; }

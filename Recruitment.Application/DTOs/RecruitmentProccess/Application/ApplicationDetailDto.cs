@@ -27,6 +27,11 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
         // Review info
         public int? ReviewedBy { get; set; }
         public string? ReviewedByUserName { get; set; }
+
+        public int? AssignedTo { get; set; }
+        public string? AssignedUserName { get; set; }
+        public DateTime? AssignedAt { get; set; }
+
         public DateTime? ReviewDate { get; set; }
         public string? Note { get; set; }
 

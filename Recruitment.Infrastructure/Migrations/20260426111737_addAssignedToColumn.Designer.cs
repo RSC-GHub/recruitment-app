@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruitment.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Recruitment.Infrastructure.Data;
 namespace Recruitment.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260426111737_addAssignedToColumn")]
+    partial class addAssignedToColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -731,6 +734,9 @@ namespace Recruitment.Infrastructure.Migrations
                     b.Property<int?>("AssignedTo")
                         .HasColumnType("int");
 
+                    b.Property<int?>("AssignedToUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -763,7 +769,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasIndex("ApplicantId");
 
-                    b.HasIndex("AssignedTo");
+                    b.HasIndex("AssignedToUserId");
 
                     b.HasIndex("ReviewedBy");
 
@@ -1867,8 +1873,7 @@ namespace Recruitment.Infrastructure.Migrations
 
                     b.HasOne("Recruitment.Domain.Entities.UserManagement.User", "AssignedToUser")
                         .WithMany()
-                        .HasForeignKey("AssignedTo")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AssignedToUserId");
 
                     b.HasOne("Recruitment.Domain.Entities.UserManagement.User", "Reviewer")
                         .WithMany("ReviewedApplications")

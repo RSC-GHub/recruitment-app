@@ -87,7 +87,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 50px;">#</th>
+                            @* <th style="width: 50px;">#</th> *@
                             <th style="min-width: 200px;">Applicant</th>
                             <th style="min-width: 200px;">Email</th>
                             <th style="min-width: 130px;">Phone</th>
@@ -106,7 +106,7 @@
                             @foreach (var app in Model.Applications)
                             {
                                 <tr>
-                                    <td>@app.Id</td>
+                                    @* <td>@app.Id</td> *@
                                     <td>
                                         <a asp-action="Profile" asp-controller="Applicant" asp-route-id="@app.ApplicantId" 
                                            class="d-flex align-items-center gap-2 text-decoration-none">

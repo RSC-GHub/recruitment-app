@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Vacancies";
 }
-
+@Html.AntiForgeryToken()
 <!-- Page Header -->
 <div class="flex-between mb-4">
     <div>
@@ -287,9 +287,10 @@
             if (confirm(`Are you sure you want to delete vacancy "${title}"? This action cannot be undone.`)) {
                 fetch(`/Vacancy/Delete/${vacancyId}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
+                         headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+        }
                 })
                 .then(response => {
                     if (response.ok) {

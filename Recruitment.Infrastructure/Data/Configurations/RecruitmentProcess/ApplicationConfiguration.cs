@@ -35,6 +35,10 @@ namespace Recruitment.Infrastructure.Data.Configurations.Recruitment_Process
                    .HasForeignKey(a => a.ReviewedBy)
                    .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(a => a.AssignedToUser)
+                .WithMany()
+                .HasForeignKey(a => a.AssignedTo)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Properties
 

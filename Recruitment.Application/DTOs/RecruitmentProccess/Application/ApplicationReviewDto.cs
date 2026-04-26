@@ -6,6 +6,8 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
     {
         public int ApplicationId { get; set; }
         public int ReviewedBy { get; set; }
+        public int? AssignedTo { get; set; }
+        public DateTime? AssignedAt { get; set; }
         public ApplicationStatus ApplicationStatus { get; set; }
         public string? Note { get; set; }
         public DateTime? ExpectedFirstDate { get; set; } 

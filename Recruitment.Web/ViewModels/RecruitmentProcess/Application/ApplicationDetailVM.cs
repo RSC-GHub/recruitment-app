@@ -28,7 +28,11 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
 
         public int? ReviewedBy { get; set; }
         public string? ReviewedByUserName { get; set; }
+
+        public int? AssginedTo { get; set; }
+        public string? AssignedUserName { get; set; }
         public DateTime? ReviewDate { get; set; }
+        public DateTime? AssignedAt { get; set; }
         public string? Note { get; set; }
         public bool HasFirstInterview { get; set; }
         public string CVFilePath { get; set; } = null!;

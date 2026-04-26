@@ -94,6 +94,13 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 application.ApplicationStatus,
                 dto.ApplicationStatus);
 
+            if (dto.ApplicationStatus == ApplicationStatus.UnderReview)
+            {
+                // Soft assign only once
+                application.AssignedTo ??= userId.Value;
+                application.AssignedAt ??= DateTime.UtcNow;
+            }
+
             if (dto.ApplicationStatus == ApplicationStatus.AcceptedOffer)
             {
                 if (!dto.ExpectedFirstDate.HasValue)
@@ -413,6 +420,11 @@ namespace Recruitment.Application.Services.RecruitmentProccess
 
                 ReviewedBy = entity.ReviewedBy,
                 ReviewedByUserName = entity.Reviewer?.FullName,
+
+                AssignedTo = entity.AssignedTo,
+                AssignedUserName = entity.AssignedToUser?.FullName,
+                AssignedAt = entity.AssignedAt,
+
                 ReviewDate = entity.ReviewDate,
                 Note = entity.Note,
 
