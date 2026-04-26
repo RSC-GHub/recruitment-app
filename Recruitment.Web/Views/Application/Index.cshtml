@@ -169,6 +169,7 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <form asp-action="DeleteConfirmed" method="post">
+                                                @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@app.Id" />
                                                 
                                                 <div class="modal-header" style="background-color: hsl(0, 84%, 60%); color: white;">

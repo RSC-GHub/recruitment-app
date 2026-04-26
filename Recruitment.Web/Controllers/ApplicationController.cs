@@ -193,12 +193,16 @@ namespace Recruitment.Web.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [HasPermission("Application", "Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _applicationService.DeleteApplicationAsync(id);
 
             if (!result)
                 return NotFound();
+
+            TempData["SuccessMessage"] = "Application deleted successfully";
 
             return RedirectToAction(nameof(Index));
         }
