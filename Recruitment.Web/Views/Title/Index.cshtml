@@ -14,7 +14,7 @@
         </h2>
         <p class="card-description">Manage job titles and positions</p>
     </div>
-    @if (PermissionService.HasPermission("Title", "Create"))
+    @if (await PermissionService.HasPermissionAsync("Title", "Create"))
     {
         <button type="button" class="btn-component btn-primary" data-bs-toggle="modal" data-bs-target="#createModal" style="background-color: hsl(202 80.3% 23.9%); border-color: hsl(202 80.3% 23.9%); color: #fff;">
             <i class="bi bi-plus-lg me-2"></i>
@@ -86,7 +86,7 @@
                     <th style="width:80px">#</th>
                     <th>Title Name</th>
                     <th>Departments</th>
-                    @if (PermissionService.HasPermission("Title", "Edit") || PermissionService.HasPermission("Title", "Delete"))
+                    @if (await PermissionService.HasPermissionAsync("Title", "Edit") || await PermissionService.HasPermissionAsync("Title", "Delete"))
                     {
                         <th style="width:150px;" class="text-end">Actions</th>
                     }
@@ -121,7 +121,7 @@
                             </td>
                             <td class="text-end">
                                 <div class="d-flex gap-2 justify-content-end">
-                                    @if (PermissionService.HasPermission("Title", "Edit"))
+                                    @if (await PermissionService.HasPermissionAsync("Title", "Edit"))
                                     {
                                         <button type="button"
                                                 class="btn-component btn-sm btn-primary edit-btn"
@@ -134,7 +134,7 @@
                                             <i class="bi bi-pencil"></i>
                                         </button>
                                     }
-                                    @if (PermissionService.HasPermission("Title", "Delete"))
+                                    @if (await PermissionService.HasPermissionAsync("Title", "Delete"))
                                     {
                                         <button type="button"
                                                 class="btn-component btn-sm btn-destructive delete-btn"

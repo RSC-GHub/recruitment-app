@@ -25,7 +25,8 @@ namespace Recruitment.Web.Controllers
                                         IDepartmentService departmentService,
                                         SignInManager<User> signInManager,
                                         IUnitOfWork unitOfWork,
-                                        IUserProjectService userProjectService)
+                                        IUserProjectService userProjectService,
+                                        SignInManager<User> signInManager1)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -33,6 +34,7 @@ namespace Recruitment.Web.Controllers
             _departmentService = departmentService;
             _unitOfWork = unitOfWork;
             _userProjectService = userProjectService;
+            _signInManager = signInManager1;
         }
 
         // GET: Users

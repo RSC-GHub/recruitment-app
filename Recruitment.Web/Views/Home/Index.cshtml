@@ -356,7 +356,7 @@
 
                     <div class="d-grid gap-3 mt-auto">
 
-                        @if (PermissionService.HasPermission("Vacancy", "Create"))
+                        @if (await PermissionService.HasPermissionAsync("Vacancy", "Create"))
                         {
                             <a asp-controller="Vacancy"
                                asp-action="Create"

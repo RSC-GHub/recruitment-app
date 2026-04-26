@@ -14,7 +14,7 @@
         </h2>
         <p class="card-description">Manage application rejection reasons</p>
     </div>
-    @if (PermissionService.HasPermission("RejectionReason", "Create"))
+    @if (await PermissionService.HasPermissionAsync("RejectionReason", "Create"))
     {
         <button type="button"
                 class="btn-component btn-primary"
@@ -77,7 +77,7 @@
                             <th style="width:60px;display:none;">#</th>
                             <th>Reason</th>
                             <th>Type</th>
-                            @if (PermissionService.HasPermission("RejectionReason", "Edit") || PermissionService.HasPermission("RejectionReason", "Delete"))
+                            @if (await PermissionService.HasPermissionAsync("RejectionReason", "Edit") || await PermissionService.HasPermissionAsync("RejectionReason", "Delete"))
                             {
                                 <th style="width:150px" class="text-end">Actions</th>
                             }
@@ -98,7 +98,7 @@
                                         </span>
                                     </td>
                                     <td class="text-end">
-                                        @if (PermissionService.HasPermission("RejectionReason", "Edit"))
+                                        @if (await PermissionService.HasPermissionAsync("RejectionReason", "Edit"))
                                         {
                                             <button class="btn-component btn-sm btn-primary"
                                                     data-bs-toggle="modal"
@@ -110,7 +110,7 @@
                                             </button>
                                         }
 
-                                        @if (PermissionService.HasPermission("RejectionReason", "Delete"))
+                                        @if (await PermissionService.HasPermissionAsync("RejectionReason", "Delete"))
                                         {
                                             <button class="btn-component btn-sm btn-destructive"
                                                     data-bs-toggle="modal"

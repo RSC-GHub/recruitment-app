@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Recruitment.Application.DTOs.UserManagement.Permission;
 using Recruitment.Application.Interfaces.Services.UserManagement;
+using Recruitment.Domain.Entities.UserManagement;
 using Recruitment.Web.Authorization;
 using Recruitment.Web.ViewModels.UserManagement;
 
@@ -9,10 +11,16 @@ namespace Recruitment.Web.Controllers
     public class PermissionController : Controller
     {
         private readonly IPermissionService _permissionService;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
 
-        public PermissionController(IPermissionService permissionService)
+        public PermissionController(IPermissionService permissionService, 
+            SignInManager<User> signInManager,
+            UserManager<User> userManager)
         {
             _permissionService = permissionService;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         // GET: Permission
@@ -66,6 +74,11 @@ namespace Recruitment.Web.Controllers
                 return View(dto);
 
             await _permissionService.AddAsync(dto);
+
+            var user = await _userManager.GetUserAsync(User);
+            await _signInManager.RefreshSignInAsync(user);
+
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -111,6 +124,10 @@ namespace Recruitment.Web.Controllers
             }
 
             TempData["Success"] = "Permissions generated successfully.";
+
+            var user = await _userManager.GetUserAsync(User);
+            await _signInManager.RefreshSignInAsync(user);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -144,6 +161,10 @@ namespace Recruitment.Web.Controllers
                 return View(dto);
 
             await _permissionService.UpdateAsync(dto);
+
+            var user = await _userManager.GetUserAsync(User);
+            await _signInManager.RefreshSignInAsync(user);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -154,6 +175,10 @@ namespace Recruitment.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _permissionService.DeleteAsync(id);
+
+            var user = await _userManager.GetUserAsync(User);
+            await _signInManager.RefreshSignInAsync(user);
+
             return Ok();
         }
     }

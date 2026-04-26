@@ -15,7 +15,7 @@
         </h2>
         <p class="card-description">Manage interviewers and their departments</p>
     </div>
-    @if (PermissionService.HasPermission("Interviewer", "Create"))
+    @if (await PermissionService.HasPermissionAsync("Interviewer", "Create"))
     {
         <button type="button"
                 class="btn-component btn-primary"
@@ -80,7 +80,7 @@
                             <th style="width:60px;">#</th>
                             <th>Name</th>
                             <th>Department</th>
-                            @if (PermissionService.HasPermission("Interviewer", "Edit") || PermissionService.HasPermission("Interviewer", "Delete"))
+                            @if (await PermissionService.HasPermissionAsync("Interviewer", "Edit") || await PermissionService.HasPermissionAsync("Interviewer", "Delete"))
                             {
                                 <th style="width:150px" class="text-end">Actions</th>
                             }
@@ -98,7 +98,7 @@
                                     <td>@item.DepartmentName</td>
                                     <td class="text-end">
                                         <div class="d-flex gap-2 justify-content-end">
-                                            @if (PermissionService.HasPermission("Interviewer", "Edit"))
+                                            @if (await PermissionService.HasPermissionAsync("Interviewer", "Edit"))
                                             {
                                                 <button type="button"
                                                         class="btn-component btn-sm btn-primary"
@@ -111,7 +111,7 @@
                                                 </button>
                                             }
 
-                                            @if (PermissionService.HasPermission("Interviewer", "Delete"))
+                                            @if (await PermissionService.HasPermissionAsync("Interviewer", "Delete"))
                                             {
                                                 <button type="button"
                                                         class="btn-component btn-sm btn-destructive"

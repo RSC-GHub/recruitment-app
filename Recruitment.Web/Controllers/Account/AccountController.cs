@@ -62,7 +62,7 @@ namespace Recruitment.Web.Controllers.Account
                     // Get permissions
                     var permissions = await GetUserPermissions(user.Id);
 
-                    claims.AddRange(permissions.Select(p => new Claim("Permission", p)));
+                    //claims.AddRange(permissions.Select(p => new Claim("Permission", p)));
 
                     await _signInManager.SignInWithClaimsAsync(user, model.RememberMe, claims);
 

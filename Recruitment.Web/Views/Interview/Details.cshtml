@@ -14,7 +14,7 @@
             @if (Model.InterviewStatus != InterviewStatus.Completed
                         && Model.InterviewStatus != InterviewStatus.Cancelled)
             {
-                @if (PermissionService.HasPermission("Interview", "Edit"))
+                @if (await PermissionService.HasPermissionAsync("Interview", "Edit"))
                 {
                     <button type="button"
                             class="btn-component btn-outline"
@@ -23,7 +23,7 @@
                         <i class="bi bi-pencil me-2"></i>Edit Interview
                     </button>
                 }
-                @if (PermissionService.HasPermission("Interview", "RegisterFinalResult"))
+                @if (await PermissionService.HasPermissionAsync("Interview", "RegisterFinalResult"))
                 {
                     <button type="button"
                             class="btn-component btn-primary"

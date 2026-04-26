@@ -79,7 +79,7 @@
                                 </div>
                             </button>
                         </h2>
-                        <div id="@appCollapseId" class="accordion-collapse collapse" aria-labelledby="@appHeaderId" data-bs-parent="#applicationsAccordion">
+                        <div id="@appCollapseId" class="accordion-collapse collapse" aria-labelledby="@appHeaderId">
                             <div class="accordion-body">
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-4">
@@ -117,7 +117,7 @@
                                 </div>
 
 
-                                @if (app.Interviews.Any())
+                                @if (app.Interviews?.Any() == true)
                                 {
                                     <h6 class="mb-3 mt-4">
                                         <i class="bi bi-calendar-event me-2"></i>

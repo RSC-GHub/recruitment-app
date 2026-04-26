@@ -14,7 +14,7 @@
         </h2>
         <p class="card-description">Manage projects and assignments</p>
     </div>
-    @if (PermissionService.HasPermission("Project", "Create"))
+    @if (await PermissionService.HasPermissionAsync("Project", "Create"))
     {
         <button type="button"
                 class="btn-component btn-primary"
@@ -97,7 +97,7 @@
                     <th>Project Name</th>
                     <th>Status</th>
                     <th>Location</th>
-                    @if (PermissionService.HasPermission("Project", "Edit"))
+                    @if (await PermissionService.HasPermissionAsync("Project", "Edit"))
                     {
                         <th class="text-end" style="width:150px;">Actions</th>
                     }
@@ -132,7 +132,7 @@
                             </td>
                             <td>@p.LocationName</td>
                             <td class="text-end">
-                                @if (PermissionService.HasPermission("Project", "Edit"))
+                                @if (await PermissionService.HasPermissionAsync("Project", "Edit"))
                                 {
                                     <button class="btn-component btn-sm btn-primary"
                                             data-bs-toggle="modal"

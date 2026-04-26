@@ -10,7 +10,7 @@ namespace Recruitment.Application.Interfaces.Services.UserManagement
         Task UpdateAsync(UpdatePermissionDto dto);
         Task DeleteAsync(int id);
 
-        bool HasPermission(string module, string action);
+        Task<bool> HasPermissionAsync(string module, string action);
 
     }
 }

@@ -1,5 +1,7 @@
+@using Recruitment.Application.Interfaces.Services.UserManagement
+@using Recruitment.Application.Services.UserManagement
 @model Recruitment.Web.ViewModels.RecruitmentProcess.Application.ApplicationIndexVM
-
+@inject IPermissionService PermissionService
 @{
     ViewData["Title"] = "Applications";
 }
@@ -147,13 +149,17 @@
                                                title="View Details">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <button type="button"
+                                            @if (await PermissionService.HasPermissionAsync("Application", "Delete"))
+                                            {
+                                                <button type="button"
                                                     class="btn-component btn-sm btn-destructive"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal-@app.Id"
                                                     title="Delete Application">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            }
+                                            
                                         </div>
                                     </td>
                                 </tr>

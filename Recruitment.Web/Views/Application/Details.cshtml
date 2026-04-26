@@ -11,7 +11,7 @@
     <div class="card-header flex-between">
         <h2 class="card-title"><i class="bi bi-file-earmark-person me-2"></i>Application Details</h2>
         <div class="d-flex gap-2">
-            @if (PermissionService.HasPermission("Application", "ReviewApplication"))
+            @if (await PermissionService.HasPermissionAsync("Application", "ReviewApplication"))
             {
                 <!-- Action Button -->
                 <button class="btn-component btn-primary"
@@ -28,7 +28,7 @@
             @* Show Schedule Interview only if allowed *@
             @if (ViewBag.CanAddInterview)
             {
-                @if (PermissionService.HasPermission("Interview", "Create"))
+                @if (await PermissionService.HasPermissionAsync("Interview", "Create"))
                 {
                     <button class="btn-component btn-outline" data-bs-toggle="modal" data-bs-target="#addInterviewModal">
                         <i class="bi bi-calendar-plus me-2"></i>Schedule Interview

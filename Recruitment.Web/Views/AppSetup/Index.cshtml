@@ -16,7 +16,7 @@
 
     <div class="row g-4">
 
-        @if (PermissionService.HasPermission("Country", "View"))
+        @if (await PermissionService.HasPermissionAsync("Country", "View"))
         {
             <!-- Country -->
             <div class="col-md-4">
@@ -32,7 +32,7 @@
             </div>
         }
 
-        @if (PermissionService.HasPermission("Location", "View"))
+        @if (await PermissionService.HasPermissionAsync("Location", "View"))
         {
             <!-- Location -->
             <div class="col-md-4">
@@ -48,7 +48,7 @@
             </div>
         }
 
-        @if (PermissionService.HasPermission("Department", "View"))
+        @if (await PermissionService.HasPermissionAsync("Department", "View"))
         {
             <!-- Department -->
             <div class="col-md-4">
@@ -64,7 +64,7 @@
             </div>
         }
 
-        @if (PermissionService.HasPermission("Title", "View"))
+        @if (await PermissionService.HasPermissionAsync("Title", "View"))
         {
             <!-- Title -->
             <div class="col-md-4">
@@ -80,7 +80,7 @@
             </div>
         }
 
-        @if (PermissionService.HasPermission("Project", "View"))
+        @if (await PermissionService.HasPermissionAsync("Project", "View"))
         {
             <!-- Project -->
             <div class="col-md-4">
@@ -96,7 +96,7 @@
             </div>
         }
 
-        @if (PermissionService.HasPermission("Currency", "View"))
+        @if (await PermissionService.HasPermissionAsync("Currency", "View"))
         {
             <!-- Currency -->
             <div class="col-md-4">
@@ -112,7 +112,7 @@
             </div>
         }
 
-        @if (PermissionService.HasPermission("RejectionReason", "View"))
+        @if (await PermissionService.HasPermissionAsync("RejectionReason", "View"))
         {
             <!-- Rejection Reasons -->
             <div class="col-md-4">
@@ -128,7 +128,7 @@
             </div>
         }
 
-        @if (PermissionService.HasPermission("Interviewer", "View"))
+        @if (await PermissionService.HasPermissionAsync("Interviewer", "View"))
         {
             <!-- Interviewers -->
             <div class="col-md-4">

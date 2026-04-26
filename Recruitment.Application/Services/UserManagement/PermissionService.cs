@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Recruitment.Application.DTOs.UserManagement.Permission;
 using Recruitment.Application.Interfaces.Persistence;
 using Recruitment.Application.Interfaces.Services.UserManagement;
 using Recruitment.Domain.Entities.UserManagement;
+using System.Security.Claims;
 
 namespace Recruitment.Application.Services.UserManagement
 {
@@ -10,12 +14,19 @@ namespace Recruitment.Application.Services.UserManagement
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
 
 
-        public PermissionService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+        public PermissionService(IUnitOfWork unitOfWork, 
+            IHttpContextAccessor httpContextAccessor,
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager)
         {
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<IEnumerable<PermissionDto>> GetAllAsync()
@@ -86,17 +97,31 @@ namespace Recruitment.Application.Services.UserManagement
             await _unitOfWork.CompleteAsync();
         }
 
-        public bool HasPermission(string module, string action)
+        public async Task<bool> HasPermissionAsync(string module, string action)
         {
-            var user = _httpContextAccessor.HttpContext.User;
+            var userId = _httpContextAccessor.HttpContext.User
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (user.IsInRole("Admin"))
-                return true;
+            if (userId == null)
+                return false;
 
-            var permission = $"{module}.{action}";
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return false;
 
-            return user.Claims
-                .Any(c => c.Type == "Permission" && c.Value == permission);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var permissions = await _roleManager.Roles
+                .Where(r => roles.Contains(r.Name!) && r.IsActive)
+                .SelectMany(r => r.RolePermissions!)
+                .Select(rp => rp.Permission!)
+                .ToListAsync();
+
+            return permissions.Any(p =>
+                p.Resource == module &&
+                p.Action == action);
         }
+
+        
     }
 }
