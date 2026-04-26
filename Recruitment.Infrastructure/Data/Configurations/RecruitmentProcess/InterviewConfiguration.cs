@@ -18,7 +18,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.RecruitmentProcess
             builder.HasOne(i => i.Application)
                    .WithMany(a => a.Interviews)
                    .HasForeignKey(i => i.ApplicationId)
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(i => i.ScheduledDate)
                    .IsRequired();

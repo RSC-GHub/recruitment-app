@@ -15,8 +15,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.CoreBusiness
                    .IsRequired()
                    .HasMaxLength(100);
 
-            //builder.HasIndex(c => c.Name)
-            //       .IsUnique();
+            
         }
     }
 }

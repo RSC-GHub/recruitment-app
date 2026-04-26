@@ -116,7 +116,8 @@ namespace Recruitment.Infrastructure.Repositories.CoreBusiness
 
             foreach (var project in projects)
             {
-                var loc = locations.FirstOrDefault(l => l.Id == project.LocationId && !l.IsDeleted);
+                //var loc = locations.FirstOrDefault(l => l.Id == project.LocationId && !l.IsDeleted);
+                var loc = locations.FirstOrDefault(l => l.Id == project.LocationId);
 
                 project.Location = new Location
                 {

@@ -27,6 +27,8 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
         public int? NoticePeriod { get; set; }
 
         public string Address { get; set; }
+        public string City { get; set; } = null!;
+
 
         public DateTime? HRInterviewDate { get; set; }
         public DateTime? TechInterviewDate { get; set; }
@@ -38,6 +40,9 @@ namespace Recruitment.Application.DTOs.UserManagement.Applicant
 
         public string HRInterviewer { get; set; }
         public string TechInterviewer { get; set; }
+        public int? TotalExperience { get; set; }
+        public string? LeavingReason { get; set; } = string.Empty;
+        public string? Relatives { get; set; } = string.Empty;
 
     }
 

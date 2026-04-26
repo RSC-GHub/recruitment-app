@@ -18,7 +18,8 @@ namespace Recruitment.Infrastructure.Repositories.Reports
         public async Task<IEnumerable<Report>> GetActiveAsync()
         {
             return await _context.Reports
-                .Where(r => r.IsActive && !r.IsDeleted)
+                //.Where(r => r.IsActive && !r.IsDeleted)
+                .Where(r => r.IsActive)
                 .ToListAsync();
         }
 
@@ -26,7 +27,7 @@ namespace Recruitment.Infrastructure.Repositories.Reports
         {
             return await _context.Reports
                 .Include(r => r.Parameters)
-                .Where(r => !r.IsDeleted)
+                //.Where(r => !r.IsDeleted)
                 .ToListAsync();
         }
 
@@ -34,7 +35,8 @@ namespace Recruitment.Infrastructure.Repositories.Reports
         {
             return await _context.Reports
                 .Include(r => r.Parameters)
-                .Where(r => r.IsActive && !r.IsDeleted)
+                //.Where(r => r.IsActive && !r.IsDeleted)
+                .Where(r => r.IsActive)
                 .ToListAsync();
         }
 
@@ -42,7 +44,8 @@ namespace Recruitment.Infrastructure.Repositories.Reports
         {
             return await _context.Reports
                 .Include(r => r.Parameters)
-                .FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
+                .FirstOrDefaultAsync(r => r.Id == id);
+                //.FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
         }
     }
 }

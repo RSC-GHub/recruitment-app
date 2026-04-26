@@ -78,19 +78,19 @@ namespace Recruitment.Application.Services.Common
                 ws.Cell(r, 13).Value = ""; // Offer Status
                 ws.Cell(r, 14).Value = ""; // N.B
                 ws.Cell(r, 15).Value = d.StartingDate.ToString("MMM dd, yyyy"); 
-                ws.Cell(r, 16).Value = ""; // Total Experience
+                ws.Cell(r, 16).Value = d.TotalExperience; // Total Experience
 
                 ws.Cell(r, 17).Value = d.CurrentSalary;
                 ws.Cell(r, 18).Value = d.ExpectedSalary;
 
-                ws.Cell(r, 19).Value = ""; // Reason
+                ws.Cell(r, 19).Value = d.LeavingReason; // Reason
 
                 ws.Cell(r, 20).Value = d.NoticePeriod;
 
-                ws.Cell(r, 21).Value = ""; // relatives
+                ws.Cell(r, 21).Value = d.Relatives; // relatives
                 ws.Cell(r, 22).Value = ""; // ID
 
-                ws.Cell(r, 23).Value = d.Address;
+                ws.Cell(r, 23).Value = d.Address + ' ' + d.City;
 
                 ws.Cell(r, 24).Value = d.HRInterviewDate;
 

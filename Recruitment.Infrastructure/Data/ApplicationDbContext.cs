@@ -136,18 +136,18 @@ namespace Recruitment.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
-                {
-                    var parameter = Expression.Parameter(entityType.ClrType, "e");
-                    var prop = Expression.Property(parameter, "IsDeleted");
-                    var condition = Expression.Equal(prop, Expression.Constant(false));
-                    var lambda = Expression.Lambda(condition, parameter);
+            //foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            //{
+            //    if (typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
+            //    {
+            //        var parameter = Expression.Parameter(entityType.ClrType, "e");
+            //        var prop = Expression.Property(parameter, "IsDeleted");
+            //        var condition = Expression.Equal(prop, Expression.Constant(false));
+            //        var lambda = Expression.Lambda(condition, parameter);
 
-                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
-                }
-            }
+            //        modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+            //    }
+            //}
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(modelBuilder);
@@ -191,59 +191,60 @@ namespace Recruitment.Infrastructure.Data
                     baseEntity.ModifiedBy ??= currentUser;
                 }
 
-                // Handle Deleted (soft delete with related data check)
-                else if (entry.State == EntityState.Deleted &&
-                         entry.Entity is ISoftDeletable softDeletable)
-                {
-                    if (entry.Entity is ProjectVacancy 
-                        || entry.Entity is UserProject
-                        || entry.Entity is RolePermission
-                        || entry.Entity is DepartmentTitle)
-                    {
-                        continue;
-                    }
+                //// Handle Deleted (soft delete with related data check)
+                //else if (entry.State == EntityState.Deleted &&
+                //         entry.Entity is ISoftDeletable softDeletable)
+                //{
+                //    if (entry.Entity is ProjectVacancy 
+                //        || entry.Entity is UserProject
+                //        || entry.Entity is RolePermission
+                //        || entry.Entity is DepartmentTitle)
+                //    {
+                //        continue;
+                //    }
 
-                    // Check related collections for any not-deleted entities
-                    var navigationProperties = entry.Navigations
-                             .Where(n => n.Metadata.IsCollection)
-                             .ToList();
+                //    // Check related collections for any not-deleted entities
+                //    var navigationProperties = entry.Navigations
+                //             .Where(n => n.Metadata.IsCollection)
+                //             .ToList();
 
 
-                    foreach (var nav in navigationProperties)
-                    {
-                        if (!nav.IsLoaded)
-                            await nav.LoadAsync(cancellationToken);
+                //    foreach (var nav in navigationProperties)
+                //    {
+                //        if (!nav.IsLoaded)
+                //            await nav.LoadAsync(cancellationToken);
 
-                        var relatedEntities = ((IEnumerable<object>)nav.CurrentValue!)
-                            .OfType<ISoftDeletable>()
-                            .Where(r => !r.IsDeleted)
-                            .ToList();
+                //        var relatedEntities = ((IEnumerable<object>)nav.CurrentValue!)
+                //            .OfType<ISoftDeletable>()
+                //            .Where(r => !r.IsDeleted)
+                //            .ToList();
 
-                        if (relatedEntities.Any())
-                        {
-                            throw new InvalidOperationException(
-                                $"Cannot delete {entityName} because it has related {nav.Metadata.Name}.");
-                        }
-                    }
+                //        if (relatedEntities.Any())
+                //        {
+                //            throw new InvalidOperationException(
+                //                $"Cannot delete {entityName} because it has related {nav.Metadata.Name}.");
+                //        }
+                //    }
 
-                    // Apply soft delete
-                    softDeletable.IsDeleted = true;
-                    baseEntity.ModifiedOn = DateTime.UtcNow;
-                    baseEntity.ModifiedBy ??= currentUser;
+                //    // Apply soft delete
+                //    softDeletable.IsDeleted = true;
+                //    baseEntity.ModifiedOn = DateTime.UtcNow;
+                //    baseEntity.ModifiedBy ??= currentUser;
 
-                    entry.State = EntityState.Modified;
-                }
+                //    entry.State = EntityState.Modified;
+                //}
 
                 // Prepare Audit Log
                 var audit = new AuditLog
                 {
                     TableName = entityName,
-                    ActionType =
-                        entry.State == EntityState.Modified &&
-                        entry.Entity is ISoftDeletable sd &&
-                        sd.IsDeleted
-                            ? "Deleted"
-                            : entry.State.ToString(),
+                    //ActionType =
+                    //    entry.State == EntityState.Modified &&
+                    //    entry.Entity is ISoftDeletable sd &&
+                    //    sd.IsDeleted
+                    //        ? "Deleted"
+                    //        : entry.State.ToString()
+                    ActionType = entry.State.ToString(),
                     ChangedBy = currentUser,
                     ChangedOn = DateTime.UtcNow
                 };

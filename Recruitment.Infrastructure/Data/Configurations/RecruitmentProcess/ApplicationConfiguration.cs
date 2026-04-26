@@ -21,19 +21,19 @@ namespace Recruitment.Infrastructure.Data.Configurations.Recruitment_Process
             builder.HasOne(a => a.Applicant)
                    .WithMany(app => app.Applications) 
                    .HasForeignKey(a => a.ApplicantId)
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .OnDelete(DeleteBehavior.Restrict);
 
             // Vacancy
             builder.HasOne(a => a.Vacancy)
                    .WithMany(v => v.Applications) 
                    .HasForeignKey(a => a.VacancyId)
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .OnDelete(DeleteBehavior.Restrict);
 
             // في ApplicationConfiguration
             builder.HasOne(a => a.Reviewer)
                    .WithMany(u => u.ReviewedApplications) 
                    .HasForeignKey(a => a.ReviewedBy)
-                   .OnDelete(DeleteBehavior.SetNull);
+                   .OnDelete(DeleteBehavior.Restrict);
 
 
             // Properties

@@ -43,7 +43,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -54,7 +54,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -65,7 +65,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -77,7 +77,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Assign",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -88,7 +88,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "ViewSubmission",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -99,7 +99,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Delete",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -111,7 +111,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Assign",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -122,7 +122,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "ViewHistory",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -133,7 +133,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -144,7 +144,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Delete",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -155,7 +155,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "ReviewApplication",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -166,7 +166,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "RegisterFinalResult",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -177,7 +177,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -188,7 +188,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -199,7 +199,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -210,7 +210,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -221,7 +221,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -232,7 +232,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -243,7 +243,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -254,7 +254,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -265,7 +265,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -276,7 +276,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Delete",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -287,7 +287,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -298,7 +298,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -309,7 +309,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Delete",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -320,7 +320,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -331,7 +331,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "View",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -342,7 +342,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Edit",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -353,7 +353,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Delete",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -364,7 +364,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "View",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -375,7 +375,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "View",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -386,7 +386,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "View",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -397,7 +397,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "View",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -408,7 +408,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "View",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -419,7 +419,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "View",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -430,7 +430,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "View",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -441,7 +441,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Create",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -452,7 +452,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Delete",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 },
                 new Permission
                 {
@@ -463,7 +463,7 @@ namespace Recruitment.Infrastructure.Data.Configurations.UserManagement
                     Action = "Delete",
                     CreatedBy = "admin@rsc.com.eg",
                     CreatedOn = new DateTime(2026, 3, 24, 11, 12, 1),
-                    IsDeleted = false,
+                    //IsDeleted = false,
                 }
             );
         }

@@ -2,7 +2,7 @@
 
 namespace Recruitment.Domain.Entities
 {
-    public abstract class BaseEntity : ISoftDeletable
+    public abstract class BaseEntity //: ISoftDeletable
     {
         public int Id { get; set; }
 
@@ -13,6 +13,6 @@ namespace Recruitment.Domain.Entities
         public string? ModifiedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
 
-        public bool IsDeleted { get; set; } = false;
+        //public bool IsDeleted { get; set; } = false;
     }
 }
