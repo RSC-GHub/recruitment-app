@@ -108,59 +108,98 @@
             </div>
         </div>
 
-<!-- Pagination -->
-@if (Model.TotalCount > Model.PageSize)
-{
-    <nav class="mt-4">
-        <ul class="pagination-component">
+        @{
+            int totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
+        }
 
-            @if (Model.Page > 1)
-            {
-                <a class="pagination-button"
-                   asp-action="GetSubmissions"
-                   asp-route-vacancyId="@Model.VacancyId"
-                   asp-route-page="@(Model.Page - 1)"
-                   asp-route-pageSize="@Model.PageSize"
-                   asp-route-search="@Model.Search">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-            }
-            else
-            {
-                <span class="pagination-button disabled">
-                    <i class="bi bi-chevron-left"></i>
-                </span>
-            }
+        @if (totalPages > 1)
+        {
+            <nav class="mt-4">
+                <ul class="pagination-component">
 
-            <span class="pagination-button active">
-                Page @Model.Page of @(Math.Ceiling((double)Model.TotalCount / Model.PageSize))
-            </span>
+                    <!-- Previous -->
+                    <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
+                       asp-action="GetSubmissions"
+                       asp-route-vacancyId="@Model.VacancyId"
+                       asp-route-page="@(Model.Page - 1)"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
 
-            @if (Model.Page * Model.PageSize < Model.TotalCount)
-            {
-                <a class="pagination-button"
-                   asp-action="GetSubmissions"
-                   asp-route-vacancyId="@Model.VacancyId"
-                   asp-route-page="@(Model.Page + 1)"
-                   asp-route-pageSize="@Model.PageSize"
-                   asp-route-search="@Model.Search">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            }
-            else
-            {
-                <span class="pagination-button disabled">
-                    <i class="bi bi-chevron-right"></i>
-                </span>
-            }
+                    @{
+                        int startPage = Math.Max(1, Model.Page - 2);
+                        int endPage = Math.Min(totalPages, Model.Page + 2);
+                    }
 
-        </ul>
-    </nav>
+                    <!-- First page + ... -->
+                    @if (startPage > 1)
+                    {
+                        <a class="pagination-button"
+                           asp-action="GetSubmissions"
+                           asp-route-vacancyId="@Model.VacancyId"
+                           asp-route-page="1"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-search="@Model.Search">
+                            1
+                        </a>
 
-    <div class="text-center mt-3 text-muted small">
-        Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount applications
-    </div>
-}
+                        @if (startPage > 2)
+                        {
+                            <span class="pagination-button disabled">...</span>
+                        }
+                    }
+
+                    <!-- Pages -->
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                           asp-action="GetSubmissions"
+                           asp-route-vacancyId="@Model.VacancyId"
+                           asp-route-page="@i"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-search="@Model.Search">
+                            @i
+                        </a>
+                    }
+
+                    <!-- Last page + ... -->
+                    @if (endPage < totalPages)
+                    {
+                        @if (endPage < totalPages - 1)
+                        {
+                            <span class="pagination-button disabled">...</span>
+                        }
+
+                        <a class="pagination-button"
+                           asp-action="GetSubmissions"
+                           asp-route-vacancyId="@Model.VacancyId"
+                           asp-route-page="@totalPages"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-search="@Model.Search">
+                            @totalPages
+                        </a>
+                    }
+
+                    <!-- Next -->
+                    <a class="pagination-button @(Model.Page == totalPages ? "disabled" : "")"
+                       asp-action="GetSubmissions"
+                       asp-route-vacancyId="@Model.VacancyId"
+                       asp-route-page="@(Model.Page + 1)"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-search="@Model.Search">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                </ul>
+            </nav>
+
+            <div class="text-center mt-3 text-muted small">
+                Showing @((Model.Page - 1) * Model.PageSize + 1)
+                to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount)
+                of @Model.TotalCount applications
+            </div>
+        }
 
     </div>
 </div>
