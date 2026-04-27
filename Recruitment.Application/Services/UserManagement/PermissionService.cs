@@ -111,6 +111,9 @@ namespace Recruitment.Application.Services.UserManagement
 
             var roles = await _userManager.GetRolesAsync(user);
 
+            if (roles.Contains("Admin"))
+                return true;
+
             var permissions = await _roleManager.Roles
                 .Where(r => roles.Contains(r.Name!) && r.IsActive)
                 .SelectMany(r => r.RolePermissions!)
@@ -122,6 +125,6 @@ namespace Recruitment.Application.Services.UserManagement
                 p.Action == action);
         }
 
-        
+
     }
 }

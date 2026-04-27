@@ -217,29 +217,33 @@
         </div>
     </div>
 
-    @if (Model.TotalCount > Model.PageSize)
+    @{
+        int totalPages = (int)Math.Ceiling(Model.TotalCount / (double)Model.PageSize);
+    }
+
+    @if (totalPages > 1)
     {
         <div class="card-footer">
             <nav class="pagination-component" aria-label="Pagination">
-                <!-- Previous Button -->
+
+                <!-- Previous -->
                 <a class="pagination-button @(Model.Page == 1 ? "disabled" : "")"
-                   href="?page=@(Model.Page - 1)&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status"
-                   @(Model.Page == 1 ? "aria-disabled=true" : "")>
+                   href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status">
                     <i class="bi bi-chevron-left"></i>
                 </a>
 
-                <!-- Page Numbers -->
                 @{
                     int startPage = Math.Max(1, Model.Page - 2);
-                    int endPage = Math.Min(Model.TotalPages, Model.Page + 2);
+                    int endPage = Math.Min(totalPages, Model.Page + 2);
                 }
 
                 @if (startPage > 1)
                 {
                     <a class="pagination-button"
-                       href="?page=1&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status">
+                       href="?page=1&pageSize=@Model.PageSize&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status">
                         1
                     </a>
+
                     @if (startPage > 2)
                     {
                         <span class="pagination-button disabled">...</span>
@@ -248,34 +252,37 @@
 
                 @for (int i = startPage; i <= endPage; i++)
                 {
-                    <a class="pagination-button @(Model.Page == i ? "active" : "")"
-                       href="?page=@i&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status">
+                    <a class="pagination-button @(i == Model.Page ? "active" : "")"
+                       href="?page=@i&pageSize=@Model.PageSize&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status">
                         @i
                     </a>
                 }
 
-                @if (endPage < Model.TotalPages)
+                @if (endPage < totalPages)
                 {
-                    @if (endPage < Model.TotalPages - 1)
+                    @if (endPage < totalPages - 1)
                     {
                         <span class="pagination-button disabled">...</span>
                     }
+
                     <a class="pagination-button"
-                       href="?page=@Model.TotalPages&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status">
-                        @Model.TotalPages
+                       href="?page=@totalPages&pageSize=@Model.PageSize&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status">
+                        @totalPages
                     </a>
                 }
 
-                <!-- Next Button -->
-                <a class="pagination-button @(Model.Page == Model.TotalPages ? "disabled" : "")"
-                   href="?page=@(Model.Page + 1)&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status"
-                   @(Model.Page == Model.TotalPages ? "aria-disabled=true" : "")>
+                <!-- Next -->
+                <a class="pagination-button @(Model.Page == totalPages ? "disabled" : "")"
+                   href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize&search=@Model.Search&titleId=@Model.TitleId&projectId=@Model.ProjectId&status=@Model.Status">
                     <i class="bi bi-chevron-right"></i>
                 </a>
+
             </nav>
 
             <div class="text-center mt-3 text-muted small">
-                Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) of @Model.TotalCount results
+                Showing @((Model.Page - 1) * Model.PageSize + 1)
+                to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount)
+                of @Model.TotalCount results
             </div>
         </div>
     }
