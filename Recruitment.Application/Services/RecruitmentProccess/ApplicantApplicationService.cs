@@ -406,6 +406,7 @@ namespace Recruitment.Application.Services.RecruitmentProccess
                 TargetPosition = entity.Applicant?.TargetPosition ?? "",
                 CurrentJob = entity.Applicant?.CurrentJob,
                 CurrentEmployer = entity.Applicant?.CurrentEmployer,
+                GraduationYear = entity.Applicant?.GraduationYear,
                 CV = entity.Applicant?.CVFilePath ?? "",
 
                 ExpectedFirstDate = entity.ExpectedFirstDate,

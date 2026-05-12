@@ -14,6 +14,8 @@ namespace Recruitment.Application.DTOs.RecruitmentProccess.Application
         public string? TargetPosition { get; set; }
         public string? CurrentJob { get; set; }
         public string? CurrentEmployer { get; set; }
+        public short? GraduationYear { get; set; }
+
         public string CV { get; set; } = null!;
          
         // Vacancy details

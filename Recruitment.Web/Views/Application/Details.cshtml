@@ -24,6 +24,18 @@
                 </button>
             }
 
+            
+            @if (await PermissionService.HasPermissionAsync("Vacancy", "ViewSubmission"))
+            {
+                <a asp-controller="Vacancy"
+                   asp-action="GetSubmissions"
+                   asp-route-vacancyId="@Model.VacancyId"
+                   class="btn-component btn-outline">
+                    <i class="bi bi-people me-2"></i>
+                    Other Applicants
+                </a>
+            }
+
 
             @* Show Schedule Interview only if allowed *@
             @if (ViewBag.CanAddInterview)
@@ -73,6 +85,10 @@
                             <div>
                                 <span class="text-muted small">Current Employer</span>
                                 <p class="mb-0 fw-semibold">@(Model.CurrentEmployer ?? "-")</p>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Graduation year</span>
+                                <p class="mb-0 fw-semibold">@(Model.GraduationYear?.ToString() ?? "-")</p>
                             </div>
                             <div>
                                 <span class="text-muted small">CV</span><br />

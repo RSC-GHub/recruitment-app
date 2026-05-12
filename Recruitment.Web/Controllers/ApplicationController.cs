@@ -85,6 +85,7 @@ namespace Recruitment.Web.Controllers
                 TargetPosition = application.TargetPosition,
                 CurrentJob = application.CurrentJob,
                 CurrentEmployer = application.CurrentEmployer,
+                GraduationYear = application.GraduationYear,
                 ExpectedFirstDate = application.ExpectedFirstDate,
                 ActualFirstDate = application.ActualFirstDate,
                 VacancyId = application.VacancyId,

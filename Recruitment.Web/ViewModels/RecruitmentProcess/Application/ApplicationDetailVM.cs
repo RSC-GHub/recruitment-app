@@ -15,6 +15,8 @@ namespace Recruitment.Web.ViewModels.RecruitmentProcess.Application
         public string? TargetPosition { get; set; }
         public string? CurrentJob { get; set; }
         public string? CurrentEmployer { get; set; }
+        public short? GraduationYear { get; set; }
+
 
         public int VacancyId { get; set; }
         public string VacancyTitle { get; set; } = "";
