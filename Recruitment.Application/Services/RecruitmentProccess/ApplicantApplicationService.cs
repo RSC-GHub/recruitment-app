@@ -89,85 +89,83 @@ namespace Recruitment.Application.Services.RecruitmentProccess
             if (application == null)
                 throw new InvalidOperationException("Application not found.");
 
-            // Validate the status transition
-            ApplicationWorkflow.ValidateTransition(
-                application.ApplicationStatus,
-                dto.ApplicationStatus);
-
-            if (dto.ApplicationStatus == ApplicationStatus.UnderReview)
+            if (dto.ApplicationStatus.HasValue)
             {
-                // Soft assign only once
-                application.AssignedTo ??= userId.Value;
-                application.AssignedAt ??= DateTime.UtcNow;
-            }
+                var newStatus = dto.ApplicationStatus.Value;
 
-            if (dto.ApplicationStatus == ApplicationStatus.AcceptedOffer)
-            {
-                if (!dto.ExpectedFirstDate.HasValue)
-                    throw new InvalidOperationException("Expected start date must be provided when offer is accepted.");
+                ApplicationWorkflow.ValidateTransition(
+                    application.ApplicationStatus,
+                    newStatus);
 
-                application.ExpectedFirstDate = dto.ExpectedFirstDate.Value;
-                application.ActualFirstDate = null;
-                application.RejectionReasons.Clear();
-
-            }
-            else if (dto.ApplicationStatus == ApplicationStatus.SignedContract)
-            {
-                if (!dto.ActualFirstDate.HasValue)
-                    throw new InvalidOperationException("Actual start date must be provided when application is signed.");
-
-                application.ActualFirstDate = dto.ActualFirstDate.Value;
-                application.ExpectedFirstDate = null;
-                application.RejectionReasons.Clear();
-            }
-            else if (dto.ApplicationStatus == ApplicationStatus.Rejected)
-            {
-                application.ExpectedFirstDate = null;
-                application.ActualFirstDate = null;
-                application.RejectionReasons.Clear();
-
-                if (rejectionReasonIds != null && rejectionReasonIds.Any())
+                if (newStatus == ApplicationStatus.UnderReview)
                 {
-                    foreach (var reasonId in rejectionReasonIds)
+                    application.AssignedTo ??= userId.Value;
+                    application.AssignedAt ??= DateTime.UtcNow;
+                }
+
+                if (newStatus == ApplicationStatus.AcceptedOffer)
+                {
+                    if (!dto.ExpectedFirstDate.HasValue)
+                        throw new InvalidOperationException("Expected start date must be provided.");
+
+                    application.ExpectedFirstDate = dto.ExpectedFirstDate.Value;
+                    application.ActualFirstDate = null;
+                    application.RejectionReasons.Clear();
+                }
+                else if (newStatus == ApplicationStatus.SignedContract)
+                {
+                    if (!dto.ActualFirstDate.HasValue)
+                        throw new InvalidOperationException("Actual start date must be provided.");
+
+                    application.ActualFirstDate = dto.ActualFirstDate.Value;
+                    application.ExpectedFirstDate = null;
+                    application.RejectionReasons.Clear();
+                }
+                else if (newStatus == ApplicationStatus.Rejected)
+                {
+                    application.ExpectedFirstDate = null;
+                    application.ActualFirstDate = null;
+                    application.RejectionReasons.Clear();
+
+                    if (rejectionReasonIds?.Any() == true)
                     {
-                        application.RejectionReasons.Add(new ApplicationRejectionReason
+                        foreach (var reasonId in rejectionReasonIds)
                         {
-                            ApplicationId = application.Id,
-                            RejectionReasonId = reasonId
-                        });
+                            application.RejectionReasons.Add(new ApplicationRejectionReason
+                            {
+                                ApplicationId = application.Id,
+                                RejectionReasonId = reasonId
+                            });
+                        }
                     }
                 }
-            }
-            else if (dto.ApplicationStatus == ApplicationStatus.Hired)
-            {
-                if (application.ApplicationStatus != ApplicationStatus.Hired)
+                else if (newStatus == ApplicationStatus.Hired)
                 {
-                    if (application.Vacancy == null)
-                        throw new InvalidOperationException("Vacancy not found.");
-
-                    if (application.Vacancy.PositionCount <= 0)
-                        throw new InvalidOperationException("No available positions for this vacancy.");
-
-                    application.Vacancy.PositionCount -= 1;
-
-                    // Optional: close vacancy automatically
-                    if (application.Vacancy.PositionCount == 0)
+                    if (application.ApplicationStatus != ApplicationStatus.Hired)
                     {
-                        application.Vacancy.Status = VacancyStatus.Closed;
+                        if (application.Vacancy == null)
+                            throw new InvalidOperationException("Vacancy not found.");
+
+                        if (application.Vacancy.PositionCount <= 0)
+                            throw new InvalidOperationException("No available positions.");
+
+                        application.Vacancy.PositionCount--;
+
+                        if (application.Vacancy.PositionCount == 0)
+                            application.Vacancy.Status = VacancyStatus.Closed;
                     }
+
+                    application.ExpectedFirstDate = null;
+                    application.ActualFirstDate = null;
+                    application.RejectionReasons.Clear();
                 }
 
-                // Clear unrelated data
-                application.ExpectedFirstDate = null;
-                application.ActualFirstDate = null;
-                application.RejectionReasons.Clear();
+                application.ApplicationStatus = newStatus;
+                application.ReviewedBy = userId.Value;
+                application.ReviewDate = DateTime.UtcNow;
             }
 
-
-
-            application.ApplicationStatus = dto.ApplicationStatus;
-            application.ReviewedBy = userId.Value;
-            application.ReviewDate = DateTime.UtcNow;
+            // يتحدث دائمًا حتى لو مفيش status
             application.Note = dto.Note;
 
             _unitOfWork.ApplicationRepository.Update(application);

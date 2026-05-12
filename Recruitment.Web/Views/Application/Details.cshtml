@@ -288,18 +288,17 @@
                         <!-- Decision -->
                         <div class="form-field">
                             <label class="form-label">
-                                Decision <span class="text-danger">*</span>
+                                Decision 
                             </label>
 
                             <select id="reviewApplicationStatus"
                                     name="ApplicationStatus"
-                                    class="form-select"
-                                    required>
-                                <option value="">-- Select Decision --</option>
+                                    class="form-select">
+                                <option value="">-- Keep Current Status --</option>
                                 @foreach (var status in ApplicationWorkflow.GetAllowedTransitions(Model.ApplicationStatus))
                                 {
-                                    if (Model.ApplicationStatus == ApplicationStatus.Interviewing)
-                                        continue;
+                                    @* if (Model.ApplicationStatus == ApplicationStatus.Interviewing)
+                                        continue; *@
 
                                     <option value="@((int)status)">@status</option>
                                 }
@@ -600,15 +599,17 @@
                 reviewForm.addEventListener('submit', function (e) {
                     e.preventDefault();
 
-                    var data = {
-                        ApplicationId: parseInt(document.getElementById('reviewApplicationId').value),
-                        ApplicationStatus: parseInt(document.getElementById('reviewApplicationStatus').value),
-                        Note: document.getElementById('reviewNote').value,
-                        ExpectedFirstDate: document.getElementById('ExpectedFirstDate').value || null,
-                        ActualFirstDate: document.getElementById('ActualFirstDate').value || null,
-                        RejectionReasonIds: Array.from(document.getElementById('RejectionReasonIds').selectedOptions)
-                                                  .map(o => parseInt(o.value))
-                    };
+                            var statusValue = document.getElementById('reviewApplicationStatus').value;
+
+        var data = {
+            ApplicationId: parseInt(document.getElementById('reviewApplicationId').value),
+            ApplicationStatus: statusValue ? parseInt(statusValue) : null,
+            Note: document.getElementById('reviewNote').value,
+            ExpectedFirstDate: document.getElementById('ExpectedFirstDate').value || null,
+            ActualFirstDate: document.getElementById('ActualFirstDate').value || null,
+            RejectionReasonIds: Array.from(document.getElementById('RejectionReasonIds').selectedOptions)
+                .map(o => parseInt(o.value))
+        };
 
                     fetch('@Url.Action("Review", "Application")', {
                         method: 'POST',

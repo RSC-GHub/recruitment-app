@@ -24,7 +24,7 @@ namespace Recruitment.Domain.Entities.Recruitment_Proccess
         public DateTime? ReviewDate { get; set; }
         public DateTime ApplicationDate { get; set; } = DateTime.Now;
 
-        public ApplicationStatus ApplicationStatus { get; set; } = ApplicationStatus.Submitted;
+        public ApplicationStatus ApplicationStatus { get; set; }
 
         public string? Note { get; set; }
 
